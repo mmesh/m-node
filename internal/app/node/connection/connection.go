@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-	"mmesh.dev/api-go/grpc/network/resources/iam/auth"
-	"mmesh.dev/api-go/grpc/network/rpc"
+	"mmesh.dev/mmesh/internal/api/grpc/network/resources/iam/auth"
+	"mmesh.dev/mmesh/internal/api/grpc/network/rpc"
 	"mmesh.dev/mmesh/internal/pkg/grpc/client"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"

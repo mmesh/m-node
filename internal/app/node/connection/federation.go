@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-	"mmesh.dev/api-go/grpc/network/resources/controller"
-	"mmesh.dev/api-go/grpc/network/resources/network"
-	"mmesh.dev/api-go/grpc/network/rpc"
+	"mmesh.dev/mmesh/internal/api/grpc/network/resources/controller"
+	"mmesh.dev/mmesh/internal/api/grpc/network/resources/network"
+	"mmesh.dev/mmesh/internal/api/grpc/network/rpc"
 	"mmesh.dev/mmesh/internal/pkg/mmid"
 	"x6a.dev/pkg/errors"
 )

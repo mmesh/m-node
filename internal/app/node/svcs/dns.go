@@ -11,8 +11,8 @@ import (
 
 	"github.com/miekg/dns"
 	"github.com/spf13/viper"
-	dns_pb "mmesh.dev/api-go/grpc/network/dns"
-	"mmesh.dev/api-go/grpc/network/rpc"
+	dns_pb "mmesh.dev/mmesh/internal/api/grpc/network/dns"
+	"mmesh.dev/mmesh/internal/api/grpc/network/rpc"
 	"mmesh.dev/mmesh/internal/app/node/netp2p"
 	"mmesh.dev/mmesh/internal/pkg/ipnet"
 	"mmesh.dev/mmesh/internal/pkg/runtime"

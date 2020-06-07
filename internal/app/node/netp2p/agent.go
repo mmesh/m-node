@@ -7,10 +7,10 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/spf13/viper"
-	"mmesh.dev/api-go/grpc/common/datetime"
-	"mmesh.dev/api-go/grpc/network/mmnp/routing"
-	"mmesh.dev/api-go/grpc/network/resources/network"
-	"mmesh.dev/api-go/grpc/network/rpc"
+	"mmesh.dev/mmesh/internal/api/grpc/common/datetime"
+	"mmesh.dev/mmesh/internal/api/grpc/network/mmnp/routing"
+	"mmesh.dev/mmesh/internal/api/grpc/network/resources/network"
+	"mmesh.dev/mmesh/internal/api/grpc/network/rpc"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
 )

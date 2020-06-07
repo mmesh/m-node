@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync"
 
-	"mmesh.dev/api-go/grpc/network/mmnp/routing"
+	"mmesh.dev/mmesh/internal/api/grpc/network/mmnp/routing"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
 )

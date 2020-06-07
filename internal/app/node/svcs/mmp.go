@@ -5,7 +5,7 @@ import (
 	"io"
 
 	"github.com/spf13/viper"
-	mmp_pb "mmesh.dev/api-go/grpc/network/mmp"
+	"mmesh.dev/mmesh/internal/api/grpc/network/mmsp"
 	"mmesh.dev/mmesh/internal/app/node/netp2p"
 	"mmesh.dev/mmesh/internal/pkg/mmp"
 	"mmesh.dev/mmesh/internal/pkg/runtime"
@@ -72,7 +72,7 @@ func MMPAgent(w *runtime.Wrkr) {
 			}
 		}()
 
-		mmp.SendCommandQueue <- &mmp_pb.Payload{
+		mmp.SendCommandQueue <- &mmsp.Payload{
 			SrcID:       viper.GetString("mm.id"),
 			PayloadType: mmp.PayloadTypeNodeInit,
 			Node:        netp2p.GetNodeWithoutEndpoints(),

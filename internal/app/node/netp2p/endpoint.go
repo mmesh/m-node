@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/spf13/viper"
-	"mmesh.dev/api-go/grpc/network/mmnp/register"
-	"mmesh.dev/api-go/grpc/network/resources/network"
+	"mmesh.dev/mmesh/internal/api/grpc/network/mmnp/register"
+	"mmesh.dev/mmesh/internal/api/grpc/network/resources/network"
 	"mmesh.dev/mmesh/internal/pkg/ipnet"
 	"mmesh.dev/mmesh/internal/pkg/resources"
 	"x6a.dev/pkg/errors"

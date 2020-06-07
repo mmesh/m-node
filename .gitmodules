@@ -7,3 +7,6 @@
 [submodule "lib"]
 	path = lib
 	url = git@github.com:mmesh/m-lib.git
+[submodule "internal/api"]
+	path = internal/api
+	url = git@github.com:mmesh/m-api-go.git

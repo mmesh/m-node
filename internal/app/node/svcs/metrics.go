@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"mmesh.dev/api-go/grpc/network/resources/network"
+	"mmesh.dev/mmesh/internal/api/grpc/network/resources/network"
 	"mmesh.dev/mmesh/internal/app/node/metrics"
 	"mmesh.dev/mmesh/internal/app/node/netp2p"
 	"mmesh.dev/mmesh/internal/pkg/runtime"

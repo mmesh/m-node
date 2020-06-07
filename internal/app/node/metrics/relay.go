@@ -3,7 +3,7 @@ package metrics
 import (
 	"sync"
 
-	"mmesh.dev/api-go/grpc/network/resources/metrics"
+	"mmesh.dev/mmesh/internal/api/grpc/network/resources/metrics"
 )
 
 type relayMetricsMap struct {

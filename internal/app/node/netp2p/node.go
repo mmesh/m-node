@@ -3,8 +3,8 @@ package netp2p
 import (
 	"context"
 
-	"mmesh.dev/api-go/grpc/network/mmnp/register"
-	"mmesh.dev/api-go/grpc/network/resources/network"
+	"mmesh.dev/mmesh/internal/api/grpc/network/mmnp/register"
+	"mmesh.dev/mmesh/internal/api/grpc/network/resources/network"
 	"x6a.dev/pkg/errors"
 )
 
