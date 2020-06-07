@@ -1,0 +1,53 @@
+loglevel: INFO # TRACE | DEBUG | INFO | WARN
+
+controller:
+  endpoint: mmesh.domain.tld:443      # env: MM_CONTROLLER_ENDPOINT
+
+# basic node configuration
+node:
+  id: dev-relay-0                      # env: MM_NODE_ID
+  account: dev                         # env: MM_NODE_ACCOUNT
+  tenant: default                      # env: MM_NODE_TENANT
+  network: default                     # env: MM_NODE_NETWORK
+  subnet: subnet-000                   # env: MM_NODE_SUBNET
+  # use 'mmeshctl admin subnet set' to create the subnet with its secret and authKey
+  #authSecret: ""
+                                       # env: MM_NODE_AUTHSECRET
+  #authKey: ""
+                                       # env: MM_NODE_AUTHKEY
+
+# mmesh agent configuration
+agent:
+  iface: mmesh0                        # env: MM_AGENT_IFACE
+  port: 7778                           # env: MM_AGENT_PORT
+  priority: 1                          # env: MM_AGENT_PRIORITY
+  relay: "true"      # true | false    # env: MM_AGENT_RELAY
+  # externalIPv4 should match your loadBalancer public ip
+  #externalIPv4: 1.2.3.4               # env: MM_AGENT_EXTERNALIPV4
+  dns:
+    port: 53                           # env: MM_AGENT_DNS_PORT
+  kubernetes:
+    controller:
+      enabled: "false"                 # env: MM_AGENT_KUBERNETES_CONTROLLER_ENABLED
+  # mmesh remote management permissions
+  management:
+    auth:
+      psk: ""
+                                       # env: MM_AGENT_MANAGEMENT_AUTH_PSK
+      securityToken: ""
+                                       # env: MM_AGENT_MANAGEMENT_AUTH_SECURITYTOKEN
+    disableExec: "false"               # env: MM_AGENT_MANAGEMENT_DISABLEEXEC
+    disableTransfer: "false"           # env: MM_AGENT_MANAGEMENT_DISABLETRANSFER
+    disablePortForwarding: "false"     # env: MM_AGENT_MANAGEMENT_DISABLEPORTFORWARDING
+
+# node network endpoint configuration
+endpoint:
+  dnsName: dev-relay                   # env: MM_ENDPOINT_DNSNAME
+  ipv4: 10.248.0.100 # requested ipv4  # env: MM_ENDPOINT_IPV4
+
+maintenance:
+  autoUpdate: "true"                 # env: MM_MAINTENANCE_AUTOUPDATE
+  # default schedule: 00:00 (at midnight)
+  schedule:
+    hour: 2                          # env: MM_MAINTENANCE_SCHEDULE_HOUR
+    minute: 0                        # env: MM_MAINTENANCE_SCHEDULE_MINUTE

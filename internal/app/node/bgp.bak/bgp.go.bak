@@ -1,0 +1,63 @@
+package bgp
+
+import (
+	"context"
+
+	api "github.com/osrg/gobgp/api"
+	"github.com/osrg/gobgp/pkg/config"
+	gobgp "github.com/osrg/gobgp/pkg/server"
+	"github.com/spf13/viper"
+	"x6a.dev/pkg/xlog"
+)
+
+const gobgpDefaultConfigType string = "toml"
+const gobgpGracefulRestart bool = true
+
+var bgpServer *gobgp.BgpServer
+
+func Start() error {
+	gobgpConfigFile := viper.GetString("routing.bgp.gobgp.configFile")
+
+	gobgpConfigType := viper.GetString("routing.bgp.gobgp.configType")
+	if len(gobgpConfigType) == 0 {
+		gobgpConfigType = gobgpDefaultConfigType
+	}
+
+	if err := Stop(); err != nil {
+		xlog.Errorf("Unable to stop gobgp server: %v", err)
+		return err
+	}
+
+	bgpServer = gobgp.NewBgpServer()
+	go bgpServer.Serve()
+
+	initialConfig, err := config.ReadConfigFile(gobgpConfigFile, gobgpConfigType)
+	if err != nil {
+		xlog.Errorf("Unable to read gobgp config file: %v", err)
+		return err
+	}
+
+	if _, err := config.InitialConfig(
+		context.Background(),
+		bgpServer,
+		initialConfig,
+		gobgpGracefulRestart,
+	); err != nil {
+		xlog.Errorf("Unable to configure gobgp server: %v", err)
+		return err
+	}
+
+	return nil
+}
+
+func Stop() error {
+	if bgpServer == nil {
+		return nil
+	}
+
+	if err := bgpServer.StopBgp(context.Background(), &api.StopBgpRequest{}); err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mmesh-agent
+  namespace: mmesh
+  labels:
+    mm-unitId: mmesh-agent
+    mm-app: mmesh-agent
+    version: v1
+spec:
+  serviceName: mmesh-agent
+  replicas: 1
+  selector:
+    matchLabels:
+      mm-app: mmesh-agent
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        mm-unitId: mmesh-agent
+        mm-app: mmesh-agent
+        version: v1
+    spec:
+      serviceAccountName: mmesh-view
+      containers:
+      - name: mmesh-agent
+        image: x6adev/mmesh-agent:latest
+        imagePullPolicy: Always
+        securityContext:
+          privileged: false
+          capabilities:
+            add:
+              - net_admin
+        args:
+          - start
+        ports:
+        - containerPort: 7778
+          name: mmesh-p2p
+          protocol: TCP
+        volumeMounts:
+          - name: dev-net-tun
+            mountPath: "/dev/net/tun"
+            readOnly: true
+          - name: mmesh-config
+            mountPath: "/etc/mmesh"
+            readOnly: true
+      volumes:
+      - name: dev-net-tun
+        hostPath:
+            path: /dev/net/tun
+      - name: mmesh-config
+        secret:
+          secretName: mmesh-agent

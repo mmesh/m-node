@@ -1,0 +1,91 @@
+project_name: mmesh
+
+dist: _dist/node
+
+env_files:
+  github_token: ~/.config/goreleaser/github_token
+
+env:
+  - GO111MODULE=on
+
+before:
+  hooks:
+    # you may remove this if you don't use vgo
+    #- go mod tidy -v
+    # you may remove this if you don't need go generate
+    #- go generate ./...
+
+builds:
+- id: "mmesh-node"
+  main: cmd/node/main.go
+  binary: mmesh-node
+  flags:
+    #- -tags=dev
+    - -tags="static_build,netgo"
+    - -v
+    - -a
+    - -mod=vendor
+    - -installsuffix=netgo
+    - -trimpath
+    #- -race # requires CGO_ENABLED=1
+  # Custom ldflags templates.
+  # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
+  ldflags:
+    - -s
+    - -w
+    - -X {{.Env.PKG}}/internal/pkg/version.GitRepository={{.GitURL}}
+    - -X {{.Env.PKG}}/internal/pkg/version.GitCommit={{.ShortCommit}}
+    - -X {{.Env.PKG}}/internal/pkg/version.VersionNumber={{.Env.VERSION}}
+    - -X {{.Env.PKG}}/internal/pkg/version.VersionDate={{.Env.VERSION_DATE}}
+    - -X {{.Env.PKG}}/internal/pkg/version.GoVersion={{.Env.GO_VERSION}}
+    - -extldflags -static
+    #- ./usemsan=-msan
+  env:
+    - CGO_ENABLED=0
+  goos:
+    - linux
+    #- darwin
+  goarch:
+    - amd64
+  lang: go
+
+archives:
+- id: mmesh-node
+  builds:
+    - mmesh-node
+  name_template: "{{ .ProjectName }}-node_{{ .Env.VERSION }}_{{ .Os }}_{{ .Arch }}"
+  wrap_in_directory: false
+  format: tar.gz
+  format_overrides:
+    - goos: windows
+      format: zip
+
+checksum:
+  name_template: '{{ .ProjectName }}_{{ .Env.VERSION }}_checksums.txt'
+  algorithm: sha256
+
+nfpms:
+  - id: mmesh-node
+    package_name: mmesh-node
+    file_name_template: "{{ .ProjectName }}-node_{{ .Env.VERSION }}_{{ .Os }}_{{ .Arch }}"
+    builds:
+      - mmesh-node
+    vendor: mmesh.io
+    homepage: https://mmesh.io
+    #maintainer: <buildbot@mmesh.io>
+    description: mmesh node
+    license: AGPL v3.0
+    formats:
+      - deb
+      - rpm
+    bindir: /usr/bin
+    dependencies:
+      - iproute2
+    empty_folders:
+      - /var/lib/mmesh
+    files:
+      "/go/src/m-node/build/package/linux/mmesh-node.service": "/etc/systemd/system/mmesh-node.service"
+      "/go/src/m-node/README.md": "/usr/share/doc/mmesh-node/README.md"
+      "/go/src/m-node/LICENSE": "/usr/share/doc/mmesh-node/LICENSE"
+    config_files:
+      "/go/src/m-node/configs/mmesh-node.yml": "/etc/mmesh/mmesh-node.yml"

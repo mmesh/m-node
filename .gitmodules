@@ -1,0 +1,9 @@
+[submodule "scripts"]
+	path = scripts
+	url = git@github.com:x6a/scripts.git
+[submodule "build/taskfiles"]
+	path = build/taskfiles
+	url = git@github.com:x6a/taskfiles.git
+[submodule "lib"]
+	path = lib
+	url = git@github.com:mmesh/m-lib.git
