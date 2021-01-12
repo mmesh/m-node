@@ -29,10 +29,8 @@ require (
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
 	k8s.io/api v0.20.1
 	k8s.io/apimachinery v0.20.1
-	k8s.io/client-go v11.0.0+incompatible
+	k8s.io/client-go v0.20.1
 	mmesh.dev/m-api-go v0.0.0-00010101000000-000000000000
 	mmesh.dev/m-lib v0.0.0-00010101000000-000000000000
 	x6a.dev/pkg v0.0.0-20200513233835-8ad67ebc7e71
 )
-
-replace k8s.io/client-go => k8s.io/client-go v0.20.1

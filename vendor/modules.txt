@@ -585,7 +585,7 @@ k8s.io/apimachinery/pkg/util/yaml
 k8s.io/apimachinery/pkg/version
 k8s.io/apimachinery/pkg/watch
 k8s.io/apimachinery/third_party/forked/golang/reflect
-# k8s.io/client-go v11.0.0+incompatible => k8s.io/client-go v0.20.1
+# k8s.io/client-go v0.20.1
 ## explicit
 k8s.io/client-go/discovery
 k8s.io/client-go/kubernetes
@@ -713,4 +713,3 @@ x6a.dev/pkg/msg
 x6a.dev/pkg/xlog
 # mmesh.dev/m-api-go => ./modules/m-api-go
 # mmesh.dev/m-lib => ./modules/m-lib
-# k8s.io/client-go => k8s.io/client-go v0.20.1
