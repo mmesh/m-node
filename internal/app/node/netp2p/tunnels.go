@@ -7,8 +7,8 @@ import (
 	"sort"
 	"strings"
 
-	"mmesh.dev/mmesh/internal/api/grpc/network/mmnp/routing"
-	"mmesh.dev/mmesh/internal/app/node/metrics"
+	"mmesh.dev/m-api-go/grpc/network/mmnp/routing"
+	"mmesh.dev/m-node/internal/app/node/metrics"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
 )

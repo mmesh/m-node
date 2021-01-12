@@ -5,9 +5,9 @@ import (
 	"io"
 	"time"
 
-	"mmesh.dev/mmesh/internal/api/grpc/network/mmnp/routing"
-	"mmesh.dev/mmesh/internal/app/node/netp2p"
-	"mmesh.dev/mmesh/internal/pkg/runtime"
+	"mmesh.dev/m-api-go/grpc/network/mmnp/routing"
+	"mmesh.dev/m-lib/pkg/runtime"
+	"mmesh.dev/m-node/internal/app/node/netp2p"
 	"x6a.dev/pkg/xlog"
 )
 

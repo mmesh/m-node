@@ -4,8 +4,8 @@ import (
 	"os"
 
 	"github.com/spf13/viper"
-	"mmesh.dev/mmesh/internal/app/node/bgp"
-	"mmesh.dev/mmesh/internal/pkg/runtime"
+	"mmesh.dev/m-node/internal/app/node/bgp"
+	"mmesh.dev/m-lib/pkg/runtime"
 	"x6a.dev/pkg/xlog"
 )
 

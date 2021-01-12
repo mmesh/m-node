@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/gopacket/layers"
 	"github.com/spf13/viper"
-	"mmesh.dev/mmesh/internal/pkg/ipnet"
+	"mmesh.dev/m-lib/pkg/ipnet"
 )
 
 type ServiceType int

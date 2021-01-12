@@ -4,9 +4,9 @@ import (
 	"os"
 
 	"github.com/spf13/viper"
-	"mmesh.dev/mmesh/internal/api/grpc/network/mmnp/natProbe"
-	"mmesh.dev/mmesh/internal/api/grpc/network/rpc"
-	"mmesh.dev/mmesh/internal/app/node/netp2p"
+	"mmesh.dev/m-api-go/grpc/network/mmnp/natProbe"
+	"mmesh.dev/m-api-go/grpc/network/rpc"
+	"mmesh.dev/m-node/internal/app/node/netp2p"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
 )

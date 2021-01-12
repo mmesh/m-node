@@ -3,10 +3,10 @@ package svcs
 import (
 	"time"
 
-	"mmesh.dev/mmesh/internal/app/node/connection"
-	"mmesh.dev/mmesh/internal/app/node/netp2p"
-	"mmesh.dev/mmesh/internal/pkg/grpc/client"
-	"mmesh.dev/mmesh/internal/pkg/runtime"
+	"mmesh.dev/m-lib/pkg/grpc/client"
+	"mmesh.dev/m-lib/pkg/runtime"
+	"mmesh.dev/m-node/internal/app/node/connection"
+	"mmesh.dev/m-node/internal/app/node/netp2p"
 	"x6a.dev/pkg/xlog"
 )
 

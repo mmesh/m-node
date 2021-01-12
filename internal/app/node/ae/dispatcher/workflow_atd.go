@@ -5,10 +5,10 @@ import (
 	"sync"
 	"time"
 
-	"mmesh.dev/mmesh/internal/api/grpc/common/datetime"
-	"mmesh.dev/mmesh/internal/api/grpc/network/mmsp"
-	"mmesh.dev/mmesh/internal/pkg/runtime"
-	"mmesh.dev/mmesh/internal/pkg/utils"
+	"mmesh.dev/m-api-go/grpc/common/datetime"
+	"mmesh.dev/m-api-go/grpc/network/mmsp"
+	"mmesh.dev/m-lib/pkg/runtime"
+	"mmesh.dev/m-lib/pkg/utils"
 	"x6a.dev/pkg/xlog"
 )
 

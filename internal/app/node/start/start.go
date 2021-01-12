@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-	"mmesh.dev/mmesh/internal/app/node/connection"
-	"mmesh.dev/mmesh/internal/app/node/netp2p"
-	"mmesh.dev/mmesh/internal/pkg/runtime"
-	"mmesh.dev/mmesh/internal/pkg/version"
+	"mmesh.dev/m-lib/pkg/runtime"
+	"mmesh.dev/m-lib/pkg/version"
+	"mmesh.dev/m-node/internal/app/node/connection"
+	"mmesh.dev/m-node/internal/app/node/netp2p"
 	"x6a.dev/pkg/xlog"
 )
 
@@ -51,9 +51,9 @@ func cleanup() {
 
 func Main() {
 	start()
-	xlog.Infof("%s started on %s :-)", version.AGENT_NAME, viper.GetString("host.id"))
+	xlog.Infof("%s started on %s :-)", version.NODE_NAME, viper.GetString("host.id"))
 	<-done
 
-	xlog.Infof("%s stopped on %s", version.AGENT_NAME, viper.GetString("host.id"))
+	xlog.Infof("%s stopped on %s", version.NODE_NAME, viper.GetString("host.id"))
 	os.Exit(0)
 }

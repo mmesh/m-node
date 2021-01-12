@@ -1,9 +1,9 @@
 package dispatcher
 
 import (
-	"mmesh.dev/mmesh/internal/api/grpc/network/mmsp"
-	"mmesh.dev/mmesh/internal/api/grpc/network/resources/ae/workflow"
-	"mmesh.dev/mmesh/internal/pkg/mmp"
+	"mmesh.dev/m-api-go/grpc/network/mmsp"
+	"mmesh.dev/m-api-go/grpc/network/resources/ae/workflow"
+	"mmesh.dev/m-lib/pkg/mmp"
 )
 
 func newWorkflowResponse(p *mmsp.Payload) *mmsp.Payload {

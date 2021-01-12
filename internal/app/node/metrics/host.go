@@ -2,7 +2,7 @@ package metrics
 
 import (
 	linuxproc "github.com/c9s/goprocinfo/linux"
-	"mmesh.dev/mmesh/internal/api/grpc/network/resources/metrics"
+	"mmesh.dev/m-api-go/grpc/network/resources/metrics"
 )
 
 var hm *metrics.HostMetrics

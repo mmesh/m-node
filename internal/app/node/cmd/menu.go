@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"mmesh.dev/mmesh/internal/app/node/start"
-	"mmesh.dev/mmesh/internal/pkg/version"
+	"mmesh.dev/m-lib/pkg/version"
+	"mmesh.dev/m-node/internal/app/node/start"
 )
 
 // startCmd represents the start command
@@ -24,7 +24,7 @@ var versionCmd = &cobra.Command{
 	Short: "Show version information",
 	Long:  `Show the ` + version.NAME + ` client version information.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Agent Info: " + version.AGENT_SHORTNAME + " " + version.GetVersion() + "\n")
+		fmt.Println("Agent Info: " + version.NODE_SHORTNAME + " " + version.GetVersion() + "\n")
 	},
 }
 

@@ -9,8 +9,8 @@ import (
 	"github.com/google/gopacket/layers"
 	"golang.org/x/net/ipv4"
 	"golang.org/x/net/ipv6"
-	"mmesh.dev/mmesh/internal/app/node/metrics"
-	"mmesh.dev/mmesh/internal/pkg/ipnet"
+	"mmesh.dev/m-lib/pkg/ipnet"
+	"mmesh.dev/m-node/internal/app/node/metrics"
 	"x6a.dev/pkg/xlog"
 )
 

@@ -3,8 +3,8 @@ package svcs
 import (
 	"time"
 
-	"mmesh.dev/mmesh/internal/app/node/connection"
-	"mmesh.dev/mmesh/internal/pkg/runtime"
+	"mmesh.dev/m-lib/pkg/runtime"
+	"mmesh.dev/m-node/internal/app/node/connection"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
 )

@@ -5,10 +5,10 @@ import (
 	"os"
 
 	"github.com/spf13/viper"
-	"mmesh.dev/mmesh/internal/api/grpc/network/mmnp/register"
-	"mmesh.dev/mmesh/internal/api/grpc/network/resources/network"
-	"mmesh.dev/mmesh/internal/pkg/ipnet"
-	"mmesh.dev/mmesh/internal/pkg/resources"
+	"mmesh.dev/m-api-go/grpc/network/mmnp/register"
+	"mmesh.dev/m-api-go/grpc/network/resources/network"
+	"mmesh.dev/m-lib/pkg/ipnet"
+	"mmesh.dev/m-lib/pkg/resources"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
 )

@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"mmesh.dev/mmesh/internal/api/grpc/network/mmnp/natProbe"
-	"mmesh.dev/mmesh/internal/api/grpc/network/rpc"
+	"mmesh.dev/m-api-go/grpc/network/mmnp/natProbe"
+	"mmesh.dev/m-api-go/grpc/network/rpc"
 	"x6a.dev/pkg/errors"
 )
 

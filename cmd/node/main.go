@@ -3,13 +3,13 @@ package main
 import (
 	"fmt"
 
-	"mmesh.dev/mmesh/internal/app/node/cmd"
-	"mmesh.dev/mmesh/internal/pkg/version"
+	"mmesh.dev/m-lib/pkg/version"
+	"mmesh.dev/m-node/internal/app/node/cmd"
 	"x6a.dev/pkg/colors"
 )
 
 func main() {
-	fmt.Println(colors.White(version.AGENT_NAME + " " + version.GetVersion() + "\n"))
+	fmt.Println(colors.White(version.NODE_NAME + " " + version.GetVersion() + "\n"))
 
 	cmd.Execute()
 }

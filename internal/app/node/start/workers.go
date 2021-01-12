@@ -1,12 +1,12 @@
 package start
 
 import (
-	"mmesh.dev/mmesh/internal/api/grpc/network/rpc"
-	"mmesh.dev/mmesh/internal/app/node/ae/dispatcher"
-	"mmesh.dev/mmesh/internal/app/node/svcs"
-	"mmesh.dev/mmesh/internal/pkg/mmp"
-	"mmesh.dev/mmesh/internal/pkg/runtime"
-	"mmesh.dev/mmesh/internal/pkg/update"
+	"mmesh.dev/m-api-go/grpc/network/rpc"
+	"mmesh.dev/m-lib/pkg/mmp"
+	"mmesh.dev/m-lib/pkg/runtime"
+	"mmesh.dev/m-lib/pkg/update"
+	"mmesh.dev/m-node/internal/app/node/ae/dispatcher"
+	"mmesh.dev/m-node/internal/app/node/svcs"
 )
 
 const (

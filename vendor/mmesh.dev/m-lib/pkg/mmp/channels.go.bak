@@ -1,0 +1,42 @@
+package mmp
+
+import (
+	"sync"
+)
+
+type channel struct {
+	ch map[string]chan struct{}
+	sync.RWMutex
+}
+
+func newChannel() *channel {
+	return &channel{
+		ch: make(map[string]chan struct{}),
+	}
+}
+
+func (c *channel) setChannel(id string, n int) {
+	c.Lock()
+	c.ch[id] = make(chan struct{}, n)
+	c.Unlock()
+}
+
+func (c *channel) deleteChannel(id string) {
+	c.Lock()
+	if _, ok := c.ch[id]; ok {
+		close(c.ch[id])
+		delete(c.ch, id)
+	}
+	c.Unlock()
+}
+
+func (c *channel) getChannel(id string) chan struct{} {
+	c.Lock()
+	channel, ok := c.ch[id]
+	c.Unlock()
+	if ok {
+		return channel
+	}
+
+	return nil
+}

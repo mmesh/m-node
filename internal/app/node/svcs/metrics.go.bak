@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"mmesh.dev/mmesh/internal/app/node/metrics"
-	"mmesh.dev/mmesh/internal/app/node/netp2p"
-	"mmesh.dev/mmesh/internal/api/grpc/network/resources/network"
-	"mmesh.dev/mmesh/internal/pkg/runtime"
+	"mmesh.dev/m-node/internal/app/node/metrics"
+	"mmesh.dev/m-node/internal/app/node/netp2p"
+	"mmesh.dev/m-api-go/grpc/network/resources/network"
+	"mmesh.dev/m-lib/pkg/runtime"
 	"x6a.dev/pkg/xlog"
 )
 

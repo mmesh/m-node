@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-	"mmesh.dev/mmesh/internal/api/grpc/common/status"
-	"mmesh.dev/mmesh/internal/api/grpc/network/mmsp/command"
-	"mmesh.dev/mmesh/internal/api/grpc/network/resources/ae/operation"
-	"mmesh.dev/mmesh/internal/api/grpc/network/resources/ae/workflow"
+	"mmesh.dev/m-api-go/grpc/common/status"
+	"mmesh.dev/m-api-go/grpc/network/mmsp/command"
+	"mmesh.dev/m-api-go/grpc/network/resources/ae/operation"
+	"mmesh.dev/m-api-go/grpc/network/resources/ae/workflow"
 	"x6a.dev/pkg/xlog"
 )
 

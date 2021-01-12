@@ -3,7 +3,7 @@ package dispatcher
 import (
 	"context"
 
-	"mmesh.dev/mmesh/internal/api/grpc/network/mmsp"
+	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"x6a.dev/pkg/xlog"
 )
 

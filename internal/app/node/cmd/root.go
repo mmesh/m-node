@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"mmesh.dev/mmesh/internal/app/node/config"
-	"mmesh.dev/mmesh/internal/pkg/version"
+	"mmesh.dev/m-lib/pkg/version"
+	"mmesh.dev/m-node/internal/app/node/config"
 	"x6a.dev/pkg/msg"
 )
 
@@ -15,9 +15,9 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   version.AGENT_SHORTNAME,
-	Short: version.AGENT_SHORTNAME + " is the agent of the " + version.PLATFORM_NAME,
-	Long: version.AGENT_SHORTNAME + ` is the agent of the ` +
+	Use:   version.NODE_SHORTNAME,
+	Short: version.NODE_SHORTNAME + " is the agent of the " + version.PLATFORM_NAME,
+	Long: version.NODE_SHORTNAME + ` is the agent of the ` +
 		version.PLATFORM_NAME + `.
 
 Find support and more information:
@@ -46,7 +46,7 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "/etc/mmesh/mmesh-agent.yml", "configuration file")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "/etc/mmesh/mmesh-node.yml", "configuration file")
 	rootCmd.PersistentFlags().BoolP("insecure", "", false, "insecure mode (TLS disabled)")
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "verbose mode")
 	//rootCmd.PersistentFlags().StringVarP(&outputFormat, "output", "o", "table", "output format (table, json)")

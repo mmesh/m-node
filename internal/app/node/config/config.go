@@ -4,9 +4,9 @@ import (
 	"os"
 
 	"github.com/spf13/viper"
-	"mmesh.dev/mmesh/internal/pkg/logging"
-	"mmesh.dev/mmesh/internal/pkg/mmid"
-	"mmesh.dev/mmesh/internal/pkg/version"
+	"mmesh.dev/m-lib/pkg/logging"
+	"mmesh.dev/m-lib/pkg/mmid"
+	"mmesh.dev/m-lib/pkg/version"
 	"x6a.dev/pkg/msg"
 	"x6a.dev/pkg/xlog"
 )
@@ -48,7 +48,7 @@ func Init() {
 
 	viper.Set("mm.id", mmID.String())
 
-	viper.Set("mm.app", version.AGENT_NAME)
+	viper.Set("mm.app", version.NODE_NAME)
 
 	viper.Set("host.id", hostID)
 
@@ -70,7 +70,7 @@ func Init() {
 
 	xlog.SetLogger(logLevel, hostID)
 
-	xlog.Infof("Initialized %s %s", version.AGENT_NAME, version.GetVersion())
+	xlog.Infof("Initialized %s %s", version.NODE_NAME, version.GetVersion())
 }
 
 func setDefaults(nodeID string) {

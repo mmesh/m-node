@@ -5,7 +5,8 @@ silent: true
 vars:
   NAME: m-node
   ORG: mmesh
-  DOMAIN: mmesh.io
+  DOMAIN: mmesh.dev
+  PROJECT: mmesh
   GITHUB_PKG: 'github.com/{{.ORG}}/{{.NAME}}'
   PREFIX: {sh: pwd}
   DIST_DIR: '{{.PREFIX}}/_dist'
@@ -15,7 +16,7 @@ vars:
   GS_BUCKET: 'gs://mmesh-io'
 
 env:
-  PKG: '{{.ORG}}/{{.NAME}}'
+  PKG: '{{.DOMAIN}}/{{.PROJECT}}'
   VERSION: {sh: cat VERSION}
   VERSION_DATE: {sh: date -u +%Y%m%d%H%M%S}
   GO_VERSION: {sh: go version | cut -f 3 -d ' '}
@@ -71,7 +72,7 @@ tasks:
     desc: Release binaries.
     dir: '{{.PREFIX}}'
     cmds:
-      - ./_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.GS_BUCKET}}'
+      - ./scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.GS_BUCKET}}'
 
   release-all:
     desc: Release docker images and binaries.
@@ -90,22 +91,11 @@ tasks:
       # - task: golang:golangci-lint
       - goreleaser -f build/ci/goreleaser/release.yml --rm-dist
 
-  version-bump:
-    desc: Bump version.
-    dir: '{{.PREFIX}}'
+  update-git-repo:
+    desc: Create a new git tag and push to GitHub.
+    deps: [git:version-bump]
     cmds:
-      - echo 'Bumping VERSION from {{.VERSION}}...'
-      - ./build/version-bump.sh
-      - git add VERSION
-      - git commit -m "Bump version to $(cat VERSION)"
-
-  tag:
-    desc: Create a new git tag to build a release.
-    deps: [version-bump]
-    cmds:
-      - echo 'Executing git tag with {{.VERSION}}...'
-      - git tag -sa {{.VERSION}} -m "{{.VERSION}}"
-      - echo "Run git push origin {{.VERSION}} to push your new tag to GitHub."
+      - task: git:tag
 
 includes:
   git: ./build/taskfiles/build/gitTasks.yml

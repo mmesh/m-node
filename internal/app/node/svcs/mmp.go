@@ -5,10 +5,10 @@ import (
 	"io"
 
 	"github.com/spf13/viper"
-	"mmesh.dev/mmesh/internal/api/grpc/network/mmsp"
-	"mmesh.dev/mmesh/internal/app/node/netp2p"
-	"mmesh.dev/mmesh/internal/pkg/mmp"
-	"mmesh.dev/mmesh/internal/pkg/runtime"
+	"mmesh.dev/m-api-go/grpc/network/mmsp"
+	"mmesh.dev/m-lib/pkg/mmp"
+	"mmesh.dev/m-lib/pkg/runtime"
+	"mmesh.dev/m-node/internal/app/node/netp2p"
 	"x6a.dev/pkg/xlog"
 )
 

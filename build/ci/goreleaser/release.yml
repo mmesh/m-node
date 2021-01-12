@@ -33,11 +33,11 @@ builds:
   ldflags:
     - -s
     - -w
-    - -X {{.Env.PKG}}/internal/pkg/version.GitRepository={{.GitURL}}
-    - -X {{.Env.PKG}}/internal/pkg/version.GitCommit={{.ShortCommit}}
-    - -X {{.Env.PKG}}/internal/pkg/version.VersionNumber={{.Env.VERSION}}
-    - -X {{.Env.PKG}}/internal/pkg/version.VersionDate={{.Env.VERSION_DATE}}
-    - -X {{.Env.PKG}}/internal/pkg/version.GoVersion={{.Env.GO_VERSION}}
+    - -X mmesh.dev/m-lib/pkg/version.GitRepository={{.GitURL}}
+    - -X mmesh.dev/m-lib/pkg/version.GitCommit={{.ShortCommit}}
+    - -X mmesh.dev/m-lib/pkg/version.VersionNumber={{.Env.VERSION}}
+    - -X mmesh.dev/m-lib/pkg/version.VersionDate={{.Env.VERSION_DATE}}
+    - -X mmesh.dev/m-lib/pkg/version.GoVersion={{.Env.GO_VERSION}}
     - -extldflags -static
     #- ./usemsan=-msan
   env:

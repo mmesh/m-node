@@ -4,9 +4,9 @@
 [submodule "build/taskfiles"]
 	path = build/taskfiles
 	url = git@github.com:x6a/taskfiles.git
-[submodule "lib"]
-	path = lib
+[submodule "modules/m-lib"]
+	path = modules/m-lib
 	url = git@github.com:mmesh/m-lib.git
-[submodule "internal/api"]
-	path = internal/api
+[submodule "modules/m-api-go"]
+	path = modules/m-api-go
 	url = git@github.com:mmesh/m-api-go.git

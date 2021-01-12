@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/google/gopacket/layers"
-	"mmesh.dev/mmesh/internal/pkg/ipnet"
+	"mmesh.dev/m-lib/pkg/ipnet"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
 )

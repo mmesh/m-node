@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	v1 "k8s.io/api/core/v1"
-	"mmesh.dev/mmesh/internal/app/node/netp2p"
-	"mmesh.dev/mmesh/internal/app/node/proxy"
-	"mmesh.dev/mmesh/internal/pkg/ipnet"
+	"mmesh.dev/m-lib/pkg/ipnet"
+	"mmesh.dev/m-node/internal/app/node/netp2p"
+	"mmesh.dev/m-node/internal/app/node/proxy"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
 )

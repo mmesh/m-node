@@ -5,8 +5,8 @@ import (
 	"sync"
 
 	"github.com/robfig/cron/v3"
-	"mmesh.dev/mmesh/internal/api/grpc/network/mmsp"
-	"mmesh.dev/mmesh/internal/pkg/runtime"
+	"mmesh.dev/m-api-go/grpc/network/mmsp"
+	"mmesh.dev/m-lib/pkg/runtime"
 	"x6a.dev/pkg/xlog"
 )
 
