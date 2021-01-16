@@ -1,6 +1,6 @@
 package mmid
 
-import "mmesh.dev/m-api-go/grpc/network/resources/network"
+import "mmesh.dev/m-api-go/grpc/resources/network"
 
 type MMID interface {
 	String() string

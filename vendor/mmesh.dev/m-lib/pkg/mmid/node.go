@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"mmesh.dev/m-api-go/grpc/network/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/network"
 )
 
 type MMNodeID string

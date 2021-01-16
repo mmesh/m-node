@@ -8,8 +8,8 @@ import (
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/common/status"
 	"mmesh.dev/m-api-go/grpc/network/mmsp/command"
-	"mmesh.dev/m-api-go/grpc/network/resources/ae/operation"
-	"mmesh.dev/m-api-go/grpc/network/resources/ae/workflow"
+	"mmesh.dev/m-api-go/grpc/resources/ae/operation"
+	"mmesh.dev/m-api-go/grpc/resources/ae/workflow"
 	"x6a.dev/pkg/xlog"
 )
 

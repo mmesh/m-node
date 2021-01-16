@@ -4,15 +4,15 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-	"mmesh.dev/m-api-go/grpc/network/resources/iam/auth"
-	"mmesh.dev/m-api-go/grpc/network/rpc"
+	nrpc "mmesh.dev/m-api-go/grpc/network/rpc"
+	"mmesh.dev/m-api-go/grpc/resources/iam/auth"
 	"mmesh.dev/m-lib/pkg/grpc/client"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
 )
 
-func AgentConnect() rpc.NxNetworkClient {
-	var nxnc rpc.NxNetworkClient
+func AgentConnect() nrpc.NetworkAPIClient {
+	var nxnc nrpc.NetworkAPIClient
 	var err error
 
 	authKey := &auth.AuthKey{
@@ -27,7 +27,7 @@ func AgentConnect() rpc.NxNetworkClient {
 	connectionFailed := false
 
 	for nxnc == nil || err != nil {
-		nxnc, err = client.NewNxNetworkClient(endpoint, authKey, authSecret)
+		nxnc, err = client.NewNetworkAPIClient(endpoint, authKey, authSecret)
 		if err != nil {
 			xlog.Errorf("Unable to connect to controller %s: %v", endpoint, errors.Cause(err))
 

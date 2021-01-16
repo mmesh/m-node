@@ -9,8 +9,8 @@ import (
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/common/datetime"
 	"mmesh.dev/m-api-go/grpc/network/mmnp/routing"
-	"mmesh.dev/m-api-go/grpc/network/resources/network"
-	"mmesh.dev/m-api-go/grpc/network/rpc"
+	nrpc "mmesh.dev/m-api-go/grpc/network/rpc"
+	"mmesh.dev/m-api-go/grpc/resources/network"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
 )
@@ -44,7 +44,7 @@ type mmAgent struct {
 	agent          *network.Agent
 	endpoints      *endpointsMap
 	p2pHost        host.Host
-	nxnc           rpc.NxNetworkClient
+	nxnc           nrpc.NetworkAPIClient
 	rt             *RoutingTable
 	linkStatus     *routing.LinkStatus
 	rtRequestQueue chan struct{}
@@ -74,7 +74,7 @@ func newStreamsMap() *streamsMap {
 	}
 }
 
-func InitMMAgent(externalIPv4 string, nxnc rpc.NxNetworkClient) error {
+func InitMMAgent(externalIPv4 string, nxnc nrpc.NetworkAPIClient) error {
 	var p2pHost host.Host
 	var p2pHostID string
 	var err error
@@ -199,7 +199,7 @@ func AgentConfigured() bool {
 	return false
 }
 
-func UpdateNetworkClient(nxnc rpc.NxNetworkClient) {
+func UpdateNetworkClient(nxnc nrpc.NetworkAPIClient) {
 	mma.nxnc = nxnc
 }
 

@@ -1,6 +1,6 @@
 package resources
 
-import "mmesh.dev/m-api-go/grpc/network/resources/resource"
+import "mmesh.dev/m-api-go/grpc/resources/resource"
 
 var ObjectKindMap = map[resource.Kind]string{
 	resource.Kind_SERVICE_ITEM:   "ServiceItem",

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"mmesh.dev/m-api-go/grpc/network/mmnp/register"
-	"mmesh.dev/m-api-go/grpc/network/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/network"
 	"x6a.dev/pkg/errors"
 )
 

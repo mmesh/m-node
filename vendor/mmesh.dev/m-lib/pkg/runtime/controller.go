@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"mmesh.dev/m-api-go/grpc/network/rpc"
+	nrpc "mmesh.dev/m-api-go/grpc/network/rpc"
 	"x6a.dev/pkg/xlog"
 )
 
@@ -32,7 +32,7 @@ type Wrkr struct {
 	Ctx       context.Context
 	startFunc func(*Wrkr)
 	extFunc   func()
-	NxNC      rpc.NxNetworkClient
+	NxNC      nrpc.NetworkAPIClient
 }
 
 type nxWrkr interface {
@@ -69,7 +69,7 @@ func (w *Wrkr) setWrkrOptions(wOpts ...*WrkrOpt) {
 		case WrkrOptExtFunc:
 			w.extFunc = wOpt.Value.(func())
 		case WrkrOptNxNetworkClient:
-			w.NxNC = wOpt.Value.(rpc.NxNetworkClient)
+			w.NxNC = wOpt.Value.(nrpc.NetworkAPIClient)
 		}
 	}
 }
@@ -120,7 +120,7 @@ func StopWrkrs(wg *sync.WaitGroup) {
 	wg.Done()
 }
 
-func NetworkWrkrReconnect(newNxNC rpc.NxNetworkClient) {
+func NetworkWrkrReconnect(newNxNC nrpc.NetworkAPIClient) {
 	for _, w := range wrkrs {
 		if w.NxNC != nil {
 			w.stop()

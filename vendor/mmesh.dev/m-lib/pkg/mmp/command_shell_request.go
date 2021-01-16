@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-api-go/grpc/network/mmsp/command"
-	"mmesh.dev/m-api-go/grpc/network/resources/iam/auth"
+	"mmesh.dev/m-api-go/grpc/resources/iam/auth"
 )
 
 func NewShellRequest(authKey *auth.AuthKey, dstID string, c string, args ...string) {

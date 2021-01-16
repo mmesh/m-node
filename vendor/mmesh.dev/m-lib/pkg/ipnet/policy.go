@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/google/gopacket/layers"
-	"mmesh.dev/m-api-go/grpc/network/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/network"
 )
 
 const (

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
-	"mmesh.dev/m-api-go/grpc/network/resources/ae/operation"
+	"mmesh.dev/m-api-go/grpc/resources/ae/operation"
 	"mmesh.dev/m-lib/pkg/mmp"
 	"x6a.dev/pkg/xlog"
 )

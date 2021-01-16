@@ -5,14 +5,14 @@ import (
 
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/network/mmnp/natProbe"
-	"mmesh.dev/m-api-go/grpc/network/rpc"
+	nrpc "mmesh.dev/m-api-go/grpc/network/rpc"
 	"mmesh.dev/m-node/internal/app/node/netp2p"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
 )
 
 // agentConnect connects the agent to mmesh network
-func agentConnect(nxnc rpc.NxNetworkClient) error {
+func agentConnect(nxnc nrpc.NetworkAPIClient) error {
 	if netp2p.AgentConfigured() {
 		netp2p.UpdateNetworkClient(nxnc)
 	} else {

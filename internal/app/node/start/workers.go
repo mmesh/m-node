@@ -1,7 +1,7 @@
 package start
 
 import (
-	"mmesh.dev/m-api-go/grpc/network/rpc"
+	nrpc "mmesh.dev/m-api-go/grpc/network/rpc"
 	"mmesh.dev/m-lib/pkg/mmp"
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-lib/pkg/update"
@@ -27,7 +27,7 @@ const (
 	//bgpAgent
 )
 
-func initWrkrs(nxnc rpc.NxNetworkClient) {
+func initWrkrs(nxnc nrpc.NetworkAPIClient) {
 	runtime.RegisterWrkr(
 		errorEventsHandler,
 		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmErrorEventsHandler"),

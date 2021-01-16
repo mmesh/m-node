@@ -2,7 +2,7 @@ package dispatcher
 
 import (
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
-	"mmesh.dev/m-api-go/grpc/network/resources/ae/workflow"
+	"mmesh.dev/m-api-go/grpc/resources/ae/workflow"
 	"mmesh.dev/m-lib/pkg/mmp"
 )
 

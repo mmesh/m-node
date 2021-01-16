@@ -9,8 +9,9 @@ import (
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"mmesh.dev/m-api-go/grpc/network/resources/iam/auth"
-	"mmesh.dev/m-api-go/grpc/network/rpc"
+	nrpc "mmesh.dev/m-api-go/grpc/network/rpc"
+	"mmesh.dev/m-api-go/grpc/resources/iam/auth"
+	rrpc "mmesh.dev/m-api-go/grpc/resources/rpc"
 	"mmesh.dev/m-lib/pkg/logging"
 	"x6a.dev/pkg/errors"
 )
@@ -27,7 +28,7 @@ func init() {
 	}()
 }
 
-func newNxRPCClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (*grpc.ClientConn, error) {
+func newRPCClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (*grpc.ClientConn, error) {
 	// Set up the credentials for the connection
 	perRPC, err := newRPCCredentials(authKey, authSecret)
 	if err != nil {
@@ -81,22 +82,22 @@ func newNxRPCClient(serverEndpoint string, authKey *auth.AuthKey, authSecret str
 	return conn, nil
 }
 
-func NewNxNetworkClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.NxNetworkClient, error) {
-	conn, err := newNxRPCClient(serverEndpoint, authKey, authSecret)
+func NewNetworkAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (nrpc.NetworkAPIClient, error) {
+	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
 	if err != nil {
 		return nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
 	}
 	//defer conn.Close()
 
-	return rpc.NewNxNetworkClient(conn), nil
+	return nrpc.NewNetworkAPIClient(conn), nil
 }
 
-func NewNxAPIClient(serverEndpoint string, authKey *auth.AuthKey) (rpc.NxAPIClient, error) {
-	conn, err := newNxRPCClient(serverEndpoint, authKey, "")
+func NewNxAPIClient(serverEndpoint string, authKey *auth.AuthKey) (rrpc.NxAPIClient, error) {
+	conn, err := newRPCClient(serverEndpoint, authKey, "")
 	if err != nil {
 		return nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
 	}
 	//defer conn.Close()
 
-	return rpc.NewNxAPIClient(conn), nil
+	return rrpc.NewNxAPIClient(conn), nil
 }

@@ -12,7 +12,7 @@ import (
 	"github.com/miekg/dns"
 	"github.com/spf13/viper"
 	dns_pb "mmesh.dev/m-api-go/grpc/network/dns"
-	"mmesh.dev/m-api-go/grpc/network/rpc"
+	nrpc "mmesh.dev/m-api-go/grpc/network/rpc"
 	"mmesh.dev/m-lib/pkg/ipnet"
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-node/internal/app/node/netp2p"
@@ -22,7 +22,7 @@ import (
 type dnsName string
 
 type handler struct {
-	nxnc rpc.NxNetworkClient
+	nxnc nrpc.NetworkAPIClient
 }
 
 type dnsMap struct {

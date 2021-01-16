@@ -3,7 +3,7 @@ package metrics
 import (
 	"sync"
 
-	"mmesh.dev/m-api-go/grpc/network/resources/metrics"
+	"mmesh.dev/m-api-go/grpc/resources/metrics"
 )
 
 type networkMetricsMap struct {
