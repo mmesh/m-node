@@ -7,6 +7,8 @@ env_files:
 
 env:
   - GO111MODULE=on
+  - PKG_REPO='mmesh'
+  - PKG_REPO_DEV='mmesh-dev'
 
 before:
   hooks:
