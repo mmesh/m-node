@@ -181,6 +181,8 @@ type StretchedKeys struct {
 	CipherKey []byte
 }
 
+// PENDING DEPRECATION:  KeyStretcher() will be deprecated with secio; for new
+// code, please use PBKDF2 (golang.org/x/crypto/pbkdf2) instead.
 // KeyStretcher returns a set of keys for each party by stretching the shared key.
 // (myIV, theirIV, myCipherKey, theirCipherKey, myMACKey, theirMACKey).
 // This function accepts the following cipher types:
@@ -292,7 +294,19 @@ func PublicKeyFromProto(pmes *pb.PublicKey) (PubKey, error) {
 		return nil, ErrBadKeyType
 	}
 
-	return um(pmes.GetData())
+	data := pmes.GetData()
+
+	pk, err := um(data)
+	if err != nil {
+		return nil, err
+	}
+
+	switch tpk := pk.(type) {
+	case *RsaPublicKey:
+		tpk.cached, _ = pmes.Marshal()
+	}
+
+	return pk, nil
 }
 
 // MarshalPublicKey converts a public key object into a protobuf serialized
@@ -349,12 +363,12 @@ func MarshalPrivateKey(k PrivKey) ([]byte, error) {
 	return proto.Marshal(pbmes)
 }
 
-// ConfigDecodeKey decodes from b64 (for config file), and unmarshals.
+// ConfigDecodeKey decodes from b64 (for config file) to a byte array that can be unmarshalled.
 func ConfigDecodeKey(b string) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(b)
 }
 
-// ConfigEncodeKey encodes to b64 (for config file), and marshals.
+// ConfigEncodeKey encodes a marshalled key to b64 (for config file).
 func ConfigEncodeKey(b []byte) string {
 	return base64.StdEncoding.EncodeToString(b)
 }

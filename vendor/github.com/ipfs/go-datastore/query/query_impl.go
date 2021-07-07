@@ -1,6 +1,8 @@
 package query
 
 import (
+	"path"
+
 	goprocess "github.com/jbenet/goprocess"
 )
 
@@ -116,7 +118,21 @@ func NaiveOrder(qr Results, orders ...Order) Results {
 
 func NaiveQueryApply(q Query, qr Results) Results {
 	if q.Prefix != "" {
-		qr = NaiveFilter(qr, FilterKeyPrefix{q.Prefix})
+		// Clean the prefix as a key and append / so a prefix of /bar
+		// only finds /bar/baz, not /barbaz.
+		prefix := q.Prefix
+		if len(prefix) == 0 {
+			prefix = "/"
+		} else {
+			if prefix[0] != '/' {
+				prefix = "/" + prefix
+			}
+			prefix = path.Clean(prefix)
+		}
+		// If the prefix is empty, ignore it.
+		if prefix != "/" {
+			qr = NaiveFilter(qr, FilterKeyPrefix{prefix + "/"})
+		}
 	}
 	for _, f := range q.Filters {
 		qr = NaiveFilter(qr, f)
@@ -136,7 +152,7 @@ func NaiveQueryApply(q Query, qr Results) Results {
 func ResultEntriesFrom(keys []string, vals [][]byte) []Entry {
 	re := make([]Entry, len(keys))
 	for i, k := range keys {
-		re[i] = Entry{Key: k, Value: vals[i]}
+		re[i] = Entry{Key: k, Size: len(vals[i]), Value: vals[i]}
 	}
 	return re
 }

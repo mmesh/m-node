@@ -42,6 +42,9 @@ func cleanup() {
 
 		xlog.Debug("Closing agents connection handlers...")
 		netp2p.Disconnect()
+		if err := connection.GRPCClientConn.Close(); err != nil {
+			xlog.Errorf("Unable to close gRPC network connection: %v", err)
+		}
 
 		time.Sleep(time.Second)
 

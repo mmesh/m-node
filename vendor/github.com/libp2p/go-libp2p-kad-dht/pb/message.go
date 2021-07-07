@@ -5,7 +5,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 
 	logging "github.com/ipfs/go-log"
-	b58 "github.com/mr-tron/base58/base58"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
@@ -26,43 +25,41 @@ func NewMessage(typ Message_MessageType, key []byte, level int) *Message {
 	return m
 }
 
-func peerRoutingInfoToPBPeer(p PeerRoutingInfo) *Message_Peer {
-	pbp := new(Message_Peer)
+func peerRoutingInfoToPBPeer(p PeerRoutingInfo) Message_Peer {
+	var pbp Message_Peer
 
 	pbp.Addrs = make([][]byte, len(p.Addrs))
 	for i, maddr := range p.Addrs {
 		pbp.Addrs[i] = maddr.Bytes() // Bytes, not String. Compressed.
 	}
-	s := string(p.ID)
-	pbp.Id = []byte(s)
-	c := ConnectionType(p.Connectedness)
-	pbp.Connection = c
+	pbp.Id = byteString(p.ID)
+	pbp.Connection = ConnectionType(p.Connectedness)
 	return pbp
 }
 
-func peerInfoToPBPeer(p peer.AddrInfo) *Message_Peer {
-	pbp := new(Message_Peer)
+func peerInfoToPBPeer(p peer.AddrInfo) Message_Peer {
+	var pbp Message_Peer
 
 	pbp.Addrs = make([][]byte, len(p.Addrs))
 	for i, maddr := range p.Addrs {
 		pbp.Addrs[i] = maddr.Bytes() // Bytes, not String. Compressed.
 	}
-	pbp.Id = []byte(p.ID)
+	pbp.Id = byteString(p.ID)
 	return pbp
 }
 
 // PBPeerToPeer turns a *Message_Peer into its peer.AddrInfo counterpart
-func PBPeerToPeerInfo(pbp *Message_Peer) *peer.AddrInfo {
-	return &peer.AddrInfo{
-		ID:    peer.ID(pbp.GetId()),
+func PBPeerToPeerInfo(pbp Message_Peer) peer.AddrInfo {
+	return peer.AddrInfo{
+		ID:    peer.ID(pbp.Id),
 		Addrs: pbp.Addresses(),
 	}
 }
 
 // RawPeerInfosToPBPeers converts a slice of Peers into a slice of *Message_Peers,
 // ready to go out on the wire.
-func RawPeerInfosToPBPeers(peers []peer.AddrInfo) []*Message_Peer {
-	pbpeers := make([]*Message_Peer, len(peers))
+func RawPeerInfosToPBPeers(peers []peer.AddrInfo) []Message_Peer {
+	pbpeers := make([]Message_Peer, len(peers))
 	for i, p := range peers {
 		pbpeers[i] = peerInfoToPBPeer(p)
 	}
@@ -73,7 +70,7 @@ func RawPeerInfosToPBPeers(peers []peer.AddrInfo) []*Message_Peer {
 // which can be written to a message and sent out. the key thing this function
 // does (in addition to PeersToPBPeers) is set the ConnectionType with
 // information from the given network.Network.
-func PeerInfosToPBPeers(n network.Network, peers []peer.AddrInfo) []*Message_Peer {
+func PeerInfosToPBPeers(n network.Network, peers []peer.AddrInfo) []Message_Peer {
 	pbps := RawPeerInfosToPBPeers(peers)
 	for i, pbp := range pbps {
 		c := ConnectionType(n.Connectedness(peers[i].ID))
@@ -82,8 +79,8 @@ func PeerInfosToPBPeers(n network.Network, peers []peer.AddrInfo) []*Message_Pee
 	return pbps
 }
 
-func PeerRoutingInfosToPBPeers(peers []PeerRoutingInfo) []*Message_Peer {
-	pbpeers := make([]*Message_Peer, len(peers))
+func PeerRoutingInfosToPBPeers(peers []PeerRoutingInfo) []Message_Peer {
+	pbpeers := make([]Message_Peer, len(peers))
 	for i, p := range peers {
 		pbpeers[i] = peerRoutingInfoToPBPeer(p)
 	}
@@ -92,10 +89,11 @@ func PeerRoutingInfosToPBPeers(peers []PeerRoutingInfo) []*Message_Peer {
 
 // PBPeersToPeerInfos converts given []*Message_Peer into []peer.AddrInfo
 // Invalid addresses will be silently omitted.
-func PBPeersToPeerInfos(pbps []*Message_Peer) []*peer.AddrInfo {
+func PBPeersToPeerInfos(pbps []Message_Peer) []*peer.AddrInfo {
 	peers := make([]*peer.AddrInfo, 0, len(pbps))
 	for _, pbp := range pbps {
-		peers = append(peers, PBPeerToPeerInfo(pbp))
+		ai := PBPeerToPeerInfo(pbp)
+		peers = append(peers, &ai)
 	}
 	return peers
 }
@@ -110,7 +108,7 @@ func (m *Message_Peer) Addresses() []ma.Multiaddr {
 	for _, addr := range m.Addrs {
 		maddr, err := ma.NewMultiaddrBytes(addr)
 		if err != nil {
-			log.Warningf("error decoding Multiaddr for peer: %s", m.GetId())
+			log.Debugw("error decoding multiaddr for peer", "peer", peer.ID(m.Id), "error", err)
 			continue
 		}
 
@@ -135,17 +133,7 @@ func (m *Message) GetClusterLevel() int {
 // default "no value" protobuf behavior (0)
 func (m *Message) SetClusterLevel(level int) {
 	lvl := int32(level)
-	m.ClusterLevelRaw = lvl
-}
-
-// Loggable turns a Message into machine-readable log output
-func (m *Message) Loggable() map[string]interface{} {
-	return map[string]interface{}{
-		"message": map[string]string{
-			"type": m.Type.String(),
-			"key":  b58.Encode([]byte(m.GetKey())),
-		},
-	}
+	m.ClusterLevelRaw = lvl + 1
 }
 
 // ConnectionType returns a Message_ConnectionType associated with the

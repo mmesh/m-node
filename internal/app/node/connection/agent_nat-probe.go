@@ -9,11 +9,11 @@ import (
 	"time"
 
 	"mmesh.dev/m-api-go/grpc/network/mmnp/natProbe"
-	nrpc "mmesh.dev/m-api-go/grpc/network/rpc"
+	"mmesh.dev/m-api-go/grpc/rpc"
 	"x6a.dev/pkg/errors"
 )
 
-func agentNATProbe(nxnc nrpc.NetworkAPIClient, natp *natProbe.NATProbe) (*natProbe.NATProbe, error) {
+func agentNATProbe(nxnc rpc.NetworkAPIClient, natp *natProbe.NATProbe) (*natProbe.NATProbe, error) {
 	var wg sync.WaitGroup
 
 	ctx := context.Background()

@@ -130,6 +130,8 @@ func decodeIPPacket(pkt []byte) (*ipPacket, error) {
 
 	switch ipnet.AddressFamily(header.Version) {
 	case ipnet.AddressFamilyIPv4:
+		// fmt.Println(header.String())
+
 		return &ipPacket{
 			af:      ipnet.AddressFamilyIPv4,
 			srcIP:   header.Src,
@@ -144,6 +146,8 @@ func decodeIPPacket(pkt []byte) (*ipPacket, error) {
 			xlog.Warnf("Unable to parse ipv6 header: %v", err)
 			return nil, err
 		}
+
+		// fmt.Println(header.String())
 
 		dstAddr, err := ipnet.GetIPv6Endpoint(header.Dst.String())
 		if err != nil {

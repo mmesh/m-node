@@ -15,10 +15,10 @@ func transferDisabled(payload *mmsp.Payload) {
 	p := &mmsp.Payload{
 		SrcID:       mmID,
 		DstID:       payload.SrcID,
-		PayloadType: PayloadTypeTransferDisabled,
+		PayloadType: mmsp.PayloadType_TRANSFER_DISABLED,
 	}
 
-	SendCommandQueue <- p
+	TxControlQueue <- p
 }
 
 func transferUnavailable() {

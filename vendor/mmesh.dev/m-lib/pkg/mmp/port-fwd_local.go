@@ -29,7 +29,7 @@ func newPortFwdDial(cID string, p *mmsp.Payload) *mmsp.Payload {
 		Interactive:   p.Interactive,
 		PSK:           viper.GetString("agent.management.auth.psk"),
 		SecurityToken: viper.GetString("agent.management.auth.securityToken"),
-		PayloadType:   PayloadTypePortFwdDial,
+		PayloadType:   mmsp.PayloadType_PORTFWD_DIAL,
 		PortFwd: &portFwd.PortFwd{
 			Link: &portFwd.Link{
 				ID:           p.PortFwd.Link.ID,
@@ -127,7 +127,7 @@ func portFwdListen(ctx context.Context, payload *mmsp.Payload) error {
 			}
 
 			p := newPortFwdDial(cID, payload)
-			SendCommandQueue <- p
+			TxControlQueue <- p
 
 			logging.Debugf("Waiting for dial ack for connection %s to continue..", cID)
 			dialAckCh := lpfs.getPortFwdConnDialAckCh(lID, cID)

@@ -8,7 +8,7 @@ import (
 	dsq "github.com/ipfs/go-datastore/query"
 )
 
-// Datastore implements a go-datatsore.
+// Datastore implements a go-datastore.
 type Datastore struct {
 	child ds.Batching
 
@@ -64,6 +64,35 @@ func (d *Datastore) Put(k ds.Key, val []byte) error {
 	return nil
 }
 
+// Sync flushes all operations on keys at or under the prefix
+// from the current batch to the underlying datastore
+func (d *Datastore) Sync(prefix ds.Key) error {
+	b, err := d.child.Batch()
+	if err != nil {
+		return err
+	}
+
+	for k, o := range d.buffer {
+		if !(k.Equal(prefix) || k.IsDescendantOf(prefix)) {
+			continue
+		}
+
+		var err error
+		if o.delete {
+			err = b.Delete(k)
+		} else {
+			err = b.Put(k, o.value)
+		}
+		if err != nil {
+			return err
+		}
+
+		delete(d.buffer, k)
+	}
+
+	return b.Commit()
+}
+
 // Flush flushes the current batch to the underlying datastore.
 func (d *Datastore) Flush() error {
 	b, err := d.child.Batch()
@@ -75,10 +104,6 @@ func (d *Datastore) Flush() error {
 		var err error
 		if o.delete {
 			err = b.Delete(k)
-			if err == ds.ErrNotFound {
-				// Ignore these, let delete be idempotent.
-				err = nil
-			}
 		} else {
 			err = b.Put(k, o.value)
 		}

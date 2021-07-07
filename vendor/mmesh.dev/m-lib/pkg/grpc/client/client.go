@@ -2,31 +2,17 @@ package client
 
 import (
 	"crypto/tls"
-	"log"
 	"time"
 
 	"github.com/johnsiilver/getcert"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	nrpc "mmesh.dev/m-api-go/grpc/network/rpc"
 	"mmesh.dev/m-api-go/grpc/resources/iam/auth"
-	rrpc "mmesh.dev/m-api-go/grpc/resources/rpc"
+	"mmesh.dev/m-api-go/grpc/rpc"
 	"mmesh.dev/m-lib/pkg/logging"
 	"x6a.dev/pkg/errors"
 )
-
-var NxClientConn *grpc.ClientConn
-var Close = make(chan struct{})
-
-func init() {
-	go func() {
-		<-Close
-		if err := NxClientConn.Close(); err != nil {
-			log.Panicln(err)
-		}
-	}()
-}
 
 func newRPCClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (*grpc.ClientConn, error) {
 	// Set up the credentials for the connection
@@ -68,36 +54,58 @@ func newRPCClient(serverEndpoint string, authKey *auth.AuthKey, authSecret strin
 
 	conn, err := grpc.Dial(serverEndpoint, grpcDialOpts...)
 	for i := 0; err != nil && i < 30; i++ {
-		//logging.Trace("Unable to connect to gRPC server, retrying in 3s..")
+		logging.Trace("Unable to connect to gRPC server, retrying in 3s..")
 		time.Sleep(3 * time.Second)
 		conn, err = grpc.Dial(serverEndpoint, grpcDialOpts...)
 	}
 	if err != nil {
 		return nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
 	}
-	//defer conn.Close()
-
-	NxClientConn = conn
 
 	return conn, nil
 }
 
-func NewNetworkAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (nrpc.NetworkAPIClient, error) {
+func NewNetworkAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.NetworkAPIClient, *grpc.ClientConn, error) {
 	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
 	if err != nil {
-		return nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
+		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
 	}
-	//defer conn.Close()
 
-	return nrpc.NewNetworkAPIClient(conn), nil
+	return rpc.NewNetworkAPIClient(conn), conn, nil
 }
 
-func NewNxAPIClient(serverEndpoint string, authKey *auth.AuthKey) (rrpc.NxAPIClient, error) {
-	conn, err := newRPCClient(serverEndpoint, authKey, "")
+func NewProviderAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.ProviderAPIClient, *grpc.ClientConn, error) {
+	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
 	if err != nil {
-		return nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
+		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
 	}
-	//defer conn.Close()
 
-	return rrpc.NewNxAPIClient(conn), nil
+	return rpc.NewProviderAPIClient(conn), conn, nil
+}
+
+func NewCoreAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.CoreAPIClient, *grpc.ClientConn, error) {
+	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
+	if err != nil {
+		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
+	}
+
+	return rpc.NewCoreAPIClient(conn), conn, nil
+}
+
+func NewServicesAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.ServicesAPIClient, *grpc.ClientConn, error) {
+	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
+	if err != nil {
+		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
+	}
+
+	return rpc.NewServicesAPIClient(conn), conn, nil
+}
+
+func NewBillingAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.BillingAPIClient, *grpc.ClientConn, error) {
+	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
+	if err != nil {
+		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
+	}
+
+	return rpc.NewBillingAPIClient(conn), conn, nil
 }

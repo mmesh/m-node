@@ -89,13 +89,21 @@ func getLocalMAddrs(port int32) []multiaddr.Multiaddr {
 				continue
 			}
 
+			// tcp transport
 			ma, err := multiaddr.NewMultiaddr(fmt.Sprintf("/ip4/%s/tcp/%d", ip.String(), port))
 			if err != nil {
 				xlog.Errorf("Unable to get multiaddr from IP %s: %v", ip.String(), err)
 				return nil
 			}
-
 			maddrs = append(maddrs, ma)
+
+			// udp endpoint for te quic transport
+			// ma, err = multiaddr.NewMultiaddr(fmt.Sprintf("/ip4/%s/udp/%d/quic", ip.String(), port))
+			// if err != nil {
+			// 	xlog.Errorf("Unable to get multiaddr from IP %s: %v", ip.String(), err)
+			// 	return nil
+			// }
+			// maddrs = append(maddrs, ma)
 		}
 	}
 

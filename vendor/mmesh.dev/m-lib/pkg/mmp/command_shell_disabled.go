@@ -15,10 +15,10 @@ func shellExecDisabled(payload *mmsp.Payload) {
 	p := &mmsp.Payload{
 		SrcID:       mmID,
 		DstID:       payload.SrcID,
-		PayloadType: PayloadTypeCommandShellDisabled,
+		PayloadType: mmsp.PayloadType_COMMAND_SHELL_DISABLED,
 	}
 
-	SendCommandQueue <- p
+	TxControlQueue <- p
 }
 
 func shellUnavailable() {

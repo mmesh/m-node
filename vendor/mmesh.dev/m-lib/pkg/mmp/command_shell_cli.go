@@ -23,7 +23,7 @@ func newShellInput(srcID string, p *mmsp.Payload) *mmsp.Payload {
 	return &mmsp.Payload{
 		SrcID:       srcID,
 		DstID:       p.SrcID,
-		PayloadType: PayloadTypeCommandShellInput,
+		PayloadType: mmsp.PayloadType_COMMAND_SHELL_INPUT,
 		Command: &command.Command{
 			CommandType: p.Command.CommandType,
 			CommandRequest: &command.CommandRequest{
@@ -40,7 +40,7 @@ func NewShellExit(srcID string, p *mmsp.Payload) *mmsp.Payload {
 	return &mmsp.Payload{
 		SrcID:       srcID,
 		DstID:       p.SrcID,
-		PayloadType: PayloadTypeCommandShellExit,
+		PayloadType: mmsp.PayloadType_COMMAND_SHELL_EXIT,
 	}
 }
 
@@ -91,7 +91,7 @@ func shellWriteInput(ctx context.Context, payload *mmsp.Payload) {
 				input = readKey()
 			}
 			p.Command.CommandRequest.Stdin = input
-			SendCommandQueue <- p
+			TxControlQueue <- p
 		}
 	}()
 

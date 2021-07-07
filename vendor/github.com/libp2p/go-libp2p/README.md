@@ -22,12 +22,6 @@
   <br>
 </p>
 
-# Project status
-
-[![Throughput Graph](https://graphs.waffle.io/libp2p/go-libp2p/throughput.svg)](https://waffle.io/libp2p/go-libp2p/metrics/throughput)
-
-[**`Weekly Core Dev Calls`**](https://github.com/ipfs/pm/issues/674)
-
 # Table of Contents
 
 - [Background](#background)
@@ -35,7 +29,7 @@
   - [API](#api)
   - [Examples](#examples)
 - [Development](#development)
-  - [Using the libp2p Workspace](#using-the-libp2p-workspace)
+  - [Using the go-libp2p Workspace](#using-the-go-libp2p-workspace)
   - [About gx](#about-gx)
   - [Tests](#tests)
   - [Packages](#packages)
@@ -45,7 +39,7 @@
 
 [libp2p](https://github.com/libp2p/specs) is a networking stack and library modularized out of [The IPFS Project](https://github.com/ipfs/ipfs), and bundled separately for other tools to use.
 >
-libp2p is the product of a long, and arduous quest of understanding -- a deep dive into the internet's network stack, and plentiful peer-to-peer protocols from the past. Building large scale peer-to-peer systems has been complex and difficult in the last 15 years, and libp2p is a way to fix that. It is a "network stack" -- a protocol suite -- that cleanly separates concerns, and enables sophisticated applications to only use the protocols they absolutely need, without giving up interoperability and upgradeability. libp2p grew out of IPFS, but it is built so that lots of people can use it, for lots of different projects.
+libp2p is the product of a long, and arduous quest of understanding -- a deep dive into the internet's network stack, and plentiful peer-to-peer protocols from the past. Building large-scale peer-to-peer systems has been complex and difficult in the last 15 years, and libp2p is a way to fix that. It is a "network stack" -- a protocol suite -- that cleanly separates concerns, and enables sophisticated applications to only use the protocols they absolutely need, without giving up interoperability and upgradeability. libp2p grew out of IPFS, but it is built so that lots of people can use it, for lots of different projects.
 >
 > We will be writing a set of docs, posts, tutorials, and talks to explain what p2p is, why it is tremendously useful, and how it can help your existing and new projects. But in the meantime, check out
 >
@@ -58,9 +52,9 @@ libp2p is the product of a long, and arduous quest of understanding -- a deep di
 
 ## Usage
 
-This repository (`go-libp2p`) serves as the entrypoint to the universe of modules that compose the Go implementation of the libp2p stack.
+This repository (`go-libp2p`) serves as the entrypoint to the universe of modules that compose the Go implementation of the libp2p stack. Libp2p requires go 1.12+.
 
-We mainly use [Go modules](https://github.com/golang/go/wiki/Modules) for our dependency and release management (and thus require go >= 1.11). In order to get the best developer experience, we recommend you do too. Otherwise, you may ocassionally encounter a breaking build as you'll be running off master (which, by definition, is not guaranteed to be stable).
+We mainly use [Go modules](https://github.com/golang/go/wiki/Modules) for our dependency and release management (and thus require go >= 1.12+). In order to get the best developer experience, we recommend you do too. Otherwise, you may ocassionally encounter a breaking build as you'll be running off master (which, by definition, is not guaranteed to be stable).
 
 You can start using go-libp2p in your Go application simply by adding imports from our repos, e.g.:
 
@@ -68,7 +62,13 @@ You can start using go-libp2p in your Go application simply by adding imports fr
 import "github.com/libp2p/go-libp2p"
 ```
 
-The next time you run `go get` or `go build`, the Go build tools will look for [available releases](https://github.com/libp2p/go-libp2p/releases), and will pick the highest available one.
+Run `go get` or `go build`, excluding the libp2p repos from Go modules proxy usage. You only need to do this the first time you import go-libp2p to make sure you latch onto the correct version lineage (see [golang/go#34189](https://github.com/golang/go/issues/34189) for context):
+
+```sh
+$ GOPRIVATE='github.com/libp2p/*' go get ./...
+```
+
+The Go build tools will look for [available releases](https://github.com/libp2p/go-libp2p/releases), and will pick the highest available one.
 
 As new releases of go-libp2p are made available, you can upgrade your application by manually editing your `go.mod` file, or using the [Go tools](https://golang.org/cmd/go/#hdr-Maintaining_module_requirements) to maintain module requirements.
 
@@ -82,11 +82,11 @@ Examples can be found in the [examples repo](https://github.com/libp2p/go-libp2p
 
 ## Development
 
-### Using the libp2p Workspace
+### Using the go-libp2p Workspace
 
 While developing, you may need to make changes to several modules at once, or you may want changes made locally in one module to be available for import by another.
 
-The [go libp2p workspace](https://github.com/libp2p/workspace-go-libp2p) provides a developer-oriented view of the modules that comprise go-libp2p. 
+The [go-libp2p workspace](https://github.com/libp2p/workspace-go-libp2p) provides a developer-oriented view of the modules that comprise go-libp2p.
 
 Using the tooling in the workspace repository, you can checkout all of go-libp2p's module repos and enter "local mode", which adds [replace directives](https://github.com/golang/go/wiki/Modules#gomod) to the go.mod files in each local working copy. When you build locally, the libp2p depdendencies will be resolved from your local working copies.
 
@@ -108,7 +108,7 @@ If you experience any issues migrating from gx to gomod, please [join the discus
 
 ### Tests
 
-`go test ./...` will run all tests in the repo. 
+`go test ./...` will run all tests in the repo.
 
 ### Packages
 
@@ -135,7 +135,7 @@ List of packages currently in existence for libp2p:
 | [`go-libp2p-reuseport-transport`](//github.com/libp2p/go-libp2p-reuseport-transport) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-reuseport-transport.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-reuseport-transport) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-reuseport-transport/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-reuseport-transport) | partial transport for building transports that reuse ports |
 | **Encrypted Channels** |
 | [`go-libp2p-secio`](//github.com/libp2p/go-libp2p-secio) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-secio.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-secio) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-secio/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-secio) | SecIO crypto channel |
-| [`go-libp2p-tls-transport`](//github.com/libp2p/go-libp2p-tls-transport) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-tls-transport.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-tls-transport) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-tls-transport/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-tls-transport) | TLS 1.3+ crypto channel |
+| [`go-libp2p-tls`](//github.com/libp2p/go-libp2p-tls) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-tls.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-tls) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-tls/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-tls) | TLS 1.3+ crypto channel |
 | [`go-conn-security-multistream`](//github.com/libp2p/go-conn-security-multistream) | [![Travis CI](https://travis-ci.com/libp2p/go-conn-security-multistream.svg?branch=master)](https://travis-ci.com/libp2p/go-conn-security-multistream) | [![codecov](https://codecov.io/gh/libp2p/go-conn-security-multistream/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-conn-security-multistream) | multistream multiplexed meta crypto channel |
 | **Private Network** |
 | [`go-libp2p-pnet`](//github.com/libp2p/go-libp2p-pnet) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-pnet.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-pnet) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-pnet/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-pnet) | reference private networking implementation |
@@ -177,42 +177,20 @@ List of packages currently in existence for libp2p:
 | **Testing and examples** |
 | [`go-libp2p-testing`](//github.com/libp2p/go-libp2p-testing) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-testing.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-testing) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-testing/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-testing) | a collection of testing utilities for libp2p |
 | [`go-libp2p-examples`](//github.com/libp2p/go-libp2p-examples) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-examples.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-examples) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-examples/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-examples) | go-libp2p examples and tutorials |
-| **Deprecated** |
-| [`go-conn-security`](//github.com/libp2p/go-conn-security) | [![Travis CI](https://travis-ci.com/libp2p/go-conn-security.svg?branch=master)](https://travis-ci.com/libp2p/go-conn-security) | [![codecov](https://codecov.io/gh/libp2p/go-conn-security/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-conn-security) | absorbed into go-libp2p-core |
-| [`go-peerstream`](//github.com/libp2p/go-peerstream) | [![Travis CI](https://travis-ci.com/libp2p/go-peerstream.svg?branch=master)](https://travis-ci.com/libp2p/go-peerstream) | [![codecov](https://codecov.io/gh/libp2p/go-peerstream/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-peerstream) | early work that informed libp2p design |
-| [`go-stream-muxer`](//github.com/libp2p/go-stream-muxer) | [![Travis CI](https://travis-ci.com/libp2p/go-stream-muxer.svg?branch=master)](https://travis-ci.com/libp2p/go-stream-muxer) | [![codecov](https://codecov.io/gh/libp2p/go-stream-muxer/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-stream-muxer) | absorbed into go-libp2p-core |
-| [`go-testutil`](//github.com/libp2p/go-testutil) | [![Travis CI](https://travis-ci.com/libp2p/go-testutil.svg?branch=master)](https://travis-ci.com/libp2p/go-testutil) | [![codecov](https://codecov.io/gh/libp2p/go-testutil/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-testutil) | replaced by go-libp2p-testing |
-| [`go-libp2p-circuit-progs`](//github.com/libp2p/go-libp2p-circuit-progs) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-circuit-progs.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-circuit-progs) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-circuit-progs/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-circuit-progs) | testing programs for go-libp2p-circuit |
-| [`go-libp2p-crypto`](//github.com/libp2p/go-libp2p-crypto) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-crypto.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-crypto) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-crypto/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-crypto) | absorbed into go-libp2p-core |
-| [`go-libp2p-conn`](//github.com/libp2p/go-libp2p-conn) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-conn.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-conn) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-conn/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-conn) | replaced by go-libp2p-swarm and go-libp2p-transport-upgrader |
-| [`go-libp2p-discovery`](//github.com/libp2p/go-libp2p-discovery) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-discovery.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-discovery) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-discovery/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-discovery) | absorbed into go-libp2p-core |
-| [`go-libp2p-dummy-conn`](//github.com/libp2p/go-libp2p-dummy-conn) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-dummy-conn.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-dummy-conn) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-dummy-conn/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-dummy-conn) | implempentation of deprecated interface |
-| [`go-libp2p-host`](//github.com/libp2p/go-libp2p-host) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-host.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-host) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-host/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-host) | absorbed into go-libp2p-core |
-| [`go-libp2p-identify`](//github.com/libp2p/go-libp2p-identify) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-identify.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-identify) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-identify/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-identify) | moved to go-libp2p |
-| [`go-libp2p-interface-conn`](//github.com/libp2p/go-libp2p-interface-conn) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-interface-conn.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-interface-conn) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-interface-conn/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-interface-conn) | absorbed into go-libp2p-core |
-| [`go-libp2p-interface-connmgr`](//github.com/libp2p/go-libp2p-interface-connmgr) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-interface-connmgr.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-interface-connmgr) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-interface-connmgr/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-interface-connmgr) | absorbed into go-libp2p-core |
-| [`go-libp2p-interface-pnet`](//github.com/libp2p/go-libp2p-interface-pnet) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-interface-pnet.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-interface-pnet) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-interface-pnet/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-interface-pnet) | absorbed into go-libp2p-core |
-| [`go-libp2p-metrics`](//github.com/libp2p/go-libp2p-metrics) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-metrics.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-metrics) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-metrics/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-metrics) | absorbed into go-libp2p-core |
-| [`go-libp2p-net`](//github.com/libp2p/go-libp2p-net) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-net.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-net) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-net/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-net) | absorbed into go-libp2p-core |
-| [`go-libp2p-peer`](//github.com/libp2p/go-libp2p-peer) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-peer.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-peer) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-peer/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-peer) | absorbed into go-libp2p-core |
-| [`go-libp2p-ping`](//github.com/libp2p/go-libp2p-ping) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-ping.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-ping) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-ping/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-ping) | moved to go-libp2p |
-| [`go-libp2p-protocol`](//github.com/libp2p/go-libp2p-protocol) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-protocol.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-protocol) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-protocol/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-protocol) | absorbed into go-libp2p-core |
-| [`go-libp2p-transport`](//github.com/libp2p/go-libp2p-transport) | [![Travis CI](https://travis-ci.com/libp2p/go-libp2p-transport.svg?branch=master)](https://travis-ci.com/libp2p/go-libp2p-transport) | [![codecov](https://codecov.io/gh/libp2p/go-libp2p-transport/branch/master/graph/badge.svg)](https://codecov.io/gh/libp2p/go-libp2p-transport) | absorbed into go-libp2p-core |
-
 
 # Contribute
 
-go-libp2p is part of [The IPFS Project](https://github.com/ipfs/ipfs), and is MIT licensed open source software. We welcome contributions big and small! Take a look at the [community contributing notes](https://github.com/ipfs/community/blob/master/CONTRIBUTING.md). Please make sure to check the [issues](https://github.com/ipfs/go-libp2p/issues). Search the closed ones before reporting things, and help us with the open ones.
+go-libp2p is part of [The IPFS Project](https://github.com/ipfs/ipfs), and is MIT-licensed open source software. We welcome contributions big and small! Take a look at the [community contributing notes](https://github.com/ipfs/community/blob/master/CONTRIBUTING.md). Please make sure to check the [issues](https://github.com/ipfs/go-libp2p/issues). Search the closed ones before reporting things, and help us with the open ones.
 
 Guidelines:
 
 - read the [libp2p spec](https://github.com/libp2p/specs)
 - please make branches + pull-request, even if working on the main repository
-- ask questions or talk about things in [Issues](https://github.com/libp2p/go-libp2p/issues), our [discussion forums](https://discuss.libp2p.io), or #libp2p or #ipfs on freenode.
-- ensure you are able to contribute (no legal issues please-- we use the DCO)
+- ask questions or talk about things in [issues](https://github.com/libp2p/go-libp2p/issues), our [discussion forums](https://discuss.libp2p.io), or #libp2p or #ipfs on freenode.
+- ensure you are able to contribute (no legal issues please -- we use the DCO)
 - run `go fmt` before pushing any code
 - run `golint` and `go vet` too -- some things (like protobuf files) are expected to fail.
-- get in touch with @jbenet and @diasdavid about how best to contribute
+- get in touch with @raulk and @mgoelzer about how best to contribute
 - have fun!
 
 There's a few things you can do right now to help out:

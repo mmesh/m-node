@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 silent: true
 
@@ -13,6 +13,8 @@ vars:
   VERSION: {sh: cat VERSION}
   LOCAL_UID: {sh: id -u}
   LOCAL_GID: {sh: id -g}
+  # PKG_REPO: 'mmesh'
+  # PKG_REPO_DEV: 'mmesh-dev'
   GS_BUCKET: 'gs://mmesh-io'
 
 env:
@@ -22,7 +24,7 @@ env:
   GO_VERSION: {sh: go version | cut -f 3 -d ' '}
   GO111MODULE: on
   CGO_ENABLED: 0
-  #GOPRIVATE: 'mmesh.dev/api-go,mmesh.dev/mmesh/lib'
+  #GOPRIVATE: 'mmesh.dev/m-api-go,mmesh.dev/m-lib'
 
 tasks:
   _build-all:
@@ -32,10 +34,11 @@ tasks:
   _build-node:
     cmds:
       - task: golang:go-generate
-      - task: golang:gofmt
+      - task: golang:go-fmt
       - task: golang:go-verify-vendor
+      # - task: golang:go-vet
       # - task: golang:golangci-lint
-      - goreleaser -f build/ci/goreleaser/node.yml --snapshot --rm-dist
+      - goreleaser build -f build/ci/goreleaser/node.yml --snapshot --rm-dist
 
   build-all:
     desc: Build all binaries.
@@ -57,45 +60,71 @@ tasks:
       - echo 'Cleaning dist working directory...'
       - rm -rf {{.DIST_DIR}}
 
-  docker-generate-node:
-    desc: docker build and push -- mmesh-node
-    deps: [build-node]
+  docker-build-node:
+    desc: docker build -- mmesh-node
+    # deps: [build-node]
     cmds:
     - task: docker:docker-build
-      vars: {IMAGE: "mmesh-node", DIR: "_dist/node/mmesh-node_linux_amd64", DOCKERFILE: "./build/package/dockerfiles/dockerfile-node"}
-    - task: docker:docker-push
-      vars: {IMAGE: "mmesh-node", REPO: "x6adev"}
-    - task: docker:image-scan
-      vars: {IMAGE: "mmesh-node", REPO: "x6adev"}
+      vars: {IMAGE: "mmesh-node", DIR: "_dist/mmesh-node_linux_amd64", DOCKERFILE: "./build/package/dockerfiles/dockerfile-node"}
 
-  release-binaries:
-    desc: Release binaries.
+  docker-push-node-dev:
+    desc: docker push -- mmesh-node (dev build)
+    deps: [docker-build-node]
+    cmds:
+    - task: docker:docker-push
+      vars: {IMAGE: "mmesh-node", VERSION: "snapshot", REPO: "mmeshdev", TAG: "dev"}
+    - task: docker:image-scan
+      vars: {IMAGE: "mmesh-node", REPO: "mmeshdev", TAG: "dev"}
+
+  docker-push-node-stable:
+    desc: docker push -- mmesh-node (stable build)
+    deps: [docker-build-node]
+    cmds:
+    - task: docker:docker-push
+      vars: {IMAGE: "mmesh-node", REPO: "mmeshdev", TAG: "stable"}
+    - task: docker:image-scan
+      vars: {IMAGE: "mmesh-node", REPO: "mmeshdev", TAG: "stable"}
+
+  release-binaries-dev:
+    desc: Release binaries (dev build)
     dir: '{{.PREFIX}}'
     cmds:
-      - ./scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.GS_BUCKET}}'
+      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/node/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO_DEV}}'
+      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/node/mmesh-node_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO_DEV}}'
+      - ./scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.GS_BUCKET}}' 'dev'
 
-  release-all:
-    desc: Release docker images and binaries.
+  release-binaries-stable:
+    desc: Release binaries (stable build)
+    dir: '{{.PREFIX}}'
     cmds:
-      - task: docker-generate-node
-      - task: release-binaries
+      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/node/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO}}'
+      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/node/mmesh-node_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO}}'
+      - ./scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.GS_BUCKET}}' 'stable'
+
+  release-all-dev:
+    desc: Release docker images and binaries (dev build)
+    cmds:
+      - task: docker-push-node-dev
+      - task: release-binaries-dev
+
+  release-all-stable:
+    desc: Release docker images and binaries (stable build)
+    cmds:
+      # - task: docker-push-node-stable
+      - task: release-binaries-stable
 
   goreleaser:
     desc: Build and release all the packages.
     deps: [docker:docker-login]
     cmds:
       - task: golang:go-generate
-      - task: golang:golang:gofmt
+      - task: golang:go-fmt
       - task: golang:go-verify-vendor
       # - task: golang:go-vet
       # - task: golang:golangci-lint
-      - goreleaser -f build/ci/goreleaser/release.yml --rm-dist
-
-  update-git-repo:
-    desc: Create a new git tag and push to GitHub.
-    deps: [git:version-bump]
-    cmds:
-      - task: git:tag
+      - task: git:update-git-repo
+      - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist
+      # - ./scripts/_local/build/gh-tag-delete.sh '{{.VERSION}}'
 
 includes:
   git: ./build/taskfiles/build/gitTasks.yml

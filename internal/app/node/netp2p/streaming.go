@@ -9,7 +9,12 @@ import (
 	"x6a.dev/pkg/xlog"
 )
 
-const BUFFER_SIZE = 9216 // Jumbo Frame Size
+// https://github.com/lucas-clemente/quic-go/wiki/UDP-Receive-Buffer-Size
+// const BUFFER_SIZE = 2500000
+
+// const BUFFER_SIZE = 9216 // Jumbo Frame Size
+
+const BUFFER_SIZE = 1 << 16
 
 func handleStream(s network.Stream) {
 	xlog.Info("[+] New stream connected")
@@ -25,15 +30,15 @@ func handleStream(s network.Stream) {
 }
 
 func (mma *mmAgent) readStream(rw *bufio.ReadWriter, maddr string, relayTunnel bool) {
-	buf := make([]byte, BUFFER_SIZE)
+	pkt := make([]byte, BUFFER_SIZE)
 	for {
-		n, err := rw.Read(buf)
+		plen, err := rw.Read(pkt)
 		if err != nil {
 			xlog.Tracef("Unable to read from tunnel: %v", err)
 			break
 		}
 
-		if err := mma.writeInterface(rw, buf, n); err != nil {
+		if err := mma.writeInterface(rw, pkt, plen); err != nil {
 			xlog.Warnf("Unable to write packet to interface: %v", err)
 			continue
 		}
@@ -73,8 +78,6 @@ func (mma *mmAgent) writeInterface(rw *bufio.ReadWriter, pkt []byte, plen int) e
 }
 
 func (mma *mmAgent) readInterface() {
-	var queue = make(chan *ipPacket, 16*BUFFER_SIZE)
-
 	// read interface
 	go func() {
 		pkt := make([]byte, BUFFER_SIZE)
@@ -94,7 +97,6 @@ func (mma *mmAgent) readInterface() {
 					if ipPkt == nil {
 						return
 					}
-					//xlog.Tracef("Discarding packet from srcIP %s to dstIP %s", ipPkt.srcIP.String(), ipPkt.dstIP.String())
 
 					// udpate metrics with a new drop
 					go metrics.UpdateNetworkMetric(ipPkt.dstIP.String(), 0, 0, true)
@@ -107,44 +109,41 @@ func (mma *mmAgent) readInterface() {
 				continue
 			}
 
-			queue <- ipPkt
-		}
-	}()
-
-	// write stream
-	go func() {
-		var rw *bufio.ReadWriter
-
-		for {
-			ipPkt := <-queue
-
-			rw = mma.getTunnel(ipPkt.dstAddr)
+			rw := mma.getTunnel(ipPkt.dstAddr)
 			if rw == nil {
-				if err := mma.newTunnel(ipPkt); err != nil {
-					xlog.Error(errors.Cause(err))
-					continue
-				}
-				rw = mma.getTunnel(ipPkt.dstAddr)
-				mma.linkStatus.Connections++
-			}
+				go func(ipPkt ipPacket) {
+					if err := mma.newTunnel(&ipPkt); err != nil {
+						xlog.Error(errors.Cause(err))
+						return
+					}
+					rw := mma.getTunnel(ipPkt.dstAddr)
+					mma.linkStatus.Connections++
 
-			// real send
-			if _, err := rw.Write(ipPkt.data[:ipPkt.plen]); err != nil {
-				//xlog.Tracef("rw.Write(packet.data[:packet.len]): %v", err)
-				mma.deleteTunnel(ipPkt.dstAddr)
-				continue
+					writeStream(ipPkt, rw)
+				}(*ipPkt)
+			} else {
+				writeStream(*ipPkt, rw)
 			}
-
-			if err := rw.Flush(); err != nil {
-				//xlog.Tracef("rw.Flush(): %v", err)
-				mma.deleteTunnel(ipPkt.dstAddr)
-				continue
-			}
-
-			// udpate metrics
-			go metrics.UpdateNetworkMetric(ipPkt.dstIP.String(), uint64(ipPkt.plen), 0, false)
 		}
 	}()
 
 	<-mma.closeInterface
+}
+
+func writeStream(ipPkt ipPacket, rw *bufio.ReadWriter) {
+	// real send
+	if _, err := rw.Write(ipPkt.data[:ipPkt.plen]); err != nil {
+		//xlog.Tracef("rw.Write(packet.data[:packet.len]): %v", err)
+		mma.deleteTunnel(ipPkt.dstAddr)
+		return
+	}
+
+	if err := rw.Flush(); err != nil {
+		//xlog.Tracef("rw.Flush(): %v", err)
+		mma.deleteTunnel(ipPkt.dstAddr)
+		return
+	}
+
+	// udpate metrics
+	go metrics.UpdateNetworkMetric(ipPkt.dstIP.String(), uint64(ipPkt.plen), 0, false)
 }

@@ -9,7 +9,7 @@ import (
 	"x6a.dev/pkg/xlog"
 )
 
-const MTU int = 1300 // TUN interface, so only plain IP packet, no ethernet header + mtu is set to 1300
+const MTU int = 1400 // TUN interface, so only plain IP packet, no ethernet header + mtu is set to 1300
 
 var iface *water.Interface
 

@@ -1,19 +1,9 @@
 project_name: mmesh
 
-dist: _dist/node
-
-env_files:
-  github_token: ~/.config/goreleaser/github_token
+dist: _dist
 
 env:
   - GO111MODULE=on
-
-before:
-  hooks:
-    # you may remove this if you don't use vgo
-    #- go mod tidy -v
-    # you may remove this if you don't need go generate
-    #- go generate ./...
 
 builds:
 - id: "mmesh-node"
@@ -35,7 +25,7 @@ builds:
     - -w
     - -X mmesh.dev/m-lib/pkg/version.GitRepository={{.GitURL}}
     - -X mmesh.dev/m-lib/pkg/version.GitCommit={{.ShortCommit}}
-    - -X mmesh.dev/m-lib/pkg/version.VersionNumber={{.Env.VERSION}}
+    - -X mmesh.dev/m-lib/pkg/version.VersionNumber={{.Tag}}
     - -X mmesh.dev/m-lib/pkg/version.VersionDate={{.Env.VERSION_DATE}}
     - -X mmesh.dev/m-lib/pkg/version.GoVersion={{.Env.GO_VERSION}}
     - -extldflags -static
@@ -44,48 +34,38 @@ builds:
     - CGO_ENABLED=0
   goos:
     - linux
-    #- darwin
+    # - darwin
+    # - windows
   goarch:
     - amd64
   lang: go
 
-archives:
-- id: mmesh-node
-  builds:
-    - mmesh-node
-  name_template: "{{ .ProjectName }}-node_{{ .Env.VERSION }}_{{ .Os }}_{{ .Arch }}"
-  wrap_in_directory: false
-  format: tar.gz
-  format_overrides:
-    - goos: windows
-      format: zip
+# snapshot:
+#   name_template: '{{.Tag}}-{{.Env.VERSION_DATE}}-SNAPSHOT-{{.ShortCommit}}'
 
-checksum:
-  name_template: '{{ .ProjectName }}_{{ .Env.VERSION }}_checksums.txt'
-  algorithm: sha256
+# archives:
+#   - name_template: '{{.Tag}}-{{.Env.VERSION_DATE}}-SNAPSHOT-{{.ShortCommit}}'
 
-nfpms:
-  - id: mmesh-node
-    package_name: mmesh-node
-    file_name_template: "{{ .ProjectName }}-node_{{ .Env.VERSION }}_{{ .Os }}_{{ .Arch }}"
-    builds:
-      - mmesh-node
-    vendor: mmesh.io
-    homepage: https://mmesh.io
-    #maintainer: <buildbot@mmesh.io>
-    description: mmesh node
-    license: AGPL v3.0
-    formats:
-      - deb
-      - rpm
-    bindir: /usr/bin
-    dependencies:
-      - iproute2
-    empty_folders:
-      - /var/lib/mmesh
-    files:
-      "/go/src/m-node/build/package/linux/mmesh-node.service": "/etc/systemd/system/mmesh-node.service"
-      "/go/src/m-node/README.md": "/usr/share/doc/mmesh-node/README.md"
-      "/go/src/m-node/LICENSE": "/usr/share/doc/mmesh-node/LICENSE"
-    config_files:
-      "/go/src/m-node/configs/mmesh-node.yml": "/etc/mmesh/mmesh-node.yml"
+# dockers:
+#   - dockerfile: ./build/package/dockerfiles/dockerfile-node
+#     image_templates:
+#       - "mmeshdev/mmesh-node:dev"
+#       - "mmeshdev/mmesh-node:snapshot"
+#       # - "mmeshdev/mmesh-node:{{.Tag}}-{{.Env.VERSION_DATE}}-{{ .Env.GO_VERSION }}"
+#     use: docker
+#     goos: linux
+#     goarch: amd64
+#     build_flag_templates:
+#       - "--pull"
+#       - "--label=org.opencontainers.image.created={{.Date}}"
+#       - "--label=org.opencontainers.image.name={{.ProjectName}}"
+#       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+#       - "--label=org.opencontainers.image.version={{.Version}}"
+#       - "--label=org.opencontainers.image.source={{.GitURL}}"
+#       - "--platform=linux/amd64"
+#       - "--rm"
+#       - "--force-rm"
+#       - "--no-cache"
+
+# release:
+#   disable: true

@@ -19,7 +19,7 @@ func transferDataTx(srcFileMode uint32, srcIsDir bool, srcFile, srcFileName, dst
 	if srcIsDir {
 		p := newDir(srcFileMode, srcFile, srcFileName, dstFilePath, mmID, dstID, requesterID, interactive)
 
-		SendCommandQueue <- p
+		TxControlQueue <- p
 		return nil
 	}
 
@@ -64,7 +64,7 @@ func transferDataTx(srcFileMode uint32, srcIsDir bool, srcFile, srcFileName, dst
 		p := newFileChunk(srcFile, srcFileName, dstFilePath, mmID, dstID, requesterID, chunkNumber, int64(n),
 			chunkChecksum, fileChecksum, buf[0:n], isLastChunk, interactive)
 
-		SendCommandQueue <- p
+		TxControlQueue <- p
 
 		chunkNumber++
 	}
@@ -83,7 +83,7 @@ func newFileChunk(srcFilePath, srcFileName, dstFilePath, srcID, dstID, requester
 		Interactive:   interactive,
 		PSK:           viper.GetString("agent.management.auth.psk"),
 		SecurityToken: viper.GetString("agent.management.auth.securityToken"),
-		PayloadType:   PayloadTypeTransferData,
+		PayloadType:   mmsp.PayloadType_TRANSFER_DATA,
 		Transfer: &transfer.Transfer{
 			Paths: &transfer.Paths{
 				SrcFilePath: srcFilePath,
@@ -113,7 +113,7 @@ func newDir(srcFileMode uint32, srcFilePath, srcFileName, dstFilePath, srcID, ds
 		Interactive:   interactive,
 		PSK:           viper.GetString("agent.management.auth.psk"),
 		SecurityToken: viper.GetString("agent.management.auth.securityToken"),
-		PayloadType:   PayloadTypeTransferData,
+		PayloadType:   mmsp.PayloadType_TRANSFER_DATA,
 		Transfer: &transfer.Transfer{
 			Paths: &transfer.Paths{
 				SrcFilePath: srcFilePath,

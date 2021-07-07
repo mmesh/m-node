@@ -18,7 +18,7 @@ func newShellOutput(srcID string, p *mmsp.Payload) *mmsp.Payload {
 	return &mmsp.Payload{
 		SrcID:       srcID,
 		DstID:       p.SrcID,
-		PayloadType: PayloadTypeCommandShellOutput,
+		PayloadType: mmsp.PayloadType_COMMAND_SHELL_OUTPUT,
 		Command: &command.Command{
 			CommandResponse: &command.CommandResponse{
 				RequestedCommand: cReq,
@@ -58,7 +58,7 @@ func shellWriteOutput(mmID string, payload *mmsp.Payload, outrp *io.PipeReader) 
 		p.Command.CommandResponse.Result.Status = command.CommandResultStatus_RUNNING
 		// payload.CommandResponse.Result.Duration = int64(time.Since(t1).Seconds())
 
-		SendCommandQueue <- p
+		TxControlQueue <- p
 	}
 }
 

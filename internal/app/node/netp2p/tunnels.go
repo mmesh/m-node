@@ -48,12 +48,13 @@ func (mma *mmAgent) newTunnel(ipPkt *ipPacket) error {
 	// Try direct connection
 	xlog.Infof("Trying direct connection to %s", ipPkt.dstAddr)
 	for _, ma := range nh.Agent.MAddrs {
+		nextHop := strings.Split(ma, "/")[2]
 		if !strings.Contains(ma, "/p2p-circuit/") {
 			if rw, err := mma.connectTunnel(ma); err != nil {
 				continue
 			} else {
 				mma.setTunnel(ipPkt.dstAddr, rw)
-				xlog.Infof("Tunnel connected to %s", ipPkt.dstAddr)
+				xlog.Infof("Tunnel connected to %s via %s [DIRECT]", ipPkt.dstAddr, nextHop)
 
 				// Create a thread to read data from new buffered stream.
 				go mma.readStream(rw, ma, false)
@@ -75,6 +76,10 @@ func (mma *mmAgent) newTunnel(ipPkt *ipPacket) error {
 func (mma *mmAgent) setTunnel(dstAddr string, rw *bufio.ReadWriter) {
 	mma.streams.Lock()
 	defer mma.streams.Unlock()
+
+	if _, ok := mma.streams.tunnel[dstAddr]; ok {
+		return
+	}
 
 	mma.streams.tunnel[dstAddr] = rw
 }
@@ -108,12 +113,13 @@ func (mma *mmAgent) newRTunnel(dstAddr string, nh *routing.NetHop) error {
 	for _, r := range mma.rt.RT.Relays {
 		if r.VRFID == mma.vrfID || mma.rt.RT.Scope == routing.Scope_NETWORK {
 			for _, ma := range nh.Agent.MAddrs {
+				nextHop := strings.Split(ma, "/")[2]
 				if strings.HasPrefix(ma, r.MAddr+"/p2p-circuit/") {
 					if rw, err := mma.connectTunnel(ma); err != nil {
 						continue
 					} else {
 						mma.setTunnel(dstAddr, rw)
-						xlog.Infof("Tunnel connected to %s", dstAddr)
+						xlog.Infof("Tunnel connected to %s via %s [RELAY]", dstAddr, nextHop)
 
 						metrics.IncrRelayConns(r.MAddr)
 

@@ -106,7 +106,7 @@ func routeDel(r string) error {
 	for _, sysRoute := range sysRouteList {
 		if route.Dst.String() == sysRoute.Dst.String() && route.LinkIndex == sysRoute.LinkIndex {
 			if err := netlink.RouteDel(route); err != nil {
-				return errors.Wrapf(err, "[%v] function netlink.RouteAdd()", errors.Trace())
+				return errors.Wrapf(err, "[%v] function netlink.RouteDel()", errors.Trace())
 			}
 
 			xlog.Infof("Deleted route: %s via %s", r, iface.Name())

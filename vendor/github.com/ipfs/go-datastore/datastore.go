@@ -34,6 +34,13 @@ should be checked by callers.
 type Datastore interface {
 	Read
 	Write
+	// Sync guarantees that any Put or Delete calls under prefix that returned
+	// before Sync(prefix) was called will be observed after Sync(prefix)
+	// returns, even if the program crashes. If Put/Delete operations already
+	// satisfy these requirements then Sync may be a no-op.
+	//
+	// If the prefix fails to Sync this method returns an error.
+	Sync(prefix Key) error
 	io.Closer
 }
 
@@ -50,7 +57,8 @@ type Write interface {
 	// type-safe interface to your application, and do the checking up-front.
 	Put(key Key, value []byte) error
 
-	// Delete removes the value for given `key`.
+	// Delete removes the value for given `key`. If the key is not in the
+	// datastore, this method returns no error.
 	Delete(key Key) error
 }
 
@@ -110,7 +118,7 @@ type CheckedDatastore interface {
 	Check() error
 }
 
-// CheckedDatastore is an interface that should be implemented by datastores
+// ScrubbedDatastore is an interface that should be implemented by datastores
 // which want to provide a mechanism to check data integrity and/or
 // error correction.
 type ScrubbedDatastore interface {
@@ -191,14 +199,18 @@ type TxnDatastore interface {
 
 // Errors
 
-// ErrNotFound is returned by Get, Has, and Delete when a datastore does not
-// map the given key to a value.
-var ErrNotFound = errors.New("datastore: key not found")
+type dsError struct {
+	error
+	isNotFound bool
+}
 
-// ErrInvalidType is returned by Put when a given value is incopatible with
-// the type the datastore supports. This means a conversion (or serialization)
-// is needed beforehand.
-var ErrInvalidType = errors.New("datastore: invalid type error")
+func (e *dsError) NotFound() bool {
+	return e.isNotFound
+}
+
+// ErrNotFound is returned by Get and GetSize when a datastore does not map the
+// given key to a value.
+var ErrNotFound error = &dsError{error: errors.New("datastore: key not found"), isNotFound: true}
 
 // GetBackedHas provides a default Datastore.Has implementation.
 // It exists so Datastore.Has implementations can use it, like so:

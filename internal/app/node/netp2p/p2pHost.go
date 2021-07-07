@@ -14,6 +14,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/routing"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
+	// libp2pquic "github.com/libp2p/go-libp2p-quic-transport"
+	// secio "github.com/libp2p/go-libp2p-secio"
+	// libp2ptls "github.com/libp2p/go-libp2p-tls"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
@@ -55,12 +58,18 @@ func newP2PHost(port int32, p2pHostType int) (host.Host, error) {
 			libp2p.ListenAddrs(),
 			//libp2p.ListenAddrs(sourceMultiAddr),
 			libp2p.Identity(prvKey),
-			libp2p.EnableRelay(circuit.OptDiscovery),
+			// libp2p.EnableRelay(circuit.OptDiscovery),
+			libp2p.EnableAutoRelay(),
+			// libp2p.Transport(libp2pquic.NewTransport),
 			libp2p.DefaultTransports,
 			libp2p.DefaultMuxers,
+			// support TLS connections
+			// libp2p.Security(libp2ptls.ID, libp2ptls.New),
+			// support secio connections
+			// libp2p.Security(secio.ID, secio.New),
 			libp2p.DefaultSecurity,
 			libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
-				return dht.New(context.Background(), h)
+				return dht.New(context.TODO(), h)
 			}),
 			libp2p.NATPortMap(),
 		}
@@ -68,9 +77,15 @@ func newP2PHost(port int32, p2pHostType int) (host.Host, error) {
 		opts = []libp2p.Option{
 			libp2p.ListenAddrs(getLocalMAddrs(port)...),
 			libp2p.Identity(prvKey),
-			libp2p.EnableRelay(circuit.OptDiscovery),
+			// libp2p.EnableRelay(circuit.OptDiscovery),
+			libp2p.EnableAutoRelay(),
+			// libp2p.Transport(libp2pquic.NewTransport),
 			libp2p.DefaultTransports,
 			libp2p.DefaultMuxers,
+			// support TLS connections
+			// libp2p.Security(libp2ptls.ID, libp2ptls.New),
+			// support secio connections
+			// libp2p.Security(secio.ID, secio.New),
 			libp2p.DefaultSecurity,
 			libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 				return dht.New(context.Background(), h)
@@ -81,11 +96,16 @@ func newP2PHost(port int32, p2pHostType int) (host.Host, error) {
 		opts = []libp2p.Option{
 			libp2p.ListenAddrs(getLocalMAddrs(port)...),
 			libp2p.Identity(prvKey),
-			libp2p.EnableRelay(circuit.OptDiscovery),
+			// libp2p.EnableRelay(circuit.OptDiscovery),
 			libp2p.EnableRelay(circuit.OptHop),
 			libp2p.EnableAutoRelay(),
+			// libp2p.Transport(libp2pquic.NewTransport),
 			libp2p.DefaultTransports,
 			libp2p.DefaultMuxers,
+			// support TLS connections
+			// libp2p.Security(libp2ptls.ID, libp2ptls.New),
+			// support secio connections
+			// libp2p.Security(secio.ID, secio.New),
 			libp2p.DefaultSecurity,
 			libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 				return dht.New(context.Background(), h)
@@ -94,7 +114,7 @@ func newP2PHost(port int32, p2pHostType int) (host.Host, error) {
 		}
 	}
 
-	ctx := context.Background()
+	ctx := context.TODO()
 
 	host, err := libp2p.New(ctx, opts...)
 	if err != nil {

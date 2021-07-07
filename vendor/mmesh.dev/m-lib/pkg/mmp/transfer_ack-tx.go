@@ -33,7 +33,7 @@ func transferAckTx(ctx context.Context, payload *mmsp.Payload, errStr string) {
 	}
 
 	p := newFileAck(payload, recvBytes, errStr)
-	SendCommandQueue <- p
+	TxControlQueue <- p
 }
 
 func newFileAck(p *mmsp.Payload, recvBytes int64, errStr string) *mmsp.Payload {
@@ -43,7 +43,7 @@ func newFileAck(p *mmsp.Payload, recvBytes int64, errStr string) *mmsp.Payload {
 		SrcID:       mmID,
 		DstID:       p.RequesterID,
 		Interactive: p.Interactive,
-		PayloadType: PayloadTypeTransferAck,
+		PayloadType: mmsp.PayloadType_TRANSFER_ACK,
 		Transfer: &transfer.Transfer{
 			Paths: &transfer.Paths{
 				// SrcFilePath: p.Transfer.Paths.SrcFilePath,

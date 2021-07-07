@@ -3,7 +3,6 @@ package svcs
 import (
 	"time"
 
-	"mmesh.dev/m-lib/pkg/grpc/client"
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-node/internal/app/node/connection"
 	"mmesh.dev/m-node/internal/app/node/netp2p"
@@ -21,17 +20,15 @@ func NetworkErrorEventsHandler(w *runtime.Wrkr) {
 	for {
 		select {
 		case <-networkErrorEventsQueue:
-
 			if !networkErrorHandlerRunning {
 				networkErrorHandlerRunning = true
 				go func() {
-					//networkErrorHandlerRunning = true
-					if err := client.NxClientConn.Close(); err != nil {
+					time.Sleep(3 * time.Second)
+					if err := connection.GRPCClientConn.Close(); err != nil {
 						xlog.Alertf("Unable to close gRPC network connection: %v", err)
 					}
 					nxnc := connection.AgentConnect()
 					runtime.NetworkWrkrReconnect(nxnc)
-					time.Sleep(3 * time.Second)
 					networkErrorHandlerRunning = false
 				}()
 			}

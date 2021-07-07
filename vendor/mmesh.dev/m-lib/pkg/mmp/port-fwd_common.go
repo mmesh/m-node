@@ -14,7 +14,7 @@ import (
 )
 
 func portFwdLinkID(proto, srcID, srcPort, dstID, dstPort interface{}) string {
-	pfLinkID := []byte(fmt.Sprintf("%v:%v:%v:%v:%v:%v", proto, srcID, srcPort, dstID, dstPort))
+	pfLinkID := []byte(fmt.Sprintf("%v:%v:%v:%v:%v", proto, srcID, srcPort, dstID, dstPort))
 
 	return base64.URLEncoding.EncodeToString(pfLinkID)
 }
@@ -25,7 +25,7 @@ func newPortFwdData(srcID, dstID, cID string, p *mmsp.Payload) *mmsp.Payload {
 		DstID:       dstID,
 		RequesterID: p.RequesterID,
 		Interactive: p.Interactive,
-		PayloadType: PayloadTypePortFwdData,
+		PayloadType: mmsp.PayloadType_PORTFWD_DATA,
 		PortFwd: &portFwd.PortFwd{
 			Link: &portFwd.Link{
 				ID:           p.PortFwd.Link.ID,
@@ -60,7 +60,7 @@ func portFwdWriteData(srcID, dstID, cID string, payload *mmsp.Payload, outrp *io
 		logging.Tracef("Sending %v bytes of data to %s, connectionID %s", n, dstID, cID)
 
 		p.PortFwd.Data = buffer[0:n]
-		SendCommandQueue <- p
+		TxControlQueue <- p
 	}
 }
 

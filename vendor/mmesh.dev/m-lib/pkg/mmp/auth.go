@@ -7,25 +7,25 @@ import (
 
 func mgmtAuth(p *mmsp.Payload) bool {
 	switch p.PayloadType {
-	case PayloadTypeCommandShellExec:
+	case mmsp.PayloadType_COMMAND_SHELL_EXEC:
 		if viper.GetBool("agent.management.disableExec") {
 			return false
 		}
 
-	case PayloadTypeTransferInit:
+	case mmsp.PayloadType_TRANSFER_INIT:
 		if viper.GetBool("agent.management.disableTransfer") {
 			return false
 		}
-	case PayloadTypeTransferData:
+	case mmsp.PayloadType_TRANSFER_DATA:
 		if viper.GetBool("agent.management.disableTransfer") {
 			return false
 		}
 
-	case PayloadTypePortFwdListen:
+	case mmsp.PayloadType_PORTFWD_LISTEN:
 		if viper.GetBool("agent.management.disablePortForwarding") {
 			return false
 		}
-	case PayloadTypePortFwdDial:
+	case mmsp.PayloadType_PORTFWD_DIAL:
 		if viper.GetBool("agent.management.disablePortForwarding") {
 			return false
 		}

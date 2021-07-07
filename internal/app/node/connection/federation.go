@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-	nrpc "mmesh.dev/m-api-go/grpc/network/rpc"
 	"mmesh.dev/m-api-go/grpc/resources/controller"
 	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/rpc"
 	"mmesh.dev/m-lib/pkg/mmid"
 	"x6a.dev/pkg/errors"
 )
@@ -35,7 +35,7 @@ func newFederationConnection() *federationConnection {
 	}
 }
 
-func (f *federationConnection) update(nxnc nrpc.NetworkAPIClient) error {
+func (f *federationConnection) update(nxnc rpc.NetworkAPIClient) error {
 	f.Lock()
 	defer f.Unlock()
 
@@ -94,7 +94,7 @@ func (f *federationConnection) setUnhealthy(endpoint string) {
 	f.healthy[endpoint] = false
 }
 
-func FederationUpdate(nxnc nrpc.NetworkAPIClient) error {
+func FederationUpdate(nxnc rpc.NetworkAPIClient) error {
 	if fc == nil {
 		fc = newFederationConnection()
 	}

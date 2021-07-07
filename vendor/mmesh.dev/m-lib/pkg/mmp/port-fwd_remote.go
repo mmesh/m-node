@@ -25,7 +25,7 @@ func newPortFwdDialAck(p *mmsp.Payload) *mmsp.Payload {
 		DstID:       p.PortFwd.Link.SrcNodeID,
 		RequesterID: p.RequesterID,
 		Interactive: p.Interactive,
-		PayloadType: PayloadTypePortFwdDialAck,
+		PayloadType: mmsp.PayloadType_PORTFWD_DIALACK,
 		PortFwd: &portFwd.PortFwd{
 			Link: &portFwd.Link{
 				ID:           p.PortFwd.Link.ID,
@@ -122,7 +122,7 @@ func portFwdDial(ctx context.Context, payload *mmsp.Payload) error {
 	}()
 
 	p := newPortFwdDialAck(payload)
-	SendCommandQueue <- p
+	TxControlQueue <- p
 
 	<-waitc
 

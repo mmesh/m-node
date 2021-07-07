@@ -21,7 +21,7 @@ func NewTransfer(authKey *auth.AuthKey, srcFilePath, dstFilePath, srcID, dstID s
 	logging.Debugf("New file transfer requested: srcID %s, dstID %s", srcID, dstID)
 
 	p := newTransferInit(authKey, srcFilePath, dstFilePath, srcID, dstID, interactive)
-	SendCommandQueue <- p
+	TxControlQueue <- p
 }
 
 func newTransferInit(authKey *auth.AuthKey, srcFilePath, dstFilePath, srcID, dstID string, interactive bool) *mmsp.Payload {
@@ -38,7 +38,7 @@ func newTransferInit(authKey *auth.AuthKey, srcFilePath, dstFilePath, srcID, dst
 		AuthKey:       authKey,
 		PSK:           viper.GetString("agent.management.auth.psk"),
 		SecurityToken: viper.GetString("agent.management.auth.securityToken"),
-		PayloadType:   PayloadTypeTransferInit,
+		PayloadType:   mmsp.PayloadType_TRANSFER_INIT,
 		Transfer: &transfer.Transfer{
 			Paths: &transfer.Paths{
 				SrcNodeID:   srcID,

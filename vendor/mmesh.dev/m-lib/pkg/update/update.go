@@ -13,6 +13,7 @@ import (
 	"syscall"
 
 	"github.com/inconshreveable/go-update"
+	"github.com/spf13/viper"
 	"mmesh.dev/m-lib/pkg/logging"
 	"mmesh.dev/m-lib/pkg/utils"
 	"mmesh.dev/m-lib/pkg/version"
@@ -23,6 +24,7 @@ import (
 
 const binURL string = "https://storage.googleapis.com/mmesh-io/binaries"
 const binVersion string = "latest"
+const branchStable string = "stable"
 
 var publicKey = []byte(`
 -----BEGIN PUBLIC KEY-----
@@ -84,7 +86,7 @@ func Update(app string) error {
 		} else {
 			xlog.Warnf("Unable to update binary: %v", err)
 		}
-		return errors.Wrapf(err, "[%v] function opts.CheckPermissions()", errors.Trace())
+		return errors.Cause(err)
 	}
 
 	// request the new file
@@ -125,7 +127,12 @@ func getURL(file string) string {
 	goos := runtime.GOOS
 	goarch := runtime.GOARCH
 
-	return fmt.Sprintf("%s/%s/%s/%s/%s", binURL, binVersion, goos, goarch, file)
+	binBranch := viper.GetString("version.branch")
+	if len(binBranch) == 0 {
+		binBranch = branchStable
+	}
+
+	return fmt.Sprintf("%s/%s/%s/%s/%s/%s", binURL, binBranch, binVersion, goos, goarch, file)
 }
 
 func binaryIsOutdated(exe string, checksum []byte) bool {

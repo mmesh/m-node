@@ -15,10 +15,10 @@ func portFwdDisabled(payload *mmsp.Payload) {
 	p := &mmsp.Payload{
 		SrcID:       mmID,
 		DstID:       payload.SrcID,
-		PayloadType: PayloadTypePortFwdDisabled,
+		PayloadType: mmsp.PayloadType_PORTFWD_DISABLED,
 	}
 
-	SendCommandQueue <- p
+	TxControlQueue <- p
 }
 
 func portFwdUnavailable() {

@@ -21,10 +21,10 @@ func ClosePortFwd(srcPort, dstPort uint32, proto, srcNodeID, dstNodeID string, w
 	pfLinkID := portFwdLinkID(ipProto, srcNodeID, srcPort, dstNodeID, dstPort)
 
 	p1 := newPortFwdEnd(mmID, srcNodeID, srcNodeID, dstNodeID, pfLinkID)
-	SendCommandQueue <- p1
+	TxControlQueue <- p1
 
 	p2 := newPortFwdEnd(mmID, dstNodeID, srcNodeID, dstNodeID, pfLinkID)
-	SendCommandQueue <- p2
+	TxControlQueue <- p2
 
 	logging.Debug("Cleaning port-forward connections...")
 	time.Sleep(time.Second)
@@ -39,17 +39,17 @@ func portFwdClose(p *mmsp.Payload) {
 	lID := p.PortFwd.Link.ID
 
 	p1 := newPortFwdEnd(mmID, p.PortFwd.Link.SrcNodeID, srcNodeID, dstNodeID, lID)
-	SendCommandQueue <- p1
+	TxControlQueue <- p1
 
 	p2 := newPortFwdEnd(mmID, p.PortFwd.Link.DstNodeID, srcNodeID, dstNodeID, lID)
-	SendCommandQueue <- p2
+	TxControlQueue <- p2
 }
 
 func newPortFwdEnd(srcID, dstID, srcNodeID, dstNodeID, pfLinkID string) *mmsp.Payload {
 	return &mmsp.Payload{
 		SrcID:       srcID,
 		DstID:       dstID,
-		PayloadType: PayloadTypePortFwdEnd,
+		PayloadType: mmsp.PayloadType_PORTFWD_END,
 		PortFwd: &portFwd.PortFwd{
 			Link: &portFwd.Link{
 				ID:        pfLinkID,

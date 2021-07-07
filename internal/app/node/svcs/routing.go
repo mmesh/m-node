@@ -11,8 +11,7 @@ import (
 	"x6a.dev/pkg/xlog"
 )
 
-// routingAgent method implementation of NxNetwork gRPC Service
-
+// RoutingAgent runs routing engine
 func RoutingAgent(w *runtime.Wrkr) {
 	xlog.Infof("Started worker %s", w.Name)
 	w.Running = true

@@ -25,8 +25,7 @@ func MetricsAgent(w *runtime.Wrkr) {
 			case <-updateNodeMetrics:
 				n := getNodeMetrics()
 
-				_, err := w.NxNC.Metrics(context.Background(), n)
-				if err != nil {
+				if _, err := w.NxNC.Metrics(context.TODO(), n); err != nil {
 					xlog.Errorf("Unable to send metrics to mmesh controller: %v", err)
 					networkErrorEventsQueue <- struct{}{}
 					return

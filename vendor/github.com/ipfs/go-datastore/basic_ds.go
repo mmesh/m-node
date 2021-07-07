@@ -28,6 +28,11 @@ func (d *MapDatastore) Put(key Key, value []byte) (err error) {
 	return nil
 }
 
+// Sync implements Datastore.Sync
+func (d *MapDatastore) Sync(prefix Key) error {
+	return nil
+}
+
 // Get implements Datastore.Get
 func (d *MapDatastore) Get(key Key) (value []byte, err error) {
 	val, found := d.values[key]
@@ -53,9 +58,6 @@ func (d *MapDatastore) GetSize(key Key) (size int, err error) {
 
 // Delete implements Datastore.Delete
 func (d *MapDatastore) Delete(key Key) (err error) {
-	if _, found := d.values[key]; !found {
-		return ErrNotFound
-	}
 	delete(d.values, key)
 	return nil
 }
@@ -64,7 +66,7 @@ func (d *MapDatastore) Delete(key Key) (err error) {
 func (d *MapDatastore) Query(q dsq.Query) (dsq.Results, error) {
 	re := make([]dsq.Entry, 0, len(d.values))
 	for k, v := range d.values {
-		e := dsq.Entry{Key: k.String()}
+		e := dsq.Entry{Key: k.String(), Size: len(v)}
 		if !q.KeysOnly {
 			e.Value = v
 		}
@@ -95,6 +97,11 @@ func NewNullDatastore() *NullDatastore {
 
 // Put implements Datastore.Put
 func (d *NullDatastore) Put(key Key, value []byte) (err error) {
+	return nil
+}
+
+// Sync implements Datastore.Sync
+func (d *NullDatastore) Sync(prefix Key) error {
 	return nil
 }
 
@@ -162,6 +169,12 @@ func (d *LogDatastore) Put(key Key, value []byte) (err error) {
 	log.Printf("%s: Put %s\n", d.Name, key)
 	// log.Printf("%s: Put %s ```%s```", d.Name, key, value)
 	return d.child.Put(key, value)
+}
+
+// Sync implements Datastore.Sync
+func (d *LogDatastore) Sync(prefix Key) error {
+	log.Printf("%s: Sync %s\n", d.Name, prefix)
+	return d.child.Sync(prefix)
 }
 
 // Get implements Datastore.Get

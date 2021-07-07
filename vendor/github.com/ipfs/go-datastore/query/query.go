@@ -1,6 +1,7 @@
 package query
 
 import (
+	"fmt"
 	"time"
 
 	goprocess "github.com/jbenet/goprocess"
@@ -21,41 +22,32 @@ the use of queries. The datastore Query model gleans a common set of
 operations performed when querying. To avoid pasting here years of
 database research, let’s summarize the operations datastore supports.
 
-Query Operations:
+Query Operations, applied in-order:
 
-  * namespace - scope the query, usually by object type
+  * prefix - scope the query to a given path prefix
   * filters - select a subset of values by applying constraints
-  * orders - sort the results by applying sort conditions
-  * limit - impose a numeric limit on the number of results
+  * orders - sort the results by applying sort conditions, hierarchically.
   * offset - skip a number of results (for efficient pagination)
+  * limit - impose a numeric limit on the number of results
 
-datastore combines these operations into a simple Query class that allows
+Datastore combines these operations into a simple Query class that allows
 applications to define their constraints in a simple, generic, way without
 introducing datastore specific calls, languages, etc.
 
-Of course, different datastores provide relational query support across a
-wide spectrum, from full support in traditional databases to none at all in
-most key-value stores. Datastore aims to provide a common, simple interface
-for the sake of application evolution over time and keeping large code bases
-free of tool-specific code. It would be ridiculous to claim to support high-
-performance queries on architectures that obviously do not. Instead, datastore
-provides the interface, ideally translating queries to their native form
-(e.g. into SQL for MySQL).
+However, take heed: not all datastores support efficiently performing these
+operations. Pick a datastore based on your needs. If you need efficient look-ups,
+go for a simple key/value store. If you need efficient queries, consider an SQL
+backed datastore.
 
-However, on the wrong datastore, queries can potentially incur the high cost
-of performing the aforemantioned query operations on the data set directly in
-Go. It is the client’s responsibility to select the right tool for the job:
-pick a data storage solution that fits the application’s needs now, and wrap
-it with a datastore implementation. As the needs change, swap out datastore
-implementations to support your new use cases. Some applications, particularly
-in early development stages, can afford to incurr the cost of queries on non-
-relational databases (e.g. using a FSDatastore and not worry about a database
-at all). When it comes time to switch the tool for performance, updating the
-application code can be as simple as swapping the datastore in one place, not
-all over the application code base. This gain in engineering time, both at
-initial development and during later iterations, can significantly offset the
-cost of the layer of abstraction.
+Notes:
 
+  * Prefix: When a query filters by prefix, it selects keys that are strict
+    children of the prefix. For example, a prefix "/foo" would select "/foo/bar"
+    but not "/foobar" or "/foo",
+  * Orders: Orders are applied hierarchically. Results are sorted by the first
+    ordering, then entries equal under the first ordering are sorted with the
+    second ordering, etc.
+  * Limits & Offset: Limits and offsets are applied after everything else.
 */
 type Query struct {
 	Prefix            string   // namespaces the query to results whose keys have Prefix
@@ -65,6 +57,53 @@ type Query struct {
 	Offset            int      // skip given number of results
 	KeysOnly          bool     // return only keys.
 	ReturnExpirations bool     // return expirations (see TTLDatastore)
+	ReturnsSizes      bool     // always return sizes. If not set, datastore impl can return
+	//                         // it anyway if it doesn't involve a performance cost. If KeysOnly
+	//                         // is not set, Size should always be set.
+}
+
+// String returns a string representation of the Query for debugging/validation
+// purposes. Do not use it for SQL queries.
+func (q Query) String() string {
+	s := "SELECT keys"
+	if !q.KeysOnly {
+		s += ",vals"
+	}
+	if q.ReturnExpirations {
+		s += ",exps"
+	}
+
+	s += " "
+
+	if q.Prefix != "" {
+		s += fmt.Sprintf("FROM %q ", q.Prefix)
+	}
+
+	if len(q.Filters) > 0 {
+		s += fmt.Sprintf("FILTER [%s", q.Filters[0])
+		for _, f := range q.Filters[1:] {
+			s += fmt.Sprintf(", %s", f)
+		}
+		s += "] "
+	}
+
+	if len(q.Orders) > 0 {
+		s += fmt.Sprintf("ORDER [%s", q.Orders[0])
+		for _, f := range q.Orders[1:] {
+			s += fmt.Sprintf(", %s", f)
+		}
+		s += "] "
+	}
+
+	if q.Offset > 0 {
+		s += fmt.Sprintf("OFFSET %d ", q.Offset)
+	}
+
+	if q.Limit > 0 {
+		s += fmt.Sprintf("LIMIT %d ", q.Limit)
+	}
+	// Will always end with a space, strip it.
+	return s[:len(s)-1]
 }
 
 // Entry is a query result entry.
@@ -72,6 +111,8 @@ type Entry struct {
 	Key        string    // cant be ds.Key because circular imports ...!!!
 	Value      []byte    // Will be nil if KeysOnly has been passed.
 	Expiration time.Time // Entry expiration timestamp if requested and supported (see TTLDatastore).
+	Size       int       // Might be -1 if the datastore doesn't support listing the size with KeysOnly
+	//                   // or if ReturnsSizes is not set
 }
 
 // Result is a special entry that includes an error, so that the client
@@ -107,7 +148,7 @@ type Result struct {
 type Results interface {
 	Query() Query             // the query these Results correspond to
 	Next() <-chan Result      // returns a channel to wait for the next result
-	NextSync() (Result, bool) // blocks and waits to return the next result, second paramter returns false when results are exhausted
+	NextSync() (Result, bool) // blocks and waits to return the next result, second parameter returns false when results are exhausted
 	Rest() ([]Entry, error)   // waits till processing finishes, returns all entries at once.
 	Close() error             // client may call Close to signal early exit
 
@@ -239,7 +280,7 @@ func ResultsWithProcess(q Query, proc func(goprocess.Process, chan<- Result)) Re
 		proc(worker, b.Output)
 	})
 
-	go b.Process.CloseAfterChildren()
+	go b.Process.CloseAfterChildren() //nolint
 	return b.Results()
 }
 
@@ -377,10 +418,9 @@ func (r *resultsIter) useLegacyResults() {
 				return
 			}
 		}
-		return
 	})
 
-	go b.Process.CloseAfterChildren()
+	go b.Process.CloseAfterChildren() //nolint
 
 	r.legacyResults = b.Results().(*results)
 }

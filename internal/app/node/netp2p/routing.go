@@ -142,6 +142,10 @@ func (mma *mmAgent) connectRelays() {
 	if mma.rt != nil {
 		for _, r := range mma.rt.RT.Relays {
 			if r.VRFID == mma.vrfID || mma.rt.RT.Scope == routing.Scope_NETWORK {
+				if strings.Contains(r.MAddr, ":") {
+					// relays are ipv4 only
+					continue
+				}
 				peerInfo, err := getPeerInfo(r.MAddr)
 				if err != nil {
 					xlog.Errorf("Unable to get peer info: %v", err)

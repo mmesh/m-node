@@ -85,7 +85,7 @@ func runShell(payload *mmsp.Payload) {
 
 	// Finish cli session
 	p := NewShellExit(mmID, payload)
-	SendCommandQueue <- p
+	TxControlQueue <- p
 }
 
 func ptyRun(c *exec.Cmd, inrp *io.PipeReader, outwp *io.PipeWriter) error {

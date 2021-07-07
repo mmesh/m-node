@@ -29,12 +29,12 @@ func GenerateRSAKeyPair(bits int, _ io.Reader) (PrivKey, PubKey, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	return &RsaPrivateKey{opensslPrivateKey{key}}, &RsaPublicKey{opensslPublicKey{key}}, nil
+	return &RsaPrivateKey{opensslPrivateKey{key}}, &RsaPublicKey{opensslPublicKey{key: key}}, nil
 }
 
 // GetPublic returns a public key
 func (sk *RsaPrivateKey) GetPublic() PubKey {
-	return &RsaPublicKey{opensslPublicKey{sk.opensslPrivateKey.key}}
+	return &RsaPublicKey{opensslPublicKey{key: sk.opensslPrivateKey.key}}
 }
 
 // UnmarshalRsaPrivateKey returns a private key from the input x509 bytes
@@ -42,6 +42,9 @@ func UnmarshalRsaPrivateKey(b []byte) (PrivKey, error) {
 	key, err := unmarshalOpensslPrivateKey(b)
 	if err != nil {
 		return nil, err
+	}
+	if 8*key.key.Size() < MinRsaKeyBits {
+		return nil, ErrRsaKeyTooSmall
 	}
 	if key.Type() != RSA {
 		return nil, errors.New("not actually an rsa public key")
@@ -54,6 +57,9 @@ func UnmarshalRsaPublicKey(b []byte) (PubKey, error) {
 	key, err := unmarshalOpensslPublicKey(b)
 	if err != nil {
 		return nil, err
+	}
+	if 8*key.key.Size() < MinRsaKeyBits {
+		return nil, ErrRsaKeyTooSmall
 	}
 	if key.Type() != RSA {
 		return nil, errors.New("not actually an rsa public key")

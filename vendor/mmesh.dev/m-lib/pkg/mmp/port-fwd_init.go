@@ -15,7 +15,7 @@ func NewPortFwd(authKey *auth.AuthKey, srcPort, dstPort uint32, proto, srcID, ds
 	ipProto := uint32(ipnet.IPProtocol(proto))
 
 	p := newPortFwdListen(authKey, ipProto, srcPort, dstPort, srcID, dstID, interactive)
-	SendCommandQueue <- p
+	TxControlQueue <- p
 }
 
 func newPortFwdListen(authKey *auth.AuthKey, ipProto, srcPort, dstPort uint32, srcNodeID, dstNodeID string, interactive bool) *mmsp.Payload {
@@ -32,7 +32,7 @@ func newPortFwdListen(authKey *auth.AuthKey, ipProto, srcPort, dstPort uint32, s
 		AuthKey:     authKey,
 		//PSK: viper.GetString("agent.management.auth.psk"),
 		//SecurityToken: viper.GetString("agent.management.auth.securityToken"),
-		PayloadType: PayloadTypePortFwdListen,
+		PayloadType: mmsp.PayloadType_PORTFWD_LISTEN,
 		PortFwd: &portFwd.PortFwd{
 			Link: &portFwd.Link{
 				ID:        pfLinkID,

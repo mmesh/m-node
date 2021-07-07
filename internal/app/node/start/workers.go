@@ -1,22 +1,22 @@
 package start
 
 import (
-	nrpc "mmesh.dev/m-api-go/grpc/network/rpc"
+	"mmesh.dev/m-api-go/grpc/rpc"
 	"mmesh.dev/m-lib/pkg/mmp"
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-lib/pkg/update"
-	"mmesh.dev/m-node/internal/app/node/ae/dispatcher"
+	"mmesh.dev/m-node/internal/app/node/ops"
 	"mmesh.dev/m-node/internal/app/node/svcs"
 )
 
 const (
 	errorEventsHandler = iota
 	networkErrorEventsHandler
+	mmDispatcher
 	mmProcessor
-	mmWorkflowDispatcher
 	dnsAgent
 	metricsAgent
-	mmpAgent
+	mmpControlAgent
 	routingAgent
 	cronAgent
 	atdAgent
@@ -27,7 +27,7 @@ const (
 	//bgpAgent
 )
 
-func initWrkrs(nxnc nrpc.NetworkAPIClient) {
+func initWrkrs(nxnc rpc.NetworkAPIClient) {
 	runtime.RegisterWrkr(
 		errorEventsHandler,
 		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmErrorEventsHandler"),
@@ -39,14 +39,14 @@ func initWrkrs(nxnc nrpc.NetworkAPIClient) {
 		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, svcs.NetworkErrorEventsHandler),
 	)
 	runtime.RegisterWrkr(
-		mmProcessor,
-		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmProcessor"),
-		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, mmp.CmdEventsHandler),
+		mmDispatcher,
+		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmDispatcher"),
+		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, mmp.Dispatcher),
 	)
 	runtime.RegisterWrkr(
-		mmWorkflowDispatcher,
-		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmWorkflowDispatcher"),
-		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, dispatcher.WorkflowEventHandler),
+		mmProcessor,
+		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmProcessor"),
+		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, svcs.MMPProcessor),
 	)
 	runtime.RegisterWrkr(
 		dnsAgent,
@@ -61,9 +61,9 @@ func initWrkrs(nxnc nrpc.NetworkAPIClient) {
 		runtime.SetWrkrOpt(runtime.WrkrOptNxNetworkClient, nxnc),
 	)
 	runtime.RegisterWrkr(
-		mmpAgent,
-		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmpAgent"),
-		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, svcs.MMPAgent),
+		mmpControlAgent,
+		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmpControlAgent"),
+		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, svcs.MMPControl),
 		runtime.SetWrkrOpt(runtime.WrkrOptNxNetworkClient, nxnc),
 	)
 	runtime.RegisterWrkr(
@@ -75,12 +75,12 @@ func initWrkrs(nxnc nrpc.NetworkAPIClient) {
 	runtime.RegisterWrkr(
 		cronAgent,
 		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmCron"),
-		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, dispatcher.Cron),
+		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, ops.Cron),
 	)
 	runtime.RegisterWrkr(
 		atdAgent,
 		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmAtd"),
-		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, dispatcher.Atd),
+		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, ops.Atd),
 	)
 	runtime.RegisterWrkr(
 		k8sConnector,

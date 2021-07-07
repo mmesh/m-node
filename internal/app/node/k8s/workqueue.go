@@ -7,7 +7,8 @@ import (
 	v1 "k8s.io/api/core/v1"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/fields"
-	"k8s.io/apimachinery/pkg/util/runtime"
+	"k8s.io/apimachinery/pkg/runtime"
+	util_runtime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -37,14 +38,6 @@ type objEvent struct {
 	evt eventType
 }
 
-func newController(queue workqueue.RateLimitingInterface, indexer cache.Indexer, informer cache.Controller) *controller {
-	return &controller{
-		informer: informer,
-		indexer:  indexer,
-		queue:    queue,
-	}
-}
-
 func (c *controller) processNextItem() bool {
 	// Wait until there is a new item in the working queue
 	objEvt, quit := c.queue.Get()
@@ -64,6 +57,8 @@ func (c *controller) processNextItem() bool {
 	switch o := oevt.obj.(type) {
 	case *v1.Service:
 		err = c.manageSvcEvent(o, oevt.evt)
+	case *v1.Pod:
+		err = c.managePodEvent(o, oevt.evt)
 	}
 
 	// Handle the error if something went wrong during the execution of the business logic
@@ -119,22 +114,24 @@ func (c *controller) handleErr(err error, objEvt interface{}) {
 	c.queue.Forget(objEvt)
 	// Report to an external entity that, even after several retries, we could not successfully process this key
 	//runtime.HandleError(err)
+	//runtime.Hanror(err)
 	xlog.Errorf("Dropping object %s out of the queue: %v", objEvt.(*objEvent).key, err)
 }
 
-func (c *controller) run(threadiness int, stopCh chan struct{}) {
-	defer runtime.HandleCrash()
+func (c *controller) run(name string, threadiness int, stopCh chan struct{}) {
+	defer util_runtime.HandleCrash()
 
 	// Let the workers stop when we are done
 	defer c.queue.ShutDown()
-	xlog.Info("Starting kubernetes controller")
+	xlog.Infof("Starting kubernetes %s controller", name)
 
 	go c.informer.Run(stopCh)
 
 	// Wait for all involved caches to be synced, before processing items from the queue is started
 	if !cache.WaitForCacheSync(stopCh, c.informer.HasSynced) {
-		//runtime.HandleError(fmt.Errorf("Timed out waiting for caches to sync"))
-		xlog.Error("Timed out waiting for caches to sync")
+		// runtime.HandleError(fmt.Errorf("Timed out waiting for caches to sync"))
+		// runtime.HandleError(fmt.Errorf("Timed out waiting for cach sync"))
+		xlog.Errorf("[kubernetes %s controller] Timed out waiting for caches to sync", name)
 		return
 	}
 
@@ -143,7 +140,7 @@ func (c *controller) run(threadiness int, stopCh chan struct{}) {
 	}
 
 	<-stopCh
-	xlog.Info("Stopping kubernetes controller")
+	xlog.Infof("Stopping kubernetes %s controller", name)
 }
 
 func (c *controller) runWorker() {
@@ -164,18 +161,42 @@ func KubernetesController(quitCh chan struct{}) error {
 		return err
 	}
 
-	// if k8sSvcMap == nil {
-	// 	k8sSvcMap = newK8sServiceMap()
-	// }
-
-	// create the svc watcher
+	// svc watcher
 	svcListWatcher := cache.NewListWatchFromClient(
 		clientset.CoreV1().RESTClient(),
 		string(v1.ResourceServices),
 		v1.NamespaceAll,
 		fields.Everything(),
 	)
+	// svc controller
+	svcController := newController(svcListWatcher, &v1.Service{})
 
+	// pod watcher
+	podListWatcher := cache.NewListWatchFromClient(
+		clientset.CoreV1().RESTClient(),
+		string(v1.ResourcePods),
+		v1.NamespaceAll,
+		fields.Everything(),
+	)
+	// pod controller
+	podController := newController(podListWatcher, &v1.Pod{})
+
+	// Now let's start the svcController
+	svcStop := make(chan struct{})
+	defer close(svcStop)
+	go svcController.run("svc", 1, svcStop)
+
+	// Now let's start the podController
+	podStop := make(chan struct{})
+	defer close(podStop)
+	go podController.run("pod", 1, podStop)
+
+	<-quitCh
+
+	return nil
+}
+
+func newController(lw cache.ListerWatcher, objType runtime.Object) *controller {
 	// create the workqueue
 	queue := workqueue.NewRateLimitingQueue(workqueue.DefaultControllerRateLimiter())
 
@@ -183,7 +204,7 @@ func KubernetesController(quitCh chan struct{}) error {
 	// whenever the cache is updated, the svc key is added to the workqueue.
 	// Note that when we finally process the item from the workqueue, we might see a newer version
 	// of the Service than the version which was responsible for triggering the update.
-	indexer, informer := cache.NewIndexerInformer(svcListWatcher, &v1.Service{}, 0, cache.ResourceEventHandlerFuncs{
+	indexer, informer := cache.NewIndexerInformer(lw, objType, 0, cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
 			key, err := cache.MetaNamespaceKeyFunc(obj)
 			if err == nil {
@@ -219,8 +240,6 @@ func KubernetesController(quitCh chan struct{}) error {
 		},
 	}, cache.Indexers{})
 
-	controller := newController(queue, indexer, informer)
-
 	// We can now warm up the cache for initial synchronization.
 	// Let's suppose that we knew about a pod "mypod" on our last run, therefore add it to the cache.
 	// If this pod is not there anymore, the controller will be notified about the removal after the
@@ -232,13 +251,9 @@ func KubernetesController(quitCh chan struct{}) error {
 		},
 	})
 
-	// Now let's start the controller
-	stop := make(chan struct{})
-	defer close(stop)
-
-	go controller.run(1, stop)
-
-	<-quitCh
-
-	return nil
+	return &controller{
+		informer: informer,
+		indexer:  indexer,
+		queue:    queue,
+	}
 }

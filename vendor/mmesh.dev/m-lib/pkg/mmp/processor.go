@@ -9,104 +9,91 @@ import (
 	"x6a.dev/pkg/xlog"
 )
 
-const (
-	PayloadTypeNodeInit = iota
-	PayloadTypeCancelSession
+var RxControlQueue = make(chan *mmsp.Payload, 128)
+var TxControlQueue = make(chan *mmsp.Payload, 128)
 
-	PayloadTypeCommandShellExec
-	PayloadTypeCommandShellExit
-	PayloadTypeCommandShellInput
-	PayloadTypeCommandShellOutput
-	PayloadTypeCommandShellDisabled
+var ControllerQueue = make(chan *mmsp.Payload, 128)
+var NodeQueue = make(chan *mmsp.Payload, 128)
 
-	PayloadTypeTransferInit
-	PayloadTypeTransferData
-	PayloadTypeTransferAck
-	PayloadTypeTransferDisabled
-
-	PayloadTypePortFwdListen
-	PayloadTypePortFwdDial
-	PayloadTypePortFwdDialAck
-	PayloadTypePortFwdEnd
-	PayloadTypePortFwdData
-	PayloadTypePortFwdDisabled
-
-	PayloadTypeWorkflowExpedite
-	PayloadTypeWorkflowSchedule
-	PayloadTypeWorkflowResponse
-)
-
-var RecvCommandQueue = make(chan *mmsp.Payload, 128)
-var SendCommandQueue = make(chan *mmsp.Payload, 128)
-
-func CmdEventsHandler(w *runtime.Wrkr) {
+func Dispatcher(w *runtime.Wrkr) {
 	xlog.Infof("Started worker %s", w.Name)
 	w.Running = true
 
-	for {
-		select {
-		case payload := <-RecvCommandQueue:
-			xlog.Debugf("Received command on queue from %s", payload.SrcID)
-			Processor(context.Background(), payload)
-		case <-w.QuitChan:
-			w.WG.Done()
-			w.Running = false
-			xlog.Infof("Stopped worker %s", w.Name)
-			return
+	close := make(chan struct{}, 1)
+
+	go func() {
+		for {
+			select {
+			case payload := <-RxControlQueue:
+				xlog.Debugf("Received pdu on controlQueue from %s", payload.SrcID)
+				Processor(context.TODO(), payload)
+			case <-close:
+				xlog.Debug("Closing mmp dispacher")
+				return
+			}
 		}
-	}
+	}()
+
+	<-w.QuitChan
+
+	close <- struct{}{}
+
+	w.WG.Done()
+	w.Running = false
+	xlog.Infof("Stopped worker %s", w.Name)
 }
 
 func Processor(ctx context.Context, p *mmsp.Payload) error {
 	var err error
 
 	switch p.PayloadType {
-	case PayloadTypeNodeInit:
-		// err = mmpNodeInit(ctx, p)
-		WorkflowControllerQueue <- p
+	case mmsp.PayloadType_NODE_INIT:
+		ControllerQueue <- p
+	case mmsp.PayloadType_NODE_KEEPALIVE:
+		ControllerQueue <- p
 
-	case PayloadTypeCommandShellExec:
+	case mmsp.PayloadType_COMMAND_SHELL_EXEC:
 		go shellExec(ctx, p)
-	case PayloadTypeCommandShellExit:
+	case mmsp.PayloadType_COMMAND_SHELL_EXIT:
 		err = shellExit(ctx, p)
-	case PayloadTypeCommandShellInput:
+	case mmsp.PayloadType_COMMAND_SHELL_INPUT:
 		err = shellReadInput(ctx, p)
-	case PayloadTypeCommandShellOutput:
+	case mmsp.PayloadType_COMMAND_SHELL_OUTPUT:
 		err = shellReadOutput(ctx, p)
-	case PayloadTypeCommandShellDisabled:
+	case mmsp.PayloadType_COMMAND_SHELL_DISABLED:
 		shellUnavailable()
 
-	case PayloadTypeTransferInit:
+	case mmsp.PayloadType_TRANSFER_INIT:
 		err = transferInit(ctx, p)
-	case PayloadTypeTransferData:
+	case mmsp.PayloadType_TRANSFER_DATA:
 		err = transferDataRx(ctx, p)
-	case PayloadTypeTransferAck:
+	case mmsp.PayloadType_TRANSFER_ACK:
 		err = transferAckRx(ctx, p)
-	case PayloadTypeTransferDisabled:
+	case mmsp.PayloadType_TRANSFER_DISABLED:
 		transferUnavailable()
 
-	case PayloadTypePortFwdListen:
+	case mmsp.PayloadType_PORTFWD_LISTEN:
 		go portFwdListen(ctx, p)
-	case PayloadTypePortFwdDial:
+	case mmsp.PayloadType_PORTFWD_DIAL:
 		go portFwdDial(ctx, p)
-	case PayloadTypePortFwdDialAck:
+	case mmsp.PayloadType_PORTFWD_DIALACK:
 		err = portFwdDialAck(ctx, p)
-	case PayloadTypePortFwdEnd:
+	case mmsp.PayloadType_PORTFWD_END:
 		err = portFwdEnd(ctx, p)
-	case PayloadTypePortFwdData:
+	case mmsp.PayloadType_PORTFWD_DATA:
 		err = portFwdReadData(ctx, p)
-	case PayloadTypePortFwdDisabled:
+	case mmsp.PayloadType_PORTFWD_DISABLED:
 		portFwdUnavailable()
 
-	case PayloadTypeWorkflowExpedite:
-		// err = workflowExpedite(ctx, p)
-		WorkflowNodeQueue <- p
-	case PayloadTypeWorkflowSchedule:
-		// err = workflowSchedule(ctx, p)
-		WorkflowNodeQueue <- p
-	case PayloadTypeWorkflowResponse:
-		// err = workflowResponse(ctx, p)
-		WorkflowControllerQueue <- p
+	case mmsp.PayloadType_WORKFLOW_EXPEDITE:
+		NodeQueue <- p
+	case mmsp.PayloadType_WORKFLOW_SCHEDULE:
+		NodeQueue <- p
+	case mmsp.PayloadType_WORKFLOW_RESPONSE:
+		ControllerQueue <- p
+
+	case mmsp.PayloadType_ALERT_EVENT:
+		ControllerQueue <- p
 	}
 
 	if err != nil {

@@ -4,15 +4,18 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-	nrpc "mmesh.dev/m-api-go/grpc/network/rpc"
+	"google.golang.org/grpc"
 	"mmesh.dev/m-api-go/grpc/resources/iam/auth"
+	"mmesh.dev/m-api-go/grpc/rpc"
 	"mmesh.dev/m-lib/pkg/grpc/client"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
 )
 
-func AgentConnect() nrpc.NetworkAPIClient {
-	var nxnc nrpc.NetworkAPIClient
+var GRPCClientConn *grpc.ClientConn
+
+func AgentConnect() rpc.NetworkAPIClient {
+	var nxnc rpc.NetworkAPIClient
 	var err error
 
 	authKey := &auth.AuthKey{
@@ -27,7 +30,7 @@ func AgentConnect() nrpc.NetworkAPIClient {
 	connectionFailed := false
 
 	for nxnc == nil || err != nil {
-		nxnc, err = client.NewNetworkAPIClient(endpoint, authKey, authSecret)
+		nxnc, GRPCClientConn, err = client.NewNetworkAPIClient(endpoint, authKey, authSecret)
 		if err != nil {
 			xlog.Errorf("Unable to connect to controller %s: %v", endpoint, errors.Cause(err))
 
@@ -51,7 +54,7 @@ func AgentConnect() nrpc.NetworkAPIClient {
 
 				endpoint = e
 
-				if err := client.NxClientConn.Close(); err != nil {
+				if err := GRPCClientConn.Close(); err != nil {
 					xlog.Alertf("Unable to close gRPC network connection: %v", err)
 				}
 				nxnc = nil

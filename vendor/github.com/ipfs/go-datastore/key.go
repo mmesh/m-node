@@ -125,7 +125,7 @@ func (k Key) List() []string {
 //   NewKey("/Actor:JohnCleese/MontyPython/Comedy")
 func (k Key) Reverse() Key {
 	l := k.List()
-	r := make([]string, len(l), len(l))
+	r := make([]string, len(l))
 	for i, e := range l {
 		r[len(l)-i-1] = e
 	}
@@ -212,20 +212,27 @@ func (k Key) ChildString(s string) Key {
 //   NewKey("/Comedy").IsAncestorOf("/Comedy/MontyPython")
 //   true
 func (k Key) IsAncestorOf(other Key) bool {
-	if other.string == k.string {
+	// equivalent to HasPrefix(other, k.string + "/")
+
+	if len(other.string) <= len(k.string) {
+		// We're not long enough to be a child.
 		return false
 	}
-	return strings.HasPrefix(other.string, k.string)
+
+	if k.string == "/" {
+		// We're the root and the other key is longer.
+		return true
+	}
+
+	// "other" starts with /k.string/
+	return other.string[len(k.string)] == '/' && other.string[:len(k.string)] == k.string
 }
 
 // IsDescendantOf returns whether this key contains another as a prefix.
 //   NewKey("/Comedy/MontyPython").IsDescendantOf("/Comedy")
 //   true
 func (k Key) IsDescendantOf(other Key) bool {
-	if other.string == k.string {
-		return false
-	}
-	return strings.HasPrefix(k.string, other.string)
+	return other.IsAncestorOf(k)
 }
 
 // IsTopLevel returns whether this key has only one namespace.

@@ -16,7 +16,7 @@ func NewShellRequest(authKey *auth.AuthKey, dstID string, c string, args ...stri
 		AuthKey:       authKey,
 		PSK:           viper.GetString("agent.management.auth.psk"),
 		SecurityToken: viper.GetString("agent.management.auth.securityToken"),
-		PayloadType:   PayloadTypeCommandShellExec,
+		PayloadType:   mmsp.PayloadType_COMMAND_SHELL_EXEC,
 		Command: &command.Command{
 			CommandType: commandTypeShell,
 			CommandRequest: &command.CommandRequest{
@@ -27,5 +27,5 @@ func NewShellRequest(authKey *auth.AuthKey, dstID string, c string, args ...stri
 		},
 	}
 
-	SendCommandQueue <- p
+	TxControlQueue <- p
 }

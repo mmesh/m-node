@@ -3,7 +3,6 @@ package dht
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/routing"
@@ -11,19 +10,13 @@ import (
 	ci "github.com/libp2p/go-libp2p-core/crypto"
 )
 
-// MaxRecordAge specifies the maximum time that any node will hold onto a record
-// from the time its received. This does not apply to any other forms of validity that
-// the record may contain.
-// For example, a record may contain an ipns entry with an EOL saying its valid
-// until the year 2020 (a great time in the future). For that record to stick around
-// it must be rebroadcasted more frequently than once every 'MaxRecordAge'
-const MaxRecordAge = time.Hour * 36
-
 type pubkrs struct {
 	pubk ci.PubKey
 	err  error
 }
 
+// GetPublicKey gets the public key when given a Peer ID. It will extract from
+// the Peer ID if inlined or ask the node it belongs to or ask the DHT.
 func (dht *IpfsDHT) GetPublicKey(ctx context.Context, p peer.ID) (ci.PubKey, error) {
 	logger.Debugf("getPublicKey for: %s", p)
 
@@ -64,7 +57,7 @@ func (dht *IpfsDHT) GetPublicKey(ctx context.Context, p peer.ID) (ci.PubKey, err
 			// Found the public key
 			err := dht.peerstore.AddPubKey(p, r.pubk)
 			if err != nil {
-				logger.Warningf("Failed to add public key to peerstore for %v", p)
+				logger.Errorw("failed to add public key to peerstore", "peer", p)
 			}
 			return r.pubk, nil
 		}
@@ -86,7 +79,7 @@ func (dht *IpfsDHT) getPublicKeyFromDHT(ctx context.Context, p peer.ID) (ci.PubK
 
 	pubk, err := ci.UnmarshalPublicKey(val)
 	if err != nil {
-		logger.Errorf("Could not unmarshall public key retrieved from DHT for %v", p)
+		logger.Errorf("Could not unmarshal public key retrieved from DHT for %v", p)
 		return nil, err
 	}
 
@@ -118,7 +111,7 @@ func (dht *IpfsDHT) getPublicKeyFromNode(ctx context.Context, p peer.ID) (ci.Pub
 
 	pubk, err := ci.UnmarshalPublicKey(record.GetValue())
 	if err != nil {
-		logger.Errorf("Could not unmarshall public key for %v", p)
+		logger.Errorf("Could not unmarshal public key for %v", p)
 		return nil, err
 	}
 

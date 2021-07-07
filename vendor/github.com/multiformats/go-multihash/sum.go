@@ -17,6 +17,8 @@ import (
 // ErrSumNotSupported is returned when the Sum function code is not implemented
 var ErrSumNotSupported = errors.New("Function not implemented. Complain to lib maintainer.")
 
+var ErrLenTooLarge = errors.New("requested length was too large for digest")
+
 // HashFunc is a hash function that hashes data into digest.
 //
 // The length is the size the digest will be truncated to. While the hash
@@ -53,20 +55,32 @@ func Sum(data []byte, code uint64, length int) (Multihash, error) {
 	if err != nil {
 		return nil, err
 	}
+	if len(d) < length {
+		return nil, ErrLenTooLarge
+	}
+
 	if length >= 0 {
 		d = d[:length]
 	}
 	return Encode(d, code)
 }
 
-func sumBlake2s(data []byte, size int) ([]byte, error) {
-	if size != 32 {
-		return nil, fmt.Errorf("unsupported length for blake2s: %d", size)
-	}
+func sumBlake2s32(data []byte, _ int) ([]byte, error) {
 	d := blake2s.Sum256(data)
 	return d[:], nil
 }
 func sumBlake2b(data []byte, size int) ([]byte, error) {
+	// special case these lengths to avoid allocations.
+	switch size {
+	case 32:
+		hash := blake2b.Sum256(data)
+		return hash[:], nil
+	case 64:
+		hash := blake2b.Sum512(data)
+		return hash[:], nil
+	}
+
+	// Ok, allocate away.
 	hasher, err := blake2b.New(&blake2b.Config{Size: uint8(size)})
 	if err != nil {
 		return nil, err
@@ -167,7 +181,7 @@ func sumSHA3_224(data []byte, length int) ([]byte, error) {
 }
 
 func registerStdlibHashFuncs() {
-	RegisterHashFunc(ID, sumID)
+	RegisterHashFunc(IDENTITY, sumID)
 	RegisterHashFunc(SHA1, sumSHA1)
 	RegisterHashFunc(SHA2_512, sumSHA512)
 	RegisterHashFunc(MD5, sumMD5)
@@ -185,19 +199,16 @@ func registerNonStdlibHashFuncs() {
 	RegisterHashFunc(SHA3_384, sumSHA3_384)
 	RegisterHashFunc(SHA3_512, sumSHA3_512)
 
-	RegisterHashFunc(MURMUR3, sumMURMUR3)
+	RegisterHashFunc(MURMUR3_128, sumMURMUR3)
 
 	RegisterHashFunc(SHAKE_128, sumSHAKE128)
 	RegisterHashFunc(SHAKE_256, sumSHAKE256)
 
 	// Blake family of hash functions
 	// BLAKE2S
-	for c := uint64(BLAKE2S_MIN); c <= BLAKE2S_MAX; c++ {
-		size := int(c - BLAKE2S_MIN + 1)
-		RegisterHashFunc(c, func(buf []byte, _ int) ([]byte, error) {
-			return sumBlake2s(buf, size)
-		})
-	}
+	//
+	// We only support 32byte (256 bit)
+	RegisterHashFunc(BLAKE2S_MIN+31, sumBlake2s32)
 	// BLAKE2B
 	for c := uint64(BLAKE2B_MIN); c <= BLAKE2B_MAX; c++ {
 		size := int(c - BLAKE2B_MIN + 1)

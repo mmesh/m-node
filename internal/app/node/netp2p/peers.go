@@ -13,11 +13,11 @@ import (
 
 func (mma *mmAgent) connectPeer(peerInfo *peer.AddrInfo) error {
 	if peerInfo.ID.Pretty() != mma.p2pHost.ID().Pretty() {
-		ctx := context.Background()
+		ctx := context.TODO()
 
 		mma.p2pHost.Network().(*swarm.Swarm).Backoff().Clear(peerInfo.ID)
 		if err := mma.p2pHost.Connect(ctx, *peerInfo); err != nil {
-			xlog.Warnf("Connection FAILED with peer %s", peerInfo.ID.Pretty())
+			xlog.Debugf("Connection FAILED with peer %s", peerInfo.ID.Pretty())
 			xlog.Trace(err)
 			return errors.Wrapf(err, "[%v] function nxHost.Connect(ctx, *peerInfo)", errors.Trace())
 		}
