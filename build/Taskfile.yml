@@ -39,20 +39,23 @@ tasks:
       - task: golang:go-verify-vendor
       # - task: golang:go-vet
       # - task: golang:golangci-lint
-      - goreleaser build -f build/ci/goreleaser/node.yml --snapshot --rm-dist
+      # - goreleaser build -f build/ci/goreleaser/node.yml --snapshot --rm-dist
+      # - goreleaser build -f build/ci/goreleaser/release.yml --rm-dist --skip-validate
+      - goreleaser release -f build/ci/goreleaser/release.yml --snapshot --rm-dist
+      # - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist --skip-validate
 
   build-all:
     desc: Build all binaries.
     deps: [golang:golang-builder]
     cmds:
-      - docker run --rm -v {{.PROJECT_DIR}}:/go/src/{{.PROJECT}} -v /var/run/docker.sock:/var/run/docker.sock -w /go/src/{{.PROJECT}}/modules/{{.NAME}} --cap-add=IPC_LOCK --ulimit memlock=-1:-1 x6adev/golang-builder:latest _build-all
+      - docker run --rm -e GITHUB_TOKEN="$(cat $HOME/.cloud/github/github_token.buildbot)" -v {{.PROJECT_DIR}}:/go/src/{{.PROJECT}} -v /var/run/docker.sock:/var/run/docker.sock -w /go/src/{{.PROJECT}}/modules/{{.NAME}} --cap-add=IPC_LOCK --ulimit memlock=-1:-1 x6adev/golang-builder:latest _build-all
       - sudo chown -R {{.LOCAL_UID}}:{{.LOCAL_GID}} .
 
   build-node:
     desc: Build the node binary.
     deps: [golang:golang-builder]
     cmds:
-      - docker run --rm -v {{.PROJECT_DIR}}:/go/src/{{.PROJECT}} -v /var/run/docker.sock:/var/run/docker.sock -w /go/src/{{.PROJECT}}/modules/{{.NAME}} --cap-add=IPC_LOCK --ulimit memlock=-1:-1 x6adev/golang-builder:latest _build-node
+      - docker run --rm -e GITHUB_TOKEN="$(cat $HOME/.cloud/github/github_token.buildbot)" -v {{.PROJECT_DIR}}:/go/src/{{.PROJECT}} -v /var/run/docker.sock:/var/run/docker.sock -w /go/src/{{.PROJECT}}/modules/{{.NAME}} --cap-add=IPC_LOCK --ulimit memlock=-1:-1 x6adev/golang-builder:latest _build-node
       - sudo chown -R {{.LOCAL_UID}}:{{.LOCAL_GID}} .
 
   clean:
@@ -125,9 +128,10 @@ tasks:
       # - task: golang:go-vet
       # - task: golang:golangci-lint
       - task: git:update-git-repo
+      # - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist --skip-validate
       - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist
       - ./scripts/_local/build/gh-tag-delete.sh '{{.VERSION}}'
-      - task: release-binaries-dev
+      # - task: release-binaries-stable
 
 includes:
   git: ./build/taskfiles/build/gitTasks.yml

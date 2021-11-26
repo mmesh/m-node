@@ -2,13 +2,13 @@ project_name: mmesh
 
 dist: _dist
 
-env_files:
-  github_token: ~/.cloud/github/github_token.buildbot
+# env_files:
+  # github_token: ~/.cloud/github/github_token.buildbot
 
 env:
   - GO111MODULE=on
-  - PKG_REPO='mmesh'
-  - PKG_REPO_DEV='mmesh-dev'
+  # - PKG_REPO='mmesh'
+  # - PKG_REPO_DEV='mmesh-dev'
 
 before:
   hooks:
@@ -46,18 +46,19 @@ builds:
     - CGO_ENABLED=0
   goos:
     - linux
-    - darwin
-    - windows
+    # - darwin
+    # - windows
   goarch:
     - amd64
-    - arm64
+    # - arm64
   # lang: go
 
 archives:
 - id: mmesh-node
   builds:
     - mmesh-node
-  name_template: "{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
+  # name_template: "{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
+  name_template: "{{ .ProjectName }}-node_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
   wrap_in_directory: false
   format: tar.gz
   format_overrides:
@@ -65,19 +66,22 @@ archives:
       format: zip
 
 checksum:
-  name_template: '{{ .ProjectName }}_{{ .Tag }}_checksums.txt'
+  # name_template: '{{ .ProjectName }}_{{ .Tag }}_checksums.txt'
+  name_template: '{{ .ProjectName }}_{{ .Version }}_checksums.txt'
   algorithm: sha256
 
 signs:
   - artifacts: none
 
 snapshot:
-  name_template: '{{ .Tag }}-SNAPSHOT-{{.ShortCommit}}'
+  # name_template: '{{ .Tag }}-SNAPSHOT-{{.ShortCommit}}'
+  name_template: '{{ .Version }}-SNAPSHOT-{{.ShortCommit}}'
 
 nfpms:
   - id: mmesh-node
     package_name: mmesh-node
-    file_name_template: "{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
+    # file_name_template: "{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
+    file_name_template: "{{ .ProjectName }}-node_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     builds:
       - mmesh-node
     vendor: mmesh.io
@@ -109,6 +113,9 @@ nfpms:
       - src: ./configs/mmesh-node.yml
         dst: /etc/mmesh/mmesh-node.yml
         type: config
+      # empty dir
+      # - dst: /var/lib/mmesh
+      #   type: dir
 
 dockers:
   - dockerfile: ./build/package/dockerfiles/dockerfile-node
