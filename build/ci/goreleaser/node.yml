@@ -39,7 +39,7 @@ builds:
   goarch:
     - amd64
     - arm64
-  lang: go
+  # lang: go
 
 # snapshot:
 #   name_template: '{{.Tag}}-{{.Env.VERSION_DATE}}-SNAPSHOT-{{.ShortCommit}}'

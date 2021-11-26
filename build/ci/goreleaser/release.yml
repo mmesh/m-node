@@ -51,7 +51,7 @@ builds:
   goarch:
     - amd64
     - arm64
-  lang: go
+  # lang: go
 
 archives:
 - id: mmesh-node
