@@ -157,11 +157,11 @@ changelog:
 publishers:
   # dev repos
   - name: repo.mmesh.dev/apt
-    cmd: echo ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.deb' '{{.Env.PKG_REPO_DEV}}'
+    cmd: echo ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.deb' '{{.Env.PKG_REPO_DEV}}' >> gr.log
   - name: repo.mmesh.dev/yum
-    cmd: echo ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.rpm' '{{.Env.PKG_REPO_DEV}}'
+    cmd: echo ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.rpm' '{{.Env.PKG_REPO_DEV}}' >> gr.log
   # stable repos
   - name: repo.mmesh.io/apt
-    cmd: echo ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.deb' '{{.Env.PKG_REPO}}'
+    cmd: echo ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.deb' '{{.Env.PKG_REPO}}' >> gr.log
   - name: repo.mmesh.io/yum
-    cmd: echo ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.rpm' '{{.Env.PKG_REPO}}'
+    cmd: echo ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.rpm' '{{.Env.PKG_REPO}}' >> gr.log

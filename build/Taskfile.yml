@@ -126,7 +126,7 @@ tasks:
       # - task: golang:golangci-lint
       - task: git:update-git-repo
       - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist
-      # - ./scripts/_local/build/gh-tag-delete.sh '{{.VERSION}}'
+      - ./scripts/_local/build/gh-tag-delete.sh '{{.VERSION}}'
 
 includes:
   git: ./build/taskfiles/build/gitTasks.yml
