@@ -2,8 +2,8 @@ project_name: mmesh
 
 dist: _dist
 
-# env_files:
-  # github_token: ~/.cloud/github/github_token.buildbot
+env_files:
+  github_token: ~/.cloud/github/github_token.buildbot
 
 env:
   - GO111MODULE=on
