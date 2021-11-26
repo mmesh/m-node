@@ -2,16 +2,16 @@ package mmp
 
 import (
 	"context"
-	"io"
 	"os/exec"
 
-	"github.com/creack/pty"
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
+	"mmesh.dev/m-lib/pkg/mmp/streaming"
+	"mmesh.dev/m-lib/pkg/mmp/term"
 	"x6a.dev/pkg/xlog"
 )
 
-var shs = newShellSession()
+var shs = streaming.NewIOSessions()
 
 func shellExec(ctx context.Context, p *mmsp.Payload) {
 	if !mgmtAuth(p) {
@@ -32,17 +32,17 @@ func runShell(payload *mmsp.Payload) {
 	mmID := viper.GetString("mm.id")
 	sID := payload.SrcID
 
-	shs.setShellSession(sID)
-	iop := shs.getShellSessionIO(sID)
+	shs.SetIOSession(sID)
+	iop := shs.GetIOSessionIO(sID)
 	if iop == nil {
 		xlog.Errorf("shell io pipes not found for session from %s", sID)
 		return
 	}
-	if iop.out.rp == nil {
+	if iop.Out.RP == nil {
 		xlog.Errorf("shell output writer pipe not found for session from %s", sID)
 		return
 	}
-	if iop.in.rp == nil {
+	if iop.In.RP == nil {
 		xlog.Errorf("shell input writer pipe not found for session from %s", sID)
 		return
 	}
@@ -63,14 +63,14 @@ func runShell(payload *mmsp.Payload) {
 	// }
 
 	go func() {
-		shellWriteOutput(mmID, payload, iop.out.rp)
+		shellWriteOutput(mmID, payload, iop.Out.RP)
 		waitc <- struct{}{}
 	}()
 
 	xlog.Trace("Shell starting")
 
 	go func() {
-		err := ptyRun(c, iop.in.rp, iop.out.wp)
+		err := term.PTYRun(c, iop.In.RP, iop.Out.WP)
 		if nil != err {
 			xlog.Errorf("Unable to run shell %s: %v", cReq.Command.Cmd, err)
 		}
@@ -81,37 +81,9 @@ func runShell(payload *mmsp.Payload) {
 
 	// Shut down shell session
 	xlog.Trace("Shell terminated")
-	shs.deleteShellSession(sID)
+	shs.DeleteIOSession(sID)
 
 	// Finish cli session
 	p := NewShellExit(mmID, payload)
 	TxControlQueue <- p
-}
-
-func ptyRun(c *exec.Cmd, inrp *io.PipeReader, outwp *io.PipeWriter) error {
-	// Start the command with a pty.
-	ptmx, err := pty.Start(c)
-	if err != nil {
-		return err
-	}
-	// Make sure to close the pty at the end.
-	defer func() { _ = ptmx.Close() }() // Best effort.
-
-	// Handle pty size.
-	// ch := make(chan os.Signal, 1)
-	// signal.Notify(ch, syscall.SIGWINCH)
-	// go func() {
-	// 	for range ch {
-	// 		if err := pty.InheritSize(os.Stdin, ptmx); err != nil {
-	// 			log.Printf("error resizing pty: %s", err)
-	// 		}
-	// 	}
-	// }()
-	// ch <- syscall.SIGWINCH // Initial resize.
-
-	// Copy stdin to the pty and the pty to stdout.
-	go func() { _, _ = io.Copy(ptmx, inrp) }()
-	_, _ = io.Copy(outwp, ptmx)
-
-	return nil
 }

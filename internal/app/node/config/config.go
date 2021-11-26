@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/spf13/viper"
@@ -44,6 +45,13 @@ func Init() {
 		os.Exit(1)
 	}
 
+	if viper.GetBool("node.replicaSet") {
+		nodeID = hostID
+		viper.Set("node.id", hostID)
+		viper.Set("endpoint.dnsName", hostID)
+		viper.Set("endpoint.ipv4", "auto")
+	}
+
 	mmID := mmid.NewMMNodeID(accountID, tenantID, netID, vrfID, nodeID)
 
 	viper.Set("mm.id", mmID.String())
@@ -70,7 +78,7 @@ func Init() {
 
 	xlog.SetLogger(logLevel, hostID)
 
-	xlog.Infof("Initialized %s %s", version.NODE_NAME, version.GetVersion())
+	fmt.Print("[settings loaded]\n\n")
 }
 
 func setDefaults(nodeID string) {
@@ -91,11 +99,11 @@ func setDefaults(nodeID string) {
 
 	dnsPort := viper.GetInt("agent.dns.port")
 	if dnsPort == 0 {
-		viper.Set("agent.dns.port", int(53))
+		viper.Set("agent.dns.port", int(5353))
 	}
 
 	ifaceName := viper.GetString("agent.iface")
 	if len(ifaceName) == 0 {
-		viper.Set("agent.iface", "mmesh0")
+		viper.Set("agent.iface", defaultInterfaceName())
 	}
 }

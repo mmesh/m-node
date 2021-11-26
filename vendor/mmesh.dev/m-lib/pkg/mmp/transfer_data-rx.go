@@ -10,7 +10,7 @@ import (
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-lib/pkg/logging"
 	"mmesh.dev/m-lib/pkg/utils"
-	"x6a.dev/pkg/colors"
+	"mmesh.dev/m-lib/pkg/utils/colors"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
 )

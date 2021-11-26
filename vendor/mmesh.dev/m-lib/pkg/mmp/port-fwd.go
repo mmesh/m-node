@@ -2,13 +2,15 @@ package mmp
 
 import (
 	"sync"
+
+	"mmesh.dev/m-lib/pkg/mmp/streaming"
 )
 
 type pfConnectionID string
 type pfLinkID string
 
 type portFwdConnection struct {
-	io        map[pfConnectionID]*ioPipes
+	io        map[pfConnectionID]*streaming.IOPipes
 	dialAckCh map[pfConnectionID]chan struct{}
 	//sync.RWMutex
 }
@@ -20,7 +22,7 @@ type portFwdSession struct {
 
 func newPortFwdConnection() *portFwdConnection {
 	return &portFwdConnection{
-		io:        make(map[pfConnectionID]*ioPipes),
+		io:        make(map[pfConnectionID]*streaming.IOPipes),
 		dialAckCh: make(map[pfConnectionID]chan struct{}),
 	}
 }
@@ -33,15 +35,18 @@ func newPortFwdSession() *portFwdSession {
 
 func (pfs *portFwdSession) setPortFwdSession(lID string) {
 	pfs.Lock()
+	defer pfs.Unlock()
+
 	pfs.conns[pfLinkID(lID)] = newPortFwdConnection()
-	pfs.Unlock()
 }
 
 func (pfs *portFwdSession) deletePortFwdSession(lID string) {
 	pfs.Lock()
+	defer pfs.Unlock()
+
 	if pfl, ok := pfs.conns[pfLinkID(lID)]; ok {
 		for cID := range pfl.io {
-			closeIOPipes(pfl.io[pfConnectionID(cID)])
+			streaming.CloseIOPipes(pfl.io[pfConnectionID(cID)])
 			delete(pfl.io, pfConnectionID(cID))
 		}
 		for cID := range pfl.dialAckCh {
@@ -50,26 +55,28 @@ func (pfs *portFwdSession) deletePortFwdSession(lID string) {
 		}
 		delete(pfs.conns, pfLinkID(lID))
 	}
-	pfs.Unlock()
 }
 
 func (pfs *portFwdSession) setPortFwdConnection(lID, cID string) {
 	pfs.Lock()
+	defer pfs.Unlock()
+
 	if _, ok := pfs.conns[pfLinkID(lID)]; !ok {
 		pfs.Unlock()
 		pfs.setPortFwdSession(lID)
 		pfs.Lock()
 	}
-	pfs.conns[pfLinkID(lID)].io[pfConnectionID(cID)] = newIOPipes()
+	pfs.conns[pfLinkID(lID)].io[pfConnectionID(cID)] = streaming.NewIOPipes()
 	pfs.conns[pfLinkID(lID)].dialAckCh[pfConnectionID(cID)] = make(chan struct{})
-	pfs.Unlock()
 }
 
 func (pfs *portFwdSession) deletePortFwdConnection(lID, cID string) {
 	pfs.Lock()
+	defer pfs.Unlock()
+
 	if pfl, ok1 := pfs.conns[pfLinkID(lID)]; ok1 {
 		if ioPipes, ok2 := pfl.io[pfConnectionID(cID)]; ok2 {
-			closeIOPipes(ioPipes)
+			streaming.CloseIOPipes(ioPipes)
 			delete(pfl.io, pfConnectionID(cID))
 		}
 		if dialAckCh, ok2 := pfl.dialAckCh[pfConnectionID(cID)]; ok2 {
@@ -77,10 +84,9 @@ func (pfs *portFwdSession) deletePortFwdConnection(lID, cID string) {
 			delete(pfl.dialAckCh, pfConnectionID(cID))
 		}
 	}
-	pfs.Unlock()
 }
 
-func (pfs *portFwdSession) getPortFwdConnIO(lID, cID string) *ioPipes {
+func (pfs *portFwdSession) getPortFwdConnIO(lID, cID string) *streaming.IOPipes {
 	pfs.Lock()
 	defer pfs.Unlock()
 

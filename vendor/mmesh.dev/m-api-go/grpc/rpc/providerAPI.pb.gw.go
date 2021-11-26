@@ -69,18 +69,15 @@ func local_request_ProviderAPI_Login_0(ctx context.Context, marshaler runtime.Ma
 
 }
 
-var (
-	filter_ProviderAPI_SelectLocation_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
-
 func request_ProviderAPI_SelectLocation_0(ctx context.Context, marshaler runtime.Marshaler, client ProviderAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq location.ListLocationsRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ProviderAPI_SelectLocation_0); err != nil {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -93,10 +90,11 @@ func local_request_ProviderAPI_SelectLocation_0(ctx context.Context, marshaler r
 	var protoReq location.ListLocationsRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ProviderAPI_SelectLocation_0); err != nil {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -313,6 +311,76 @@ func local_request_ProviderAPI_GetAccount_0(ctx context.Context, marshaler runti
 
 }
 
+var (
+	filter_ProviderAPI_GetAccountUsage_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+)
+
+func request_ProviderAPI_GetAccountUsage_0(ctx context.Context, marshaler runtime.Marshaler, client ProviderAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq account.Account
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["accountID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
+	}
+
+	protoReq.AccountID, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
+	}
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ProviderAPI_GetAccountUsage_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.GetAccountUsage(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_ProviderAPI_GetAccountUsage_0(ctx context.Context, marshaler runtime.Marshaler, server ProviderAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq account.Account
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["accountID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
+	}
+
+	protoReq.AccountID, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
+	}
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ProviderAPI_GetAccountUsage_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.GetAccountUsage(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_ProviderAPI_UpdateAccount_0(ctx context.Context, marshaler runtime.Marshaler, client ProviderAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq account.Account
 	var metadata runtime.ServerMetadata
@@ -451,7 +519,7 @@ func local_request_ProviderAPI_DeleteAccount_0(ctx context.Context, marshaler ru
 
 }
 
-func request_ProviderAPI_SetAccountCfg_0(ctx context.Context, marshaler runtime.Marshaler, client ProviderAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ProviderAPI_SetAccountIntegrations_0(ctx context.Context, marshaler runtime.Marshaler, client ProviderAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq account.Account
 	var metadata runtime.ServerMetadata
 
@@ -480,12 +548,12 @@ func request_ProviderAPI_SetAccountCfg_0(ctx context.Context, marshaler runtime.
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
 	}
 
-	msg, err := client.SetAccountCfg(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.SetAccountIntegrations(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_ProviderAPI_SetAccountCfg_0(ctx context.Context, marshaler runtime.Marshaler, server ProviderAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ProviderAPI_SetAccountIntegrations_0(ctx context.Context, marshaler runtime.Marshaler, server ProviderAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq account.Account
 	var metadata runtime.ServerMetadata
 
@@ -514,7 +582,7 @@ func local_request_ProviderAPI_SetAccountCfg_0(ctx context.Context, marshaler ru
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
 	}
 
-	msg, err := server.SetAccountCfg(ctx, &protoReq)
+	msg, err := server.SetAccountIntegrations(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -678,14 +746,14 @@ func request_ProviderAPI_SetAccountAdmin_0(ctx context.Context, marshaler runtim
 		_   = err
 	)
 
-	val, ok = pathParams["realm"]
+	val, ok = pathParams["accountID"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "realm")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
 	}
 
-	protoReq.Realm, err = runtime.String(val)
+	protoReq.AccountID, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "realm", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
 	}
 
 	msg, err := client.SetAccountAdmin(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -712,14 +780,14 @@ func local_request_ProviderAPI_SetAccountAdmin_0(ctx context.Context, marshaler 
 		_   = err
 	)
 
-	val, ok = pathParams["realm"]
+	val, ok = pathParams["accountID"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "realm")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
 	}
 
-	protoReq.Realm, err = runtime.String(val)
+	protoReq.AccountID, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "realm", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
 	}
 
 	msg, err := server.SetAccountAdmin(ctx, &protoReq)
@@ -807,7 +875,7 @@ func RegisterProviderAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/Login")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/Login", runtime.WithHTTPPathPattern("/api/v1/iam:login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -824,13 +892,13 @@ func RegisterProviderAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 
 	})
 
-	mux.Handle("GET", pattern_ProviderAPI_SelectLocation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ProviderAPI_SelectLocation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/SelectLocation")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/SelectLocation", runtime.WithHTTPPathPattern("/api/v1/locations:select"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -853,7 +921,7 @@ func RegisterProviderAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/SelectFederation")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/SelectFederation", runtime.WithHTTPPathPattern("/api/v1/locations/{locationID}/federations:select"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -876,7 +944,7 @@ func RegisterProviderAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/SearchAccount")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/SearchAccount", runtime.WithHTTPPathPattern("/api/v1/accounts:search"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -899,7 +967,7 @@ func RegisterProviderAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/NewAccount")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/NewAccount", runtime.WithHTTPPathPattern("/api/v1/accounts"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -922,7 +990,7 @@ func RegisterProviderAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/GetAccount")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/GetAccount", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -939,13 +1007,36 @@ func RegisterProviderAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 
 	})
 
+	mux.Handle("GET", pattern_ProviderAPI_GetAccountUsage_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/GetAccountUsage", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:usage"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ProviderAPI_GetAccountUsage_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ProviderAPI_GetAccountUsage_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_ProviderAPI_UpdateAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/UpdateAccount")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/UpdateAccount", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -968,7 +1059,7 @@ func RegisterProviderAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/DeleteAccount")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/DeleteAccount", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -985,18 +1076,18 @@ func RegisterProviderAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 
 	})
 
-	mux.Handle("POST", pattern_ProviderAPI_SetAccountCfg_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ProviderAPI_SetAccountIntegrations_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/SetAccountCfg")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/SetAccountIntegrations", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:integrations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ProviderAPI_SetAccountCfg_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ProviderAPI_SetAccountIntegrations_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1004,7 +1095,7 @@ func RegisterProviderAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 			return
 		}
 
-		forward_ProviderAPI_SetAccountCfg_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ProviderAPI_SetAccountIntegrations_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1014,7 +1105,7 @@ func RegisterProviderAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/GetAccountCustomer")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/GetAccountCustomer", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:customer"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1037,7 +1128,7 @@ func RegisterProviderAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/GetAccountAdmin")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/GetAccountAdmin", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:admin"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1060,7 +1151,7 @@ func RegisterProviderAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/SetAccountAdmin")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/SetAccountAdmin", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:admin"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1083,7 +1174,7 @@ func RegisterProviderAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/ResetAccountAdminPassword")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ProviderAPI/ResetAccountAdminPassword", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:admin-password-reset"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1145,7 +1236,7 @@ func RegisterProviderAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/Login")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/Login", runtime.WithHTTPPathPattern("/api/v1/iam:login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1161,11 +1252,11 @@ func RegisterProviderAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 
 	})
 
-	mux.Handle("GET", pattern_ProviderAPI_SelectLocation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ProviderAPI_SelectLocation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/SelectLocation")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/SelectLocation", runtime.WithHTTPPathPattern("/api/v1/locations:select"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1185,7 +1276,7 @@ func RegisterProviderAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/SelectFederation")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/SelectFederation", runtime.WithHTTPPathPattern("/api/v1/locations/{locationID}/federations:select"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1205,7 +1296,7 @@ func RegisterProviderAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/SearchAccount")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/SearchAccount", runtime.WithHTTPPathPattern("/api/v1/accounts:search"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1225,7 +1316,7 @@ func RegisterProviderAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/NewAccount")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/NewAccount", runtime.WithHTTPPathPattern("/api/v1/accounts"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1245,7 +1336,7 @@ func RegisterProviderAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/GetAccount")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/GetAccount", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1261,11 +1352,31 @@ func RegisterProviderAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 
 	})
 
+	mux.Handle("GET", pattern_ProviderAPI_GetAccountUsage_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/GetAccountUsage", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:usage"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ProviderAPI_GetAccountUsage_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ProviderAPI_GetAccountUsage_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_ProviderAPI_UpdateAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/UpdateAccount")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/UpdateAccount", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1285,7 +1396,7 @@ func RegisterProviderAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/DeleteAccount")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/DeleteAccount", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1301,23 +1412,23 @@ func RegisterProviderAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 
 	})
 
-	mux.Handle("POST", pattern_ProviderAPI_SetAccountCfg_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ProviderAPI_SetAccountIntegrations_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/SetAccountCfg")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/SetAccountIntegrations", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:integrations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ProviderAPI_SetAccountCfg_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ProviderAPI_SetAccountIntegrations_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ProviderAPI_SetAccountCfg_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ProviderAPI_SetAccountIntegrations_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1325,7 +1436,7 @@ func RegisterProviderAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/GetAccountCustomer")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/GetAccountCustomer", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:customer"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1345,7 +1456,7 @@ func RegisterProviderAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/GetAccountAdmin")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/GetAccountAdmin", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:admin"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1365,7 +1476,7 @@ func RegisterProviderAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/SetAccountAdmin")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/SetAccountAdmin", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:admin"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1385,7 +1496,7 @@ func RegisterProviderAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/ResetAccountAdminPassword")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ProviderAPI/ResetAccountAdminPassword", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:admin-password-reset"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1417,17 +1528,19 @@ var (
 
 	pattern_ProviderAPI_GetAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "accounts", "accountID"}, ""))
 
+	pattern_ProviderAPI_GetAccountUsage_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "accounts", "accountID"}, "usage"))
+
 	pattern_ProviderAPI_UpdateAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "accounts", "accountID"}, ""))
 
 	pattern_ProviderAPI_DeleteAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "accounts", "accountID"}, ""))
 
-	pattern_ProviderAPI_SetAccountCfg_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "accounts", "accountID"}, "config"))
+	pattern_ProviderAPI_SetAccountIntegrations_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "accounts", "accountID"}, "integrations"))
 
 	pattern_ProviderAPI_GetAccountCustomer_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "accounts", "accountID"}, "customer"))
 
 	pattern_ProviderAPI_GetAccountAdmin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "accounts", "accountID"}, "admin"))
 
-	pattern_ProviderAPI_SetAccountAdmin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "accounts", "realm"}, "admin"))
+	pattern_ProviderAPI_SetAccountAdmin_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "accounts", "accountID"}, "admin"))
 
 	pattern_ProviderAPI_ResetAccountAdminPassword_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "accounts", "accountID"}, "admin-password-reset"))
 )
@@ -1445,11 +1558,13 @@ var (
 
 	forward_ProviderAPI_GetAccount_0 = runtime.ForwardResponseMessage
 
+	forward_ProviderAPI_GetAccountUsage_0 = runtime.ForwardResponseMessage
+
 	forward_ProviderAPI_UpdateAccount_0 = runtime.ForwardResponseMessage
 
 	forward_ProviderAPI_DeleteAccount_0 = runtime.ForwardResponseMessage
 
-	forward_ProviderAPI_SetAccountCfg_0 = runtime.ForwardResponseMessage
+	forward_ProviderAPI_SetAccountIntegrations_0 = runtime.ForwardResponseMessage
 
 	forward_ProviderAPI_GetAccountCustomer_0 = runtime.ForwardResponseMessage
 

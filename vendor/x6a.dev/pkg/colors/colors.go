@@ -20,7 +20,7 @@ import (
 )
 
 var Black = ansi.ColorFunc("black+bh")
-var InvertedBlack = ansi.ColorFunc("white+bh:black")
+var InvertedBlack = ansi.ColorFunc("black-b:black+h")
 
 var White = ansi.ColorFunc("white+bh")
 var DarkWhite = ansi.ColorFunc("white+b")

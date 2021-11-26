@@ -10,6 +10,8 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-api-go/grpc/network/mmsp/command"
+	"mmesh.dev/m-lib/pkg/mmp/term"
+	"mmesh.dev/m-lib/pkg/cli/output"
 	"x6a.dev/pkg/msg"
 )
 
@@ -88,7 +90,7 @@ func shellWriteInput(ctx context.Context, payload *mmsp.Payload) {
 
 			p := newShellInput(mmID, payload)
 			for len(input) == 0 {
-				input = readKey()
+				input = term.ReadKey()
 			}
 			p.Command.CommandRequest.Stdin = input
 			TxControlQueue <- p
@@ -106,7 +108,7 @@ func shellExit(ctx context.Context, p *mmsp.Payload) error {
 	time.Sleep(100 * time.Millisecond)
 
 	//endOfTransmission()
-	Disconnected()
+	output.Disconnected()
 
 	cliStdinActive = false
 

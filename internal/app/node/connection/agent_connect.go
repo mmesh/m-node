@@ -13,38 +13,43 @@ import (
 
 // agentConnect connects the agent to mmesh network
 func agentConnect(nxnc rpc.NetworkAPIClient) error {
+	// hiddenNode := viper.GetBool("agent.hidden")
+	cfgExternalIPv4 := viper.GetString("agent.externalIPv4") // could be ""
+
 	if netp2p.AgentConfigured() {
-		netp2p.UpdateNetworkClient(nxnc)
-	} else {
-		var err error
+		// netp2p.UpdateNetworkClient(nxnc)
 
-		// hiddenNode := viper.GetBool("agent.hidden")
-		cfgExternalIPv4 := viper.GetString("agent.externalIPv4") // could be ""
-
-		natp := &natProbe.NATProbe{
-			Port:         int32(viper.GetInt("agent.port")),
-			ExternalIPv4: cfgExternalIPv4,
-		}
-
-		natp, err = agentNATProbe(nxnc, natp)
-		if err != nil {
+		if err := netp2p.InitMMAgent(cfgExternalIPv4, nxnc); err != nil {
 			xlog.Alertf("Unable to initialize agent: %v", errors.Cause(err))
 			os.Exit(1)
 		}
 
-		// configured externalIPv4 overrides controller's detected externalIPv4
-		if len(cfgExternalIPv4) > 0 {
-			natp.ExternalIPv4 = cfgExternalIPv4
-		}
+		return nil
+	}
 
-		// if hiddenNode {
-		// 	natp.ExternalIPv4 = ""
-		// }
+	natp := &natProbe.NATProbe{
+		Port:         int32(viper.GetInt("agent.port")),
+		ExternalIPv4: cfgExternalIPv4,
+	}
 
-		if err = netp2p.InitMMAgent(natp.ExternalIPv4, nxnc); err != nil {
-			xlog.Alertf("Unable to initialize agent: %v", errors.Cause(err))
-			os.Exit(1)
-		}
+	natp, err := agentNATProbe(nxnc, natp)
+	if err != nil {
+		xlog.Alertf("Unable to initialize agent: %v", errors.Cause(err))
+		os.Exit(1)
+	}
+
+	// configured externalIPv4 overrides controller's detected externalIPv4
+	if len(cfgExternalIPv4) > 0 {
+		natp.ExternalIPv4 = cfgExternalIPv4
+	}
+
+	// if hiddenNode {
+	// 	natp.ExternalIPv4 = ""
+	// }
+
+	if err := netp2p.InitMMAgent(natp.ExternalIPv4, nxnc); err != nil {
+		xlog.Alertf("Unable to initialize agent: %v", errors.Cause(err))
+		os.Exit(1)
 	}
 
 	return nil

@@ -10,6 +10,7 @@ import (
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-api-go/grpc/network/mmsp/portFwd"
 	"mmesh.dev/m-lib/pkg/logging"
+	"mmesh.dev/m-lib/pkg/mmp/streaming"
 	"x6a.dev/pkg/errors"
 )
 
@@ -44,7 +45,7 @@ func newPortFwdData(srcID, dstID, cID string, p *mmsp.Payload) *mmsp.Payload {
 func portFwdWriteData(srcID, dstID, cID string, payload *mmsp.Payload, outrp *io.PipeReader) {
 	for {
 		p := newPortFwdData(srcID, dstID, cID, payload)
-		buffer := make([]byte, buffer_len)
+		buffer := make([]byte, streaming.BufferLen)
 		n, err := outrp.Read(buffer)
 		if err == io.EOF {
 			//logging.Tracef("OUT Pipe Reader EOF: %v", err)
@@ -65,7 +66,7 @@ func portFwdWriteData(srcID, dstID, cID string, payload *mmsp.Payload, outrp *io
 }
 
 func portFwdReadData(ctx context.Context, payload *mmsp.Payload) error {
-	var iop *ioPipes
+	var iop *streaming.IOPipes
 
 	if len(payload.PortFwd.Data) == 0 {
 		logging.Trace("len(payload.PortFwd.Data) == 0")
@@ -96,11 +97,11 @@ func portFwdReadData(ctx context.Context, payload *mmsp.Payload) error {
 	if iop == nil {
 		return errors.Errorf("port-fwd input writer pipe not found for node %s and connection %s", srcID, cID)
 	}
-	if iop.in.wp == nil {
+	if iop.In.WP == nil {
 		return errors.Errorf("port-fwd input writer pipe not found for node %s and connection %s", srcID, cID)
 	}
 
-	n, err := iop.in.wp.Write(payload.PortFwd.Data)
+	n, err := iop.In.WP.Write(payload.PortFwd.Data)
 	if err != nil {
 		// logging.Errorf("Unable to read inbound data from node %s: %v", srcID, err)
 		return errors.Wrapf(err, "[%v] function iop.in.wp.Write(payload.PortFwd.Data)", errors.Trace())

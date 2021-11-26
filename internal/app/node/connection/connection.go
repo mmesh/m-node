@@ -50,7 +50,7 @@ func AgentConnect() rpc.NetworkAPIClient {
 			// get the least crowded federation controller endpoint
 			e := fc.endpoint()
 			if endpoint != e {
-				xlog.Infof("Found better (less loaded) controller %s, reconnecting...", e)
+				xlog.Infof("Found less loaded controller %s, reconnecting...", e)
 
 				endpoint = e
 

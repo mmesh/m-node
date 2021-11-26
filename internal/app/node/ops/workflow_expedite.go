@@ -12,9 +12,14 @@ import (
 // WorkflowExpedite executes a workflow.
 // This function usually will be executed on target nodes.
 func WorkflowExpedite(ctx context.Context, payload *mmsp.Payload) error {
-	var ops []*workflow.Operation
-
 	wf := payload.Workflow
+
+	if disabledOps {
+		xlog.Alertf("Ops disabled on this node. Unauthorized workflow: %s", wf.WorkflowID)
+		return nil
+	}
+
+	var ops []*workflow.Operation
 
 	if !wf.Enabled {
 		xlog.Warnf("Workflow %s not enabled", wf.WorkflowID)
@@ -24,7 +29,7 @@ func WorkflowExpedite(ctx context.Context, payload *mmsp.Payload) error {
 	for _, j := range wf.Jobs {
 		for _, t := range j.Tasks {
 			for _, a := range t.Actions {
-				op := runWorkflowAction(wf, a)
+				op := runWorkflowAction(wf, j.Name, t.Name, a)
 				ops = append(ops, op)
 			}
 		}

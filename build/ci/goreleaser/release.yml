@@ -46,10 +46,11 @@ builds:
     - CGO_ENABLED=0
   goos:
     - linux
-    # - darwin
-    # - windows
+    - darwin
+    - windows
   goarch:
     - amd64
+    - arm64
   lang: go
 
 archives:

@@ -16,7 +16,7 @@ import (
 func agentNATProbe(nxnc rpc.NetworkAPIClient, natp *natProbe.NATProbe) (*natProbe.NATProbe, error) {
 	var wg sync.WaitGroup
 
-	ctx := context.Background()
+	ctx := context.TODO()
 	waitc := make(chan struct{})
 
 	wg.Add(1)

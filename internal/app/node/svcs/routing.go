@@ -11,6 +11,8 @@ import (
 	"x6a.dev/pkg/xlog"
 )
 
+var rtCtlQueue = make(chan struct{})
+
 // RoutingAgent runs routing engine
 func RoutingAgent(w *runtime.Wrkr) {
 	xlog.Infof("Started worker %s", w.Name)
@@ -19,9 +21,9 @@ func RoutingAgent(w *runtime.Wrkr) {
 	endCh := make(chan struct{}, 2)
 
 	go func() {
-		//ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		//defer cancel()
-		stream, err := w.NxNC.Routing(context.Background())
+		// ctx, cancel := context.WithTimeout(context.TODO(), 10*time.Second)
+		// defer cancel()
+		stream, err := w.NxNC.Routing(context.TODO())
 		if err != nil {
 			xlog.Errorf("Unable to get routing stream from mmesh controller: %v", err)
 			networkErrorEventsQueue <- struct{}{}
@@ -37,39 +39,38 @@ func RoutingAgent(w *runtime.Wrkr) {
 					break
 				}
 				if err != nil {
-					xlog.Warnf("Unable to receive rtResponse payload: %v", err)
+					xlog.Warnf("Unable to receive rtResponse: %v", err)
 					networkErrorEventsQueue <- struct{}{}
 					break
 				}
-				//xlog.Tracef("Routing table (VRF %s) updated", rtResp.RT.VRFID)
 
 				netp2p.UpdateRoutingTable(rtResp.RT)
 			}
 			if err := stream.CloseSend(); err != nil {
-				xlog.Errorf("Unable to close mmp stream: %v", err)
+				xlog.Errorf("Unable to close routing stream: %v", err)
 			}
 			endCh <- struct{}{}
+			xlog.Warn("Closing rtResponse recv stream")
 		}()
 
 		go func() {
-			rtrq := netp2p.GetRTRQueue()
 			for {
 				select {
-				case <-rtrq:
+				case <-rtCtlQueue:
 					rtReq := &routing.RTRequest{
 						Node:        netp2p.GetNode(),
 						Connections: netp2p.GetLinkStatusConnections(),
 					}
 					if err := stream.Send(rtReq); err != nil {
-						xlog.Warnf("Unable to send rtRequest payload: %v", err)
+						xlog.Warnf("Unable to send rtRequest: %v", err)
 						networkErrorEventsQueue <- struct{}{}
 						if err := stream.CloseSend(); err != nil {
-							xlog.Errorf("Unable to close mmp stream: %v", err)
+							xlog.Errorf("Unable to close routing stream: %v", err)
 						}
-						break
+						return
 					}
 				case <-endCh:
-					xlog.Debug("Closing rtRequest send stream")
+					xlog.Warn("Closing rtRequest send stream")
 					return
 				}
 			}
@@ -92,10 +93,29 @@ var rtCtlRun bool
 func rtCtl() {
 	if !rtCtlRun {
 		rtCtlRun = true
-		rtrq := netp2p.GetRTRQueue()
-		for {
-			rtrq <- struct{}{}
-			time.Sleep(20 * time.Second)
-		}
+
+		go func() {
+			for {
+				rtCtlQueue <- struct{}{}
+				time.Sleep(20 * time.Second)
+			}
+		}()
+
+		go func() {
+			rtrqCtlRun := false
+			rtrq := netp2p.GetRTRQueue()
+			for {
+				<-rtrq
+				if !rtrqCtlRun {
+					rtrqCtlRun = true
+
+					go func() {
+						rtCtlQueue <- struct{}{}
+						time.Sleep(5 * time.Second)
+						rtrqCtlRun = false
+					}()
+				}
+			}
+		}()
 	}
 }

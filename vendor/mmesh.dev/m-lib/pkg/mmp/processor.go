@@ -94,6 +94,27 @@ func Processor(ctx context.Context, p *mmsp.Payload) error {
 
 	case mmsp.PayloadType_ALERT_EVENT:
 		ControllerQueue <- p
+
+	case mmsp.PayloadType_CHAT_SESSION_INIT:
+		// Init runs on controllers
+		ControllerQueue <- p
+		// go ChatSession().Init(p)
+	case mmsp.PayloadType_CHAT_SESSION_END:
+		// End runs on controllers
+		ControllerQueue <- p
+		// go ChatSession().End(p)
+	case mmsp.PayloadType_CHAT_SESSION_EXIT:
+		// Exit runs on user cli
+		ChatSession().Exit()
+	case mmsp.PayloadType_CHAT_SESSION_INPUT:
+		// Init runs on controllers
+		err = ChatSession().Input(p)
+	case mmsp.PayloadType_CHAT_SESSION_OUTPUT:
+		// Exit runs on user cli
+		err = ChatSession().Output(p)
+	case mmsp.PayloadType_CHAT_SESSION_DISABLED:
+		// Exit runs on user cli
+		ChatSession().Disabled()
 	}
 
 	if err != nil {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	metrics_pb "mmesh.dev/m-api-go/grpc/resources/metrics"
 	"mmesh.dev/m-api-go/grpc/resources/network"
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-node/internal/app/node/metrics"
@@ -30,6 +31,13 @@ func MetricsAgent(w *runtime.Wrkr) {
 					networkErrorEventsQueue <- struct{}{}
 					return
 				}
+
+				if _, err := w.NxNC.DataPointMetrics(context.TODO(), getDataPointMetrics(n)); err != nil {
+					xlog.Errorf("Unable to send data point metrics to mmesh controller: %v", err)
+					networkErrorEventsQueue <- struct{}{}
+					return
+				}
+
 				xlog.Debug("Metrics updated")
 
 				metrics.ClearNetworkMetrics()
@@ -77,13 +85,13 @@ func getNodeMetrics() *network.Node {
 		n.Agent.Metrics = &network.AgentMetrics{}
 	}
 
-	if n.Agent.IsRelay {
-		if err := metrics.ReadNetDevStats(); err != nil {
-			xlog.Errorf("Unable to read net-dev-stats: %v", err)
-		} else {
-			n.Agent.Metrics.NetDevStats = metrics.GetNetDevStats()
-		}
-	}
+	// if n.Agent.IsRelay {
+	// 	if err := metrics.ReadNetDevStats(); err != nil {
+	// 		xlog.Errorf("Unable to read net-dev-stats: %v", err)
+	// 	} else {
+	// 		n.Agent.Metrics.NetDevStats = metrics.GetNetDevStats()
+	// 	}
+	// }
 
 	n.Agent.Metrics.NetworkMetrics = metrics.GetNetworkMetrics()
 	n.Agent.Metrics.NetworkTraffic = metrics.GetNetworkTraffic()
@@ -91,4 +99,27 @@ func getNodeMetrics() *network.Node {
 	n.Agent.Metrics.RelayMetrics = metrics.GetRelayMetrics()
 
 	return n
+}
+
+func getDataPointMetrics(n *network.Node) *metrics_pb.DataPoints {
+	mdp := &metrics_pb.DataPoints{
+		AccountID:  n.AccountID,
+		TenantID:   n.TenantID,
+		NetID:      n.NetID,
+		VRFID:      n.VRFID,
+		NodeID:     n.NodeID,
+		DataPoints: make([]*metrics_pb.DataPoint, 0),
+	}
+
+	dp := metrics.GetHostDataPoint(n)
+	if dp != nil {
+		mdp.DataPoints = append(mdp.DataPoints, dp)
+	}
+
+	dp = metrics.GetNetDataPoint(n)
+	if dp != nil {
+		mdp.DataPoints = append(mdp.DataPoints, dp)
+	}
+
+	return mdp
 }

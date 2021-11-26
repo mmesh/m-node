@@ -556,7 +556,7 @@ func RegisterBillingAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/SearchCustomer")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/SearchCustomer", runtime.WithHTTPPathPattern("/api/v1/customers:search"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -579,7 +579,7 @@ func RegisterBillingAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/GetCustomerPortal")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/GetCustomerPortal", runtime.WithHTTPPathPattern("/api/v1/customers/{customerID}:portal"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -602,7 +602,7 @@ func RegisterBillingAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/ListInvoices")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/ListInvoices", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/billing/invoices"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -625,7 +625,7 @@ func RegisterBillingAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/GetInvoice")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/GetInvoice", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/billing/invoices/{invoiceID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -648,7 +648,7 @@ func RegisterBillingAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/DeleteInvoice")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/DeleteInvoice", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/billing/invoices/{invoiceID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -671,7 +671,7 @@ func RegisterBillingAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/ListBilledItems")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/ListBilledItems", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/billing/items"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -694,7 +694,7 @@ func RegisterBillingAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/GetBilledItem")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/GetBilledItem", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/billing/items/{itemID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -756,7 +756,7 @@ func RegisterBillingAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/SearchCustomer")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/SearchCustomer", runtime.WithHTTPPathPattern("/api/v1/customers:search"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -776,7 +776,7 @@ func RegisterBillingAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/GetCustomerPortal")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/GetCustomerPortal", runtime.WithHTTPPathPattern("/api/v1/customers/{customerID}:portal"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -796,7 +796,7 @@ func RegisterBillingAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/ListInvoices")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/ListInvoices", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/billing/invoices"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -816,7 +816,7 @@ func RegisterBillingAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/GetInvoice")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/GetInvoice", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/billing/invoices/{invoiceID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -836,7 +836,7 @@ func RegisterBillingAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/DeleteInvoice")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/DeleteInvoice", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/billing/invoices/{invoiceID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -856,7 +856,7 @@ func RegisterBillingAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/ListBilledItems")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/ListBilledItems", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/billing/items"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -876,7 +876,7 @@ func RegisterBillingAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/GetBilledItem")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/GetBilledItem", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/billing/items/{itemID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return

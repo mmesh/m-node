@@ -11,6 +11,8 @@ import (
 	"x6a.dev/pkg/xlog"
 )
 
+var rtrq = make(chan struct{}, 64)
+
 type routeMap struct {
 	routes map[string]bool
 	sync.RWMutex
@@ -22,6 +24,10 @@ func newRouteMap() *routeMap {
 	return &routeMap{
 		routes: make(map[string]bool),
 	}
+}
+
+func GetRTRQueue() chan struct{} {
+	return rtrq
 }
 
 func UpdateRoutingTable(newRT *routing.RoutingTable) {
@@ -135,6 +141,23 @@ func validRoute(route string) bool {
 	return true
 }
 
+func getConnectedRoutes() ([]*net.IPNet, error) {
+	var connectedRoutes []*net.IPNet
+
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return nil, errors.Wrapf(err, "[%v] function net.InterfaceAddrs()", errors.Trace())
+	}
+
+	for _, addr := range addrs {
+		if ipNet, ok := addr.(*net.IPNet); ok {
+			connectedRoutes = append(connectedRoutes, ipNet)
+		}
+	}
+
+	return connectedRoutes, nil
+}
+
 func (mma *mmAgent) connectRelays() {
 	mma.rt.RLock()
 	defer mma.rt.RUnlock()
@@ -162,14 +185,14 @@ func (mma *mmAgent) getNetHop(addr string) (*routing.NetHop, *int32, error) {
 	defer mma.rt.RUnlock()
 
 	if mma.rt == nil {
-		mma.rtRequestQueue <- struct{}{}
+		rtrq <- struct{}{}
 		return nil, nil, fmt.Errorf("no routing entry found for addr %v", addr)
 	}
 
 	// get route
 	r := mma.getRoute(addr)
 	if len(r) == 0 {
-		mma.rtRequestQueue <- struct{}{}
+		rtrq <- struct{}{}
 		return nil, nil, fmt.Errorf("no routing entry found for addr %v", addr)
 	}
 
@@ -209,7 +232,6 @@ func (mma *mmAgent) getRoute(addr string) string {
 		if re.VRFID == mma.vrfID || mma.rt.RT.Scope == routing.Scope_NETWORK {
 			return addrv4
 		}
-
 	}
 	addrv6 := addr + "/128"
 	if re, ok := mma.rt.RT.RE[addrv6]; ok {

@@ -12,8 +12,8 @@ import (
 	"x6a.dev/pkg/xlog"
 )
 
-func runWorkflowAction(wf *workflow.Workflow, a *workflow.Action) *workflow.Operation {
-	//var cmdOut, cmdErr bytes.Buffer
+func runWorkflowAction(wf *workflow.Workflow, jobName, taskName string, a *workflow.Action) *workflow.Operation {
+	// var cmdOut, cmdErr bytes.Buffer
 	var statusMsg string
 	var statusCode int32
 	var resultStatus command.CommandResultStatus
@@ -30,12 +30,11 @@ func runWorkflowAction(wf *workflow.Workflow, a *workflow.Action) *workflow.Oper
 
 	// execute the command
 	cmd := exec.Command(c.Cmd, c.Args...)
-	//cmd.Stderr = &cmdErr
-	//cmd.Stdout = &cmdOut
+	// cmd.Stderr = &cmdErr
+	// cmd.Stdout = &cmdOut
 	cmd.Stdin = nil
 
 	t1 := time.Now()
-	//if err := cmd.Run(); err != nil {
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		statusCode = -1
@@ -58,6 +57,9 @@ func runWorkflowAction(wf *workflow.Workflow, a *workflow.Action) *workflow.Oper
 		ProjectID:    wf.ProjectID,
 		WorkflowID:   wf.WorkflowID,
 		OperationID:  fmt.Sprintf("%s:%d@%s", a.Name, timestamp, mmID),
+		JobName:      jobName,
+		TaskName:     taskName,
+		ActionName:   a.Name,
 		Description:  fmt.Sprintf("Action %s executed on %s at %s", a.Name, mmID, tm.String()),
 		NodeID:       mmID,
 		Status: &status.StatusResponse{
@@ -70,8 +72,8 @@ func runWorkflowAction(wf *workflow.Workflow, a *workflow.Action) *workflow.Oper
 			Status:   resultStatus,
 			Duration: int64(time.Since(t1).Seconds()),
 		},
-		//Stdout: cmdOut.Bytes(),
-		//Stderr: cmdErr.Bytes(),
+		// Stdout: cmdOut.Bytes(),
+		// Stderr: cmdErr.Bytes(),
 		StdoutStderr: out,
 	}
 }

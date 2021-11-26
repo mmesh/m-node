@@ -12,6 +12,11 @@ import (
 func WorkflowSchedule(ctx context.Context, payload *mmsp.Payload) error {
 	wf := payload.Workflow
 
+	if disabledOps {
+		xlog.Alertf("Ops disabled on this node. Unauthorized workflow schedule: %s", wf.WorkflowID)
+		return nil
+	}
+
 	if wf.Enabled {
 		xlog.Infof("Scheduling workflow %s", wf.WorkflowID)
 	} else {

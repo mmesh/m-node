@@ -1,3 +1,4 @@
+//go:build linux
 // +build linux
 
 package netp2p
@@ -6,7 +7,6 @@ import (
 	"net"
 
 	"github.com/lorenzosaino/go-sysctl"
-	"github.com/songgao/water"
 	"github.com/spf13/viper"
 	"github.com/vishvananda/netlink"
 	"x6a.dev/pkg/errors"
@@ -14,44 +14,26 @@ import (
 )
 
 func (mma *mmAgent) ifUp() error {
-	if iface != nil {
-		return nil
+	if err := createTUN(); err != nil {
+		return errors.Wrapf(err, "[%v] function createTUN()", errors.Trace())
 	}
 
-	ifaceName := viper.GetString("agent.iface")
-
-	config := water.Config{
-		DeviceType: water.TUN,
-		PlatformSpecificParams: water.PlatformSpecificParams{
-			Name:       ifaceName,
-			Persist:    false,
-			MultiQueue: true,
-		},
-	}
-
-	// create TUN interface
-	ifc, err := water.New(config)
-	if err != nil {
-		xlog.Alertf("Unable to allocate interface: %v", err)
-		return errors.Wrapf(err, "[%v] function water.New()", errors.Trace())
-	}
-
-	iface = ifc
+	xlog.Infof("Setting up interface %s", iface.name)
 
 	// set interface
-	ifcLink, err := netlink.LinkByName(iface.Name())
+	ifcLink, err := netlink.LinkByName(iface.name)
 	if err != nil {
 		return errors.Wrapf(err, "[%v] function netlink.LinkByName()", errors.Trace())
 	}
 
 	if err := netlink.LinkSetAllmulticastOff(ifcLink); err != nil {
 		xlog.Alertf("Unable to set interface allmulticast off: %v", err)
-		//return errors.Wrapf(err, "[%v] function netlink.LinkSetAllmulticastOff()", errors.Trace())
+		// return errors.Wrapf(err, "[%v] function netlink.LinkSetAllmulticastOff()", errors.Trace())
 	}
 
 	if err := netlink.LinkSetMTU(ifcLink, MTU); err != nil {
 		xlog.Alertf("Unable to set interface MTU: %v", err)
-		//return errors.Wrapf(err, "[%v] function netlink.LinkSetMTU()", errors.Trace())
+		// return errors.Wrapf(err, "[%v] function netlink.LinkSetMTU()", errors.Trace())
 	}
 
 	if err := netlink.LinkSetUp(ifcLink); err != nil {
@@ -72,6 +54,8 @@ func ifDown() error {
 		return nil
 	}
 
+	xlog.Infof("Bringing down interface %s", ifaceName)
+
 	addrs, err := ifc.Addrs()
 	if err != nil {
 		xlog.Errorf("Unable to get interface %s addrs: %v", ifaceName, err)
@@ -90,7 +74,7 @@ func ifDown() error {
 
 	if err := netlink.LinkSetDown(ifcLink); err != nil {
 		xlog.Alertf("Unable to set interface down: %v", err)
-		//return errors.Wrapf(err, "[%v] function netlink.LinkSetDown()", errors.Trace())
+		// return errors.Wrapf(err, "[%v] function netlink.LinkSetDown()", errors.Trace())
 	}
 
 	if err := netlink.LinkDel(ifcLink); err != nil {
@@ -112,7 +96,7 @@ func ip4AddrAdd(ipv4 string) error {
 		return nil
 	}
 
-	ifcLink, err := netlink.LinkByName(iface.Name())
+	ifcLink, err := netlink.LinkByName(iface.name)
 	if err != nil {
 		return errors.Wrapf(err, "[%v] function netlink.LinkByName()", errors.Trace())
 	}
@@ -134,7 +118,7 @@ func ip4AddrDel(ipv4 string) error {
 		return nil
 	}
 
-	ifcLink, err := netlink.LinkByName(iface.Name())
+	ifcLink, err := netlink.LinkByName(iface.name)
 	if err != nil {
 		return errors.Wrapf(err, "[%v] function netlink.LinkByName()", errors.Trace())
 	}
@@ -160,20 +144,20 @@ func ip6AddrAdd(ipv6 string) error {
 		return nil
 	}
 
-	v, err := sysctl.Get("net.ipv6.conf." + iface.Name() + ".disable_ipv6")
+	v, err := sysctl.Get("net.ipv6.conf." + iface.name + ".disable_ipv6")
 	if err != nil {
 		xlog.Alertf("Unable to get sysctl ipv6 config: %v", err)
 		return errors.Wrapf(err, "[%v] function sysctl.Get()", errors.Trace())
 	}
 
 	if v == "1" {
-		if err := sysctl.Set("net.ipv6.conf."+iface.Name()+".disable_ipv6", "0"); err != nil {
+		if err := sysctl.Set("net.ipv6.conf."+iface.name+".disable_ipv6", "0"); err != nil {
 			xlog.Errorf("Unable to enable ipv6 via sysctl: %v", err)
 			return errors.Wrapf(err, "[%v] function sysctl.Set()", errors.Trace())
 		}
 	}
 
-	ifcLink, err := netlink.LinkByName(iface.Name())
+	ifcLink, err := netlink.LinkByName(iface.name)
 	if err != nil {
 		return errors.Wrapf(err, "[%v] function netlink.LinkByName()", errors.Trace())
 	}
@@ -195,7 +179,7 @@ func ip6AddrDel(ipv6 string) error {
 		return nil
 	}
 
-	ifcLink, err := netlink.LinkByName(iface.Name())
+	ifcLink, err := netlink.LinkByName(iface.name)
 	if err != nil {
 		return errors.Wrapf(err, "[%v] function netlink.LinkByName()", errors.Trace())
 	}

@@ -6,7 +6,8 @@ import (
 
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
-	"x6a.dev/pkg/colors"
+	"mmesh.dev/m-lib/pkg/cli/output"
+	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
 func portFwdDisabled(payload *mmsp.Payload) {
@@ -27,7 +28,7 @@ func portFwdUnavailable() {
 	alert := fmt.Sprintf("\n%s%s%s", colors.Black("["), colors.Red(text), colors.Black("]"))
 	fmt.Println(alert)
 
-	Disconnected()
+	output.Disconnected()
 
 	os.Exit(0)
 }

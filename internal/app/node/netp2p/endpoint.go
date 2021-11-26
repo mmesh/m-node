@@ -31,7 +31,7 @@ func AddNetworkEndpoint(endpointID, dnsName, reqIPv4 string) (string, error) {
 		Priority: int32(viper.GetInt("agent.priority")),
 	}
 
-	erResp, err := mma.nxnc.RegisterEndpoint(context.Background(), erReq)
+	erResp, err := mma.nxnc.RegisterEndpoint(context.TODO(), erReq)
 	if err != nil {
 		return "", errors.Wrapf(err, "[%v] function mma.nxnc.RegisterEndpoint()", errors.Trace())
 	}
@@ -97,7 +97,7 @@ func RemoveNetworkEndpoint(endpointID string) error {
 		Priority: int32(viper.GetInt("agent.priority")),
 	}
 
-	_, err := mma.nxnc.RemoveEndpoint(context.Background(), erReq)
+	_, err := mma.nxnc.RemoveEndpoint(context.TODO(), erReq)
 	if err != nil {
 		return errors.Wrapf(err, "[%v] function mma.nxnc.RemoveEndpoint()", errors.Trace())
 	}

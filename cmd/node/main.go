@@ -2,14 +2,18 @@ package main
 
 import (
 	"fmt"
+	// "log"
 
 	"mmesh.dev/m-lib/pkg/version"
 	"mmesh.dev/m-node/internal/app/node/cmd"
-	"x6a.dev/pkg/colors"
 )
 
 func main() {
-	fmt.Println(colors.White(version.NODE_NAME + " " + version.GetVersion() + "\n"))
+	// if err := cmd.ConsoleInit(); err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	fmt.Printf("%s %s ", version.NODE_NAME, version.GetVersion())
 
 	cmd.Execute()
 }

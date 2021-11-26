@@ -10,14 +10,13 @@ import (
 	"net/http"
 	"os"
 	"runtime"
-	"syscall"
 
 	"github.com/inconshreveable/go-update"
 	"github.com/spf13/viper"
 	"mmesh.dev/m-lib/pkg/logging"
 	"mmesh.dev/m-lib/pkg/utils"
+	"mmesh.dev/m-lib/pkg/utils/colors"
 	"mmesh.dev/m-lib/pkg/version"
-	"x6a.dev/pkg/colors"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
 )
@@ -59,7 +58,7 @@ func Update(app string) error {
 	}
 
 	if app == version.CLI_NAME {
-		fmt.Println(colors.Black("New version available, updating..."))
+		fmt.Println("New version available, updating...")
 	} else {
 		xlog.Info("New version available, updating...")
 	}
@@ -82,7 +81,7 @@ func Update(app string) error {
 
 	if err := opts.CheckPermissions(); err != nil {
 		if app == version.CLI_NAME {
-			fmt.Printf("%s %s\n\n", colors.Black("Unable to update binary:"), colors.DarkRed("permission denied on filesystem"))
+			fmt.Printf("Unable to update binary: %s\n", colors.DarkRed("permission denied on filesystem"))
 		} else {
 			xlog.Warnf("Unable to update binary: %v", err)
 		}
@@ -90,7 +89,7 @@ func Update(app string) error {
 	}
 
 	// request the new file
-	url := getURL(app)
+	url := getURL(getBinaryName(app))
 	resp, err := http.Get(url)
 	if err != nil {
 		return errors.Wrapf(err, "[%v] function http.Get()", errors.Trace())
@@ -109,16 +108,8 @@ func Update(app string) error {
 		}
 		return errors.Wrapf(err, "[%v] function update.Apply()", errors.Trace())
 	}
-	if app == version.CLI_NAME {
-		fmt.Printf("%s\n\n", colors.Black("Binary updated to latest version, restarting..."))
-	} else {
-		xlog.Info("Binary updated to latest version, restarting...")
-	}
 
-	if err := syscall.Exec(exe, os.Args, os.Environ()); err != nil {
-		logging.Alertf("Unable to restart the main process: %v", err)
-		return errors.Wrapf(err, "[%v] function syscall.Exec()", errors.Trace())
-	}
+	restartProcess(app, exe)
 
 	return nil
 }
@@ -150,8 +141,8 @@ func binaryIsOutdated(exe string, checksum []byte) bool {
 		return false
 	}
 
-	//msg.Infof("Current binary checksum:\n%x", string(currentChecksum))
-	//msg.Infof("Latest binary checksum:\n%x\n", string(checksum))
+	// msg.Infof("Current binary checksum:\n%x", string(currentChecksum))
+	// msg.Infof("Latest binary checksum:\n%x\n", string(checksum))
 
 	if !bytes.Equal(checksum, currentChecksum) {
 		return true
@@ -161,7 +152,7 @@ func binaryIsOutdated(exe string, checksum []byte) bool {
 }
 
 func getChecksum(app string) ([]byte, error) {
-	filename := app + "_checksum.sha256"
+	filename := getBinaryName(app) + "_checksum.sha256"
 
 	if err := downloadFile(filename); err != nil {
 		return nil, errors.Wrapf(err, "[%v] function downloadFile()", errors.Trace())
@@ -171,7 +162,6 @@ func getChecksum(app string) ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "[%v] function os.Open()", errors.Trace())
 	}
-	defer f.Close()
 
 	scanner := bufio.NewScanner(f)
 	scanner.Split(bufio.ScanWords)
@@ -180,6 +170,10 @@ func getChecksum(app string) ([]byte, error) {
 
 	for scanner.Scan() {
 		words = append(words, scanner.Text())
+	}
+
+	if err := f.Close(); err != nil {
+		return nil, errors.Wrapf(err, "[%v] function f.Close()", errors.Trace())
 	}
 
 	if err := os.RemoveAll(filename); err != nil {
@@ -195,7 +189,7 @@ func getChecksum(app string) ([]byte, error) {
 }
 
 func getSignature(app string) ([]byte, error) {
-	filename := app + "_signature.sha256"
+	filename := getBinaryName(app) + "_signature.sha256"
 
 	if err := downloadFile(filename); err != nil {
 		return nil, errors.Wrapf(err, "[%v] function downloadFile()", errors.Trace())
@@ -211,4 +205,12 @@ func getSignature(app string) ([]byte, error) {
 	}
 
 	return data, nil
+}
+
+func getBinaryName(app string) string {
+	if runtime.GOOS == "windows" {
+		return fmt.Sprintf("%s.exe", app)
+	}
+
+	return app
 }

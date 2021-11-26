@@ -35,19 +35,21 @@ type streamsMap struct {
 }
 
 type mmAgent struct {
-	agentID        string
-	accountID      string
-	tenantID       string
-	netID          string
-	vrfID          string
-	nodeID         string
-	agent          *network.Agent
-	endpoints      *endpointsMap
-	p2pHost        host.Host
-	nxnc           rpc.NetworkAPIClient
-	rt             *RoutingTable
-	linkStatus     *routing.LinkStatus
-	rtRequestQueue chan struct{}
+	agentID    string
+	accountID  string
+	tenantID   string
+	netID      string
+	vrfID      string
+	nodeID     string
+	agent      *network.Agent
+	endpoints  *endpointsMap
+	replicaSet bool
+	mainIPv4   string
+	p2pHost    host.Host
+	nxnc       rpc.NetworkAPIClient
+	rt         *RoutingTable
+	linkStatus *routing.LinkStatus
+	// rtRequestQueue chan struct{}
 	streams        *streamsMap
 	closeInterface chan struct{}
 }
@@ -87,6 +89,12 @@ func InitMMAgent(externalIPv4 string, nxnc rpc.NetworkAPIClient) error {
 	prio := int32(viper.GetInt("agent.priority"))
 	isRelay := viper.GetBool("agent.relay")
 
+	endpoints := newEndpointsMap()
+	rt := newRoutingTable()
+	linkStatus := &routing.LinkStatus{}
+	streams := newStreamsMap()
+	closeInterface := make(chan struct{})
+
 	if mma == nil {
 		if err := ifDown(); err != nil {
 			xlog.Alertf("Unable to reset interface: %v", err)
@@ -122,24 +130,30 @@ func InitMMAgent(externalIPv4 string, nxnc rpc.NetworkAPIClient) error {
 		}
 		xlog.Infof("p2pHostID: %s", p2pHostID)
 	} else {
+		externalIPv4 = mma.agent.ExternalIPv4
+		reqIPv4 = mma.mainIPv4
+
 		p2pHost = mma.p2pHost
+		p2pHostID = p2pHost.ID().Pretty()
+
+		endpoints = mma.endpoints
+		rt = mma.rt
+		linkStatus = mma.linkStatus
+		streams = mma.streams
+		closeInterface = mma.closeInterface
 	}
 
 	al := addrList(p2pHost.Addrs())
 
-	var maddrs []string
-	for _, ma := range al.strings() {
-		maddrs = append(maddrs, ma)
-	}
-
 	agent := &network.Agent{
 		AgentID:      agentID,
 		NxHostID:     p2pHostID,
-		MAddrs:       maddrs,
+		MAddrs:       al.strings(),
 		ExternalIPv4: externalIPv4,
 		Port:         port,
 		Priority:     prio,
 		IsRelay:      isRelay,
+		IsMRS:        viper.GetBool("agent.mrs"),
 		Routes: &network.Routes{
 			Export: viper.GetStringSlice("routes.export"),
 			Import: viper.GetStringSlice("routes.import"),
@@ -153,6 +167,7 @@ func InitMMAgent(externalIPv4 string, nxnc rpc.NetworkAPIClient) error {
 			DisableExec:           viper.GetBool("agent.management.disableExec"),
 			DisableTransfer:       viper.GetBool("agent.management.disableTransfer"),
 			DisablePortForwarding: viper.GetBool("agent.management.disablePortForwarding"),
+			DisableOps:            viper.GetBool("agent.management.disableOps"),
 		},
 		Maintenance: &network.AgentMaintenance{
 			AutoUpdate: viper.GetBool("maintenance.autoUpdate"),
@@ -165,26 +180,30 @@ func InitMMAgent(externalIPv4 string, nxnc rpc.NetworkAPIClient) error {
 	}
 
 	mma = &mmAgent{
-		agentID:        agentID,
-		accountID:      viper.GetString("node.account"),
-		tenantID:       viper.GetString("node.tenant"),
-		netID:          viper.GetString("node.network"),
-		vrfID:          viper.GetString("node.subnet"),
-		nodeID:         viper.GetString("node.id"),
-		agent:          agent,
-		endpoints:      newEndpointsMap(),
-		p2pHost:        p2pHost,
-		nxnc:           nxnc,
-		rt:             newRoutingTable(),
-		linkStatus:     &routing.LinkStatus{},
-		rtRequestQueue: make(chan struct{}),
-		streams:        newStreamsMap(),
-		closeInterface: make(chan struct{}),
+		agentID:    agentID,
+		accountID:  viper.GetString("node.account"),
+		tenantID:   viper.GetString("node.tenant"),
+		netID:      viper.GetString("node.network"),
+		vrfID:      viper.GetString("node.subnet"),
+		nodeID:     viper.GetString("node.id"),
+		agent:      agent,
+		endpoints:  endpoints,
+		replicaSet: viper.GetBool("node.replicaSet"),
+		p2pHost:    p2pHost,
+		nxnc:       nxnc,
+		rt:         rt,
+		linkStatus: linkStatus,
+		// rtRequestQueue: make(chan struct{}),
+		streams:        streams,
+		closeInterface: closeInterface,
 	}
 
-	if _, err := AddNetworkEndpoint(endpointID, dnsName, reqIPv4); err != nil {
+	ipv4, err := AddNetworkEndpoint(endpointID, dnsName, reqIPv4)
+	if err != nil {
 		return errors.Wrapf(err, "[%v] function AddNetworkEndpoint()", errors.Trace())
 	}
+
+	mma.mainIPv4 = ipv4
 
 	xlog.Debugf("Agent %s initialized", agentID)
 
@@ -203,10 +222,6 @@ func UpdateNetworkClient(nxnc rpc.NetworkAPIClient) {
 	mma.nxnc = nxnc
 }
 
-func GetRTRQueue() chan struct{} {
-	return mma.rtRequestQueue
-}
-
 func GetLinkStatusConnections() int32 {
 	return mma.linkStatus.Connections
 }
@@ -214,6 +229,11 @@ func GetLinkStatusConnections() int32 {
 func Disconnect() {
 	xlog.Info("Disconnecting...")
 	mma.closeInterface <- struct{}{}
+	if iface != nil {
+		if err := ifaceClose(); err != nil {
+			xlog.Warnf("Unable to close interface %s: %v", iface.name, err)
+		}
+	}
 	if err := mma.p2pHost.Close(); err != nil {
 		xlog.Alertf("Unable to close p2pHost handler: %v", err)
 		os.Exit(1)

@@ -20,7 +20,7 @@ func Proxy64GC(w *runtime.Wrkr) {
 		for {
 			select {
 			case <-proxy64GCch:
-				xlog.Info("Running mmesh64 garbage collector...")
+				xlog.Debug("Running mmesh64 garbage collector...")
 				netp2p.Proxy64GC()
 			case <-endCh:
 				xlog.Debug("Closing mmesh64 garbage collector")

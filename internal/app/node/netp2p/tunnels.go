@@ -14,7 +14,7 @@ import (
 )
 
 func (mma *mmAgent) connectTunnel(maddr string) (*bufio.ReadWriter, error) {
-	ctx := context.Background()
+	ctx := context.TODO()
 
 	xlog.Debugf("Connecting to endpoint maddr %s", maddr)
 
@@ -73,6 +73,36 @@ func (mma *mmAgent) newTunnel(ipPkt *ipPacket) error {
 	return errors.Errorf("unable to establish a new tunnel to reach %v", ipPkt.dstIP.String())
 }
 
+func (mma *mmAgent) newRTunnel(dstAddr string, nh *routing.NetHop) error {
+	sort.SliceStable(mma.rt.RT.Relays, func(i, j int) bool {
+		return mma.rt.RT.Relays[i].Connections < mma.rt.RT.Relays[j].Connections
+	})
+
+	for _, r := range mma.rt.RT.Relays {
+		if r.VRFID == mma.vrfID || mma.rt.RT.Scope == routing.Scope_NETWORK {
+			for _, ma := range nh.Agent.MAddrs {
+				nextHop := strings.Split(ma, "/")[2]
+				if strings.HasPrefix(ma, r.MAddr+"/p2p-circuit/") {
+					if rw, err := mma.connectTunnel(ma); err != nil {
+						continue
+					} else {
+						mma.setTunnel(dstAddr, rw)
+						xlog.Infof("Tunnel connected to %s via %s [RELAY]", dstAddr, nextHop)
+
+						metrics.IncrRelayConns(r.MAddr)
+
+						// Create a thread to read data from new buffered stream.
+						go mma.readStream(rw, r.MAddr, true)
+						return nil
+					}
+				}
+			}
+		}
+	}
+
+	return fmt.Errorf("no valid relay found")
+}
+
 func (mma *mmAgent) setTunnel(dstAddr string, rw *bufio.ReadWriter) {
 	mma.streams.Lock()
 	defer mma.streams.Unlock()
@@ -103,34 +133,4 @@ func (mma *mmAgent) deleteTunnel(dstAddr string) {
 		delete(mma.streams.tunnel, dstAddr)
 		xlog.Infof("Deleted tunnel to %s", dstAddr)
 	}
-}
-
-func (mma *mmAgent) newRTunnel(dstAddr string, nh *routing.NetHop) error {
-	sort.SliceStable(mma.rt.RT.Relays, func(i, j int) bool {
-		return mma.rt.RT.Relays[i].Connections < mma.rt.RT.Relays[j].Connections
-	})
-
-	for _, r := range mma.rt.RT.Relays {
-		if r.VRFID == mma.vrfID || mma.rt.RT.Scope == routing.Scope_NETWORK {
-			for _, ma := range nh.Agent.MAddrs {
-				nextHop := strings.Split(ma, "/")[2]
-				if strings.HasPrefix(ma, r.MAddr+"/p2p-circuit/") {
-					if rw, err := mma.connectTunnel(ma); err != nil {
-						continue
-					} else {
-						mma.setTunnel(dstAddr, rw)
-						xlog.Infof("Tunnel connected to %s via %s [RELAY]", dstAddr, nextHop)
-
-						metrics.IncrRelayConns(r.MAddr)
-
-						// Create a thread to read data from new buffered stream.
-						go mma.readStream(rw, r.MAddr, true)
-						return nil
-					}
-				}
-			}
-		}
-	}
-
-	return fmt.Errorf("no valid relay found")
 }

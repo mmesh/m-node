@@ -25,18 +25,19 @@ func (c *controller) manageSvcEvent(s *v1.Service, evt eventType) error {
 		return nil
 	}
 
-	if s.ObjectMeta.Annotations == nil {
-		return nil
+	endpointID := fmt.Sprintf("k8s:%s:%s", ns, svcName)
+
+	k8sSvcCfg := &k8sSvcAnnotationsCfg{valid: false}
+
+	if s.ObjectMeta.Annotations != nil {
+		k8sSvcCfg = parseAnnotations(s)
 	}
 
-	k8sSvcCfg := parseAnnotations(s)
+	dnsName := k8sSvcCfg.dnsName
+	reqIPv4 := k8sSvcCfg.reqIPv4
 
 	var vIP string
 	var err error
-
-	endpointID := fmt.Sprintf("k8s:%s:%s", ns, svcName)
-	dnsName := k8sSvcCfg.dnsName
-	reqIPv4 := k8sSvcCfg.reqIPv4
 
 	switch evt {
 	case eventAdd:

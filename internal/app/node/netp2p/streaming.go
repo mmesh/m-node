@@ -66,7 +66,7 @@ func (mma *mmAgent) writeInterface(rw *bufio.ReadWriter, pkt []byte, plen int) e
 
 	// write to TUN interface
 	if iface != nil {
-		if _, err = iface.Write(pkt[:plen]); err != nil {
+		if _, err = ifaceWrite(pkt[:plen]); err != nil {
 			return err
 		}
 
@@ -82,7 +82,7 @@ func (mma *mmAgent) readInterface() {
 	go func() {
 		pkt := make([]byte, BUFFER_SIZE)
 		for {
-			plen, err := iface.Read(pkt)
+			plen, err := ifaceRead(pkt)
 			if err != nil {
 				xlog.Tracef("Unable to read from interface: %v", err)
 				mma.closeInterface <- struct{}{}
@@ -133,13 +133,13 @@ func (mma *mmAgent) readInterface() {
 func writeStream(ipPkt ipPacket, rw *bufio.ReadWriter) {
 	// real send
 	if _, err := rw.Write(ipPkt.data[:ipPkt.plen]); err != nil {
-		//xlog.Tracef("rw.Write(packet.data[:packet.len]): %v", err)
+		// xlog.Errorf("rw.Write(packet.data[:packet.len]): %v", err)
 		mma.deleteTunnel(ipPkt.dstAddr)
 		return
 	}
 
 	if err := rw.Flush(); err != nil {
-		//xlog.Tracef("rw.Flush(): %v", err)
+		// xlog.Errorf("rw.Flush(): %v", err)
 		mma.deleteTunnel(ipPkt.dstAddr)
 		return
 	}

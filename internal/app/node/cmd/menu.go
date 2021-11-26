@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
 	"mmesh.dev/m-lib/pkg/version"
@@ -14,6 +15,10 @@ var startCmd = &cobra.Command{
 	Short: "Start the agent",
 	Long:  `Start the agent.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if err := ConsoleInit(); err != nil {
+			log.Fatal(err)
+		}
+
 		start.Main()
 	},
 }

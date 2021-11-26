@@ -19,7 +19,7 @@ func (mma *mmAgent) connectPeer(peerInfo *peer.AddrInfo) error {
 		if err := mma.p2pHost.Connect(ctx, *peerInfo); err != nil {
 			xlog.Debugf("Connection FAILED with peer %s", peerInfo.ID.Pretty())
 			xlog.Trace(err)
-			return errors.Wrapf(err, "[%v] function nxHost.Connect(ctx, *peerInfo)", errors.Trace())
+			return errors.Wrapf(err, "[%v] function p2pHost.Connect(ctx, *peerInfo)", errors.Trace())
 		}
 		mma.p2pHost.Network().(*swarm.Swarm).Backoff().Clear(peerInfo.ID)
 

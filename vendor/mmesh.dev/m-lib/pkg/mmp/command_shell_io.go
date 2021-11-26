@@ -8,6 +8,7 @@ import (
 	"mmesh.dev/m-api-go/grpc/common/status"
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-api-go/grpc/network/mmsp/command"
+	"mmesh.dev/m-lib/pkg/mmp/streaming"
 	"x6a.dev/pkg/errors"
 	"x6a.dev/pkg/xlog"
 )
@@ -40,7 +41,7 @@ func shellWriteOutput(mmID string, payload *mmsp.Payload, outrp *io.PipeReader) 
 	// t1 := time.Now()
 	for {
 		p := newShellOutput(mmID, payload)
-		buffer := make([]byte, buffer_len)
+		buffer := make([]byte, streaming.BufferLen)
 		n, err := outrp.Read(buffer)
 		if err == io.EOF {
 			// xlog.Tracef("OUT Pipe Reader EOF: %v", err)
@@ -80,15 +81,15 @@ func shellReadInput(ctx context.Context, payload *mmsp.Payload) error {
 
 	sID := payload.SrcID
 
-	iop := shs.getShellSessionIO(sID)
+	iop := shs.GetIOSessionIO(sID)
 	if iop == nil {
 		return errors.Errorf("shell io pipes not found for session from %s", sID)
 	}
-	if iop.in.wp == nil {
+	if iop.In.WP == nil {
 		return errors.Errorf("shell input writer pipe not found for session from %s", sID)
 	}
 
-	n, err := iop.in.wp.Write(payload.Command.CommandRequest.Stdin)
+	n, err := iop.In.WP.Write(payload.Command.CommandRequest.Stdin)
 	if err != nil {
 		// xlog.Errorf("Unable to read stdin data from node %s: %v", payload.SrcID, err)
 		return errors.Wrapf(err, "[%v] function iop.in.wp.Write(payload.Command.CommandRequest.Stdin)", errors.Trace())

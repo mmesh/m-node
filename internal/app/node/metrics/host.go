@@ -4,71 +4,52 @@ import (
 	"fmt"
 	"time"
 
-	linuxproc "github.com/c9s/goprocinfo/linux"
 	"mmesh.dev/m-api-go/grpc/resources/metrics"
+	"mmesh.dev/m-api-go/grpc/resources/network"
 )
 
 var hm *metrics.HostMetrics
 
-func UpdateHostMetrics() {
+func GetHostMetrics() *metrics.HostMetrics {
+	return hm
+}
+
+func GetHostDataPoint(n *network.Node) *metrics.DataPoint {
 	if hm == nil {
 		hm = &metrics.HostMetrics{}
+		return nil
 	}
 
-	uptime, err := linuxproc.ReadUptime("/proc/uptime")
-	if err != nil {
-		return
-	}
-	cpuInfo, err := linuxproc.ReadCPUInfo("/proc/cpuinfo")
-	if err != nil {
-		return
-	}
-	loadAvg, err := linuxproc.ReadLoadAvg("/proc/loadavg")
-	if err != nil {
-		return
-	}
-	memInfo, err := linuxproc.ReadMemInfo("/proc/meminfo")
-	if err != nil {
-		return
-	}
-	diskInfo, err := linuxproc.ReadDisk("/")
-	if err != nil {
-		return
-	}
-
-	hm.Uptime = uptime.GetTotalDuration().String()
-	if uptime.GetTotalDuration() < time.Duration(5*time.Minute) {
-		go hostUptimeAlert(uptime.GetTotalDuration().String())
-	}
-
-	hm.LoadAvg = float32(loadAvg.Last1Min)
-	if (loadAvg.Last1Min / float64(cpuInfo.NumCore())) > 1.70 {
-		hm.CpuPressure = true
-		go hostCPUHighAlert(fmt.Sprintf("%f", loadAvg.Last1Min/float64(cpuInfo.NumCore())))
-	} else {
-		hm.CpuPressure = false
-		go hostCPULowAlert(fmt.Sprintf("%f", loadAvg.Last1Min/float64(cpuInfo.NumCore())))
-	}
-
-	hm.MemoryUsage = 100 - ((memInfo.MemAvailable * 100) / memInfo.MemTotal)
-	if hm.MemoryUsage > 90 {
-		hm.MemoryPressure = true
-		go hostMemHighAlert(fmt.Sprintf("%d%%", hm.MemoryUsage))
-	} else {
-		hm.MemoryPressure = false
-		go hostMemLowAlert(fmt.Sprintf("%d%%", hm.MemoryUsage))
-	}
-
-	hm.DiskUsage = (diskInfo.Used * 100) / diskInfo.All
-	if hm.DiskUsage > 90 {
-		hm.DiskPressure = true
-		go hostDiskHighAlert(fmt.Sprintf("%d%%", hm.DiskUsage))
-	} else {
-		hm.DiskPressure = false
-		go hostDiskLowAlert(fmt.Sprintf("%d%%", hm.DiskUsage))
+	return &metrics.DataPoint{
+		Timestamp:     time.Now().Unix(),
+		Measurement:   metrics.Measurement_HOST,
+		AccountID:     n.AccountID,
+		TenantID:      n.TenantID,
+		NetID:         n.NetID,
+		VRFID:         n.VRFID,
+		NodeID:        n.NodeID,
+		HostLoadAvg:   hm.LoadAvg,
+		HostCpuUsage:  hm.CpuUsage,
+		HostMemUsage:  hm.MemoryUsage,
+		HostDiskUsage: hm.DiskUsage,
 	}
 }
 
-func GetHostMetrics() *metrics.HostMetrics {
-	return hm
+func uptimeStr(uptime uint64) string {
+	var s string
+
+	days := uptime / (60 * 60 * 24)
+
+	if days == 1 {
+		s = fmt.Sprintf("%d day", days)
+	} else {
+		s = fmt.Sprintf("%d days", days)
+	}
+
+	minutes := uptime / 60
+	hours := minutes / 60
+	hours %= 24
+	minutes %= 60
+
+	return fmt.Sprintf("%s, %d hours, %02d minutes", s, hours, minutes)
 }

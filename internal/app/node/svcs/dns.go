@@ -19,6 +19,8 @@ import (
 	"x6a.dev/pkg/xlog"
 )
 
+// const dnsPortAlt int = 53535
+
 type dnsName string
 
 type handler struct {
@@ -55,7 +57,7 @@ func DNSAgent(w *runtime.Wrkr) {
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
-			xlog.Errorf("Unable to set up DNS agent: %v", err)
+			xlog.Alertf("Unable to set up DNS agent: %v", err)
 		}
 	}()
 

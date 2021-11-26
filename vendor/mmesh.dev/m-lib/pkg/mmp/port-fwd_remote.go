@@ -94,13 +94,13 @@ func portFwdDial(ctx context.Context, payload *mmsp.Payload) error {
 	if iop == nil {
 		return errors.Errorf("port-fwd io pipes not found for node %s and connection %s", srcID, cID)
 	}
-	if iop.out.rp == nil {
+	if iop.Out.RP == nil {
 		return errors.Errorf("port-fwd output writer pipe not found for node %s and connection %s", srcID, cID)
 	}
 
 	// on dial nodes, srcID becomes DstNodeID and dstID becomes SrcNodeID
 	go func() {
-		portFwdWriteData(dstID, srcID, cID, payload, iop.out.rp)
+		portFwdWriteData(dstID, srcID, cID, payload, iop.Out.RP)
 		waitc <- struct{}{}
 	}()
 
@@ -110,13 +110,13 @@ func portFwdDial(ctx context.Context, payload *mmsp.Payload) error {
 	}
 
 	go func() {
-		if _, err := io.Copy(iop.out.wp, conn); err != nil {
-			//logging.Tracef("io.Copy(iop.out.wp, conn): %v", err)
+		if _, err := io.Copy(iop.Out.WP, conn); err != nil {
+			//logging.Tracef("io.Copy(iop.Out.WP, conn): %v", err)
 		}
 	}()
 	go func() {
-		if _, err := io.Copy(conn, iop.in.rp); err != nil {
-			//logging.Tracef("io.Copy(conn, iop.in.rp): %v", err)
+		if _, err := io.Copy(conn, iop.In.RP); err != nil {
+			//logging.Tracef("io.Copy(conn, iop.In.RP): %v", err)
 		}
 		waitc <- struct{}{}
 	}()

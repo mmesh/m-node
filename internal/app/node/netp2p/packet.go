@@ -246,7 +246,7 @@ func (ipPkt *ipPacket) proxy64Forward() bool {
 
 	// write to TUN interface
 	if iface != nil {
-		if _, err = iface.Write(ipPkt.data[:ipPkt.plen]); err != nil {
+		if _, err = ifaceWrite(ipPkt.data[:ipPkt.plen]); err != nil {
 			xlog.Warnf("Unable to write packet to interface: %v", err)
 			return true
 		}

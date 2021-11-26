@@ -46,10 +46,10 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "/etc/mmesh/mmesh-node.yml", "configuration file")
-	rootCmd.PersistentFlags().BoolP("insecure", "", false, "insecure mode (TLS disabled)")
-	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "verbose mode")
-	//rootCmd.PersistentFlags().StringVarP(&outputFormat, "output", "o", "table", "output format (table, json)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", defaultConfigFile(), "configuration file")
+	// rootCmd.PersistentFlags().BoolP("insecure", "", false, "insecure mode (TLS disabled)")
+	// rootCmd.PersistentFlags().BoolP("verbose", "v", false, "verbose mode")
+	// rootCmd.PersistentFlags().StringVarP(&outputFormat, "output", "o", "table", "output format (table, json)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -69,13 +69,13 @@ func initConfig() {
 
 	viper.AutomaticEnv() // read in environment variables that match
 
-	viper.BindPFlag("insecure", rootCmd.PersistentFlags().Lookup("insecure"))
-	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
+	// viper.BindPFlag("insecure", rootCmd.PersistentFlags().Lookup("insecure"))
+	// viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
 		msg.Errorf("Unable to read configuration file: %s\n", err)
-		//os.Exit(1)
+		// os.Exit(1)
 	} else {
 		// msg.Debugf("Using configuration file: %v\n", viper.ConfigFileUsed())
 	}

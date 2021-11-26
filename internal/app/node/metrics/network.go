@@ -2,14 +2,16 @@ package metrics
 
 import (
 	"sync"
+	"time"
 
 	"mmesh.dev/m-api-go/grpc/resources/metrics"
+	"mmesh.dev/m-api-go/grpc/resources/network"
 )
 
 type networkMetricsMap struct {
 	networkMetrics *metrics.NetworkMetrics
 	networkTraffic map[string]*metrics.NetworkMetrics
-	netDevStats    *metrics.NetworkMetrics
+	// netDevStats    *metrics.NetworkMetrics
 	sync.RWMutex
 }
 
@@ -19,7 +21,7 @@ func newNetworkMetricsMap() *networkMetricsMap {
 	return &networkMetricsMap{
 		networkMetrics: &metrics.NetworkMetrics{},
 		networkTraffic: make(map[string]*metrics.NetworkMetrics),
-		netDevStats:    &metrics.NetworkMetrics{},
+		// netDevStats:    &metrics.NetworkMetrics{},
 	}
 }
 
@@ -67,23 +69,23 @@ func (m *networkMetricsMap) update(addr string, tx, rx uint64, droppedPkt bool) 
 	}
 }
 
-func (m *networkMetricsMap) setNetDevStats(txBytes, rxBytes, txPkts, rxPkts uint64) {
-	m.Lock()
-	defer m.Unlock()
+// func (m *networkMetricsMap) setNetDevStats(txBytes, rxBytes, txPkts, rxPkts uint64) {
+// 	m.Lock()
+// 	defer m.Unlock()
 
-	m.netDevStats.TxTotalBytes = txBytes
-	m.netDevStats.RxTotalBytes = rxBytes
-	m.netDevStats.TxTotalPkts = txPkts
-	m.netDevStats.RxTotalPkts = rxPkts
-}
+// 	m.netDevStats.TxTotalBytes = txBytes
+// 	m.netDevStats.RxTotalBytes = rxBytes
+// 	m.netDevStats.TxTotalPkts = txPkts
+// 	m.netDevStats.RxTotalPkts = rxPkts
+// }
 
-func setNetDevStats(txBytes, rxBytes, txPkts, rxPkts uint64) {
-	if networkMetrics == nil {
-		networkMetrics = newNetworkMetricsMap()
-	}
+// func setNetDevStats(txBytes, rxBytes, txPkts, rxPkts uint64) {
+// 	if networkMetrics == nil {
+// 		networkMetrics = newNetworkMetricsMap()
+// 	}
 
-	networkMetrics.setNetDevStats(txBytes, rxBytes, txPkts, rxPkts)
-}
+// 	networkMetrics.setNetDevStats(txBytes, rxBytes, txPkts, rxPkts)
+// }
 
 func ClearNetworkMetrics() {
 	if networkMetrics == nil {
@@ -120,11 +122,31 @@ func GetNetworkTraffic() map[string]*metrics.NetworkMetrics {
 	return networkMetrics.networkTraffic
 }
 
-func GetNetDevStats() *metrics.NetworkMetrics {
+// func GetNetDevStats() *metrics.NetworkMetrics {
+// 	if networkMetrics == nil {
+// 		networkMetrics = newNetworkMetricsMap()
+// 		return nil
+// 	}
+
+// 	return networkMetrics.netDevStats
+// }
+
+func GetNetDataPoint(n *network.Node) *metrics.DataPoint {
 	if networkMetrics == nil {
 		networkMetrics = newNetworkMetricsMap()
 		return nil
 	}
 
-	return networkMetrics.netDevStats
+	return &metrics.DataPoint{
+		Timestamp:      time.Now().Unix(),
+		Measurement:    metrics.Measurement_NET,
+		AccountID:      n.AccountID,
+		TenantID:       n.TenantID,
+		NetID:          n.NetID,
+		VRFID:          n.VRFID,
+		NodeID:         n.NodeID,
+		NetRxBytes:     networkMetrics.networkMetrics.RxTotalBytes,
+		NetTxBytes:     networkMetrics.networkMetrics.TxTotalBytes,
+		NetDroppedPkts: networkMetrics.networkMetrics.DroppedPkts,
+	}
 }

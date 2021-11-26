@@ -9,6 +9,7 @@ vars:
   PROJECT: mmesh
   GITHUB_PKG: 'github.com/{{.ORG}}/{{.NAME}}'
   PREFIX: {sh: pwd}
+  PROJECT_DIR: '{{.PREFIX}}/../..'
   DIST_DIR: '{{.PREFIX}}/_dist'
   VERSION: {sh: cat VERSION}
   LOCAL_UID: {sh: id -u}
@@ -44,13 +45,14 @@ tasks:
     desc: Build all binaries.
     deps: [golang:golang-builder]
     cmds:
-      - docker run --rm -v {{.PREFIX}}:/go/src/{{.NAME}} -v /var/run/docker.sock:/var/run/docker.sock -w /go/src/{{.NAME}} --cap-add=IPC_LOCK --ulimit memlock=-1:-1 x6adev/golang-builder:latest _build-all
+      - docker run --rm -v {{.PROJECT_DIR}}:/go/src/{{.PROJECT}} -v /var/run/docker.sock:/var/run/docker.sock -w /go/src/{{.PROJECT}}/modules/{{.NAME}} --cap-add=IPC_LOCK --ulimit memlock=-1:-1 x6adev/golang-builder:latest _build-all
+      - sudo chown -R {{.LOCAL_UID}}:{{.LOCAL_GID}} .
 
   build-node:
     desc: Build the node binary.
     deps: [golang:golang-builder]
     cmds:
-      - docker run --rm -v {{.PREFIX}}:/go/src/{{.NAME}} -v /var/run/docker.sock:/var/run/docker.sock -w /go/src/{{.NAME}} --cap-add=IPC_LOCK --ulimit memlock=-1:-1 x6adev/golang-builder:latest _build-node
+      - docker run --rm -v {{.PROJECT_DIR}}:/go/src/{{.PROJECT}} -v /var/run/docker.sock:/var/run/docker.sock -w /go/src/{{.PROJECT}}/modules/{{.NAME}} --cap-add=IPC_LOCK --ulimit memlock=-1:-1 x6adev/golang-builder:latest _build-node
       - sudo chown -R {{.LOCAL_UID}}:{{.LOCAL_GID}} .
 
   clean:

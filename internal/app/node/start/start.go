@@ -7,9 +7,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/spf13/viper"
 	"mmesh.dev/m-lib/pkg/runtime"
-	"mmesh.dev/m-lib/pkg/version"
+	"mmesh.dev/m-lib/pkg/update"
 	"mmesh.dev/m-node/internal/app/node/connection"
 	"mmesh.dev/m-node/internal/app/node/netp2p"
 	"x6a.dev/pkg/xlog"
@@ -22,6 +21,8 @@ func start() {
 	initWrkrs(nxnc)
 	runtime.StartWrkrs()
 
+	go restart()
+
 	cleanup()
 }
 
@@ -30,33 +31,45 @@ func cleanup() {
 	signal.Notify(c, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		<-c
-
-		xlog.Debug("Cleaning and finishing...")
-		var wg sync.WaitGroup
-
-		xlog.Debug("Closing workers...")
-		wg.Add(1)
-		runtime.StopWrkrs(&wg)
-
-		wg.Wait()
-
-		xlog.Debug("Closing agents connection handlers...")
-		netp2p.Disconnect()
-		if err := connection.GRPCClientConn.Close(); err != nil {
-			xlog.Errorf("Unable to close gRPC network connection: %v", err)
-		}
-
-		time.Sleep(time.Second)
-
-		close(done)
+		finish()
 	}()
 }
 
-func Main() {
-	start()
-	xlog.Infof("%s started on %s :-)", version.NODE_NAME, viper.GetString("host.id"))
-	<-done
+func finish() {
+	xlog.Debug("Cleaning and finishing...")
+	var wg sync.WaitGroup
 
-	xlog.Infof("%s stopped on %s", version.NODE_NAME, viper.GetString("host.id"))
-	os.Exit(0)
+	xlog.Debug("Closing workers...")
+	wg.Add(1)
+	runtime.StopWrkrs(&wg)
+	wg.Wait()
+
+	xlog.Debug("Closing agent connection handlers...")
+	netp2p.Disconnect()
+	if err := connection.GRPCClientConn.Close(); err != nil {
+		xlog.Errorf("Unable to close gRPC network connection: %v", err)
+	}
+
+	time.Sleep(time.Second)
+
+	close(done)
+}
+
+func restart() {
+	<-update.RestartRequest
+
+	var wg sync.WaitGroup
+
+	xlog.Debug("Closing workers...")
+	wg.Add(1)
+	runtime.StopWrkrs(&wg)
+	wg.Wait()
+
+	xlog.Debug("Closing agent connection handlers...")
+	netp2p.Disconnect()
+	if err := connection.GRPCClientConn.Close(); err != nil {
+		xlog.Errorf("Unable to close gRPC network connection: %v", err)
+	}
+
+	update.RestartReady <- struct{}{}
 }

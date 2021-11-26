@@ -32,13 +32,14 @@ func GetNodeIPv6() string {
 
 func (mma *mmAgent) getNode() *network.Node {
 	return &network.Node{
-		AccountID: mma.accountID,
-		TenantID:  mma.tenantID,
-		NetID:     mma.netID,
-		VRFID:     mma.vrfID,
-		NodeID:    mma.nodeID,
-		Agent:     mma.agent,
-		Endpoints: mma.endpoints.endpt,
+		AccountID:  mma.accountID,
+		TenantID:   mma.tenantID,
+		NetID:      mma.netID,
+		VRFID:      mma.vrfID,
+		NodeID:     mma.nodeID,
+		Agent:      mma.agent,
+		Endpoints:  mma.endpoints.endpt,
+		ReplicaSet: mma.replicaSet,
 	}
 }
 
@@ -47,7 +48,7 @@ func (mma *mmAgent) registerNode() error {
 		Node: mma.getNode(),
 	}
 
-	_, err := mma.nxnc.RegisterNode(context.Background(), nrReq)
+	_, err := mma.nxnc.RegisterNode(context.TODO(), nrReq)
 	if err != nil {
 		return errors.Wrapf(err, "[%v] function mma.nxnc.RegisterNode()", errors.Trace())
 	}

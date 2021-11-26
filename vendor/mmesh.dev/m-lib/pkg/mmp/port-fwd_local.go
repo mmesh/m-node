@@ -121,7 +121,7 @@ func portFwdListen(ctx context.Context, payload *mmsp.Payload) error {
 				logging.Errorf("port-fwd io pipes not found for connection %s", cID)
 				return
 			}
-			if iop.out.rp == nil {
+			if iop.Out.RP == nil {
 				logging.Errorf("port-fwd output writer pipe not found for connection %s", cID)
 				return
 			}
@@ -139,18 +139,18 @@ func portFwdListen(ctx context.Context, payload *mmsp.Payload) error {
 
 			// on listen nodes, srcID becomes SrcNodeID and dstID becomes DstNodeID
 			go func() {
-				portFwdWriteData(srcID, dstID, cID, payload, iop.out.rp)
+				portFwdWriteData(srcID, dstID, cID, payload, iop.Out.RP)
 				waitc <- struct{}{}
 			}()
 
 			go func() {
-				if _, err := io.Copy(iop.out.wp, c); err != nil {
-					//logging.Tracef("io.Copy(iop.out.wp, c): %v", err)
+				if _, err := io.Copy(iop.Out.WP, c); err != nil {
+					//logging.Tracef("io.Copy(iop.Out.WP, c): %v", err)
 				}
 			}()
 			go func() {
-				if _, err := io.Copy(c, iop.in.rp); err != nil {
-					//logging.Tracef("io.Copy(c, iop.in.rp): %v", err)
+				if _, err := io.Copy(c, iop.In.RP); err != nil {
+					//logging.Tracef("io.Copy(c, iop.In.RP): %v", err)
 				}
 				waitc <- struct{}{}
 			}()

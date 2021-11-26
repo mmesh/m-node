@@ -1,3 +1,4 @@
+//go:build linux
 // +build linux
 
 package netp2p
@@ -12,10 +13,11 @@ import (
 
 func (m *routeMap) update() error {
 	if iface == nil {
+		xlog.Alert("Unable to update interface routes: nil pointer")
 		return nil
 	}
 
-	ifcLink, err := netlink.LinkByName(iface.Name())
+	ifcLink, err := netlink.LinkByName(iface.name)
 	if err != nil {
 		return errors.Wrapf(err, "[%v] function netlink.LinkByName()", errors.Trace())
 	}
@@ -54,7 +56,7 @@ func routeAdd(r string) error {
 		return nil
 	}
 
-	ifcLink, err := netlink.LinkByName(iface.Name())
+	ifcLink, err := netlink.LinkByName(iface.name)
 	if err != nil {
 		return errors.Wrapf(err, "[%v] function netlink.LinkByName()", errors.Trace())
 	}
@@ -73,7 +75,7 @@ func routeAdd(r string) error {
 		return errors.Wrapf(err, "[%v] function netlink.RouteAdd()", errors.Trace())
 	}
 
-	xlog.Infof("Added route: %s via %s", r, iface.Name())
+	xlog.Infof("Added route: %s via %s", r, iface.name)
 
 	return nil
 }
@@ -83,7 +85,7 @@ func routeDel(r string) error {
 		return nil
 	}
 
-	ifcLink, err := netlink.LinkByName(iface.Name())
+	ifcLink, err := netlink.LinkByName(iface.name)
 	if err != nil {
 		return errors.Wrapf(err, "[%v] function netlink.LinkByName()", errors.Trace())
 	}
@@ -109,7 +111,7 @@ func routeDel(r string) error {
 				return errors.Wrapf(err, "[%v] function netlink.RouteDel()", errors.Trace())
 			}
 
-			xlog.Infof("Deleted route: %s via %s", r, iface.Name())
+			xlog.Infof("Deleted route: %s via %s", r, iface.name)
 		}
 	}
 

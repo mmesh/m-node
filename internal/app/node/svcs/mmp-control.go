@@ -21,8 +21,8 @@ func MMPControl(w *runtime.Wrkr) {
 	endCh := make(chan struct{}, 2)
 
 	go func() {
-		//ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		//defer cancel()
+		// ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		// defer cancel()
 		stream, err := w.NxNC.Control(context.TODO())
 		if err != nil {
 			xlog.Errorf("Unable to get mmp stream from mmesh controller: %v", err)
@@ -43,7 +43,6 @@ func MMPControl(w *runtime.Wrkr) {
 					networkErrorEventsQueue <- struct{}{}
 					break
 				}
-				// xlog.Tracef("Received mmp payload from %s", payload.SrcID)
 
 				mmp.RxControlQueue <- payload
 			}
@@ -51,6 +50,7 @@ func MMPControl(w *runtime.Wrkr) {
 				xlog.Errorf("Unable to close mmp stream: %v", err)
 			}
 			endCh <- struct{}{}
+			xlog.Warn("Closing mmp recv stream")
 		}()
 
 		go func() {
@@ -63,10 +63,10 @@ func MMPControl(w *runtime.Wrkr) {
 						if err := stream.CloseSend(); err != nil {
 							xlog.Errorf("Unable to close mmp stream: %v", err)
 						}
-						break
+						return
 					}
 				case <-endCh:
-					xlog.Debug("Closing mmp send stream")
+					xlog.Warn("Closing mmp send stream")
 					return
 				}
 			}
