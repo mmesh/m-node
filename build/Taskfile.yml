@@ -14,8 +14,8 @@ vars:
   VERSION: {sh: cat VERSION}
   LOCAL_UID: {sh: id -u}
   LOCAL_GID: {sh: id -g}
-  # PKG_REPO: 'mmesh'
-  # PKG_REPO_DEV: 'mmesh-dev'
+  PKG_REPO: 'mmesh'
+  PKG_REPO_DEV: 'mmesh-dev'
   GS_BUCKET: 'gs://mmesh-io'
 
 env:
@@ -91,16 +91,16 @@ tasks:
     desc: Release binaries (dev build)
     dir: '{{.PREFIX}}'
     cmds:
-      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/node/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO_DEV}}'
-      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/node/mmesh-node_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO_DEV}}'
+      - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO_DEV}}'
+      - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO_DEV}}'
       - ./scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.GS_BUCKET}}' 'dev'
 
   release-binaries-stable:
     desc: Release binaries (stable build)
     dir: '{{.PREFIX}}'
     cmds:
-      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/node/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO}}'
-      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/node/mmesh-node_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO}}'
+      - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO}}'
+      - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO}}'
       - ./scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.GS_BUCKET}}' 'stable'
 
   release-all-dev:
@@ -127,6 +127,7 @@ tasks:
       - task: git:update-git-repo
       - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist
       - ./scripts/_local/build/gh-tag-delete.sh '{{.VERSION}}'
+      - task: release-binaries-dev
 
 includes:
   git: ./build/taskfiles/build/gitTasks.yml

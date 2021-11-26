@@ -46,11 +46,11 @@ builds:
     - CGO_ENABLED=0
   goos:
     - linux
-    # - darwin
-    # - windows
+    - darwin
+    - windows
   goarch:
     - amd64
-    # - arm64
+    - arm64
   # lang: go
 
 archives:
@@ -91,7 +91,7 @@ nfpms:
       # - apk
     bindir: /usr/bin
     dependencies:
-      - iproute2
+      # - iproute2
     section: default
     priority: extra
     meta: false
@@ -154,14 +154,14 @@ changelog:
     - '^\[wip\]'
     # - '^Bump version'
 
-publishers:
-  # dev repos
-  - name: repo.mmesh.dev/apt
-    cmd: ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.deb' '{{.Env.PKG_REPO_DEV}}'
-  - name: repo.mmesh.dev/yum
-    cmd: ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.rpm' '{{.Env.PKG_REPO_DEV}}'
-  # stable repos
-  - name: repo.mmesh.io/apt
-    cmd: ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.deb' '{{.Env.PKG_REPO}}'
-  - name: repo.mmesh.io/yum
-    cmd: ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.rpm' '{{.Env.PKG_REPO}}'
+# publishers:
+#   # dev repos
+#   - name: repo.mmesh.dev/apt
+#     cmd: ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.deb' '{{.Env.PKG_REPO_DEV}}'
+#   - name: repo.mmesh.dev/yum
+#     cmd: ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.rpm' '{{.Env.PKG_REPO_DEV}}'
+#   # stable repos
+#   - name: repo.mmesh.io/apt
+#     cmd: ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.deb' '{{.Env.PKG_REPO}}'
+#   - name: repo.mmesh.io/yum
+#     cmd: ./scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.rpm' '{{.Env.PKG_REPO}}'
