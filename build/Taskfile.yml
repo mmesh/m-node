@@ -112,7 +112,7 @@ tasks:
   release-all-dev:
     desc: Release docker images and binaries (dev build)
     cmds:
-      - ./scripts/build/git-update.sh
+      - task: git:git-update
       - task: docker-push-node-dev
       - task: release-binaries-dev
 
@@ -131,8 +131,7 @@ tasks:
       - task: golang:go-verify-vendor
       # - task: golang:go-vet
       # - task: golang:golangci-lint
-      # - task: git:update-git-repo
-      - ./scripts/build/git-update.sh
+      - task: git:git-update
       - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist
       - ./scripts/_local/build/gh-tag-delete.sh '{{.VERSION}}'
       - task: release-binaries-stable
