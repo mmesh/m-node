@@ -46,12 +46,25 @@ builds:
     - CGO_ENABLED=0
   goos:
     - linux
-    # - darwin
-    # - windows
+    - darwin
+    - windows
   goarch:
     - amd64
-    # - arm64
+    - arm64
   # lang: go
+
+snapshot:
+  # name_template: '{{ .Tag }}-SNAPSHOT-{{.ShortCommit}}'
+  # name_template: '{{ .Version }}-SNAPSHOT-{{.ShortCommit}}'
+  name_template: '{{ .Version }}-{{.Env.VERSION_DATE}}-SNAPSHOT-{{.ShortCommit}}'
+
+checksum:
+  # name_template: '{{ .ProjectName }}_{{ .Tag }}_checksums.txt'
+  name_template: '{{ .ProjectName }}_{{ .Version }}_checksums.txt'
+  algorithm: sha256
+
+signs:
+  - artifacts: none
 
 archives:
 - id: mmesh-node
@@ -65,23 +78,12 @@ archives:
     - goos: windows
       format: zip
 
-checksum:
-  # name_template: '{{ .ProjectName }}_{{ .Tag }}_checksums.txt'
-  name_template: '{{ .ProjectName }}_{{ .Version }}_checksums.txt'
-  algorithm: sha256
-
-signs:
-  - artifacts: none
-
-snapshot:
-  # name_template: '{{ .Tag }}-SNAPSHOT-{{.ShortCommit}}'
-  name_template: '{{ .Version }}-SNAPSHOT-{{.ShortCommit}}'
-
 nfpms:
   - id: mmesh-node
     package_name: mmesh-node
     # file_name_template: "{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
     file_name_template: "{{ .ProjectName }}-node_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    # file_name_template: "{{ .ProjectName }}-node_{{ .Arch }}"
     builds:
       - mmesh-node
     vendor: mmesh.io

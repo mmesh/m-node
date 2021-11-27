@@ -40,9 +40,8 @@ tasks:
       # - task: golang:go-vet
       # - task: golang:golangci-lint
       # - goreleaser build -f build/ci/goreleaser/node.yml --snapshot --rm-dist
-      # - goreleaser build -f build/ci/goreleaser/release.yml --rm-dist --skip-validate
       - goreleaser release -f build/ci/goreleaser/release.yml --snapshot --rm-dist
-      # - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist --skip-validate
+      # - goreleaser build -f build/ci/goreleaser/release.yml --snapshot --rm-dist
 
   build-all:
     desc: Build all binaries.
@@ -94,21 +93,26 @@ tasks:
     desc: Release binaries (dev build)
     dir: '{{.PREFIX}}'
     cmds:
-      - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO_DEV}}'
-      - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO_DEV}}'
+      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO_DEV}}'
+      - ./scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_linux_amd64.deb '{{.PKG_REPO_DEV}}'
+      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO_DEV}}'
+      - ./scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_linux_amd64.rpm '{{.PKG_REPO_DEV}}'
       - ./scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.GS_BUCKET}}' 'dev'
 
   release-binaries-stable:
     desc: Release binaries (stable build)
     dir: '{{.PREFIX}}'
     cmds:
-      - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO}}'
-      - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO}}'
+      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO}}'
+      - ./scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_linux_amd64.deb '{{.PKG_REPO}}'
+      # - ./scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO}}'
+      - ./scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_linux_amd64.rpm '{{.PKG_REPO}}'
       - ./scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.GS_BUCKET}}' 'stable'
 
   release-all-dev:
     desc: Release docker images and binaries (dev build)
     cmds:
+      - ./scripts/build/git-update.sh
       - task: docker-push-node-dev
       - task: release-binaries-dev
 
@@ -127,11 +131,11 @@ tasks:
       - task: golang:go-verify-vendor
       # - task: golang:go-vet
       # - task: golang:golangci-lint
-      - task: git:update-git-repo
-      # - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist --skip-validate
+      # - task: git:update-git-repo
+      - ./scripts/build/git-update.sh
       - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist
       - ./scripts/_local/build/gh-tag-delete.sh '{{.VERSION}}'
-      # - task: release-binaries-stable
+      - task: release-binaries-stable
 
 includes:
   git: ./build/taskfiles/build/gitTasks.yml
