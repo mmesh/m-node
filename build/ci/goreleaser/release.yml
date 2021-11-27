@@ -101,8 +101,6 @@ nfpms:
     section: default
     priority: extra
     meta: false
-    empty_folders:
-      - /var/lib/mmesh
     contents:
       # basic files that apply to all packagers
       - src: ./build/package/linux/mmesh-node.service
