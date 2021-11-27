@@ -109,7 +109,7 @@ func RegisterVersionAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.Ser
 
 // RegisterVersionAPIHandler registers the http handlers for service VersionAPI to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterVersionAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterVersionAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterVersionAPIHandlerClient(ctx, mux, NewVersionAPIClient(conn))
 }
 

@@ -741,7 +741,7 @@ func RegisterBillingAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.Ser
 
 // RegisterBillingAPIHandler registers the http handlers for service BillingAPI to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterBillingAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterBillingAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterBillingAPIHandlerClient(ctx, mux, NewBillingAPIClient(conn))
 }
 

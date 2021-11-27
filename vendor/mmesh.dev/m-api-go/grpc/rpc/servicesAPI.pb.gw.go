@@ -4353,7 +4353,7 @@ func RegisterServicesAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.Se
 
 // RegisterServicesAPIHandler registers the http handlers for service ServicesAPI to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterServicesAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterServicesAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterServicesAPIHandlerClient(ctx, mux, NewServicesAPIClient(conn))
 }
 

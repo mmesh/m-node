@@ -116,8 +116,8 @@ nfpms:
         dst: /etc/mmesh/mmesh-node.yml
         type: config
       # empty dir
-      # - dst: /var/lib/mmesh
-      #   type: dir
+      - dst: /var/lib/mmesh
+        type: dir
 
 dockers:
   - dockerfile: ./build/package/dockerfiles/dockerfile-node

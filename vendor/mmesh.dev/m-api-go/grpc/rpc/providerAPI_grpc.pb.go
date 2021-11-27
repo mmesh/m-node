@@ -51,6 +51,7 @@ type ProviderAPIClient interface {
 	ListAccounts(ctx context.Context, in *account.ListAccountsRequest, opts ...grpc.CallOption) (*account.Accounts, error)
 	GetAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Account, error)
 	GetAccountUsage(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Usage, error)
+	GetAccountTraffic(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Traffic, error)
 	UpdateAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Account, error)
 	DeleteAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	SetAccountIntegrations(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Account, error)
@@ -255,6 +256,15 @@ func (c *providerAPIClient) GetAccountUsage(ctx context.Context, in *account.Acc
 	return out, nil
 }
 
+func (c *providerAPIClient) GetAccountTraffic(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Traffic, error) {
+	out := new(account.Traffic)
+	err := c.cc.Invoke(ctx, "/api.ProviderAPI/GetAccountTraffic", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *providerAPIClient) UpdateAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Account, error) {
 	out := new(account.Account)
 	err := c.cc.Invoke(ctx, "/api.ProviderAPI/UpdateAccount", in, out, opts...)
@@ -410,6 +420,7 @@ type ProviderAPIServer interface {
 	ListAccounts(context.Context, *account.ListAccountsRequest) (*account.Accounts, error)
 	GetAccount(context.Context, *account.Account) (*account.Account, error)
 	GetAccountUsage(context.Context, *account.Account) (*account.Usage, error)
+	GetAccountTraffic(context.Context, *account.Account) (*account.Traffic, error)
 	UpdateAccount(context.Context, *account.Account) (*account.Account, error)
 	DeleteAccount(context.Context, *account.Account) (*status.StatusResponse, error)
 	SetAccountIntegrations(context.Context, *account.Account) (*account.Account, error)
@@ -490,6 +501,9 @@ func (UnimplementedProviderAPIServer) GetAccount(context.Context, *account.Accou
 }
 func (UnimplementedProviderAPIServer) GetAccountUsage(context.Context, *account.Account) (*account.Usage, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method GetAccountUsage not implemented")
+}
+func (UnimplementedProviderAPIServer) GetAccountTraffic(context.Context, *account.Account) (*account.Traffic, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method GetAccountTraffic not implemented")
 }
 func (UnimplementedProviderAPIServer) UpdateAccount(context.Context, *account.Account) (*account.Account, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method UpdateAccount not implemented")
@@ -906,6 +920,24 @@ func _ProviderAPI_GetAccountUsage_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProviderAPI_GetAccountTraffic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(account.Account)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProviderAPIServer).GetAccountTraffic(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.ProviderAPI/GetAccountTraffic",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProviderAPIServer).GetAccountTraffic(ctx, req.(*account.Account))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ProviderAPI_UpdateAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(account.Account)
 	if err := dec(in); err != nil {
@@ -1244,6 +1276,10 @@ var ProviderAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAccountUsage",
 			Handler:    _ProviderAPI_GetAccountUsage_Handler,
+		},
+		{
+			MethodName: "GetAccountTraffic",
+			Handler:    _ProviderAPI_GetAccountTraffic_Handler,
 		},
 		{
 			MethodName: "UpdateAccount",

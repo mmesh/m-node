@@ -44,6 +44,7 @@ type CoreAPIClient interface {
 	SetUserCredentialsTOTP(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
 	SetUserSSHKeys(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
 	GetUserSSHKeys(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.UserSSHKeys, error)
+	SetUserPermissions(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
 	ListSecurityGroups(ctx context.Context, in *iam.ListSecurityGroupsRequest, opts ...grpc.CallOption) (*iam.SecurityGroups, error)
 	GetSecurityGroup(ctx context.Context, in *iam.SecurityGroup, opts ...grpc.CallOption) (*iam.SecurityGroup, error)
 	SetSecurityGroup(ctx context.Context, in *iam.SecurityGroup, opts ...grpc.CallOption) (*iam.SecurityGroup, error)
@@ -235,6 +236,15 @@ func (c *coreAPIClient) SetUserSSHKeys(ctx context.Context, in *iam.User, opts .
 func (c *coreAPIClient) GetUserSSHKeys(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.UserSSHKeys, error) {
 	out := new(iam.UserSSHKeys)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/GetUserSSHKeys", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *coreAPIClient) SetUserPermissions(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error) {
+	out := new(iam.User)
+	err := c.cc.Invoke(ctx, "/api.CoreAPI/SetUserPermissions", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -701,6 +711,7 @@ type CoreAPIServer interface {
 	SetUserCredentialsTOTP(context.Context, *iam.User) (*iam.User, error)
 	SetUserSSHKeys(context.Context, *iam.User) (*iam.User, error)
 	GetUserSSHKeys(context.Context, *iam.User) (*iam.UserSSHKeys, error)
+	SetUserPermissions(context.Context, *iam.User) (*iam.User, error)
 	ListSecurityGroups(context.Context, *iam.ListSecurityGroupsRequest) (*iam.SecurityGroups, error)
 	GetSecurityGroup(context.Context, *iam.SecurityGroup) (*iam.SecurityGroup, error)
 	SetSecurityGroup(context.Context, *iam.SecurityGroup) (*iam.SecurityGroup, error)
@@ -810,6 +821,9 @@ func (UnimplementedCoreAPIServer) SetUserSSHKeys(context.Context, *iam.User) (*i
 }
 func (UnimplementedCoreAPIServer) GetUserSSHKeys(context.Context, *iam.User) (*iam.UserSSHKeys, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method GetUserSSHKeys not implemented")
+}
+func (UnimplementedCoreAPIServer) SetUserPermissions(context.Context, *iam.User) (*iam.User, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method SetUserPermissions not implemented")
 }
 func (UnimplementedCoreAPIServer) ListSecurityGroups(context.Context, *iam.ListSecurityGroupsRequest) (*iam.SecurityGroups, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method ListSecurityGroups not implemented")
@@ -1219,6 +1233,24 @@ func _CoreAPI_GetUserSSHKeys_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CoreAPIServer).GetUserSSHKeys(ctx, req.(*iam.User))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CoreAPI_SetUserPermissions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(iam.User)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoreAPIServer).SetUserPermissions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.CoreAPI/SetUserPermissions",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoreAPIServer).SetUserPermissions(ctx, req.(*iam.User))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2167,6 +2199,10 @@ var CoreAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserSSHKeys",
 			Handler:    _CoreAPI_GetUserSSHKeys_Handler,
+		},
+		{
+			MethodName: "SetUserPermissions",
+			Handler:    _CoreAPI_SetUserPermissions_Handler,
 		},
 		{
 			MethodName: "ListSecurityGroups",
