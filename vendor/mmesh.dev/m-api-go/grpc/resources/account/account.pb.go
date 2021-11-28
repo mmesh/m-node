@@ -884,6 +884,61 @@ func (x *Traffic) GetNetworkMonthlyHistory() map[string]*metrics.NetworkMetrics 
 	return nil
 }
 
+type Stats struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Usage   *Usage   `protobuf:"bytes,11,opt,name=usage,proto3" json:"usage,omitempty"`
+	Traffic *Traffic `protobuf:"bytes,21,opt,name=traffic,proto3" json:"traffic,omitempty"`
+}
+
+func (x *Stats) Reset() {
+	*x = Stats{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_account_account_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Stats) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Stats) ProtoMessage() {}
+
+func (x *Stats) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_account_account_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Stats.ProtoReflect.Descriptor instead.
+func (*Stats) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_account_account_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *Stats) GetUsage() *Usage {
+	if x != nil {
+		return x.Usage
+	}
+	return nil
+}
+
+func (x *Stats) GetTraffic() *Traffic {
+	if x != nil {
+		return x.Traffic
+	}
+	return nil
+}
+
 var File_mmesh_protobuf_resources_v1_account_account_proto protoreflect.FileDescriptor
 
 var file_mmesh_protobuf_resources_v1_account_account_proto_rawDesc = []byte{
@@ -1063,12 +1118,18 @@ var file_mmesh_protobuf_resources_v1_account_account_proto_rawDesc = []byte{
 	0x6b, 0x65, 0x79, 0x12, 0x2d, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x17, 0x2e, 0x6d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x2e, 0x4e, 0x65, 0x74,
 	0x77, 0x6f, 0x72, 0x6b, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x52, 0x05, 0x76, 0x61, 0x6c,
-	0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x2a, 0x19, 0x0a, 0x0b, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e,
-	0x74, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0a, 0x0a, 0x06, 0x4e, 0x4f, 0x52, 0x4d, 0x41, 0x4c, 0x10,
-	0x00, 0x42, 0x2b, 0x5a, 0x29, 0x6d, 0x6d, 0x65, 0x73, 0x68, 0x2e, 0x64, 0x65, 0x76, 0x2f, 0x6d,
-	0x2d, 0x61, 0x70, 0x69, 0x2d, 0x67, 0x6f, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2f, 0x72, 0x65, 0x73,
-	0x6f, 0x75, 0x72, 0x63, 0x65, 0x73, 0x2f, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x59, 0x0a, 0x05, 0x53, 0x74, 0x61, 0x74, 0x73, 0x12,
+	0x24, 0x0a, 0x05, 0x75, 0x73, 0x61, 0x67, 0x65, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e,
+	0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x55, 0x73, 0x61, 0x67, 0x65, 0x52, 0x05,
+	0x75, 0x73, 0x61, 0x67, 0x65, 0x12, 0x2a, 0x0a, 0x07, 0x74, 0x72, 0x61, 0x66, 0x66, 0x69, 0x63,
+	0x18, 0x15, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74,
+	0x2e, 0x54, 0x72, 0x61, 0x66, 0x66, 0x69, 0x63, 0x52, 0x07, 0x74, 0x72, 0x61, 0x66, 0x66, 0x69,
+	0x63, 0x2a, 0x19, 0x0a, 0x0b, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x54, 0x79, 0x70, 0x65,
+	0x12, 0x0a, 0x0a, 0x06, 0x4e, 0x4f, 0x52, 0x4d, 0x41, 0x4c, 0x10, 0x00, 0x42, 0x2b, 0x5a, 0x29,
+	0x6d, 0x6d, 0x65, 0x73, 0x68, 0x2e, 0x64, 0x65, 0x76, 0x2f, 0x6d, 0x2d, 0x61, 0x70, 0x69, 0x2d,
+	0x67, 0x6f, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2f, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65,
+	0x73, 0x2f, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -1084,7 +1145,7 @@ func file_mmesh_protobuf_resources_v1_account_account_proto_rawDescGZIP() []byte
 }
 
 var file_mmesh_protobuf_resources_v1_account_account_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_mmesh_protobuf_resources_v1_account_account_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_mmesh_protobuf_resources_v1_account_account_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_mmesh_protobuf_resources_v1_account_account_proto_goTypes = []interface{}{
 	(AccountType)(0),                // 0: account.AccountType
 	(*NewAccountRequest)(nil),       // 1: account.NewAccountRequest
@@ -1097,47 +1158,50 @@ var file_mmesh_protobuf_resources_v1_account_account_proto_goTypes = []interface
 	(*Service)(nil),                 // 8: account.Service
 	(*Usage)(nil),                   // 9: account.Usage
 	(*Traffic)(nil),                 // 10: account.Traffic
-	nil,                             // 11: account.Service.SubscriptionsEntry
-	nil,                             // 12: account.Traffic.NetworkMonthlyHistoryEntry
-	(*location.Location)(nil),       // 13: location.Location
-	(*billing.Address)(nil),         // 14: billing.Address
-	(services.PlanType)(0),          // 15: services.PlanType
-	(*billing.Subscription)(nil),    // 16: billing.Subscription
-	(*thirdParty.Integrations)(nil), // 17: thirdParty.Integrations
-	(*resource.ListResponse)(nil),   // 18: resource.ListResponse
-	(*resource.ListRequest)(nil),    // 19: resource.ListRequest
-	(*iam.User)(nil),                // 20: iam.User
-	(*billing.Customer)(nil),        // 21: billing.Customer
-	(*metrics.NetworkMetrics)(nil),  // 22: metrics.NetworkMetrics
+	(*Stats)(nil),                   // 11: account.Stats
+	nil,                             // 12: account.Service.SubscriptionsEntry
+	nil,                             // 13: account.Traffic.NetworkMonthlyHistoryEntry
+	(*location.Location)(nil),       // 14: location.Location
+	(*billing.Address)(nil),         // 15: billing.Address
+	(services.PlanType)(0),          // 16: services.PlanType
+	(*billing.Subscription)(nil),    // 17: billing.Subscription
+	(*thirdParty.Integrations)(nil), // 18: thirdParty.Integrations
+	(*resource.ListResponse)(nil),   // 19: resource.ListResponse
+	(*resource.ListRequest)(nil),    // 20: resource.ListRequest
+	(*iam.User)(nil),                // 21: iam.User
+	(*billing.Customer)(nil),        // 22: billing.Customer
+	(*metrics.NetworkMetrics)(nil),  // 23: metrics.NetworkMetrics
 }
 var file_mmesh_protobuf_resources_v1_account_account_proto_depIdxs = []int32{
-	13, // 0: account.NewAccountRequest.location:type_name -> location.Location
-	14, // 1: account.NewAccountRequest.address:type_name -> billing.Address
-	15, // 2: account.NewAccountRequest.planType:type_name -> services.PlanType
-	16, // 3: account.NewAccountRequest.subscription:type_name -> billing.Subscription
-	13, // 4: account.Account.location:type_name -> location.Location
+	14, // 0: account.NewAccountRequest.location:type_name -> location.Location
+	15, // 1: account.NewAccountRequest.address:type_name -> billing.Address
+	16, // 2: account.NewAccountRequest.planType:type_name -> services.PlanType
+	17, // 3: account.NewAccountRequest.subscription:type_name -> billing.Subscription
+	14, // 4: account.Account.location:type_name -> location.Location
 	6,  // 5: account.Account.owner:type_name -> account.Owner
 	0,  // 6: account.Account.type:type_name -> account.AccountType
 	7,  // 7: account.Account.status:type_name -> account.Status
 	8,  // 8: account.Account.service:type_name -> account.Service
-	17, // 9: account.Account.integrations:type_name -> thirdParty.Integrations
+	18, // 9: account.Account.integrations:type_name -> thirdParty.Integrations
 	9,  // 10: account.Account.usage:type_name -> account.Usage
 	10, // 11: account.Account.traffic:type_name -> account.Traffic
-	18, // 12: account.Accounts.meta:type_name -> resource.ListResponse
+	19, // 12: account.Accounts.meta:type_name -> resource.ListResponse
 	3,  // 13: account.Accounts.accounts:type_name -> account.Account
-	19, // 14: account.ListAccountsRequest.meta:type_name -> resource.ListRequest
-	20, // 15: account.Owner.admin:type_name -> iam.User
-	21, // 16: account.Owner.customer:type_name -> billing.Customer
-	11, // 17: account.Service.subscriptions:type_name -> account.Service.SubscriptionsEntry
-	22, // 18: account.Traffic.networkMetrics:type_name -> metrics.NetworkMetrics
-	12, // 19: account.Traffic.networkMonthlyHistory:type_name -> account.Traffic.NetworkMonthlyHistoryEntry
-	16, // 20: account.Service.SubscriptionsEntry.value:type_name -> billing.Subscription
-	22, // 21: account.Traffic.NetworkMonthlyHistoryEntry.value:type_name -> metrics.NetworkMetrics
-	22, // [22:22] is the sub-list for method output_type
-	22, // [22:22] is the sub-list for method input_type
-	22, // [22:22] is the sub-list for extension type_name
-	22, // [22:22] is the sub-list for extension extendee
-	0,  // [0:22] is the sub-list for field type_name
+	20, // 14: account.ListAccountsRequest.meta:type_name -> resource.ListRequest
+	21, // 15: account.Owner.admin:type_name -> iam.User
+	22, // 16: account.Owner.customer:type_name -> billing.Customer
+	12, // 17: account.Service.subscriptions:type_name -> account.Service.SubscriptionsEntry
+	23, // 18: account.Traffic.networkMetrics:type_name -> metrics.NetworkMetrics
+	13, // 19: account.Traffic.networkMonthlyHistory:type_name -> account.Traffic.NetworkMonthlyHistoryEntry
+	9,  // 20: account.Stats.usage:type_name -> account.Usage
+	10, // 21: account.Stats.traffic:type_name -> account.Traffic
+	17, // 22: account.Service.SubscriptionsEntry.value:type_name -> billing.Subscription
+	23, // 23: account.Traffic.NetworkMonthlyHistoryEntry.value:type_name -> metrics.NetworkMetrics
+	24, // [24:24] is the sub-list for method output_type
+	24, // [24:24] is the sub-list for method input_type
+	24, // [24:24] is the sub-list for extension type_name
+	24, // [24:24] is the sub-list for extension extendee
+	0,  // [0:24] is the sub-list for field type_name
 }
 
 func init() { file_mmesh_protobuf_resources_v1_account_account_proto_init() }
@@ -1266,6 +1330,18 @@ func file_mmesh_protobuf_resources_v1_account_account_proto_init() {
 				return nil
 			}
 		}
+		file_mmesh_protobuf_resources_v1_account_account_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Stats); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1273,7 +1349,7 @@ func file_mmesh_protobuf_resources_v1_account_account_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_mmesh_protobuf_resources_v1_account_account_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   12,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
