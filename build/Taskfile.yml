@@ -131,10 +131,9 @@ tasks:
       - task: golang:go-verify-vendor
       # - task: golang:go-vet
       # - task: golang:golangci-lint
-      - ./scripts/build/version-bump.sh
       - task: git:git-update
       - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist
-      - ./scripts/_local/build/gh-tag-delete.sh '{{.VERSION}}'
+      # - ./scripts/_local/build/gh-tag-delete.sh '{{.VERSION}}'
       - task: release-binaries-stable
 
 includes:
