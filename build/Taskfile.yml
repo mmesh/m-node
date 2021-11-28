@@ -132,9 +132,11 @@ tasks:
       # - task: golang:go-vet
       # - task: golang:golangci-lint
       - task: git:git-update
+      - task: git:git-tag
       - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist
       # - ./scripts/_local/build/gh-tag-delete.sh '{{.VERSION}}'
       - task: release-binaries-stable
+      - task: git:version-bump
 
 includes:
   git: ./build/taskfiles/build/gitTasks.yml
