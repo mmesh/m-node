@@ -80,14 +80,14 @@ tasks:
     - task: docker:image-scan
       vars: {IMAGE: "mmesh-node", REPO: "mmeshdev", TAG: "dev"}
 
-  docker-push-node-stable:
-    desc: docker push -- mmesh-node (stable build)
-    deps: [docker-build-node]
-    cmds:
-    - task: docker:docker-push
-      vars: {IMAGE: "mmesh-node", REPO: "mmeshdev", TAG: "stable"}
-    - task: docker:image-scan
-      vars: {IMAGE: "mmesh-node", REPO: "mmeshdev", TAG: "stable"}
+  # docker-push-node-stable:
+  #   desc: docker push -- mmesh-node (stable build)
+  #   deps: [docker-build-node]
+  #   cmds:
+  #   - task: docker:docker-push
+  #     vars: {IMAGE: "mmesh-node", REPO: "mmeshdev", TAG: "stable"}
+  #   - task: docker:image-scan
+  #     vars: {IMAGE: "mmesh-node", REPO: "mmeshdev", TAG: "stable"}
 
   release-binaries-dev:
     desc: Release binaries (dev build)
