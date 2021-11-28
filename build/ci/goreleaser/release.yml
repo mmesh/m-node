@@ -159,7 +159,7 @@ changelog:
     - '^test:'
     - '^wip'
     - '^\[wip\]'
-    # - '^Bump version'
+    - '^Bump version'
 
 # publishers:
 #   # dev repos
