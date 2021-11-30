@@ -76,7 +76,7 @@ func Init() {
 		logLevel = xlog.TRACE
 	}
 
-	xlog.SetLogger(logLevel, hostID)
+	setLogger(logLevel, hostID, xlog.WithANSIColor(true))
 
 	fmt.Print("[settings loaded]\n\n")
 }

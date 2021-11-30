@@ -37,7 +37,7 @@ type logOption int
 const (
 	logOptionOutputStdout logOption = iota
 	logOptionOutputStderr
-	logOptionOutputLogger
+	logOptionOutputStdLogger
 	logOptionOutputFile
 	logOptionOutputSyslog
 	logOptionOutputSlack
@@ -108,9 +108,9 @@ func WithANSIColor(enabled bool) *LogOption {
 	}
 }
 
-func WithLogger() *LogOption {
+func WithStdLogger() *LogOption {
 	return &LogOption{
-		key: logOptionOutputLogger,
+		key: logOptionOutputStdLogger,
 		value: map[LogLevel]*log.Logger{
 			TRACE: log.New(os.Stdout, "["+logPrefixes[TRACE]+"]\t", log.Ldate|log.Ltime),
 			DEBUG: log.New(os.Stdout, "["+logPrefixes[DEBUG]+"]\t", log.Ldate|log.Ltime),
@@ -174,7 +174,7 @@ func (l *logger) setOptions(logOpts ...*LogOption) {
 		switch opt.key {
 		case logOptionANSIColor:
 			l.ansiColor = opt.value.(bool)
-		case logOptionOutputLogger:
+		case logOptionOutputStdLogger:
 			l.stdLog = opt.value.(map[LogLevel]*log.Logger)
 		case logOptionOutputFile:
 			l.stdLogFile = opt.value.(map[LogLevel]*log.Logger)
