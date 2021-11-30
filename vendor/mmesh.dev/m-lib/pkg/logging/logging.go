@@ -3,8 +3,8 @@ package logging
 import (
 	"fmt"
 
+	"mmesh.dev/m-lib/pkg/xlog"
 	"x6a.dev/pkg/msg"
-	"x6a.dev/pkg/xlog"
 )
 
 var Interactive bool

@@ -6,7 +6,7 @@ import (
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-lib/pkg/logging"
 	"mmesh.dev/m-lib/pkg/runtime"
-	"x6a.dev/pkg/xlog"
+	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 var RxControlQueue = make(chan *mmsp.Payload, 128)

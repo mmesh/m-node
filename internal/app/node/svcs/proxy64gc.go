@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"mmesh.dev/m-lib/pkg/runtime"
+	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/netp2p"
-	"x6a.dev/pkg/xlog"
 )
 
 var proxy64GCch = make(chan struct{}, 1)

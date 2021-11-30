@@ -4,9 +4,9 @@ import (
 	"time"
 
 	"mmesh.dev/m-lib/pkg/runtime"
+	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/connection"
 	"x6a.dev/pkg/errors"
-	"x6a.dev/pkg/xlog"
 )
 
 var federationMonitorCh = make(chan struct{}, 1)

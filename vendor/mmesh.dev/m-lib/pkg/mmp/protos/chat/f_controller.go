@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-api-go/grpc/resources/messaging"
-	"x6a.dev/pkg/xlog"
+	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 var sessionsMap *chatSessionsMap
@@ -49,10 +49,10 @@ func newChatOperatorOutput(srcID string, p *mmsp.Payload) *mmsp.Payload {
 		DstID:       p.SrcID,
 		PayloadType: mmsp.PayloadType_CHAT_SESSION_OUTPUT,
 		ChatMessage: &messaging.ChatMessage{
-			ServiceID:        p.ChatMessage.ServiceID,
-			ProviderID:       p.ChatMessage.ProviderID,
-			IssueID:          p.ChatMessage.IssueID,
-			ThreadID:         p.ChatMessage.ThreadID,
+			ServiceID:  p.ChatMessage.ServiceID,
+			ProviderID: p.ChatMessage.ProviderID,
+			IssueID:    p.ChatMessage.IssueID,
+			ThreadID:   p.ChatMessage.ThreadID,
 			// ThreadTS:         p.ChatMessage.ThreadTS,
 			BackendType:      p.ChatMessage.BackendType,
 			Direction:        messaging.ChatMessageDirection_PROVIDER_TO_USER,

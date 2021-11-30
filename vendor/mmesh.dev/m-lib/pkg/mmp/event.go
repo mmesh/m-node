@@ -3,7 +3,7 @@ package mmp
 import (
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-api-go/grpc/network/mmsp/alert"
-	"x6a.dev/pkg/xlog"
+	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 func NewEvent(eventPayload *alert.EventPayload) {

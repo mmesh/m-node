@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
-	"x6a.dev/pkg/xlog"
+	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 // WorkflowSchedule configure the local cron with workflow-related operations.

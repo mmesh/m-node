@@ -3,8 +3,8 @@ package netp2p
 import (
 	"context"
 
+	"mmesh.dev/m-lib/pkg/xlog"
 	"x6a.dev/pkg/errors"
-	"x6a.dev/pkg/xlog"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	swarm "github.com/libp2p/go-libp2p-swarm"

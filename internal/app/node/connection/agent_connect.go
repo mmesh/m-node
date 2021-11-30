@@ -6,9 +6,9 @@ import (
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/network/mmnp/natProbe"
 	"mmesh.dev/m-api-go/grpc/rpc"
+	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/netp2p"
 	"x6a.dev/pkg/errors"
-	"x6a.dev/pkg/xlog"
 )
 
 // agentConnect connects the agent to mmesh network

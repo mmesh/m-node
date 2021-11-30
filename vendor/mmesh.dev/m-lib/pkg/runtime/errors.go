@@ -1,7 +1,7 @@
 package runtime
 
 import (
-	"x6a.dev/pkg/xlog"
+	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 var ErrorEventsJobQueue = make(chan error, 128)

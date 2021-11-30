@@ -9,8 +9,8 @@ import (
 	"mmesh.dev/m-api-go/grpc/resources/network"
 	"mmesh.dev/m-lib/pkg/ipnet"
 	"mmesh.dev/m-lib/pkg/resources"
+	"mmesh.dev/m-lib/pkg/xlog"
 	"x6a.dev/pkg/errors"
-	"x6a.dev/pkg/xlog"
 )
 
 func AddNetworkEndpoint(endpointID, dnsName, reqIPv4 string) (string, error) {

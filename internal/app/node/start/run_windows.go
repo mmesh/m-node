@@ -10,7 +10,7 @@ import (
 	"github.com/kardianos/service"
 	"github.com/spf13/viper"
 	"mmesh.dev/m-lib/pkg/version"
-	"x6a.dev/pkg/xlog"
+	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 type windowsAction int

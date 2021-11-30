@@ -1040,6 +1040,7 @@ mmesh.dev/m-lib/pkg/update
 mmesh.dev/m-lib/pkg/utils
 mmesh.dev/m-lib/pkg/utils/colors
 mmesh.dev/m-lib/pkg/version
+mmesh.dev/m-lib/pkg/xlog
 # sigs.k8s.io/structured-merge-diff/v4 v4.1.2
 ## explicit; go 1.13
 sigs.k8s.io/structured-merge-diff/v4/fieldpath
@@ -1054,6 +1055,5 @@ sigs.k8s.io/yaml
 x6a.dev/pkg/colors
 x6a.dev/pkg/errors
 x6a.dev/pkg/msg
-x6a.dev/pkg/xlog
 # mmesh.dev/m-api-go => ./modules/m-api-go
 # mmesh.dev/m-lib => ./modules/m-lib

@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"mmesh.dev/m-lib/pkg/ipnet"
+	"mmesh.dev/m-lib/pkg/xlog"
 	"x6a.dev/pkg/errors"
-	"x6a.dev/pkg/xlog"
 )
 
 func (p *proxyPort) fwdCtl(ns, svcName, vip, ip string, af ipnet.AddressFamily) {

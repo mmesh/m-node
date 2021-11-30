@@ -3,8 +3,8 @@ package svcs
 import (
 	"github.com/spf13/viper"
 	"mmesh.dev/m-lib/pkg/runtime"
+	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/k8s"
-	"x6a.dev/pkg/xlog"
 )
 
 func KubernetesConnector(w *runtime.Wrkr) {

@@ -4,9 +4,9 @@ import (
 	"time"
 
 	"mmesh.dev/m-lib/pkg/runtime"
+	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/connection"
 	"mmesh.dev/m-node/internal/app/node/netp2p"
-	"x6a.dev/pkg/xlog"
 )
 
 var networkErrorEventsQueue = make(chan struct{}, 128)

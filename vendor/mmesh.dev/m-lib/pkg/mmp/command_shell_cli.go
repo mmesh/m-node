@@ -10,8 +10,8 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-api-go/grpc/network/mmsp/command"
-	"mmesh.dev/m-lib/pkg/mmp/term"
 	"mmesh.dev/m-lib/pkg/cli/output"
+	"mmesh.dev/m-lib/pkg/mmp/term"
 	"x6a.dev/pkg/msg"
 )
 

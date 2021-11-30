@@ -5,10 +5,10 @@ import (
 
 	v1 "k8s.io/api/core/v1"
 	"mmesh.dev/m-lib/pkg/ipnet"
+	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/netp2p"
 	"mmesh.dev/m-node/internal/app/node/proxy"
 	"x6a.dev/pkg/errors"
-	"x6a.dev/pkg/xlog"
 )
 
 // manageSvcEvent is the business logic of the controller.

@@ -9,7 +9,7 @@ import (
 type chatSessionID string
 
 type ChatSession struct {
-	ThreadID      string
+	ThreadID string
 	// ThreadTS      string
 	ProviderQueue chan *messaging.ChatMessage
 	CloseCh       chan struct{}

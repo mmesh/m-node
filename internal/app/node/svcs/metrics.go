@@ -7,9 +7,9 @@ import (
 	metrics_pb "mmesh.dev/m-api-go/grpc/resources/metrics"
 	"mmesh.dev/m-api-go/grpc/resources/network"
 	"mmesh.dev/m-lib/pkg/runtime"
+	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/metrics"
 	"mmesh.dev/m-node/internal/app/node/netp2p"
-	"x6a.dev/pkg/xlog"
 )
 
 var updateNodeMetrics = make(chan struct{}, 1)

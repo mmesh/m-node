@@ -7,8 +7,8 @@ import (
 	"mmesh.dev/m-lib/pkg/logging"
 	"mmesh.dev/m-lib/pkg/mmp"
 	"mmesh.dev/m-lib/pkg/runtime"
+	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/ops"
-	"x6a.dev/pkg/xlog"
 )
 
 func MMPProcessor(w *runtime.Wrkr) {

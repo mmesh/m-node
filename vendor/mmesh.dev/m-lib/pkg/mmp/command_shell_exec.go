@@ -8,7 +8,7 @@ import (
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-lib/pkg/mmp/streaming"
 	"mmesh.dev/m-lib/pkg/mmp/term"
-	"x6a.dev/pkg/xlog"
+	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 var shs = streaming.NewIOSessions()

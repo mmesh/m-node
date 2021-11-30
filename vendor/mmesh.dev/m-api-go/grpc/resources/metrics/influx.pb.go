@@ -84,19 +84,22 @@ type DataPoint struct {
 	NodeID    string `protobuf:"bytes,15,opt,name=nodeID,proto3" json:"nodeID,omitempty"`
 	UserEmail string `protobuf:"bytes,21,opt,name=userEmail,proto3" json:"userEmail,omitempty"`
 	// fields
+	// NET measurement
 	// double netRxBps = 101;
 	// double netTxBps = 102;
 	NetRxBytes uint64 `protobuf:"varint,103,opt,name=netRxBytes,proto3" json:"netRxBytes,omitempty"`
 	NetTxBytes uint64 `protobuf:"varint,104,opt,name=netTxBytes,proto3" json:"netTxBytes,omitempty"`
 	// uint64 netRxPkts = 105;
 	// uint64 netTxPkts = 106;
-	NetDroppedPkts uint64  `protobuf:"varint,107,opt,name=netDroppedPkts,proto3" json:"netDroppedPkts,omitempty"`
-	HostLoadAvg    float64 `protobuf:"fixed64,201,opt,name=hostLoadAvg,proto3" json:"hostLoadAvg,omitempty"`
-	HostCpuUsage   uint64  `protobuf:"varint,211,opt,name=hostCpuUsage,proto3" json:"hostCpuUsage,omitempty"`
-	HostMemUsage   uint64  `protobuf:"varint,221,opt,name=hostMemUsage,proto3" json:"hostMemUsage,omitempty"`
-	HostDiskUsage  uint64  `protobuf:"varint,231,opt,name=hostDiskUsage,proto3" json:"hostDiskUsage,omitempty"`
-	EventActivity  string  `protobuf:"bytes,301,opt,name=eventActivity,proto3" json:"eventActivity,omitempty"`
-	EventSuccess   bool    `protobuf:"varint,302,opt,name=eventSuccess,proto3" json:"eventSuccess,omitempty"` // bool eventFail = 303;
+	NetDroppedPkts uint64 `protobuf:"varint,107,opt,name=netDroppedPkts,proto3" json:"netDroppedPkts,omitempty"`
+	// HOST measurement
+	HostLoadAvg   float64 `protobuf:"fixed64,201,opt,name=hostLoadAvg,proto3" json:"hostLoadAvg,omitempty"`
+	HostCpuUsage  uint64  `protobuf:"varint,211,opt,name=hostCpuUsage,proto3" json:"hostCpuUsage,omitempty"`
+	HostMemUsage  uint64  `protobuf:"varint,221,opt,name=hostMemUsage,proto3" json:"hostMemUsage,omitempty"`
+	HostDiskUsage uint64  `protobuf:"varint,231,opt,name=hostDiskUsage,proto3" json:"hostDiskUsage,omitempty"`
+	// EVENT measurement
+	EventActivity string `protobuf:"bytes,301,opt,name=eventActivity,proto3" json:"eventActivity,omitempty"`
+	EventSuccess  bool   `protobuf:"varint,302,opt,name=eventSuccess,proto3" json:"eventSuccess,omitempty"` // bool eventFail = 303;
 }
 
 func (x *DataPoint) Reset() {
@@ -337,6 +340,346 @@ func (x *DataPoints) GetDataPoints() []*DataPoint {
 	return nil
 }
 
+type InfluxQuery struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AccountID string `protobuf:"bytes,1,opt,name=accountID,proto3" json:"accountID,omitempty"`
+	Query     string `protobuf:"bytes,11,opt,name=query,proto3" json:"query,omitempty"`
+}
+
+func (x *InfluxQuery) Reset() {
+	*x = InfluxQuery{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_metrics_influx_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *InfluxQuery) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InfluxQuery) ProtoMessage() {}
+
+func (x *InfluxQuery) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_metrics_influx_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InfluxQuery.ProtoReflect.Descriptor instead.
+func (*InfluxQuery) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_metrics_influx_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *InfluxQuery) GetAccountID() string {
+	if x != nil {
+		return x.AccountID
+	}
+	return ""
+}
+
+func (x *InfluxQuery) GetQuery() string {
+	if x != nil {
+		return x.Query
+	}
+	return ""
+}
+
+type InfluxQueryResult struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Metrics []*InfluxMetricRecord `protobuf:"bytes,11,rep,name=metrics,proto3" json:"metrics,omitempty"`
+	Events  []*InfluxEventRecord  `protobuf:"bytes,21,rep,name=events,proto3" json:"events,omitempty"`
+}
+
+func (x *InfluxQueryResult) Reset() {
+	*x = InfluxQueryResult{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_metrics_influx_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *InfluxQueryResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InfluxQueryResult) ProtoMessage() {}
+
+func (x *InfluxQueryResult) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_metrics_influx_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InfluxQueryResult.ProtoReflect.Descriptor instead.
+func (*InfluxQueryResult) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_metrics_influx_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *InfluxQueryResult) GetMetrics() []*InfluxMetricRecord {
+	if x != nil {
+		return x.Metrics
+	}
+	return nil
+}
+
+func (x *InfluxQueryResult) GetEvents() []*InfluxEventRecord {
+	if x != nil {
+		return x.Events
+	}
+	return nil
+}
+
+type InfluxMetricRecord struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AccountID   string  `protobuf:"bytes,11,opt,name=accountID,proto3" json:"accountID,omitempty"`
+	TenantID    string  `protobuf:"bytes,12,opt,name=tenantID,proto3" json:"tenantID,omitempty"`
+	NetID       string  `protobuf:"bytes,13,opt,name=netID,proto3" json:"netID,omitempty"`
+	VRFID       string  `protobuf:"bytes,14,opt,name=VRFID,proto3" json:"VRFID,omitempty"`
+	NodeID      string  `protobuf:"bytes,15,opt,name=nodeID,proto3" json:"nodeID,omitempty"`
+	Start       int64   `protobuf:"varint,101,opt,name=start,proto3" json:"start,omitempty"`
+	Stop        int64   `protobuf:"varint,102,opt,name=stop,proto3" json:"stop,omitempty"`
+	Time        int64   `protobuf:"varint,103,opt,name=time,proto3" json:"time,omitempty"`
+	Measurement string  `protobuf:"bytes,111,opt,name=measurement,proto3" json:"measurement,omitempty"`
+	Field       string  `protobuf:"bytes,121,opt,name=field,proto3" json:"field,omitempty"`
+	Value       float64 `protobuf:"fixed64,122,opt,name=value,proto3" json:"value,omitempty"` // specific for metric-type measurements (NET, HOST)
+}
+
+func (x *InfluxMetricRecord) Reset() {
+	*x = InfluxMetricRecord{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_metrics_influx_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *InfluxMetricRecord) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InfluxMetricRecord) ProtoMessage() {}
+
+func (x *InfluxMetricRecord) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_metrics_influx_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InfluxMetricRecord.ProtoReflect.Descriptor instead.
+func (*InfluxMetricRecord) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_metrics_influx_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *InfluxMetricRecord) GetAccountID() string {
+	if x != nil {
+		return x.AccountID
+	}
+	return ""
+}
+
+func (x *InfluxMetricRecord) GetTenantID() string {
+	if x != nil {
+		return x.TenantID
+	}
+	return ""
+}
+
+func (x *InfluxMetricRecord) GetNetID() string {
+	if x != nil {
+		return x.NetID
+	}
+	return ""
+}
+
+func (x *InfluxMetricRecord) GetVRFID() string {
+	if x != nil {
+		return x.VRFID
+	}
+	return ""
+}
+
+func (x *InfluxMetricRecord) GetNodeID() string {
+	if x != nil {
+		return x.NodeID
+	}
+	return ""
+}
+
+func (x *InfluxMetricRecord) GetStart() int64 {
+	if x != nil {
+		return x.Start
+	}
+	return 0
+}
+
+func (x *InfluxMetricRecord) GetStop() int64 {
+	if x != nil {
+		return x.Stop
+	}
+	return 0
+}
+
+func (x *InfluxMetricRecord) GetTime() int64 {
+	if x != nil {
+		return x.Time
+	}
+	return 0
+}
+
+func (x *InfluxMetricRecord) GetMeasurement() string {
+	if x != nil {
+		return x.Measurement
+	}
+	return ""
+}
+
+func (x *InfluxMetricRecord) GetField() string {
+	if x != nil {
+		return x.Field
+	}
+	return ""
+}
+
+func (x *InfluxMetricRecord) GetValue() float64 {
+	if x != nil {
+		return x.Value
+	}
+	return 0
+}
+
+type InfluxEventRecord struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AccountID   string `protobuf:"bytes,11,opt,name=accountID,proto3" json:"accountID,omitempty"`
+	UserEmail   string `protobuf:"bytes,21,opt,name=userEmail,proto3" json:"userEmail,omitempty"`
+	Start       int64  `protobuf:"varint,101,opt,name=start,proto3" json:"start,omitempty"`
+	Stop        int64  `protobuf:"varint,102,opt,name=stop,proto3" json:"stop,omitempty"`
+	Time        int64  `protobuf:"varint,103,opt,name=time,proto3" json:"time,omitempty"`
+	Measurement string `protobuf:"bytes,111,opt,name=measurement,proto3" json:"measurement,omitempty"`
+	Field       string `protobuf:"bytes,121,opt,name=field,proto3" json:"field,omitempty"`
+	Value       bool   `protobuf:"varint,122,opt,name=value,proto3" json:"value,omitempty"` // specific for event-type measurements (EVENT)
+}
+
+func (x *InfluxEventRecord) Reset() {
+	*x = InfluxEventRecord{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_metrics_influx_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *InfluxEventRecord) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InfluxEventRecord) ProtoMessage() {}
+
+func (x *InfluxEventRecord) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_metrics_influx_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InfluxEventRecord.ProtoReflect.Descriptor instead.
+func (*InfluxEventRecord) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_metrics_influx_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *InfluxEventRecord) GetAccountID() string {
+	if x != nil {
+		return x.AccountID
+	}
+	return ""
+}
+
+func (x *InfluxEventRecord) GetUserEmail() string {
+	if x != nil {
+		return x.UserEmail
+	}
+	return ""
+}
+
+func (x *InfluxEventRecord) GetStart() int64 {
+	if x != nil {
+		return x.Start
+	}
+	return 0
+}
+
+func (x *InfluxEventRecord) GetStop() int64 {
+	if x != nil {
+		return x.Stop
+	}
+	return 0
+}
+
+func (x *InfluxEventRecord) GetTime() int64 {
+	if x != nil {
+		return x.Time
+	}
+	return 0
+}
+
+func (x *InfluxEventRecord) GetMeasurement() string {
+	if x != nil {
+		return x.Measurement
+	}
+	return ""
+}
+
+func (x *InfluxEventRecord) GetField() string {
+	if x != nil {
+		return x.Field
+	}
+	return ""
+}
+
+func (x *InfluxEventRecord) GetValue() bool {
+	if x != nil {
+		return x.Value
+	}
+	return false
+}
+
 var File_mmesh_protobuf_resources_v1_metrics_influx_proto protoreflect.FileDescriptor
 
 var file_mmesh_protobuf_resources_v1_metrics_influx_proto_rawDesc = []byte{
@@ -392,13 +735,57 @@ var file_mmesh_protobuf_resources_v1_metrics_influx_proto_rawDesc = []byte{
 	0x12, 0x32, 0x0a, 0x0a, 0x64, 0x61, 0x74, 0x61, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x73, 0x18, 0x0b,
 	0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x6d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x2e, 0x44,
 	0x61, 0x74, 0x61, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x52, 0x0a, 0x64, 0x61, 0x74, 0x61, 0x50, 0x6f,
-	0x69, 0x6e, 0x74, 0x73, 0x2a, 0x2b, 0x0a, 0x0b, 0x4d, 0x65, 0x61, 0x73, 0x75, 0x72, 0x65, 0x6d,
-	0x65, 0x6e, 0x74, 0x12, 0x07, 0x0a, 0x03, 0x4e, 0x45, 0x54, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04,
-	0x48, 0x4f, 0x53, 0x54, 0x10, 0x01, 0x12, 0x09, 0x0a, 0x05, 0x45, 0x56, 0x45, 0x4e, 0x54, 0x10,
-	0x02, 0x42, 0x2b, 0x5a, 0x29, 0x6d, 0x6d, 0x65, 0x73, 0x68, 0x2e, 0x64, 0x65, 0x76, 0x2f, 0x6d,
-	0x2d, 0x61, 0x70, 0x69, 0x2d, 0x67, 0x6f, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2f, 0x72, 0x65, 0x73,
-	0x6f, 0x75, 0x72, 0x63, 0x65, 0x73, 0x2f, 0x6d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x69, 0x6e, 0x74, 0x73, 0x22, 0x41, 0x0a, 0x0b, 0x49, 0x6e, 0x66, 0x6c, 0x75, 0x78, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49,
+	0x44, 0x12, 0x14, 0x0a, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x71, 0x75, 0x65, 0x72, 0x79, 0x22, 0x7e, 0x0a, 0x11, 0x49, 0x6e, 0x66, 0x6c, 0x75,
+	0x78, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x35, 0x0a, 0x07,
+	0x6d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x18, 0x0b, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e,
+	0x6d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x2e, 0x49, 0x6e, 0x66, 0x6c, 0x75, 0x78, 0x4d, 0x65,
+	0x74, 0x72, 0x69, 0x63, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x07, 0x6d, 0x65, 0x74, 0x72,
+	0x69, 0x63, 0x73, 0x12, 0x32, 0x0a, 0x06, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x18, 0x15, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x6d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x2e, 0x49, 0x6e,
+	0x66, 0x6c, 0x75, 0x78, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52,
+	0x06, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x22, 0x9e, 0x02, 0x0a, 0x12, 0x49, 0x6e, 0x66, 0x6c,
+	0x75, 0x78, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x12, 0x1c,
+	0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x0b, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x12, 0x1a, 0x0a, 0x08,
+	0x74, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08,
+	0x74, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x49, 0x44, 0x12, 0x14, 0x0a, 0x05, 0x6e, 0x65, 0x74, 0x49,
+	0x44, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6e, 0x65, 0x74, 0x49, 0x44, 0x12, 0x14,
+	0x0a, 0x05, 0x56, 0x52, 0x46, 0x49, 0x44, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x56,
+	0x52, 0x46, 0x49, 0x44, 0x12, 0x16, 0x0a, 0x06, 0x6e, 0x6f, 0x64, 0x65, 0x49, 0x44, 0x18, 0x0f,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6e, 0x6f, 0x64, 0x65, 0x49, 0x44, 0x12, 0x14, 0x0a, 0x05,
+	0x73, 0x74, 0x61, 0x72, 0x74, 0x18, 0x65, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x73, 0x74, 0x61,
+	0x72, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x73, 0x74, 0x6f, 0x70, 0x18, 0x66, 0x20, 0x01, 0x28, 0x03,
+	0x52, 0x04, 0x73, 0x74, 0x6f, 0x70, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x67,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x74, 0x69, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x6d, 0x65,
+	0x61, 0x73, 0x75, 0x72, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x18, 0x6f, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0b, 0x6d, 0x65, 0x61, 0x73, 0x75, 0x72, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x14, 0x0a, 0x05,
+	0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x79, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x66, 0x69, 0x65,
+	0x6c, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x7a, 0x20, 0x01, 0x28,
+	0x01, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0xdb, 0x01, 0x0a, 0x11, 0x49, 0x6e, 0x66,
+	0x6c, 0x75, 0x78, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x12, 0x1c,
+	0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x0b, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x12, 0x1c, 0x0a, 0x09,
+	0x75, 0x73, 0x65, 0x72, 0x45, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x15, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x09, 0x75, 0x73, 0x65, 0x72, 0x45, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x14, 0x0a, 0x05, 0x73, 0x74,
+	0x61, 0x72, 0x74, 0x18, 0x65, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x73, 0x74, 0x61, 0x72, 0x74,
+	0x12, 0x12, 0x0a, 0x04, 0x73, 0x74, 0x6f, 0x70, 0x18, 0x66, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04,
+	0x73, 0x74, 0x6f, 0x70, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x67, 0x20, 0x01,
+	0x28, 0x03, 0x52, 0x04, 0x74, 0x69, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x6d, 0x65, 0x61, 0x73,
+	0x75, 0x72, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x18, 0x6f, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x6d,
+	0x65, 0x61, 0x73, 0x75, 0x72, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x66, 0x69,
+	0x65, 0x6c, 0x64, 0x18, 0x79, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x66, 0x69, 0x65, 0x6c, 0x64,
+	0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x7a, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x2a, 0x2b, 0x0a, 0x0b, 0x4d, 0x65, 0x61, 0x73, 0x75, 0x72,
+	0x65, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x07, 0x0a, 0x03, 0x4e, 0x45, 0x54, 0x10, 0x00, 0x12, 0x08,
+	0x0a, 0x04, 0x48, 0x4f, 0x53, 0x54, 0x10, 0x01, 0x12, 0x09, 0x0a, 0x05, 0x45, 0x56, 0x45, 0x4e,
+	0x54, 0x10, 0x02, 0x42, 0x2b, 0x5a, 0x29, 0x6d, 0x6d, 0x65, 0x73, 0x68, 0x2e, 0x64, 0x65, 0x76,
+	0x2f, 0x6d, 0x2d, 0x61, 0x70, 0x69, 0x2d, 0x67, 0x6f, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2f, 0x72,
+	0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x73, 0x2f, 0x6d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -414,20 +801,26 @@ func file_mmesh_protobuf_resources_v1_metrics_influx_proto_rawDescGZIP() []byte 
 }
 
 var file_mmesh_protobuf_resources_v1_metrics_influx_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_mmesh_protobuf_resources_v1_metrics_influx_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_mmesh_protobuf_resources_v1_metrics_influx_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_mmesh_protobuf_resources_v1_metrics_influx_proto_goTypes = []interface{}{
-	(Measurement)(0),   // 0: metrics.Measurement
-	(*DataPoint)(nil),  // 1: metrics.DataPoint
-	(*DataPoints)(nil), // 2: metrics.DataPoints
+	(Measurement)(0),           // 0: metrics.Measurement
+	(*DataPoint)(nil),          // 1: metrics.DataPoint
+	(*DataPoints)(nil),         // 2: metrics.DataPoints
+	(*InfluxQuery)(nil),        // 3: metrics.InfluxQuery
+	(*InfluxQueryResult)(nil),  // 4: metrics.InfluxQueryResult
+	(*InfluxMetricRecord)(nil), // 5: metrics.InfluxMetricRecord
+	(*InfluxEventRecord)(nil),  // 6: metrics.InfluxEventRecord
 }
 var file_mmesh_protobuf_resources_v1_metrics_influx_proto_depIdxs = []int32{
 	0, // 0: metrics.DataPoint.measurement:type_name -> metrics.Measurement
 	1, // 1: metrics.DataPoints.dataPoints:type_name -> metrics.DataPoint
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	5, // 2: metrics.InfluxQueryResult.metrics:type_name -> metrics.InfluxMetricRecord
+	6, // 3: metrics.InfluxQueryResult.events:type_name -> metrics.InfluxEventRecord
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_mmesh_protobuf_resources_v1_metrics_influx_proto_init() }
@@ -460,6 +853,54 @@ func file_mmesh_protobuf_resources_v1_metrics_influx_proto_init() {
 				return nil
 			}
 		}
+		file_mmesh_protobuf_resources_v1_metrics_influx_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*InfluxQuery); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mmesh_protobuf_resources_v1_metrics_influx_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*InfluxQueryResult); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mmesh_protobuf_resources_v1_metrics_influx_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*InfluxMetricRecord); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mmesh_protobuf_resources_v1_metrics_influx_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*InfluxEventRecord); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -467,7 +908,7 @@ func file_mmesh_protobuf_resources_v1_metrics_influx_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_mmesh_protobuf_resources_v1_metrics_influx_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   2,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

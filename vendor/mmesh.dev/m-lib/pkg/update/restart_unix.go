@@ -10,7 +10,7 @@ import (
 
 	"mmesh.dev/m-lib/pkg/logging"
 	"mmesh.dev/m-lib/pkg/version"
-	"x6a.dev/pkg/xlog"
+	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 func restartProcess(app, exe string) {

@@ -7,7 +7,7 @@ import (
 	"github.com/osrg/gobgp/pkg/config"
 	gobgp "github.com/osrg/gobgp/pkg/server"
 	"github.com/spf13/viper"
-	"x6a.dev/pkg/xlog"
+	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 const gobgpDefaultConfigType string = "toml"

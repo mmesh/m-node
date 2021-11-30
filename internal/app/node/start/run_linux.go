@@ -8,7 +8,7 @@ import (
 
 	"github.com/spf13/viper"
 	"mmesh.dev/m-lib/pkg/version"
-	"x6a.dev/pkg/xlog"
+	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 func Main() {

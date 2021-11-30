@@ -1,18 +1,3 @@
-// Copyright (C) 2019 x6a
-//
-// pkg is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// pkg is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with pkg. If not, see <http://www.gnu.org/licenses/>.
-
 package xlog
 
 import (
@@ -23,6 +8,56 @@ import (
 	"github.com/nlopes/slack"
 	"x6a.dev/pkg/errors"
 )
+
+type slackLoggerCfg struct {
+	webhook  string
+	user     string
+	icon     string
+	logLevel LogLevel
+	channels map[LogLevel]string
+	colors   map[LogLevel]string
+}
+
+type SlackOption struct {
+	Level        LogLevel
+	Webhook      string
+	User         string
+	Icon         string
+	TraceChannel string
+	DebugChannel string
+	InfoChannel  string
+	WarnChannel  string
+	ErrorChannel string
+	AlertChannel string
+}
+
+func WithSlack(opt *SlackOption) *LogOption {
+	return &LogOption{
+		key: logOptionOutputSlack,
+		value: &slackLoggerCfg{
+			webhook:  opt.Webhook,
+			user:     opt.User,
+			icon:     opt.Icon,
+			logLevel: opt.Level,
+			channels: map[LogLevel]string{
+				TRACE: opt.TraceChannel,
+				DEBUG: opt.DebugChannel,
+				INFO:  opt.InfoChannel,
+				WARN:  opt.WarnChannel,
+				ERROR: opt.ErrorChannel,
+				ALERT: opt.AlertChannel,
+			},
+			colors: map[LogLevel]string{
+				TRACE: "#ff77ff",
+				DEBUG: "#444999",
+				INFO:  "#009999",
+				WARN:  "#fff000",
+				ERROR: "#ff4444",
+				ALERT: "#990000",
+			},
+		},
+	}
+}
 
 func (l *logger) slackMsgTitle(level LogLevel, timestamp time.Time) string {
 	return "[" + l.severity(level) + "] " + timestamp.Format(TIME_FORMAT) + " @" + l.hostID

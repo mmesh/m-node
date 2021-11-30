@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/viper"
 	"mmesh.dev/m-lib/pkg/runtime"
-	"x6a.dev/pkg/xlog"
+	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 var checkUpdate = make(chan struct{}, 1)

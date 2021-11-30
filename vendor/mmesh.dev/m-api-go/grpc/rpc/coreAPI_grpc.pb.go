@@ -12,6 +12,7 @@ import (
 	routing "mmesh.dev/m-api-go/grpc/network/mmnp/routing"
 	account "mmesh.dev/m-api-go/grpc/resources/account"
 	iam "mmesh.dev/m-api-go/grpc/resources/iam"
+	metrics "mmesh.dev/m-api-go/grpc/resources/metrics"
 	network "mmesh.dev/m-api-go/grpc/resources/network"
 	object "mmesh.dev/m-api-go/grpc/resources/ops/object"
 	project "mmesh.dev/m-api-go/grpc/resources/ops/project"
@@ -106,6 +107,7 @@ type CoreAPIClient interface {
 	GetOperation(ctx context.Context, in *workflow.Operation, opts ...grpc.CallOption) (*workflow.Operation, error)
 	// rpc SetOperation (operation.Operation) returns (status.StatusResponse) {}
 	DeleteOperation(ctx context.Context, in *workflow.Operation, opts ...grpc.CallOption) (*status.StatusResponse, error)
+	MetricsQuery(ctx context.Context, in *metrics.InfluxQuery, opts ...grpc.CallOption) (*metrics.InfluxQueryResult, error)
 }
 
 type coreAPIClient struct {
@@ -692,6 +694,15 @@ func (c *coreAPIClient) DeleteOperation(ctx context.Context, in *workflow.Operat
 	return out, nil
 }
 
+func (c *coreAPIClient) MetricsQuery(ctx context.Context, in *metrics.InfluxQuery, opts ...grpc.CallOption) (*metrics.InfluxQueryResult, error) {
+	out := new(metrics.InfluxQueryResult)
+	err := c.cc.Invoke(ctx, "/api.CoreAPI/MetricsQuery", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CoreAPIServer is the server API for CoreAPI service.
 // All implementations must embed UnimplementedCoreAPIServer
 // for forward compatibility
@@ -773,6 +784,7 @@ type CoreAPIServer interface {
 	GetOperation(context.Context, *workflow.Operation) (*workflow.Operation, error)
 	// rpc SetOperation (operation.Operation) returns (status.StatusResponse) {}
 	DeleteOperation(context.Context, *workflow.Operation) (*status.StatusResponse, error)
+	MetricsQuery(context.Context, *metrics.InfluxQuery) (*metrics.InfluxQueryResult, error)
 	mustEmbedUnimplementedCoreAPIServer()
 }
 
@@ -971,6 +983,9 @@ func (UnimplementedCoreAPIServer) GetOperation(context.Context, *workflow.Operat
 }
 func (UnimplementedCoreAPIServer) DeleteOperation(context.Context, *workflow.Operation) (*status.StatusResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method DeleteOperation not implemented")
+}
+func (UnimplementedCoreAPIServer) MetricsQuery(context.Context, *metrics.InfluxQuery) (*metrics.InfluxQueryResult, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method MetricsQuery not implemented")
 }
 func (UnimplementedCoreAPIServer) mustEmbedUnimplementedCoreAPIServer() {}
 
@@ -2137,6 +2152,24 @@ func _CoreAPI_DeleteOperation_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CoreAPI_MetricsQuery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(metrics.InfluxQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoreAPIServer).MetricsQuery(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.CoreAPI/MetricsQuery",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoreAPIServer).MetricsQuery(ctx, req.(*metrics.InfluxQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CoreAPI_ServiceDesc is the grpc.ServiceDesc for CoreAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2399,6 +2432,10 @@ var CoreAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteOperation",
 			Handler:    _CoreAPI_DeleteOperation_Handler,
+		},
+		{
+			MethodName: "MetricsQuery",
+			Handler:    _CoreAPI_MetricsQuery_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

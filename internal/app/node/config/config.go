@@ -8,8 +8,8 @@ import (
 	"mmesh.dev/m-lib/pkg/logging"
 	"mmesh.dev/m-lib/pkg/mmid"
 	"mmesh.dev/m-lib/pkg/version"
+	"mmesh.dev/m-lib/pkg/xlog"
 	"x6a.dev/pkg/msg"
-	"x6a.dev/pkg/xlog"
 )
 
 func Init() {

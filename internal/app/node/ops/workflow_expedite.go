@@ -6,7 +6,7 @@ import (
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-api-go/grpc/resources/ops/workflow"
 	"mmesh.dev/m-lib/pkg/mmp"
-	"x6a.dev/pkg/xlog"
+	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 // WorkflowExpedite executes a workflow.
