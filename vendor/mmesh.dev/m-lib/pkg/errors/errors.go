@@ -1,23 +1,8 @@
-// Copyright © 2019 x6a
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 package errors
 
+/*
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -259,31 +244,4 @@ func (e *Error) logError() {
 
 	//log.Printf("ERROR: %v\n", e.Error.Message)
 }
-
-func New(msg string) error {
-	return errors.New(msg)
-}
-
-func Errorf(format string, args ...interface{}) error {
-	return errors.Errorf(format, args...)
-}
-
-func Wrapf(err error, format string, args ...interface{}) error {
-	return errors.Wrapf(err, format, args...)
-}
-
-func Cause(err error) error {
-	return errors.Cause(err)
-}
-
-func Errs(errs []error) error {
-	if len(errs) == 0 {
-		return nil
-	}
-
-	errMsg := "ERRORS: |+| "
-	for _, err := range errs {
-		errMsg = errMsg + fmt.Sprint(err) + " |+| "
-	}
-	return New(errMsg)
-}
+*/

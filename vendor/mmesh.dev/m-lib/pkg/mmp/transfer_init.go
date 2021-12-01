@@ -10,9 +10,9 @@ import (
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-api-go/grpc/network/mmsp/transfer"
 	"mmesh.dev/m-api-go/grpc/resources/iam/auth"
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/logging"
 	"mmesh.dev/m-lib/pkg/utils/colors"
-	"x6a.dev/pkg/errors"
 )
 
 const fileChunk_size = 1048576

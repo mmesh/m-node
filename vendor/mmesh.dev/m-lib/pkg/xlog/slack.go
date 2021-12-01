@@ -6,19 +6,10 @@ import (
 	"time"
 
 	"github.com/nlopes/slack"
-	"x6a.dev/pkg/errors"
+	"mmesh.dev/m-lib/pkg/errors"
 )
 
-type slackLoggerCfg struct {
-	webhook  string
-	user     string
-	icon     string
-	logLevel LogLevel
-	channels map[LogLevel]string
-	colors   map[LogLevel]string
-}
-
-type SlackOption struct {
+type SlackOptions struct {
 	Level        LogLevel
 	Webhook      string
 	User         string
@@ -31,39 +22,46 @@ type SlackOption struct {
 	AlertChannel string
 }
 
-func WithSlack(opt *SlackOption) *LogOption {
-	return &LogOption{
-		key: logOptionOutputSlack,
-		value: &slackLoggerCfg{
-			webhook:  opt.Webhook,
-			user:     opt.User,
-			icon:     opt.Icon,
-			logLevel: opt.Level,
-			channels: map[LogLevel]string{
-				TRACE: opt.TraceChannel,
-				DEBUG: opt.DebugChannel,
-				INFO:  opt.InfoChannel,
-				WARN:  opt.WarnChannel,
-				ERROR: opt.ErrorChannel,
-				ALERT: opt.AlertChannel,
-			},
-			colors: map[LogLevel]string{
-				TRACE: "#ff77ff",
-				DEBUG: "#444999",
-				INFO:  "#009999",
-				WARN:  "#fff000",
-				ERROR: "#ff4444",
-				ALERT: "#990000",
-			},
-		},
-	}
+type slackLoggerCfg struct {
+	webhook  string
+	user     string
+	icon     string
+	logLevel LogLevel
+	channels map[LogLevel]string
+	colors   map[LogLevel]string
 }
 
-func (l *logger) slackMsgTitle(level LogLevel, timestamp time.Time) string {
+func (l *LoggerSpec) SetSlackLogger(opt *SlackOptions) *LoggerSpec {
+	l.slackLogger = &slackLoggerCfg{
+		webhook:  opt.Webhook,
+		user:     opt.User,
+		icon:     opt.Icon,
+		logLevel: opt.Level,
+		channels: map[LogLevel]string{
+			TRACE: opt.TraceChannel,
+			DEBUG: opt.DebugChannel,
+			INFO:  opt.InfoChannel,
+			WARN:  opt.WarnChannel,
+			ERROR: opt.ErrorChannel,
+			ALERT: opt.AlertChannel,
+		},
+		colors: map[LogLevel]string{
+			TRACE: "#ff77ff",
+			DEBUG: "#444999",
+			INFO:  "#009999",
+			WARN:  "#fff000",
+			ERROR: "#ff4444",
+			ALERT: "#990000",
+		},
+	}
+	return l
+}
+
+func (l *LoggerSpec) slackMsgTitle(level LogLevel, timestamp time.Time) string {
 	return "[" + l.severity(level) + "] " + timestamp.Format(TIME_FORMAT) + " @" + l.hostID
 }
 
-func (l *logger) slackLog(level LogLevel, timestamp time.Time, msg string) error {
+func (l *LoggerSpec) slackLog(level LogLevel, timestamp time.Time, msg string) error {
 	if len(l.slackLogger.channels[level]) == 0 {
 		return nil
 	}

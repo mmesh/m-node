@@ -57,6 +57,74 @@ func local_request_CoreAPI_ListIAMPermissions_0(ctx context.Context, marshaler r
 
 }
 
+func request_CoreAPI_CreateUser_0(ctx context.Context, marshaler runtime.Marshaler, client CoreAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq iam.User
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["accountID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
+	}
+
+	protoReq.AccountID, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
+	}
+
+	msg, err := client.CreateUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_CoreAPI_CreateUser_0(ctx context.Context, marshaler runtime.Marshaler, server CoreAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq iam.User
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["accountID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
+	}
+
+	protoReq.AccountID, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
+	}
+
+	msg, err := server.CreateUser(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_CoreAPI_ListUsers_0(ctx context.Context, marshaler runtime.Marshaler, client CoreAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq iam.ListUsersRequest
 	var metadata runtime.ServerMetadata
@@ -125,12 +193,8 @@ func local_request_CoreAPI_ListUsers_0(ctx context.Context, marshaler runtime.Ma
 
 }
 
-var (
-	filter_CoreAPI_GetUser_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "email": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
-)
-
 func request_CoreAPI_GetUser_0(ctx context.Context, marshaler runtime.Marshaler, client CoreAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.UserRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -158,13 +222,6 @@ func request_CoreAPI_GetUser_0(ctx context.Context, marshaler runtime.Marshaler,
 	protoReq.Email, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "email", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CoreAPI_GetUser_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.GetUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -173,7 +230,7 @@ func request_CoreAPI_GetUser_0(ctx context.Context, marshaler runtime.Marshaler,
 }
 
 func local_request_CoreAPI_GetUser_0(ctx context.Context, marshaler runtime.Marshaler, server CoreAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.UserRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -201,13 +258,6 @@ func local_request_CoreAPI_GetUser_0(ctx context.Context, marshaler runtime.Mars
 	protoReq.Email, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "email", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CoreAPI_GetUser_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := server.GetUser(ctx, &protoReq)
@@ -215,100 +265,8 @@ func local_request_CoreAPI_GetUser_0(ctx context.Context, marshaler runtime.Mars
 
 }
 
-func request_CoreAPI_SetUser_0(ctx context.Context, marshaler runtime.Marshaler, client CoreAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
-	var metadata runtime.ServerMetadata
-
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["accountID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
-	}
-
-	protoReq.AccountID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
-	}
-
-	val, ok = pathParams["email"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "email")
-	}
-
-	protoReq.Email, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "email", err)
-	}
-
-	msg, err := client.SetUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_CoreAPI_SetUser_0(ctx context.Context, marshaler runtime.Marshaler, server CoreAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
-	var metadata runtime.ServerMetadata
-
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["accountID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
-	}
-
-	protoReq.AccountID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
-	}
-
-	val, ok = pathParams["email"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "email")
-	}
-
-	protoReq.Email, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "email", err)
-	}
-
-	msg, err := server.SetUser(ctx, &protoReq)
-	return msg, metadata, err
-
-}
-
-var (
-	filter_CoreAPI_DeleteUser_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "email": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
-)
-
 func request_CoreAPI_DeleteUser_0(ctx context.Context, marshaler runtime.Marshaler, client CoreAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.UserRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -336,13 +294,6 @@ func request_CoreAPI_DeleteUser_0(ctx context.Context, marshaler runtime.Marshal
 	protoReq.Email, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "email", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CoreAPI_DeleteUser_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.DeleteUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -351,7 +302,7 @@ func request_CoreAPI_DeleteUser_0(ctx context.Context, marshaler runtime.Marshal
 }
 
 func local_request_CoreAPI_DeleteUser_0(ctx context.Context, marshaler runtime.Marshaler, server CoreAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.UserRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -381,20 +332,13 @@ func local_request_CoreAPI_DeleteUser_0(ctx context.Context, marshaler runtime.M
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "email", err)
 	}
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CoreAPI_DeleteUser_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
 	msg, err := server.DeleteUser(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
 func request_CoreAPI_EnableUser_0(ctx context.Context, marshaler runtime.Marshaler, client CoreAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.UserRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -438,7 +382,7 @@ func request_CoreAPI_EnableUser_0(ctx context.Context, marshaler runtime.Marshal
 }
 
 func local_request_CoreAPI_EnableUser_0(ctx context.Context, marshaler runtime.Marshaler, server CoreAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.UserRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -482,7 +426,7 @@ func local_request_CoreAPI_EnableUser_0(ctx context.Context, marshaler runtime.M
 }
 
 func request_CoreAPI_DisableUser_0(ctx context.Context, marshaler runtime.Marshaler, client CoreAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.UserRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -526,7 +470,7 @@ func request_CoreAPI_DisableUser_0(ctx context.Context, marshaler runtime.Marsha
 }
 
 func local_request_CoreAPI_DisableUser_0(ctx context.Context, marshaler runtime.Marshaler, server CoreAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.UserRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -569,8 +513,96 @@ func local_request_CoreAPI_DisableUser_0(ctx context.Context, marshaler runtime.
 
 }
 
+func request_CoreAPI_SetUserEmail_0(ctx context.Context, marshaler runtime.Marshaler, client CoreAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq iam.SetUserEmailRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["accountID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
+	}
+
+	protoReq.AccountID, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
+	}
+
+	val, ok = pathParams["email"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "email")
+	}
+
+	protoReq.Email, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "email", err)
+	}
+
+	msg, err := client.SetUserEmail(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_CoreAPI_SetUserEmail_0(ctx context.Context, marshaler runtime.Marshaler, server CoreAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq iam.SetUserEmailRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["accountID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
+	}
+
+	protoReq.AccountID, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
+	}
+
+	val, ok = pathParams["email"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "email")
+	}
+
+	protoReq.Email, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "email", err)
+	}
+
+	msg, err := server.SetUserEmail(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_CoreAPI_ResetUserPassword_0(ctx context.Context, marshaler runtime.Marshaler, client CoreAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.UserRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -614,7 +646,7 @@ func request_CoreAPI_ResetUserPassword_0(ctx context.Context, marshaler runtime.
 }
 
 func local_request_CoreAPI_ResetUserPassword_0(ctx context.Context, marshaler runtime.Marshaler, server CoreAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.UserRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -658,7 +690,7 @@ func local_request_CoreAPI_ResetUserPassword_0(ctx context.Context, marshaler ru
 }
 
 func request_CoreAPI_SetUserCredentialsPassword_0(ctx context.Context, marshaler runtime.Marshaler, client CoreAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.SetUserCredentialsPasswordRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -702,7 +734,7 @@ func request_CoreAPI_SetUserCredentialsPassword_0(ctx context.Context, marshaler
 }
 
 func local_request_CoreAPI_SetUserCredentialsPassword_0(ctx context.Context, marshaler runtime.Marshaler, server CoreAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.SetUserCredentialsPasswordRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -746,7 +778,7 @@ func local_request_CoreAPI_SetUserCredentialsPassword_0(ctx context.Context, mar
 }
 
 func request_CoreAPI_SetUserCredentialsSSH_0(ctx context.Context, marshaler runtime.Marshaler, client CoreAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.SetUserCredentialsSSHRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -790,7 +822,7 @@ func request_CoreAPI_SetUserCredentialsSSH_0(ctx context.Context, marshaler runt
 }
 
 func local_request_CoreAPI_SetUserCredentialsSSH_0(ctx context.Context, marshaler runtime.Marshaler, server CoreAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.SetUserCredentialsSSHRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -834,7 +866,7 @@ func local_request_CoreAPI_SetUserCredentialsSSH_0(ctx context.Context, marshale
 }
 
 func request_CoreAPI_SetUserCredentialsTOTP_0(ctx context.Context, marshaler runtime.Marshaler, client CoreAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.SetUserCredentialsTOTPRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -878,7 +910,7 @@ func request_CoreAPI_SetUserCredentialsTOTP_0(ctx context.Context, marshaler run
 }
 
 func local_request_CoreAPI_SetUserCredentialsTOTP_0(ctx context.Context, marshaler runtime.Marshaler, server CoreAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.SetUserCredentialsTOTPRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -922,7 +954,7 @@ func local_request_CoreAPI_SetUserCredentialsTOTP_0(ctx context.Context, marshal
 }
 
 func request_CoreAPI_SetUserSSHKeys_0(ctx context.Context, marshaler runtime.Marshaler, client CoreAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.SetUserSSHKeysRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -966,7 +998,7 @@ func request_CoreAPI_SetUserSSHKeys_0(ctx context.Context, marshaler runtime.Mar
 }
 
 func local_request_CoreAPI_SetUserSSHKeys_0(ctx context.Context, marshaler runtime.Marshaler, server CoreAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.SetUserSSHKeysRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -1009,12 +1041,8 @@ func local_request_CoreAPI_SetUserSSHKeys_0(ctx context.Context, marshaler runti
 
 }
 
-var (
-	filter_CoreAPI_GetUserSSHKeys_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "email": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
-)
-
 func request_CoreAPI_GetUserSSHKeys_0(ctx context.Context, marshaler runtime.Marshaler, client CoreAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.UserRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -1042,13 +1070,6 @@ func request_CoreAPI_GetUserSSHKeys_0(ctx context.Context, marshaler runtime.Mar
 	protoReq.Email, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "email", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CoreAPI_GetUserSSHKeys_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.GetUserSSHKeys(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -1057,7 +1078,7 @@ func request_CoreAPI_GetUserSSHKeys_0(ctx context.Context, marshaler runtime.Mar
 }
 
 func local_request_CoreAPI_GetUserSSHKeys_0(ctx context.Context, marshaler runtime.Marshaler, server CoreAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.UserRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -1087,20 +1108,13 @@ func local_request_CoreAPI_GetUserSSHKeys_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "email", err)
 	}
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_CoreAPI_GetUserSSHKeys_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
 	msg, err := server.GetUserSSHKeys(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
 func request_CoreAPI_SetUserPermissions_0(ctx context.Context, marshaler runtime.Marshaler, client CoreAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.SetUserPermissionsRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -1144,7 +1158,7 @@ func request_CoreAPI_SetUserPermissions_0(ctx context.Context, marshaler runtime
 }
 
 func local_request_CoreAPI_SetUserPermissions_0(ctx context.Context, marshaler runtime.Marshaler, server CoreAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq iam.User
+	var protoReq iam.SetUserPermissionsRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -5548,6 +5562,29 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 
 	})
 
+	mux.Handle("POST", pattern_CoreAPI_CreateUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/CreateUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users:new"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_CoreAPI_CreateUser_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_CoreAPI_CreateUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_CoreAPI_ListUsers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -5591,29 +5628,6 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		}
 
 		forward_CoreAPI_GetUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("POST", pattern_CoreAPI_SetUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_CoreAPI_SetUser_0(rctx, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_CoreAPI_SetUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -5683,6 +5697,29 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		}
 
 		forward_CoreAPI_DisableUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_CoreAPI_SetUserEmail_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetUserEmail", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:email"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_CoreAPI_SetUserEmail_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_CoreAPI_SetUserEmail_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -6897,6 +6934,26 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 
 	})
 
+	mux.Handle("POST", pattern_CoreAPI_CreateUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/CreateUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users:new"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_CoreAPI_CreateUser_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_CoreAPI_CreateUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_CoreAPI_ListUsers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -6934,26 +6991,6 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		}
 
 		forward_CoreAPI_GetUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("POST", pattern_CoreAPI_SetUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_CoreAPI_SetUser_0(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_CoreAPI_SetUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -7014,6 +7051,26 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		}
 
 		forward_CoreAPI_DisableUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_CoreAPI_SetUserEmail_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetUserEmail", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:email"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_CoreAPI_SetUserEmail_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_CoreAPI_SetUserEmail_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -8023,17 +8080,19 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 var (
 	pattern_CoreAPI_ListIAMPermissions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "iam"}, "permissions"))
 
+	pattern_CoreAPI_CreateUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5}, []string{"api", "v1", "accounts", "accountID", "iam", "users"}, "new"))
+
 	pattern_CoreAPI_ListUsers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5}, []string{"api", "v1", "accounts", "accountID", "iam", "users"}, ""))
 
 	pattern_CoreAPI_GetUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"api", "v1", "accounts", "accountID", "iam", "users", "email"}, ""))
-
-	pattern_CoreAPI_SetUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"api", "v1", "accounts", "accountID", "iam", "users", "email"}, ""))
 
 	pattern_CoreAPI_DeleteUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"api", "v1", "accounts", "accountID", "iam", "users", "email"}, ""))
 
 	pattern_CoreAPI_EnableUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"api", "v1", "accounts", "accountID", "iam", "users", "email"}, "enable"))
 
 	pattern_CoreAPI_DisableUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"api", "v1", "accounts", "accountID", "iam", "users", "email"}, "disable"))
+
+	pattern_CoreAPI_SetUserEmail_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"api", "v1", "accounts", "accountID", "iam", "users", "email"}, "email"))
 
 	pattern_CoreAPI_ResetUserPassword_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"api", "v1", "accounts", "accountID", "iam", "users", "email"}, "password-reset"))
 
@@ -8139,17 +8198,19 @@ var (
 var (
 	forward_CoreAPI_ListIAMPermissions_0 = runtime.ForwardResponseMessage
 
+	forward_CoreAPI_CreateUser_0 = runtime.ForwardResponseMessage
+
 	forward_CoreAPI_ListUsers_0 = runtime.ForwardResponseMessage
 
 	forward_CoreAPI_GetUser_0 = runtime.ForwardResponseMessage
-
-	forward_CoreAPI_SetUser_0 = runtime.ForwardResponseMessage
 
 	forward_CoreAPI_DeleteUser_0 = runtime.ForwardResponseMessage
 
 	forward_CoreAPI_EnableUser_0 = runtime.ForwardResponseMessage
 
 	forward_CoreAPI_DisableUser_0 = runtime.ForwardResponseMessage
+
+	forward_CoreAPI_SetUserEmail_0 = runtime.ForwardResponseMessage
 
 	forward_CoreAPI_ResetUserPassword_0 = runtime.ForwardResponseMessage
 

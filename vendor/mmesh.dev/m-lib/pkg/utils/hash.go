@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"x6a.dev/pkg/errors"
+	"mmesh.dev/m-lib/pkg/errors"
 )
 
 func ChecksumSHA256(filePath string) ([]byte, error) {

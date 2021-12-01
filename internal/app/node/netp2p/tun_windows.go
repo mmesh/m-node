@@ -6,8 +6,8 @@ package netp2p
 import (
 	"github.com/spf13/viper"
 	"golang.zx2c4.com/wireguard/tun"
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"x6a.dev/pkg/errors"
 )
 
 const MTU int = 1400 // TUN interface, so only plain IP packet, no ethernet header + mtu is set to 1300

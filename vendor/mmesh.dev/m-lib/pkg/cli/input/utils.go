@@ -12,7 +12,7 @@ import (
 	"mmesh.dev/m-api-go/grpc/rpc"
 	"mmesh.dev/m-lib/pkg/cli/status"
 	"mmesh.dev/m-lib/pkg/resources"
-	"x6a.dev/pkg/msg"
+	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
 const NewResource = "<new>"

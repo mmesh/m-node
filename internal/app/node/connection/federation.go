@@ -10,8 +10,8 @@ import (
 	"mmesh.dev/m-api-go/grpc/resources/controller"
 	"mmesh.dev/m-api-go/grpc/resources/network"
 	"mmesh.dev/m-api-go/grpc/rpc"
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/mmid"
-	"x6a.dev/pkg/errors"
 )
 
 type federationConnection struct {

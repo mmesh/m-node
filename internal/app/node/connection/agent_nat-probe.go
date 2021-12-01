@@ -10,7 +10,7 @@ import (
 
 	"mmesh.dev/m-api-go/grpc/network/mmnp/natProbe"
 	"mmesh.dev/m-api-go/grpc/rpc"
-	"x6a.dev/pkg/errors"
+	"mmesh.dev/m-lib/pkg/errors"
 )
 
 func agentNATProbe(nxnc rpc.NetworkAPIClient, natp *natProbe.NATProbe) (*natProbe.NATProbe, error) {

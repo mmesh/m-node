@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/dchest/blake2b"
-	"x6a.dev/pkg/errors"
+	"mmesh.dev/m-lib/pkg/errors"
 )
 
 func blake2bChecksum(data []byte) ([]byte, error) {

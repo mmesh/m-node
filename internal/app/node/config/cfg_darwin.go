@@ -9,6 +9,6 @@ func defaultInterfaceName() string {
 	return "utun2"
 }
 
-func setLogger(level xlog.LogLevel, hostID string, logOpts ...*xlog.LogOption) {
-	xlog.SetLogger(level, hostID, xlog.WithANSIColor(true))
+func setLogger(level xlog.LogLevel, hostID string) {
+	xlog.Logger().SetLogLevel(level).SetHostID(hostID).SetANSIColor(true)
 }

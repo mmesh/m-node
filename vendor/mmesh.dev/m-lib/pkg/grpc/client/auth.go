@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"google.golang.org/grpc/credentials"
 	"mmesh.dev/m-api-go/grpc/resources/iam/auth"
-	"x6a.dev/pkg/errors"
+	"mmesh.dev/m-lib/pkg/errors"
 )
 
 type RPCCredentials struct {

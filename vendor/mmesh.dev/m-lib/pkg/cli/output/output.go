@@ -10,7 +10,7 @@ import (
 	"github.com/hokaccha/go-prettyjson"
 	"mmesh.dev/m-lib/pkg/cli/input"
 	"mmesh.dev/m-lib/pkg/utils/colors"
-	"x6a.dev/pkg/msg"
+	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
 func Show(r interface{}) {

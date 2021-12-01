@@ -18,8 +18,8 @@ import (
 	// secio "github.com/libp2p/go-libp2p-secio"
 	// libp2ptls "github.com/libp2p/go-libp2p-tls"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"x6a.dev/pkg/errors"
 )
 
 const (

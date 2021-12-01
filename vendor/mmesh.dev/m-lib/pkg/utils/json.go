@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"x6a.dev/pkg/errors"
-	"x6a.dev/pkg/msg"
+	"mmesh.dev/m-lib/pkg/errors"
+	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
 // ReadJsonFile parse json data from a file

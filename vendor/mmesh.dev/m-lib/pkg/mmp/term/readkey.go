@@ -4,7 +4,7 @@ import (
 	"os"
 
 	//"github.com/pkg/term"
-	"x6a.dev/pkg/msg"
+	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
 func ReadKey() []byte {

@@ -33,7 +33,6 @@ require (
 	k8s.io/client-go v0.22.2
 	mmesh.dev/m-api-go v0.0.0-00010101000000-000000000000
 	mmesh.dev/m-lib v0.0.0-00010101000000-000000000000
-	x6a.dev/pkg v0.0.0-20211025162458-8b0687b0f2ff
 )
 
 require (
@@ -80,7 +79,6 @@ require (
 	github.com/johnsiilver/getcert v0.0.0-20201005022436-57fe9706afac // indirect
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
-	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/koron/go-ssdp v0.0.0-20191105050749-2e1c40ed0b5d // indirect
 	github.com/libp2p/go-addr-util v0.0.2 // indirect
 	github.com/libp2p/go-buffer-pool v0.0.2 // indirect
@@ -142,7 +140,6 @@ require (
 	github.com/pelletier/go-toml v1.2.0 // indirect
 	github.com/rivo/tview v0.0.0-20211001102648-5508f4b00266 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/sirupsen/logrus v1.4.2 // indirect
 	github.com/spacemonkeygo/spacelog v0.0.0-20180420211403-2296661a0572 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/spf13/afero v1.2.2 // indirect

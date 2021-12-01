@@ -795,6 +795,439 @@ func (x *UserSSHKeys) GetAdmin() bool {
 	return false
 }
 
+type UserRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AccountID string `protobuf:"bytes,1,opt,name=accountID,proto3" json:"accountID,omitempty"` // realm
+	Email     string `protobuf:"bytes,11,opt,name=email,proto3" json:"email,omitempty"`
+}
+
+func (x *UserRequest) Reset() {
+	*x = UserRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserRequest) ProtoMessage() {}
+
+func (x *UserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserRequest.ProtoReflect.Descriptor instead.
+func (*UserRequest) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_iam_user_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *UserRequest) GetAccountID() string {
+	if x != nil {
+		return x.AccountID
+	}
+	return ""
+}
+
+func (x *UserRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+type SetUserEmailRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AccountID string `protobuf:"bytes,1,opt,name=accountID,proto3" json:"accountID,omitempty"` // realm
+	Email     string `protobuf:"bytes,11,opt,name=email,proto3" json:"email,omitempty"`
+	NewEmail  string `protobuf:"bytes,21,opt,name=newEmail,proto3" json:"newEmail,omitempty"`
+}
+
+func (x *SetUserEmailRequest) Reset() {
+	*x = SetUserEmailRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SetUserEmailRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetUserEmailRequest) ProtoMessage() {}
+
+func (x *SetUserEmailRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetUserEmailRequest.ProtoReflect.Descriptor instead.
+func (*SetUserEmailRequest) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_iam_user_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *SetUserEmailRequest) GetAccountID() string {
+	if x != nil {
+		return x.AccountID
+	}
+	return ""
+}
+
+func (x *SetUserEmailRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *SetUserEmailRequest) GetNewEmail() string {
+	if x != nil {
+		return x.NewEmail
+	}
+	return ""
+}
+
+type SetUserCredentialsPasswordRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AccountID   string `protobuf:"bytes,1,opt,name=accountID,proto3" json:"accountID,omitempty"` // realm
+	Email       string `protobuf:"bytes,11,opt,name=email,proto3" json:"email,omitempty"`
+	NewPassword string `protobuf:"bytes,21,opt,name=newPassword,proto3" json:"newPassword,omitempty"`
+}
+
+func (x *SetUserCredentialsPasswordRequest) Reset() {
+	*x = SetUserCredentialsPasswordRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SetUserCredentialsPasswordRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetUserCredentialsPasswordRequest) ProtoMessage() {}
+
+func (x *SetUserCredentialsPasswordRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetUserCredentialsPasswordRequest.ProtoReflect.Descriptor instead.
+func (*SetUserCredentialsPasswordRequest) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_iam_user_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *SetUserCredentialsPasswordRequest) GetAccountID() string {
+	if x != nil {
+		return x.AccountID
+	}
+	return ""
+}
+
+func (x *SetUserCredentialsPasswordRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *SetUserCredentialsPasswordRequest) GetNewPassword() string {
+	if x != nil {
+		return x.NewPassword
+	}
+	return ""
+}
+
+type SetUserCredentialsSSHRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AccountID      string `protobuf:"bytes,1,opt,name=accountID,proto3" json:"accountID,omitempty"` // realm
+	Email          string `protobuf:"bytes,11,opt,name=email,proto3" json:"email,omitempty"`
+	SSHCredentials *SSH   `protobuf:"bytes,21,opt,name=SSHCredentials,proto3" json:"SSHCredentials,omitempty"`
+}
+
+func (x *SetUserCredentialsSSHRequest) Reset() {
+	*x = SetUserCredentialsSSHRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SetUserCredentialsSSHRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetUserCredentialsSSHRequest) ProtoMessage() {}
+
+func (x *SetUserCredentialsSSHRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetUserCredentialsSSHRequest.ProtoReflect.Descriptor instead.
+func (*SetUserCredentialsSSHRequest) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_iam_user_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *SetUserCredentialsSSHRequest) GetAccountID() string {
+	if x != nil {
+		return x.AccountID
+	}
+	return ""
+}
+
+func (x *SetUserCredentialsSSHRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *SetUserCredentialsSSHRequest) GetSSHCredentials() *SSH {
+	if x != nil {
+		return x.SSHCredentials
+	}
+	return nil
+}
+
+type SetUserCredentialsTOTPRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AccountID       string `protobuf:"bytes,1,opt,name=accountID,proto3" json:"accountID,omitempty"` // realm
+	Email           string `protobuf:"bytes,11,opt,name=email,proto3" json:"email,omitempty"`
+	TOTPCredentials *TOTP  `protobuf:"bytes,21,opt,name=TOTPCredentials,proto3" json:"TOTPCredentials,omitempty"`
+}
+
+func (x *SetUserCredentialsTOTPRequest) Reset() {
+	*x = SetUserCredentialsTOTPRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SetUserCredentialsTOTPRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetUserCredentialsTOTPRequest) ProtoMessage() {}
+
+func (x *SetUserCredentialsTOTPRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetUserCredentialsTOTPRequest.ProtoReflect.Descriptor instead.
+func (*SetUserCredentialsTOTPRequest) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_iam_user_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *SetUserCredentialsTOTPRequest) GetAccountID() string {
+	if x != nil {
+		return x.AccountID
+	}
+	return ""
+}
+
+func (x *SetUserCredentialsTOTPRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *SetUserCredentialsTOTPRequest) GetTOTPCredentials() *TOTP {
+	if x != nil {
+		return x.TOTPCredentials
+	}
+	return nil
+}
+
+type SetUserSSHKeysRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AccountID string             `protobuf:"bytes,1,opt,name=accountID,proto3" json:"accountID,omitempty"` // realm
+	Email     string             `protobuf:"bytes,11,opt,name=email,proto3" json:"email,omitempty"`
+	SSHKeys   map[string]*SSHKey `protobuf:"bytes,21,rep,name=SSHKeys,proto3" json:"SSHKeys,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *SetUserSSHKeysRequest) Reset() {
+	*x = SetUserSSHKeysRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SetUserSSHKeysRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetUserSSHKeysRequest) ProtoMessage() {}
+
+func (x *SetUserSSHKeysRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetUserSSHKeysRequest.ProtoReflect.Descriptor instead.
+func (*SetUserSSHKeysRequest) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_iam_user_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *SetUserSSHKeysRequest) GetAccountID() string {
+	if x != nil {
+		return x.AccountID
+	}
+	return ""
+}
+
+func (x *SetUserSSHKeysRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *SetUserSSHKeysRequest) GetSSHKeys() map[string]*SSHKey {
+	if x != nil {
+		return x.SSHKeys
+	}
+	return nil
+}
+
+type SetUserPermissionsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AccountID string    `protobuf:"bytes,1,opt,name=accountID,proto3" json:"accountID,omitempty"` // realm
+	Email     string    `protobuf:"bytes,11,opt,name=email,proto3" json:"email,omitempty"`
+	RBAC      *UserRBAC `protobuf:"bytes,21,opt,name=RBAC,proto3" json:"RBAC,omitempty"`
+}
+
+func (x *SetUserPermissionsRequest) Reset() {
+	*x = SetUserPermissionsRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SetUserPermissionsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetUserPermissionsRequest) ProtoMessage() {}
+
+func (x *SetUserPermissionsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetUserPermissionsRequest.ProtoReflect.Descriptor instead.
+func (*SetUserPermissionsRequest) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_iam_user_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *SetUserPermissionsRequest) GetAccountID() string {
+	if x != nil {
+		return x.AccountID
+	}
+	return ""
+}
+
+func (x *SetUserPermissionsRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *SetUserPermissionsRequest) GetRBAC() *UserRBAC {
+	if x != nil {
+		return x.RBAC
+	}
+	return nil
+}
+
 var File_mmesh_protobuf_resources_v1_iam_user_proto protoreflect.FileDescriptor
 
 var file_mmesh_protobuf_resources_v1_iam_user_proto_rawDesc = []byte{
@@ -921,10 +1354,66 @@ var file_mmesh_protobuf_resources_v1_iam_user_proto_rawDesc = []byte{
 	0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79,
 	0x12, 0x21, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32,
 	0x0b, 0x2e, 0x69, 0x61, 0x6d, 0x2e, 0x53, 0x53, 0x48, 0x4b, 0x65, 0x79, 0x52, 0x05, 0x76, 0x61,
-	0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x42, 0x27, 0x5a, 0x25, 0x6d, 0x6d, 0x65, 0x73, 0x68,
-	0x2e, 0x64, 0x65, 0x76, 0x2f, 0x6d, 0x2d, 0x61, 0x70, 0x69, 0x2d, 0x67, 0x6f, 0x2f, 0x67, 0x72,
-	0x70, 0x63, 0x2f, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x73, 0x2f, 0x69, 0x61, 0x6d,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x41, 0x0a, 0x0b, 0x55, 0x73, 0x65, 0x72, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75,
+	0x6e, 0x74, 0x49, 0x44, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x0b, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x22, 0x65, 0x0a, 0x13, 0x53, 0x65,
+	0x74, 0x55, 0x73, 0x65, 0x72, 0x45, 0x6d, 0x61, 0x69, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x12,
+	0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x6e, 0x65, 0x77, 0x45, 0x6d, 0x61, 0x69,
+	0x6c, 0x18, 0x15, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6e, 0x65, 0x77, 0x45, 0x6d, 0x61, 0x69,
+	0x6c, 0x22, 0x79, 0x0a, 0x21, 0x53, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x43, 0x72, 0x65, 0x64,
+	0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x50, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75,
+	0x6e, 0x74, 0x49, 0x44, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x0b, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x20, 0x0a, 0x0b, 0x6e, 0x65,
+	0x77, 0x50, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x15, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0b, 0x6e, 0x65, 0x77, 0x50, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x22, 0x84, 0x01, 0x0a,
+	0x1c, 0x53, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69,
+	0x61, 0x6c, 0x73, 0x53, 0x53, 0x48, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a,
+	0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x12, 0x14, 0x0a, 0x05, 0x65,
+	0x6d, 0x61, 0x69, 0x6c, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69,
+	0x6c, 0x12, 0x30, 0x0a, 0x0e, 0x53, 0x53, 0x48, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69,
+	0x61, 0x6c, 0x73, 0x18, 0x15, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x69, 0x61, 0x6d, 0x2e,
+	0x53, 0x53, 0x48, 0x52, 0x0e, 0x53, 0x53, 0x48, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69,
+	0x61, 0x6c, 0x73, 0x22, 0x88, 0x01, 0x0a, 0x1d, 0x53, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x43,
+	0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x54, 0x4f, 0x54, 0x50, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74,
+	0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x49, 0x44, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x0b, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x33, 0x0a, 0x0f, 0x54, 0x4f, 0x54,
+	0x50, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x18, 0x15, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x09, 0x2e, 0x69, 0x61, 0x6d, 0x2e, 0x54, 0x4f, 0x54, 0x50, 0x52, 0x0f, 0x54,
+	0x4f, 0x54, 0x50, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x22, 0xd7,
+	0x01, 0x0a, 0x15, 0x53, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x53, 0x53, 0x48, 0x4b, 0x65, 0x79,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f,
+	0x75, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x63,
+	0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18,
+	0x0b, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x41, 0x0a, 0x07,
+	0x53, 0x53, 0x48, 0x4b, 0x65, 0x79, 0x73, 0x18, 0x15, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x27, 0x2e,
+	0x69, 0x61, 0x6d, 0x2e, 0x53, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x53, 0x53, 0x48, 0x4b, 0x65,
+	0x79, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x53, 0x53, 0x48, 0x4b, 0x65, 0x79,
+	0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x07, 0x53, 0x53, 0x48, 0x4b, 0x65, 0x79, 0x73, 0x1a,
+	0x47, 0x0a, 0x0c, 0x53, 0x53, 0x48, 0x4b, 0x65, 0x79, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12,
+	0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65,
+	0x79, 0x12, 0x21, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x0b, 0x2e, 0x69, 0x61, 0x6d, 0x2e, 0x53, 0x53, 0x48, 0x4b, 0x65, 0x79, 0x52, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x72, 0x0a, 0x19, 0x53, 0x65, 0x74, 0x55,
+	0x73, 0x65, 0x72, 0x50, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74,
+	0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x49, 0x44, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x0b, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x21, 0x0a, 0x04, 0x52, 0x42, 0x41,
+	0x43, 0x18, 0x15, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x69, 0x61, 0x6d, 0x2e, 0x55, 0x73,
+	0x65, 0x72, 0x52, 0x42, 0x41, 0x43, 0x52, 0x04, 0x52, 0x42, 0x41, 0x43, 0x42, 0x27, 0x5a, 0x25,
+	0x6d, 0x6d, 0x65, 0x73, 0x68, 0x2e, 0x64, 0x65, 0x76, 0x2f, 0x6d, 0x2d, 0x61, 0x70, 0x69, 0x2d,
+	0x67, 0x6f, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2f, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65,
+	0x73, 0x2f, 0x69, 0x61, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -939,51 +1428,64 @@ func file_mmesh_protobuf_resources_v1_iam_user_proto_rawDescGZIP() []byte {
 	return file_mmesh_protobuf_resources_v1_iam_user_proto_rawDescData
 }
 
-var file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_mmesh_protobuf_resources_v1_iam_user_proto_goTypes = []interface{}{
-	(*User)(nil),                  // 0: iam.User
-	(*Users)(nil),                 // 1: iam.Users
-	(*ListUsersRequest)(nil),      // 2: iam.ListUsersRequest
-	(*UserCredentials)(nil),       // 3: iam.UserCredentials
-	(*SSH)(nil),                   // 4: iam.SSH
-	(*TOTP)(nil),                  // 5: iam.TOTP
-	(*UserStatus)(nil),            // 6: iam.UserStatus
-	(*UserRBAC)(nil),              // 7: iam.UserRBAC
-	(*UserStats)(nil),             // 8: iam.UserStats
-	(*Metric)(nil),                // 9: iam.Metric
-	(*UserSSHKeys)(nil),           // 10: iam.UserSSHKeys
-	nil,                           // 11: iam.User.SSHKeysEntry
-	nil,                           // 12: iam.UserStats.ActivityEntry
-	nil,                           // 13: iam.UserSSHKeys.SSHKeysEntry
-	(*metrics.EventMetrics)(nil),  // 14: metrics.EventMetrics
-	(*resource.ListResponse)(nil), // 15: resource.ListResponse
-	(*resource.ListRequest)(nil),  // 16: resource.ListRequest
-	(*SSHKey)(nil),                // 17: iam.SSHKey
+	(*User)(nil),                              // 0: iam.User
+	(*Users)(nil),                             // 1: iam.Users
+	(*ListUsersRequest)(nil),                  // 2: iam.ListUsersRequest
+	(*UserCredentials)(nil),                   // 3: iam.UserCredentials
+	(*SSH)(nil),                               // 4: iam.SSH
+	(*TOTP)(nil),                              // 5: iam.TOTP
+	(*UserStatus)(nil),                        // 6: iam.UserStatus
+	(*UserRBAC)(nil),                          // 7: iam.UserRBAC
+	(*UserStats)(nil),                         // 8: iam.UserStats
+	(*Metric)(nil),                            // 9: iam.Metric
+	(*UserSSHKeys)(nil),                       // 10: iam.UserSSHKeys
+	(*UserRequest)(nil),                       // 11: iam.UserRequest
+	(*SetUserEmailRequest)(nil),               // 12: iam.SetUserEmailRequest
+	(*SetUserCredentialsPasswordRequest)(nil), // 13: iam.SetUserCredentialsPasswordRequest
+	(*SetUserCredentialsSSHRequest)(nil),      // 14: iam.SetUserCredentialsSSHRequest
+	(*SetUserCredentialsTOTPRequest)(nil),     // 15: iam.SetUserCredentialsTOTPRequest
+	(*SetUserSSHKeysRequest)(nil),             // 16: iam.SetUserSSHKeysRequest
+	(*SetUserPermissionsRequest)(nil),         // 17: iam.SetUserPermissionsRequest
+	nil,                                       // 18: iam.User.SSHKeysEntry
+	nil,                                       // 19: iam.UserStats.ActivityEntry
+	nil,                                       // 20: iam.UserSSHKeys.SSHKeysEntry
+	nil,                                       // 21: iam.SetUserSSHKeysRequest.SSHKeysEntry
+	(*metrics.EventMetrics)(nil),              // 22: metrics.EventMetrics
+	(*resource.ListResponse)(nil),             // 23: resource.ListResponse
+	(*resource.ListRequest)(nil),              // 24: resource.ListRequest
+	(*SSHKey)(nil),                            // 25: iam.SSHKey
 }
 var file_mmesh_protobuf_resources_v1_iam_user_proto_depIdxs = []int32{
 	3,  // 0: iam.User.credentials:type_name -> iam.UserCredentials
-	11, // 1: iam.User.SSHKeys:type_name -> iam.User.SSHKeysEntry
+	18, // 1: iam.User.SSHKeys:type_name -> iam.User.SSHKeysEntry
 	6,  // 2: iam.User.status:type_name -> iam.UserStatus
 	7,  // 3: iam.User.RBAC:type_name -> iam.UserRBAC
 	8,  // 4: iam.User.stats:type_name -> iam.UserStats
-	14, // 5: iam.User.eventMetrics:type_name -> metrics.EventMetrics
-	15, // 6: iam.Users.meta:type_name -> resource.ListResponse
+	22, // 5: iam.User.eventMetrics:type_name -> metrics.EventMetrics
+	23, // 6: iam.Users.meta:type_name -> resource.ListResponse
 	0,  // 7: iam.Users.users:type_name -> iam.User
-	16, // 8: iam.ListUsersRequest.meta:type_name -> resource.ListRequest
+	24, // 8: iam.ListUsersRequest.meta:type_name -> resource.ListRequest
 	4,  // 9: iam.UserCredentials.SSH:type_name -> iam.SSH
 	5,  // 10: iam.UserCredentials.TOTP:type_name -> iam.TOTP
-	17, // 11: iam.SSH.key:type_name -> iam.SSHKey
+	25, // 11: iam.SSH.key:type_name -> iam.SSHKey
 	9,  // 12: iam.UserStats.securityIssues:type_name -> iam.Metric
-	12, // 13: iam.UserStats.activity:type_name -> iam.UserStats.ActivityEntry
-	13, // 14: iam.UserSSHKeys.SSHKeys:type_name -> iam.UserSSHKeys.SSHKeysEntry
-	17, // 15: iam.User.SSHKeysEntry.value:type_name -> iam.SSHKey
-	9,  // 16: iam.UserStats.ActivityEntry.value:type_name -> iam.Metric
-	17, // 17: iam.UserSSHKeys.SSHKeysEntry.value:type_name -> iam.SSHKey
-	18, // [18:18] is the sub-list for method output_type
-	18, // [18:18] is the sub-list for method input_type
-	18, // [18:18] is the sub-list for extension type_name
-	18, // [18:18] is the sub-list for extension extendee
-	0,  // [0:18] is the sub-list for field type_name
+	19, // 13: iam.UserStats.activity:type_name -> iam.UserStats.ActivityEntry
+	20, // 14: iam.UserSSHKeys.SSHKeys:type_name -> iam.UserSSHKeys.SSHKeysEntry
+	4,  // 15: iam.SetUserCredentialsSSHRequest.SSHCredentials:type_name -> iam.SSH
+	5,  // 16: iam.SetUserCredentialsTOTPRequest.TOTPCredentials:type_name -> iam.TOTP
+	21, // 17: iam.SetUserSSHKeysRequest.SSHKeys:type_name -> iam.SetUserSSHKeysRequest.SSHKeysEntry
+	7,  // 18: iam.SetUserPermissionsRequest.RBAC:type_name -> iam.UserRBAC
+	25, // 19: iam.User.SSHKeysEntry.value:type_name -> iam.SSHKey
+	9,  // 20: iam.UserStats.ActivityEntry.value:type_name -> iam.Metric
+	25, // 21: iam.UserSSHKeys.SSHKeysEntry.value:type_name -> iam.SSHKey
+	25, // 22: iam.SetUserSSHKeysRequest.SSHKeysEntry.value:type_name -> iam.SSHKey
+	23, // [23:23] is the sub-list for method output_type
+	23, // [23:23] is the sub-list for method input_type
+	23, // [23:23] is the sub-list for extension type_name
+	23, // [23:23] is the sub-list for extension extendee
+	0,  // [0:23] is the sub-list for field type_name
 }
 
 func init() { file_mmesh_protobuf_resources_v1_iam_user_proto_init() }
@@ -1125,6 +1627,90 @@ func file_mmesh_protobuf_resources_v1_iam_user_proto_init() {
 				return nil
 			}
 		}
+		file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UserRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SetUserEmailRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SetUserCredentialsPasswordRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SetUserCredentialsSSHRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SetUserCredentialsTOTPRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SetUserSSHKeysRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mmesh_protobuf_resources_v1_iam_user_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SetUserPermissionsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1132,7 +1718,7 @@ func file_mmesh_protobuf_resources_v1_iam_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_mmesh_protobuf_resources_v1_iam_user_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   14,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

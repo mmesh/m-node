@@ -7,8 +7,8 @@ import (
 	"sync"
 
 	"mmesh.dev/m-api-go/grpc/network/mmnp/routing"
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"x6a.dev/pkg/errors"
 )
 
 var rtrq = make(chan struct{}, 64)

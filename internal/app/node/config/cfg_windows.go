@@ -13,13 +13,13 @@ func defaultInterfaceName() string {
 	return "mmesh"
 }
 
-func setLogger(level xlog.LogLevel, hostID string, logOpts ...*xlog.LogOption) {
+func setLogger(level xlog.LogLevel, hostID string) {
 	if len(os.Args) == 2 {
 		if os.Args[1] == "service-start" {
-			xlog.SetLogger(level, hostID, xlog.WithStdLogger())
+			xlog.Logger().SetLogLevel(level).SetHostID(hostID).SetStdLogger()
 			return
 		}
 	}
 
-	xlog.SetLogger(level, hostID, xlog.WithANSIColor(true))
+	xlog.Logger().SetLogLevel(level).SetHostID(hostID).SetANSIColor(true)
 }

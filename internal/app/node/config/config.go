@@ -7,9 +7,9 @@ import (
 	"github.com/spf13/viper"
 	"mmesh.dev/m-lib/pkg/logging"
 	"mmesh.dev/m-lib/pkg/mmid"
+	"mmesh.dev/m-lib/pkg/utils/msg"
 	"mmesh.dev/m-lib/pkg/version"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"x6a.dev/pkg/msg"
 )
 
 func Init() {
@@ -76,7 +76,7 @@ func Init() {
 		logLevel = xlog.TRACE
 	}
 
-	setLogger(logLevel, hostID, xlog.WithANSIColor(true))
+	setLogger(logLevel, hostID)
 
 	fmt.Print("[settings loaded]\n\n")
 }

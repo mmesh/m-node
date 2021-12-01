@@ -6,9 +6,9 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"mmesh.dev/m-lib/pkg/utils/msg"
 	"mmesh.dev/m-lib/pkg/version"
 	"mmesh.dev/m-node/internal/app/node/config"
-	"x6a.dev/pkg/msg"
 )
 
 var cfgFile string

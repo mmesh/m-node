@@ -7,9 +7,9 @@ import (
 
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-lib/pkg/cli/output"
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/logging"
 	"mmesh.dev/m-lib/pkg/utils/colors"
-	"x6a.dev/pkg/errors"
 )
 
 func transferAckRx(ctx context.Context, payload *mmsp.Payload) error {

@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"x6a.dev/pkg/msg"
+	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
 func ReadLine() []byte {

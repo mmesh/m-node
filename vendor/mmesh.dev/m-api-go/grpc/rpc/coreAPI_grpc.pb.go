@@ -33,19 +33,26 @@ type CoreAPIClient interface {
 	ListResources(ctx context.Context, in *resource.Resource, opts ...grpc.CallOption) (*resource.Resources, error)
 	// iam
 	ListIAMPermissions(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*iam.Permissions, error)
+	CreateUser(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
 	ListUsers(ctx context.Context, in *iam.ListUsersRequest, opts ...grpc.CallOption) (*iam.Users, error)
-	GetUser(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
-	SetUser(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
-	DeleteUser(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*status.StatusResponse, error)
-	EnableUser(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
-	DisableUser(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
-	ResetUserPassword(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*status.StatusResponse, error)
-	SetUserCredentialsPassword(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
-	SetUserCredentialsSSH(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
-	SetUserCredentialsTOTP(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
-	SetUserSSHKeys(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
-	GetUserSSHKeys(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.UserSSHKeys, error)
-	SetUserPermissions(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
+	GetUser(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.User, error)
+	//   rpc SetUser(iam.User) returns (iam.User) {
+	//     option (google.api.http) = {
+	//       post: "/api/v1/accounts/{accountID}/iam/users/{email}"
+	//       body: "*"
+	//     };
+	//   }
+	DeleteUser(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*status.StatusResponse, error)
+	EnableUser(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.User, error)
+	DisableUser(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.User, error)
+	SetUserEmail(ctx context.Context, in *iam.SetUserEmailRequest, opts ...grpc.CallOption) (*iam.User, error)
+	ResetUserPassword(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*status.StatusResponse, error)
+	SetUserCredentialsPassword(ctx context.Context, in *iam.SetUserCredentialsPasswordRequest, opts ...grpc.CallOption) (*iam.User, error)
+	SetUserCredentialsSSH(ctx context.Context, in *iam.SetUserCredentialsSSHRequest, opts ...grpc.CallOption) (*iam.User, error)
+	SetUserCredentialsTOTP(ctx context.Context, in *iam.SetUserCredentialsTOTPRequest, opts ...grpc.CallOption) (*iam.User, error)
+	SetUserSSHKeys(ctx context.Context, in *iam.SetUserSSHKeysRequest, opts ...grpc.CallOption) (*iam.User, error)
+	GetUserSSHKeys(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.UserSSHKeys, error)
+	SetUserPermissions(ctx context.Context, in *iam.SetUserPermissionsRequest, opts ...grpc.CallOption) (*iam.User, error)
 	ListSecurityGroups(ctx context.Context, in *iam.ListSecurityGroupsRequest, opts ...grpc.CallOption) (*iam.SecurityGroups, error)
 	GetSecurityGroup(ctx context.Context, in *iam.SecurityGroup, opts ...grpc.CallOption) (*iam.SecurityGroup, error)
 	SetSecurityGroup(ctx context.Context, in *iam.SecurityGroup, opts ...grpc.CallOption) (*iam.SecurityGroup, error)
@@ -136,6 +143,15 @@ func (c *coreAPIClient) ListIAMPermissions(ctx context.Context, in *empty.Empty,
 	return out, nil
 }
 
+func (c *coreAPIClient) CreateUser(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error) {
+	out := new(iam.User)
+	err := c.cc.Invoke(ctx, "/api.CoreAPI/CreateUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *coreAPIClient) ListUsers(ctx context.Context, in *iam.ListUsersRequest, opts ...grpc.CallOption) (*iam.Users, error) {
 	out := new(iam.Users)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/ListUsers", in, out, opts...)
@@ -145,7 +161,7 @@ func (c *coreAPIClient) ListUsers(ctx context.Context, in *iam.ListUsersRequest,
 	return out, nil
 }
 
-func (c *coreAPIClient) GetUser(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error) {
+func (c *coreAPIClient) GetUser(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.User, error) {
 	out := new(iam.User)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/GetUser", in, out, opts...)
 	if err != nil {
@@ -154,16 +170,7 @@ func (c *coreAPIClient) GetUser(ctx context.Context, in *iam.User, opts ...grpc.
 	return out, nil
 }
 
-func (c *coreAPIClient) SetUser(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error) {
-	out := new(iam.User)
-	err := c.cc.Invoke(ctx, "/api.CoreAPI/SetUser", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *coreAPIClient) DeleteUser(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*status.StatusResponse, error) {
+func (c *coreAPIClient) DeleteUser(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*status.StatusResponse, error) {
 	out := new(status.StatusResponse)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/DeleteUser", in, out, opts...)
 	if err != nil {
@@ -172,7 +179,7 @@ func (c *coreAPIClient) DeleteUser(ctx context.Context, in *iam.User, opts ...gr
 	return out, nil
 }
 
-func (c *coreAPIClient) EnableUser(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error) {
+func (c *coreAPIClient) EnableUser(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.User, error) {
 	out := new(iam.User)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/EnableUser", in, out, opts...)
 	if err != nil {
@@ -181,7 +188,7 @@ func (c *coreAPIClient) EnableUser(ctx context.Context, in *iam.User, opts ...gr
 	return out, nil
 }
 
-func (c *coreAPIClient) DisableUser(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error) {
+func (c *coreAPIClient) DisableUser(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.User, error) {
 	out := new(iam.User)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/DisableUser", in, out, opts...)
 	if err != nil {
@@ -190,7 +197,16 @@ func (c *coreAPIClient) DisableUser(ctx context.Context, in *iam.User, opts ...g
 	return out, nil
 }
 
-func (c *coreAPIClient) ResetUserPassword(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*status.StatusResponse, error) {
+func (c *coreAPIClient) SetUserEmail(ctx context.Context, in *iam.SetUserEmailRequest, opts ...grpc.CallOption) (*iam.User, error) {
+	out := new(iam.User)
+	err := c.cc.Invoke(ctx, "/api.CoreAPI/SetUserEmail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *coreAPIClient) ResetUserPassword(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*status.StatusResponse, error) {
 	out := new(status.StatusResponse)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/ResetUserPassword", in, out, opts...)
 	if err != nil {
@@ -199,7 +215,7 @@ func (c *coreAPIClient) ResetUserPassword(ctx context.Context, in *iam.User, opt
 	return out, nil
 }
 
-func (c *coreAPIClient) SetUserCredentialsPassword(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error) {
+func (c *coreAPIClient) SetUserCredentialsPassword(ctx context.Context, in *iam.SetUserCredentialsPasswordRequest, opts ...grpc.CallOption) (*iam.User, error) {
 	out := new(iam.User)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/SetUserCredentialsPassword", in, out, opts...)
 	if err != nil {
@@ -208,7 +224,7 @@ func (c *coreAPIClient) SetUserCredentialsPassword(ctx context.Context, in *iam.
 	return out, nil
 }
 
-func (c *coreAPIClient) SetUserCredentialsSSH(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error) {
+func (c *coreAPIClient) SetUserCredentialsSSH(ctx context.Context, in *iam.SetUserCredentialsSSHRequest, opts ...grpc.CallOption) (*iam.User, error) {
 	out := new(iam.User)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/SetUserCredentialsSSH", in, out, opts...)
 	if err != nil {
@@ -217,7 +233,7 @@ func (c *coreAPIClient) SetUserCredentialsSSH(ctx context.Context, in *iam.User,
 	return out, nil
 }
 
-func (c *coreAPIClient) SetUserCredentialsTOTP(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error) {
+func (c *coreAPIClient) SetUserCredentialsTOTP(ctx context.Context, in *iam.SetUserCredentialsTOTPRequest, opts ...grpc.CallOption) (*iam.User, error) {
 	out := new(iam.User)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/SetUserCredentialsTOTP", in, out, opts...)
 	if err != nil {
@@ -226,7 +242,7 @@ func (c *coreAPIClient) SetUserCredentialsTOTP(ctx context.Context, in *iam.User
 	return out, nil
 }
 
-func (c *coreAPIClient) SetUserSSHKeys(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error) {
+func (c *coreAPIClient) SetUserSSHKeys(ctx context.Context, in *iam.SetUserSSHKeysRequest, opts ...grpc.CallOption) (*iam.User, error) {
 	out := new(iam.User)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/SetUserSSHKeys", in, out, opts...)
 	if err != nil {
@@ -235,7 +251,7 @@ func (c *coreAPIClient) SetUserSSHKeys(ctx context.Context, in *iam.User, opts .
 	return out, nil
 }
 
-func (c *coreAPIClient) GetUserSSHKeys(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.UserSSHKeys, error) {
+func (c *coreAPIClient) GetUserSSHKeys(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.UserSSHKeys, error) {
 	out := new(iam.UserSSHKeys)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/GetUserSSHKeys", in, out, opts...)
 	if err != nil {
@@ -244,7 +260,7 @@ func (c *coreAPIClient) GetUserSSHKeys(ctx context.Context, in *iam.User, opts .
 	return out, nil
 }
 
-func (c *coreAPIClient) SetUserPermissions(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error) {
+func (c *coreAPIClient) SetUserPermissions(ctx context.Context, in *iam.SetUserPermissionsRequest, opts ...grpc.CallOption) (*iam.User, error) {
 	out := new(iam.User)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/SetUserPermissions", in, out, opts...)
 	if err != nil {
@@ -710,19 +726,26 @@ type CoreAPIServer interface {
 	ListResources(context.Context, *resource.Resource) (*resource.Resources, error)
 	// iam
 	ListIAMPermissions(context.Context, *empty.Empty) (*iam.Permissions, error)
+	CreateUser(context.Context, *iam.User) (*iam.User, error)
 	ListUsers(context.Context, *iam.ListUsersRequest) (*iam.Users, error)
-	GetUser(context.Context, *iam.User) (*iam.User, error)
-	SetUser(context.Context, *iam.User) (*iam.User, error)
-	DeleteUser(context.Context, *iam.User) (*status.StatusResponse, error)
-	EnableUser(context.Context, *iam.User) (*iam.User, error)
-	DisableUser(context.Context, *iam.User) (*iam.User, error)
-	ResetUserPassword(context.Context, *iam.User) (*status.StatusResponse, error)
-	SetUserCredentialsPassword(context.Context, *iam.User) (*iam.User, error)
-	SetUserCredentialsSSH(context.Context, *iam.User) (*iam.User, error)
-	SetUserCredentialsTOTP(context.Context, *iam.User) (*iam.User, error)
-	SetUserSSHKeys(context.Context, *iam.User) (*iam.User, error)
-	GetUserSSHKeys(context.Context, *iam.User) (*iam.UserSSHKeys, error)
-	SetUserPermissions(context.Context, *iam.User) (*iam.User, error)
+	GetUser(context.Context, *iam.UserRequest) (*iam.User, error)
+	//   rpc SetUser(iam.User) returns (iam.User) {
+	//     option (google.api.http) = {
+	//       post: "/api/v1/accounts/{accountID}/iam/users/{email}"
+	//       body: "*"
+	//     };
+	//   }
+	DeleteUser(context.Context, *iam.UserRequest) (*status.StatusResponse, error)
+	EnableUser(context.Context, *iam.UserRequest) (*iam.User, error)
+	DisableUser(context.Context, *iam.UserRequest) (*iam.User, error)
+	SetUserEmail(context.Context, *iam.SetUserEmailRequest) (*iam.User, error)
+	ResetUserPassword(context.Context, *iam.UserRequest) (*status.StatusResponse, error)
+	SetUserCredentialsPassword(context.Context, *iam.SetUserCredentialsPasswordRequest) (*iam.User, error)
+	SetUserCredentialsSSH(context.Context, *iam.SetUserCredentialsSSHRequest) (*iam.User, error)
+	SetUserCredentialsTOTP(context.Context, *iam.SetUserCredentialsTOTPRequest) (*iam.User, error)
+	SetUserSSHKeys(context.Context, *iam.SetUserSSHKeysRequest) (*iam.User, error)
+	GetUserSSHKeys(context.Context, *iam.UserRequest) (*iam.UserSSHKeys, error)
+	SetUserPermissions(context.Context, *iam.SetUserPermissionsRequest) (*iam.User, error)
 	ListSecurityGroups(context.Context, *iam.ListSecurityGroupsRequest) (*iam.SecurityGroups, error)
 	GetSecurityGroup(context.Context, *iam.SecurityGroup) (*iam.SecurityGroup, error)
 	SetSecurityGroup(context.Context, *iam.SecurityGroup) (*iam.SecurityGroup, error)
@@ -798,43 +821,46 @@ func (UnimplementedCoreAPIServer) ListResources(context.Context, *resource.Resou
 func (UnimplementedCoreAPIServer) ListIAMPermissions(context.Context, *empty.Empty) (*iam.Permissions, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method ListIAMPermissions not implemented")
 }
+func (UnimplementedCoreAPIServer) CreateUser(context.Context, *iam.User) (*iam.User, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method CreateUser not implemented")
+}
 func (UnimplementedCoreAPIServer) ListUsers(context.Context, *iam.ListUsersRequest) (*iam.Users, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method ListUsers not implemented")
 }
-func (UnimplementedCoreAPIServer) GetUser(context.Context, *iam.User) (*iam.User, error) {
+func (UnimplementedCoreAPIServer) GetUser(context.Context, *iam.UserRequest) (*iam.User, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
-func (UnimplementedCoreAPIServer) SetUser(context.Context, *iam.User) (*iam.User, error) {
-	return nil, status1.Errorf(codes.Unimplemented, "method SetUser not implemented")
-}
-func (UnimplementedCoreAPIServer) DeleteUser(context.Context, *iam.User) (*status.StatusResponse, error) {
+func (UnimplementedCoreAPIServer) DeleteUser(context.Context, *iam.UserRequest) (*status.StatusResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
 }
-func (UnimplementedCoreAPIServer) EnableUser(context.Context, *iam.User) (*iam.User, error) {
+func (UnimplementedCoreAPIServer) EnableUser(context.Context, *iam.UserRequest) (*iam.User, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method EnableUser not implemented")
 }
-func (UnimplementedCoreAPIServer) DisableUser(context.Context, *iam.User) (*iam.User, error) {
+func (UnimplementedCoreAPIServer) DisableUser(context.Context, *iam.UserRequest) (*iam.User, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method DisableUser not implemented")
 }
-func (UnimplementedCoreAPIServer) ResetUserPassword(context.Context, *iam.User) (*status.StatusResponse, error) {
+func (UnimplementedCoreAPIServer) SetUserEmail(context.Context, *iam.SetUserEmailRequest) (*iam.User, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method SetUserEmail not implemented")
+}
+func (UnimplementedCoreAPIServer) ResetUserPassword(context.Context, *iam.UserRequest) (*status.StatusResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method ResetUserPassword not implemented")
 }
-func (UnimplementedCoreAPIServer) SetUserCredentialsPassword(context.Context, *iam.User) (*iam.User, error) {
+func (UnimplementedCoreAPIServer) SetUserCredentialsPassword(context.Context, *iam.SetUserCredentialsPasswordRequest) (*iam.User, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method SetUserCredentialsPassword not implemented")
 }
-func (UnimplementedCoreAPIServer) SetUserCredentialsSSH(context.Context, *iam.User) (*iam.User, error) {
+func (UnimplementedCoreAPIServer) SetUserCredentialsSSH(context.Context, *iam.SetUserCredentialsSSHRequest) (*iam.User, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method SetUserCredentialsSSH not implemented")
 }
-func (UnimplementedCoreAPIServer) SetUserCredentialsTOTP(context.Context, *iam.User) (*iam.User, error) {
+func (UnimplementedCoreAPIServer) SetUserCredentialsTOTP(context.Context, *iam.SetUserCredentialsTOTPRequest) (*iam.User, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method SetUserCredentialsTOTP not implemented")
 }
-func (UnimplementedCoreAPIServer) SetUserSSHKeys(context.Context, *iam.User) (*iam.User, error) {
+func (UnimplementedCoreAPIServer) SetUserSSHKeys(context.Context, *iam.SetUserSSHKeysRequest) (*iam.User, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method SetUserSSHKeys not implemented")
 }
-func (UnimplementedCoreAPIServer) GetUserSSHKeys(context.Context, *iam.User) (*iam.UserSSHKeys, error) {
+func (UnimplementedCoreAPIServer) GetUserSSHKeys(context.Context, *iam.UserRequest) (*iam.UserSSHKeys, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method GetUserSSHKeys not implemented")
 }
-func (UnimplementedCoreAPIServer) SetUserPermissions(context.Context, *iam.User) (*iam.User, error) {
+func (UnimplementedCoreAPIServer) SetUserPermissions(context.Context, *iam.SetUserPermissionsRequest) (*iam.User, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method SetUserPermissions not implemented")
 }
 func (UnimplementedCoreAPIServer) ListSecurityGroups(context.Context, *iam.ListSecurityGroupsRequest) (*iam.SecurityGroups, error) {
@@ -1036,6 +1062,24 @@ func _CoreAPI_ListIAMPermissions_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CoreAPI_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(iam.User)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoreAPIServer).CreateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.CoreAPI/CreateUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoreAPIServer).CreateUser(ctx, req.(*iam.User))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _CoreAPI_ListUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(iam.ListUsersRequest)
 	if err := dec(in); err != nil {
@@ -1055,7 +1099,7 @@ func _CoreAPI_ListUsers_Handler(srv interface{}, ctx context.Context, dec func(i
 }
 
 func _CoreAPI_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(iam.User)
+	in := new(iam.UserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1067,31 +1111,13 @@ func _CoreAPI_GetUser_Handler(srv interface{}, ctx context.Context, dec func(int
 		FullMethod: "/api.CoreAPI/GetUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).GetUser(ctx, req.(*iam.User))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _CoreAPI_SetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(iam.User)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CoreAPIServer).SetUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.CoreAPI/SetUser",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).SetUser(ctx, req.(*iam.User))
+		return srv.(CoreAPIServer).GetUser(ctx, req.(*iam.UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _CoreAPI_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(iam.User)
+	in := new(iam.UserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1103,13 +1129,13 @@ func _CoreAPI_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/api.CoreAPI/DeleteUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).DeleteUser(ctx, req.(*iam.User))
+		return srv.(CoreAPIServer).DeleteUser(ctx, req.(*iam.UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _CoreAPI_EnableUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(iam.User)
+	in := new(iam.UserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1121,13 +1147,13 @@ func _CoreAPI_EnableUser_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/api.CoreAPI/EnableUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).EnableUser(ctx, req.(*iam.User))
+		return srv.(CoreAPIServer).EnableUser(ctx, req.(*iam.UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _CoreAPI_DisableUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(iam.User)
+	in := new(iam.UserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1139,13 +1165,31 @@ func _CoreAPI_DisableUser_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/api.CoreAPI/DisableUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).DisableUser(ctx, req.(*iam.User))
+		return srv.(CoreAPIServer).DisableUser(ctx, req.(*iam.UserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CoreAPI_SetUserEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(iam.SetUserEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoreAPIServer).SetUserEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.CoreAPI/SetUserEmail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoreAPIServer).SetUserEmail(ctx, req.(*iam.SetUserEmailRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _CoreAPI_ResetUserPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(iam.User)
+	in := new(iam.UserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1157,13 +1201,13 @@ func _CoreAPI_ResetUserPassword_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: "/api.CoreAPI/ResetUserPassword",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).ResetUserPassword(ctx, req.(*iam.User))
+		return srv.(CoreAPIServer).ResetUserPassword(ctx, req.(*iam.UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _CoreAPI_SetUserCredentialsPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(iam.User)
+	in := new(iam.SetUserCredentialsPasswordRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1175,13 +1219,13 @@ func _CoreAPI_SetUserCredentialsPassword_Handler(srv interface{}, ctx context.Co
 		FullMethod: "/api.CoreAPI/SetUserCredentialsPassword",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).SetUserCredentialsPassword(ctx, req.(*iam.User))
+		return srv.(CoreAPIServer).SetUserCredentialsPassword(ctx, req.(*iam.SetUserCredentialsPasswordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _CoreAPI_SetUserCredentialsSSH_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(iam.User)
+	in := new(iam.SetUserCredentialsSSHRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1193,13 +1237,13 @@ func _CoreAPI_SetUserCredentialsSSH_Handler(srv interface{}, ctx context.Context
 		FullMethod: "/api.CoreAPI/SetUserCredentialsSSH",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).SetUserCredentialsSSH(ctx, req.(*iam.User))
+		return srv.(CoreAPIServer).SetUserCredentialsSSH(ctx, req.(*iam.SetUserCredentialsSSHRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _CoreAPI_SetUserCredentialsTOTP_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(iam.User)
+	in := new(iam.SetUserCredentialsTOTPRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1211,13 +1255,13 @@ func _CoreAPI_SetUserCredentialsTOTP_Handler(srv interface{}, ctx context.Contex
 		FullMethod: "/api.CoreAPI/SetUserCredentialsTOTP",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).SetUserCredentialsTOTP(ctx, req.(*iam.User))
+		return srv.(CoreAPIServer).SetUserCredentialsTOTP(ctx, req.(*iam.SetUserCredentialsTOTPRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _CoreAPI_SetUserSSHKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(iam.User)
+	in := new(iam.SetUserSSHKeysRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1229,13 +1273,13 @@ func _CoreAPI_SetUserSSHKeys_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/api.CoreAPI/SetUserSSHKeys",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).SetUserSSHKeys(ctx, req.(*iam.User))
+		return srv.(CoreAPIServer).SetUserSSHKeys(ctx, req.(*iam.SetUserSSHKeysRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _CoreAPI_GetUserSSHKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(iam.User)
+	in := new(iam.UserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1247,13 +1291,13 @@ func _CoreAPI_GetUserSSHKeys_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/api.CoreAPI/GetUserSSHKeys",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).GetUserSSHKeys(ctx, req.(*iam.User))
+		return srv.(CoreAPIServer).GetUserSSHKeys(ctx, req.(*iam.UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _CoreAPI_SetUserPermissions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(iam.User)
+	in := new(iam.SetUserPermissionsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1265,7 +1309,7 @@ func _CoreAPI_SetUserPermissions_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/api.CoreAPI/SetUserPermissions",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).SetUserPermissions(ctx, req.(*iam.User))
+		return srv.(CoreAPIServer).SetUserPermissions(ctx, req.(*iam.SetUserPermissionsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2186,16 +2230,16 @@ var CoreAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _CoreAPI_ListIAMPermissions_Handler,
 		},
 		{
+			MethodName: "CreateUser",
+			Handler:    _CoreAPI_CreateUser_Handler,
+		},
+		{
 			MethodName: "ListUsers",
 			Handler:    _CoreAPI_ListUsers_Handler,
 		},
 		{
 			MethodName: "GetUser",
 			Handler:    _CoreAPI_GetUser_Handler,
-		},
-		{
-			MethodName: "SetUser",
-			Handler:    _CoreAPI_SetUser_Handler,
 		},
 		{
 			MethodName: "DeleteUser",
@@ -2208,6 +2252,10 @@ var CoreAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DisableUser",
 			Handler:    _CoreAPI_DisableUser_Handler,
+		},
+		{
+			MethodName: "SetUserEmail",
+			Handler:    _CoreAPI_SetUserEmail_Handler,
 		},
 		{
 			MethodName: "ResetUserPassword",

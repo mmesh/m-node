@@ -4,9 +4,9 @@ import (
 	"sync"
 	"time"
 
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/ipnet"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"x6a.dev/pkg/errors"
 )
 
 func (p *proxyPort) fwdCtl(ns, svcName, vip, ip string, af ipnet.AddressFamily) {

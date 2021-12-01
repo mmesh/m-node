@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"mmesh.dev/m-api-go/grpc/network/mmnp/routing"
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/metrics"
-	"x6a.dev/pkg/errors"
 )
 
 func (mma *mmAgent) connectTunnel(maddr string) (*bufio.ReadWriter, error) {

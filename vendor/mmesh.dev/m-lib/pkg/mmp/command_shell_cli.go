@@ -12,7 +12,7 @@ import (
 	"mmesh.dev/m-api-go/grpc/network/mmsp/command"
 	"mmesh.dev/m-lib/pkg/cli/output"
 	"mmesh.dev/m-lib/pkg/mmp/term"
-	"x6a.dev/pkg/msg"
+	"mmesh.dev/m-lib/pkg/utils/msg"
 )
 
 var cliStdinWaitc = make(chan struct{}, 1)

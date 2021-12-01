@@ -8,9 +8,9 @@ import (
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-api-go/grpc/network/mmsp/transfer"
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/logging"
 	"mmesh.dev/m-lib/pkg/utils"
-	"x6a.dev/pkg/errors"
 )
 
 func transferDataTx(srcFileMode uint32, srcIsDir bool, srcFile, srcFileName, dstFilePath, dstID, requesterID string, interactive bool) error {

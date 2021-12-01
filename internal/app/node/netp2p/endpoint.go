@@ -7,10 +7,10 @@ import (
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/network/mmnp/register"
 	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/ipnet"
 	"mmesh.dev/m-lib/pkg/resources"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"x6a.dev/pkg/errors"
 )
 
 func AddNetworkEndpoint(endpointID, dnsName, reqIPv4 string) (string, error) {

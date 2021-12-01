@@ -7,9 +7,9 @@ import (
 	"google.golang.org/grpc"
 	"mmesh.dev/m-api-go/grpc/resources/iam/auth"
 	"mmesh.dev/m-api-go/grpc/rpc"
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/grpc/client"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"x6a.dev/pkg/errors"
 )
 
 var GRPCClientConn *grpc.ClientConn

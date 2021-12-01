@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/google/gopacket/layers"
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/ipnet"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"x6a.dev/pkg/errors"
 )
 
 func connListen(af ipnet.AddressFamily, addr string, proto layers.IPProtocol, srcPort uint32) (net.Listener, error) {

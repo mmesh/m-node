@@ -222,9 +222,6 @@ github.com/kardianos/service
 # github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
 ## explicit
 github.com/kballard/go-shellquote
-# github.com/konsorten/go-windows-terminal-sequences v1.0.2
-## explicit
-github.com/konsorten/go-windows-terminal-sequences
 # github.com/koron/go-ssdp v0.0.0-20191105050749-2e1c40ed0b5d
 ## explicit
 github.com/koron/go-ssdp
@@ -501,9 +498,6 @@ github.com/shirou/gopsutil/v3/load
 github.com/shirou/gopsutil/v3/mem
 github.com/shirou/gopsutil/v3/net
 github.com/shirou/gopsutil/v3/process
-# github.com/sirupsen/logrus v1.4.2
-## explicit
-github.com/sirupsen/logrus
 # github.com/songgao/water v0.0.0-20200317203138-2b4b6d7c09d8
 ## explicit
 github.com/songgao/water
@@ -1025,6 +1019,7 @@ mmesh.dev/m-api-go/grpc/rpc
 mmesh.dev/m-lib/pkg/cli/input
 mmesh.dev/m-lib/pkg/cli/output
 mmesh.dev/m-lib/pkg/cli/status
+mmesh.dev/m-lib/pkg/errors
 mmesh.dev/m-lib/pkg/grpc/client
 mmesh.dev/m-lib/pkg/ipnet
 mmesh.dev/m-lib/pkg/logging
@@ -1039,6 +1034,7 @@ mmesh.dev/m-lib/pkg/runtime
 mmesh.dev/m-lib/pkg/update
 mmesh.dev/m-lib/pkg/utils
 mmesh.dev/m-lib/pkg/utils/colors
+mmesh.dev/m-lib/pkg/utils/msg
 mmesh.dev/m-lib/pkg/version
 mmesh.dev/m-lib/pkg/xlog
 # sigs.k8s.io/structured-merge-diff/v4 v4.1.2
@@ -1050,10 +1046,5 @@ sigs.k8s.io/structured-merge-diff/v4/value
 # sigs.k8s.io/yaml v1.2.0
 ## explicit; go 1.12
 sigs.k8s.io/yaml
-# x6a.dev/pkg v0.0.0-20211025162458-8b0687b0f2ff
-## explicit; go 1.13
-x6a.dev/pkg/colors
-x6a.dev/pkg/errors
-x6a.dev/pkg/msg
 # mmesh.dev/m-api-go => ./modules/m-api-go
 # mmesh.dev/m-lib => ./modules/m-lib

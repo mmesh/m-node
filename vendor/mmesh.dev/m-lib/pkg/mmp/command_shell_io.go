@@ -8,9 +8,9 @@ import (
 	"mmesh.dev/m-api-go/grpc/common/status"
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-api-go/grpc/network/mmsp/command"
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/mmp/streaming"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"x6a.dev/pkg/errors"
 )
 
 func newShellOutput(srcID string, p *mmsp.Payload) *mmsp.Payload {

@@ -13,12 +13,12 @@ import (
 
 	"github.com/inconshreveable/go-update"
 	"github.com/spf13/viper"
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/logging"
 	"mmesh.dev/m-lib/pkg/utils"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 	"mmesh.dev/m-lib/pkg/version"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"x6a.dev/pkg/errors"
 )
 
 const binURL string = "https://storage.googleapis.com/mmesh-io/binaries"

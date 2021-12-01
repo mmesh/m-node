@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/mgutz/ansi"
-	"x6a.dev/pkg/colors"
+	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
 const TIME_FORMAT = "2006-01-02 15:04:05.000"
@@ -24,31 +24,6 @@ const (
 	ALERT
 )
 
-type Priority string
-
-const (
-	LOW    Priority = "LOW"
-	MEDIUM Priority = "MEDIUM"
-	HIGH   Priority = "HIGH"
-)
-
-type logOption int
-
-const (
-	logOptionOutputStdout logOption = iota
-	logOptionOutputStderr
-	logOptionOutputStdLogger
-	logOptionOutputFile
-	logOptionOutputSyslog
-	logOptionOutputSlack
-	logOptionANSIColor
-)
-
-type LogOption struct {
-	key   logOption
-	value interface{}
-}
-
 var logPrefixes = map[LogLevel]string{
 	TRACE: "trace",
 	DEBUG: "debug",
@@ -58,13 +33,8 @@ var logPrefixes = map[LogLevel]string{
 	ALERT: "alert",
 }
 
-var logPriorities = map[LogLevel]Priority{
-	TRACE: LOW,
-	DEBUG: LOW,
-	INFO:  LOW,
-	WARN:  MEDIUM,
-	ERROR: HIGH,
-	ALERT: HIGH,
+func (ll LogLevel) String() string {
+	return logPrefixes[ll]
 }
 
 var logColorFuncs = map[LogLevel]func(string) string{
@@ -76,7 +46,24 @@ var logColorFuncs = map[LogLevel]func(string) string{
 	ALERT: ansi.ColorFunc("white+bh:red"),
 }
 
-type logger struct {
+type Priority string
+
+const (
+	LOW    Priority = "LOW"
+	MEDIUM Priority = "MEDIUM"
+	HIGH   Priority = "HIGH"
+)
+
+var logPriorities = map[LogLevel]Priority{
+	TRACE: LOW,
+	DEBUG: LOW,
+	INFO:  LOW,
+	WARN:  MEDIUM,
+	ERROR: HIGH,
+	ALERT: HIGH,
+}
+
+type LoggerSpec struct {
 	logLevel LogLevel
 	hostID   string
 
@@ -87,104 +74,61 @@ type logger struct {
 	slackLogger *slackLoggerCfg
 }
 
-var l = &logger{
+var l = &LoggerSpec{
 	logLevel: INFO,
 }
 
-func SetLogger(level LogLevel, hostID string, logOpts ...*LogOption) {
-	logger := &logger{
-		logLevel: level,
-		hostID:   hostID,
-	}
-	logger.setOptions(logOpts...)
-
-	l = logger
+func Logger() *LoggerSpec {
+	return l
 }
 
-func WithANSIColor(enabled bool) *LogOption {
-	return &LogOption{
-		key:   logOptionANSIColor,
-		value: enabled,
-	}
+func (l *LoggerSpec) SetLogLevel(level LogLevel) *LoggerSpec {
+	l.logLevel = level
+	return l
 }
 
-func WithStdLogger() *LogOption {
-	return &LogOption{
-		key: logOptionOutputStdLogger,
-		value: map[LogLevel]*log.Logger{
-			TRACE: log.New(os.Stdout, "["+logPrefixes[TRACE]+"]\t", log.Ldate|log.Ltime),
-			DEBUG: log.New(os.Stdout, "["+logPrefixes[DEBUG]+"]\t", log.Ldate|log.Ltime),
-			INFO:  log.New(os.Stdout, "["+logPrefixes[INFO]+"]\t", log.Ldate|log.Ltime),
-			WARN:  log.New(os.Stdout, "["+logPrefixes[WARN]+"]\t", log.Ldate|log.Ltime),
-			ERROR: log.New(os.Stdout, "["+logPrefixes[ERROR]+"]\t", log.Ldate|log.Ltime),
-			ALERT: log.New(os.Stdout, "["+logPrefixes[ALERT]+"]\t", log.Ldate|log.Ltime),
-		},
-	}
+func (l *LoggerSpec) SetHostID(hostID string) *LoggerSpec {
+	l.hostID = hostID
+	return l
 }
 
-func WithLogFile(logfile string) *LogOption {
+func (l *LoggerSpec) SetANSIColor(enabled bool) *LoggerSpec {
+	l.ansiColor = enabled
+	return l
+}
+
+func (l *LoggerSpec) SetStdLogger() *LoggerSpec {
+	l.stdLog = map[LogLevel]*log.Logger{
+		TRACE: log.New(os.Stdout, "["+logPrefixes[TRACE]+"]\t", log.Ldate|log.Ltime),
+		DEBUG: log.New(os.Stdout, "["+logPrefixes[DEBUG]+"]\t", log.Ldate|log.Ltime),
+		INFO:  log.New(os.Stdout, "["+logPrefixes[INFO]+"]\t", log.Ldate|log.Ltime),
+		WARN:  log.New(os.Stdout, "["+logPrefixes[WARN]+"]\t", log.Ldate|log.Ltime),
+		ERROR: log.New(os.Stdout, "["+logPrefixes[ERROR]+"]\t", log.Ldate|log.Ltime),
+		ALERT: log.New(os.Stdout, "["+logPrefixes[ALERT]+"]\t", log.Ldate|log.Ltime),
+	}
+	return l
+}
+
+func (l *LoggerSpec) SetLogFile(logfile string) *LoggerSpec {
 	f, err := os.OpenFile(logfile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0664)
 	if err != nil {
 		fmt.Println("Unable to open log file:", err)
 		os.Exit(1)
 	}
 
-	return &LogOption{
-		key: logOptionOutputFile,
-		value: map[LogLevel]*log.Logger{
-			TRACE: log.New(f, "["+logPrefixes[TRACE]+"]\t", log.Ldate|log.Ltime),
-			DEBUG: log.New(f, "["+logPrefixes[DEBUG]+"]\t", log.Ldate|log.Ltime),
-			INFO:  log.New(f, "["+logPrefixes[INFO]+"]\t", log.Ldate|log.Ltime),
-			WARN:  log.New(f, "["+logPrefixes[WARN]+"]\t", log.Ldate|log.Ltime),
-			ERROR: log.New(f, "["+logPrefixes[ERROR]+"]\t", log.Ldate|log.Ltime),
-			ALERT: log.New(f, "["+logPrefixes[ALERT]+"]\t", log.Ldate|log.Ltime),
-		},
+	l.stdLogFile = map[LogLevel]*log.Logger{
+		TRACE: log.New(f, "["+logPrefixes[TRACE]+"]\t", log.Ldate|log.Ltime),
+		DEBUG: log.New(f, "["+logPrefixes[DEBUG]+"]\t", log.Ldate|log.Ltime),
+		INFO:  log.New(f, "["+logPrefixes[INFO]+"]\t", log.Ldate|log.Ltime),
+		WARN:  log.New(f, "["+logPrefixes[WARN]+"]\t", log.Ldate|log.Ltime),
+		ERROR: log.New(f, "["+logPrefixes[ERROR]+"]\t", log.Ldate|log.Ltime),
+		ALERT: log.New(f, "["+logPrefixes[ALERT]+"]\t", log.Ldate|log.Ltime),
 	}
+
+	return l
 }
 
-func GetLogLevel(loglevel string) LogLevel {
-	if strings.Contains(strings.ToUpper(loglevel), "TRACE") {
-		return TRACE
-	}
-	if strings.Contains(strings.ToUpper(loglevel), "DEBUG") {
-		return DEBUG
-	}
-	if strings.Contains(strings.ToUpper(loglevel), "INFO") {
-		return INFO
-	}
-	if strings.Contains(strings.ToUpper(loglevel), "WARN") {
-		return WARN
-	}
-	if strings.Contains(strings.ToUpper(loglevel), "ERROR") {
-		return ERROR
-	}
-	if strings.Contains(strings.ToUpper(loglevel), "ALERT") {
-		return ALERT
-	}
-
-	return -1
-}
-
-func (ll LogLevel) String() string {
-	return logPrefixes[ll]
-}
-
-func (l *logger) setOptions(logOpts ...*LogOption) {
-	for _, opt := range logOpts {
-		switch opt.key {
-		case logOptionANSIColor:
-			l.ansiColor = opt.value.(bool)
-		case logOptionOutputStdLogger:
-			l.stdLog = opt.value.(map[LogLevel]*log.Logger)
-		case logOptionOutputFile:
-			l.stdLogFile = opt.value.(map[LogLevel]*log.Logger)
-		case logOptionOutputSlack:
-			l.slackLogger = opt.value.(*slackLoggerCfg)
-		}
-	}
-}
-
-func (l *logger) logLevelPrefix(level LogLevel) string {
+func (l *LoggerSpec) logLevelPrefix(level LogLevel) string {
 	prefix := "[" + logPrefixes[level] + "]"
 
 	if l.ansiColor {
@@ -194,7 +138,7 @@ func (l *logger) logLevelPrefix(level LogLevel) string {
 	return prefix
 }
 
-func (l *logger) logPrefix(level LogLevel, timestamp time.Time) string {
+func (l *LoggerSpec) logPrefix(level LogLevel, timestamp time.Time) string {
 	//hostID := "[" + colors.White(l.hostID) + "]"
 	// return l.logLevelPrefix(level) + " " + timestamp + " " + hostID
 
@@ -205,15 +149,15 @@ func (l *logger) logPrefix(level LogLevel, timestamp time.Time) string {
 	return l.logLevelPrefix(level) + " " + timestamp.Format(TIME_FORMAT)
 }
 
-func (l *logger) severity(level LogLevel) string {
+func (l *LoggerSpec) severity(level LogLevel) string {
 	return strings.ToUpper(strings.TrimSpace(logPrefixes[level]))
 }
 
-func (l *logger) priority(level LogLevel) Priority {
+func (l *LoggerSpec) priority(level LogLevel) Priority {
 	return logPriorities[level]
 }
 
-func (l *logger) log(level LogLevel, args ...interface{}) {
+func (l *LoggerSpec) log(level LogLevel, args ...interface{}) {
 	if level >= l.logLevel {
 		timestamp := time.Now()
 
@@ -237,7 +181,7 @@ func (l *logger) log(level LogLevel, args ...interface{}) {
 	}
 }
 
-func (l *logger) logf(level LogLevel, format string, args ...interface{}) {
+func (l *LoggerSpec) logf(level LogLevel, format string, args ...interface{}) {
 	if level >= l.logLevel {
 		timestamp := time.Now()
 

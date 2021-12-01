@@ -5,7 +5,7 @@ package colors
 
 import (
 	"golang.org/x/sys/windows"
-	"x6a.dev/pkg/errors"
+	"mmesh.dev/m-lib/pkg/errors"
 )
 
 // EnableWindowsVirtualTerminalProcessing Enable Console VT Processing

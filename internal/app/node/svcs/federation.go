@@ -3,10 +3,10 @@ package svcs
 import (
 	"time"
 
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/connection"
-	"x6a.dev/pkg/errors"
 )
 
 var federationMonitorCh = make(chan struct{}, 1)

@@ -10,8 +10,8 @@ import (
 	"google.golang.org/grpc/credentials"
 	"mmesh.dev/m-api-go/grpc/resources/iam/auth"
 	"mmesh.dev/m-api-go/grpc/rpc"
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/logging"
-	"x6a.dev/pkg/errors"
 )
 
 func newRPCClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (*grpc.ClientConn, error) {
