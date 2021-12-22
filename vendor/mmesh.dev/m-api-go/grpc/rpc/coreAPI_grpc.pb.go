@@ -49,6 +49,7 @@ type CoreAPIClient interface {
 	ResetUserPassword(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	SetUserCredentialsPassword(ctx context.Context, in *iam.SetUserCredentialsPasswordRequest, opts ...grpc.CallOption) (*iam.User, error)
 	SetUserCredentialsSSH(ctx context.Context, in *iam.SetUserCredentialsSSHRequest, opts ...grpc.CallOption) (*iam.User, error)
+	DeleteUserCredentialsSSH(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.User, error)
 	SetUserCredentialsTOTP(ctx context.Context, in *iam.SetUserCredentialsTOTPRequest, opts ...grpc.CallOption) (*iam.User, error)
 	SetUserSSHKeys(ctx context.Context, in *iam.SetUserSSHKeysRequest, opts ...grpc.CallOption) (*iam.User, error)
 	GetUserSSHKeys(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.UserSSHKeys, error)
@@ -227,6 +228,15 @@ func (c *coreAPIClient) SetUserCredentialsPassword(ctx context.Context, in *iam.
 func (c *coreAPIClient) SetUserCredentialsSSH(ctx context.Context, in *iam.SetUserCredentialsSSHRequest, opts ...grpc.CallOption) (*iam.User, error) {
 	out := new(iam.User)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/SetUserCredentialsSSH", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *coreAPIClient) DeleteUserCredentialsSSH(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.User, error) {
+	out := new(iam.User)
+	err := c.cc.Invoke(ctx, "/api.CoreAPI/DeleteUserCredentialsSSH", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -742,6 +752,7 @@ type CoreAPIServer interface {
 	ResetUserPassword(context.Context, *iam.UserRequest) (*status.StatusResponse, error)
 	SetUserCredentialsPassword(context.Context, *iam.SetUserCredentialsPasswordRequest) (*iam.User, error)
 	SetUserCredentialsSSH(context.Context, *iam.SetUserCredentialsSSHRequest) (*iam.User, error)
+	DeleteUserCredentialsSSH(context.Context, *iam.UserRequest) (*iam.User, error)
 	SetUserCredentialsTOTP(context.Context, *iam.SetUserCredentialsTOTPRequest) (*iam.User, error)
 	SetUserSSHKeys(context.Context, *iam.SetUserSSHKeysRequest) (*iam.User, error)
 	GetUserSSHKeys(context.Context, *iam.UserRequest) (*iam.UserSSHKeys, error)
@@ -850,6 +861,9 @@ func (UnimplementedCoreAPIServer) SetUserCredentialsPassword(context.Context, *i
 }
 func (UnimplementedCoreAPIServer) SetUserCredentialsSSH(context.Context, *iam.SetUserCredentialsSSHRequest) (*iam.User, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method SetUserCredentialsSSH not implemented")
+}
+func (UnimplementedCoreAPIServer) DeleteUserCredentialsSSH(context.Context, *iam.UserRequest) (*iam.User, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method DeleteUserCredentialsSSH not implemented")
 }
 func (UnimplementedCoreAPIServer) SetUserCredentialsTOTP(context.Context, *iam.SetUserCredentialsTOTPRequest) (*iam.User, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method SetUserCredentialsTOTP not implemented")
@@ -1238,6 +1252,24 @@ func _CoreAPI_SetUserCredentialsSSH_Handler(srv interface{}, ctx context.Context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CoreAPIServer).SetUserCredentialsSSH(ctx, req.(*iam.SetUserCredentialsSSHRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CoreAPI_DeleteUserCredentialsSSH_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(iam.UserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoreAPIServer).DeleteUserCredentialsSSH(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.CoreAPI/DeleteUserCredentialsSSH",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoreAPIServer).DeleteUserCredentialsSSH(ctx, req.(*iam.UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2268,6 +2300,10 @@ var CoreAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetUserCredentialsSSH",
 			Handler:    _CoreAPI_SetUserCredentialsSSH_Handler,
+		},
+		{
+			MethodName: "DeleteUserCredentialsSSH",
+			Handler:    _CoreAPI_DeleteUserCredentialsSSH_Handler,
 		},
 		{
 			MethodName: "SetUserCredentialsTOTP",

@@ -2,6 +2,7 @@ package input
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"sort"
 	"strconv"
@@ -82,6 +83,24 @@ func GetSelect(inputMsg, helpMsg string, opts []string, v survey.Validator) stri
 	return resp
 }
 
+func GetMultiSelect(inputMsg, helpMsg string, opts []string, v survey.Validator) []string {
+	var resp []string
+
+	promptMSelect := &survey.MultiSelect{Message: inputMsg, Options: opts, Help: helpMsg}
+
+	if v == nil {
+		if err := survey.AskOne(promptMSelect, &resp, survey.WithIcons(SurveySetIcons)); err != nil {
+			status.Error(err, "Unable to get response")
+		}
+	} else {
+		if err := survey.AskOne(promptMSelect, &resp, survey.WithValidator(v), survey.WithIcons(SurveySetIcons)); err != nil {
+			status.Error(err, "Unable to get response")
+		}
+	}
+
+	return resp
+}
+
 func GetConfirm(inputMsg string, defaultValue bool) bool {
 	var resp bool
 
@@ -118,7 +137,6 @@ func PickResource(nxc rpc.CoreAPIClient, kind resource.Kind, realm, name, objSet
 	status.Error(err, "Unable to list resources")
 
 	var objects []string
-	var objID string
 	for _, res := range rl.Resources {
 		objects = append(objects, res.Name)
 	}
@@ -133,14 +151,12 @@ func PickResource(nxc rpc.CoreAPIClient, kind resource.Kind, realm, name, objSet
 		os.Exit(1)
 	}
 
-	if len(objects) == 1 && !edit {
-		return objects[0]
-	}
+	// if len(objects) == 1 && !edit {
+	// 	return objects[0]
+	// }
 
-	promptSelect := &survey.Select{Message: resourceFromKind(kind) + ":", Options: objects}
-	if err := survey.AskOne(promptSelect, &objID, survey.WithValidator(survey.Required), survey.WithIcons(SurveySetIcons)); err != nil {
-		status.Error(err, "Unable to get response")
-	}
+	inputMsg := fmt.Sprintf("%s:", resourceFromKind(kind))
+	objID := GetSelect(inputMsg, "", objects, survey.Required)
 
 	return objID
 }
@@ -157,7 +173,6 @@ func MultiPickResource(nxc rpc.CoreAPIClient, kind resource.Kind, realm, name, o
 	status.Error(err, "Unable to list resources")
 
 	var objects []string
-	var objIDs []string
 	for _, res := range rl.Resources {
 		objects = append(objects, res.Name)
 	}
@@ -168,27 +183,20 @@ func MultiPickResource(nxc rpc.CoreAPIClient, kind resource.Kind, realm, name, o
 	}
 	sort.Strings(objects)
 
-	promptMSelect := &survey.MultiSelect{Message: resourceFromKind(kind) + ":", Options: objects}
-	if err := survey.AskOne(promptMSelect, &objIDs, survey.WithIcons(SurveySetIcons)); err != nil {
-		status.Error(err, "Unable to get response")
-	}
+	inputMsg := fmt.Sprintf("%s:", resourceFromKind(kind))
+	objIDs := GetMultiSelect(inputMsg, "", objects, nil)
 
 	return objIDs
 }
 
 func MultiPickStrings(message string, opts []string) []string {
-	var objIDs []string
-
 	if len(opts) == 0 {
 		msg.Alert("No options found")
 		os.Exit(1)
 	}
 	sort.Strings(opts)
 
-	promptMSelect := &survey.MultiSelect{Message: message, Options: opts}
-	if err := survey.AskOne(promptMSelect, &objIDs, survey.WithIcons(SurveySetIcons)); err != nil {
-		status.Error(err, "Unable to get response")
-	}
+	objIDs := GetMultiSelect(message, "", opts, nil)
 
 	return objIDs
 }
