@@ -49,17 +49,6 @@ func NewShellRequest(authKey *auth.AuthKey, dstID string, c string, args ...stri
 	TxControlQueue <- p
 }
 
-/*
-func newCommand(name, c string, args ...string) *command.CommandExec {
-	return &command.CommandExec{
-		Cmd:  c,
-		Args: args,
-		UID:  0,
-		GID:  0,
-	}
-}
-*/
-
 func newShellInput(srcID string, p *mmsp.Payload) *mmsp.Payload {
 	cReq := p.Command.CommandResponse.RequestedCommand
 

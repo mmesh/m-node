@@ -55,7 +55,7 @@ func shellWriteOutput(mmID string, payload *mmsp.Payload, outrp *io.PipeReader) 
 		}
 
 		p.Command.CommandResponse.Stdout = buffer[0:n]
-		//p.Command.CommandResponse.Stderr = data
+		// p.Command.CommandResponse.Stderr = data
 		p.Command.CommandResponse.Result.Status = command.CommandResultStatus_RUNNING
 		// payload.CommandResponse.Result.Duration = int64(time.Since(t1).Seconds())
 

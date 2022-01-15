@@ -1001,6 +1001,7 @@ mmesh.dev/m-lib/pkg/ipnet
 mmesh.dev/m-lib/pkg/logging
 mmesh.dev/m-lib/pkg/mmid
 mmesh.dev/m-lib/pkg/mmp
+mmesh.dev/m-lib/pkg/mmp/auth
 mmesh.dev/m-lib/pkg/mmp/cli
 mmesh.dev/m-lib/pkg/mmp/protos/chat
 mmesh.dev/m-lib/pkg/mmp/streaming

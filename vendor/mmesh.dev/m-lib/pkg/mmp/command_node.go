@@ -9,13 +9,14 @@ import (
 	"mmesh.dev/m-api-go/grpc/network/mmsp/command"
 	"mmesh.dev/m-lib/pkg/mmp/streaming"
 	"mmesh.dev/m-lib/pkg/mmp/term"
+	"mmesh.dev/m-lib/pkg/mmp/auth"
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 var shs = streaming.NewIOSessions()
 
 func shellExec(ctx context.Context, p *mmsp.Payload) {
-	if !mgmtAuth(p) {
+	if !auth.AgentMgmtAuth(p) {
 		shellExecDisabled(p)
 		return
 	}
@@ -64,7 +65,7 @@ func runShell(payload *mmsp.Payload) {
 
 	xlog.Debugf("Received request to execute command: %v", cReq.Command.Cmd)
 
-	//Logic to execute the command.
+	// Logic to execute the command.
 	c := exec.Command(cReq.Command.Cmd, cReq.Command.Args...)
 
 	// TODO: remote user/perms

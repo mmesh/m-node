@@ -1,11 +1,11 @@
-package mmp
+package auth
 
 import (
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 )
 
-func mgmtAuth(p *mmsp.Payload) bool {
+func AgentMgmtAuth(p *mmsp.Payload) bool {
 	switch p.PayloadType {
 	case mmsp.PayloadType_COMMAND_SHELL_EXEC:
 		if viper.GetBool("agent.management.disableExec") {

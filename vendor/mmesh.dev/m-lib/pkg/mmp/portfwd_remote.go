@@ -12,6 +12,7 @@ import (
 	"mmesh.dev/m-api-go/grpc/network/mmsp/portFwd"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/logging"
+	"mmesh.dev/m-lib/pkg/mmp/auth"
 )
 
 var rpfs = newPortFwdSession()
@@ -64,7 +65,7 @@ func portFwdConnDial(proto, dstPort uint32) (net.Conn, error) {
 }
 
 func portFwdDial(ctx context.Context, payload *mmsp.Payload) error {
-	if !mgmtAuth(payload) {
+	if !auth.AgentMgmtAuth(payload) {
 		portFwdDisabled(payload)
 		return nil
 	}
