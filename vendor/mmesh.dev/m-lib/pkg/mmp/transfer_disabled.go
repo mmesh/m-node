@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
-	"mmesh.dev/m-lib/pkg/cli/output"
+	"mmesh.dev/m-lib/pkg/mmp/cli"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
@@ -28,7 +28,7 @@ func transferUnavailable() {
 	alert := fmt.Sprintf("\n%s%s%s", colors.Black("["), colors.Red(text), colors.Black("]"))
 	fmt.Println(alert)
 
-	output.Disconnected()
+	cli.Disconnected()
 
 	os.Exit(0)
 }

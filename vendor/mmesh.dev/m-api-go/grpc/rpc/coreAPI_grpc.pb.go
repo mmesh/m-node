@@ -11,6 +11,7 @@ import (
 	status "mmesh.dev/m-api-go/grpc/common/status"
 	routing "mmesh.dev/m-api-go/grpc/network/mmnp/routing"
 	account "mmesh.dev/m-api-go/grpc/resources/account"
+	events "mmesh.dev/m-api-go/grpc/resources/events"
 	iam "mmesh.dev/m-api-go/grpc/resources/iam"
 	metrics "mmesh.dev/m-api-go/grpc/resources/metrics"
 	network "mmesh.dev/m-api-go/grpc/resources/network"
@@ -90,7 +91,7 @@ type CoreAPIClient interface {
 	// nodes
 	CreateGenericNode(ctx context.Context, in *network.NodeInstanceRequest, opts ...grpc.CallOption) (*network.NodeInstance, error)
 	CreateKubernetesGateway(ctx context.Context, in *network.NodeInstanceRequest, opts ...grpc.CallOption) (*network.NodeInstance, error)
-	GetNodeInstallLinuxWebhook(ctx context.Context, in *network.NodeInstanceRequest, opts ...grpc.CallOption) (*network.NodeInstance, error)
+	CreateNodeInstallLinuxWebhook(ctx context.Context, in *network.NodeInstanceRequest, opts ...grpc.CallOption) (*network.NodeInstance, error)
 	ListNodeMMIDs(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*network.MMIDs, error)
 	ListNodes(ctx context.Context, in *network.ListNodesRequest, opts ...grpc.CallOption) (*network.Nodes, error)
 	GetNode(ctx context.Context, in *network.Node, opts ...grpc.CallOption) (*network.Node, error)
@@ -115,7 +116,16 @@ type CoreAPIClient interface {
 	GetOperation(ctx context.Context, in *workflow.Operation, opts ...grpc.CallOption) (*workflow.Operation, error)
 	// rpc SetOperation (operation.Operation) returns (status.StatusResponse) {}
 	DeleteOperation(ctx context.Context, in *workflow.Operation, opts ...grpc.CallOption) (*status.StatusResponse, error)
+	// alerts
+	ListAlerts(ctx context.Context, in *events.ListAlertsRequest, opts ...grpc.CallOption) (*events.Alerts, error)
+	GetAlert(ctx context.Context, in *events.Alert, opts ...grpc.CallOption) (*events.Alert, error)
+	// rpc SetAlert (events.Alert) returns (events.Alert) {}
+	NewAlertComment(ctx context.Context, in *events.AlertNewCommentRequest, opts ...grpc.CallOption) (*events.Alert, error)
+	DeleteAlert(ctx context.Context, in *events.Alert, opts ...grpc.CallOption) (*status.StatusResponse, error)
+	// metrics
 	MetricsQuery(ctx context.Context, in *metrics.InfluxQuery, opts ...grpc.CallOption) (*metrics.InfluxQueryResult, error)
+	// data queries
+	DataQuery(ctx context.Context, in *resource.MongoQuery, opts ...grpc.CallOption) (*resource.MongoQueryResult, error)
 }
 
 type coreAPIClient struct {
@@ -549,9 +559,9 @@ func (c *coreAPIClient) CreateKubernetesGateway(ctx context.Context, in *network
 	return out, nil
 }
 
-func (c *coreAPIClient) GetNodeInstallLinuxWebhook(ctx context.Context, in *network.NodeInstanceRequest, opts ...grpc.CallOption) (*network.NodeInstance, error) {
+func (c *coreAPIClient) CreateNodeInstallLinuxWebhook(ctx context.Context, in *network.NodeInstanceRequest, opts ...grpc.CallOption) (*network.NodeInstance, error) {
 	out := new(network.NodeInstance)
-	err := c.cc.Invoke(ctx, "/api.CoreAPI/GetNodeInstallLinuxWebhook", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.CoreAPI/CreateNodeInstallLinuxWebhook", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -720,9 +730,54 @@ func (c *coreAPIClient) DeleteOperation(ctx context.Context, in *workflow.Operat
 	return out, nil
 }
 
+func (c *coreAPIClient) ListAlerts(ctx context.Context, in *events.ListAlertsRequest, opts ...grpc.CallOption) (*events.Alerts, error) {
+	out := new(events.Alerts)
+	err := c.cc.Invoke(ctx, "/api.CoreAPI/ListAlerts", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *coreAPIClient) GetAlert(ctx context.Context, in *events.Alert, opts ...grpc.CallOption) (*events.Alert, error) {
+	out := new(events.Alert)
+	err := c.cc.Invoke(ctx, "/api.CoreAPI/GetAlert", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *coreAPIClient) NewAlertComment(ctx context.Context, in *events.AlertNewCommentRequest, opts ...grpc.CallOption) (*events.Alert, error) {
+	out := new(events.Alert)
+	err := c.cc.Invoke(ctx, "/api.CoreAPI/NewAlertComment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *coreAPIClient) DeleteAlert(ctx context.Context, in *events.Alert, opts ...grpc.CallOption) (*status.StatusResponse, error) {
+	out := new(status.StatusResponse)
+	err := c.cc.Invoke(ctx, "/api.CoreAPI/DeleteAlert", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *coreAPIClient) MetricsQuery(ctx context.Context, in *metrics.InfluxQuery, opts ...grpc.CallOption) (*metrics.InfluxQueryResult, error) {
 	out := new(metrics.InfluxQueryResult)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/MetricsQuery", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *coreAPIClient) DataQuery(ctx context.Context, in *resource.MongoQuery, opts ...grpc.CallOption) (*resource.MongoQueryResult, error) {
+	out := new(resource.MongoQueryResult)
+	err := c.cc.Invoke(ctx, "/api.CoreAPI/DataQuery", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -793,7 +848,7 @@ type CoreAPIServer interface {
 	// nodes
 	CreateGenericNode(context.Context, *network.NodeInstanceRequest) (*network.NodeInstance, error)
 	CreateKubernetesGateway(context.Context, *network.NodeInstanceRequest) (*network.NodeInstance, error)
-	GetNodeInstallLinuxWebhook(context.Context, *network.NodeInstanceRequest) (*network.NodeInstance, error)
+	CreateNodeInstallLinuxWebhook(context.Context, *network.NodeInstanceRequest) (*network.NodeInstance, error)
 	ListNodeMMIDs(context.Context, *account.Account) (*network.MMIDs, error)
 	ListNodes(context.Context, *network.ListNodesRequest) (*network.Nodes, error)
 	GetNode(context.Context, *network.Node) (*network.Node, error)
@@ -818,7 +873,16 @@ type CoreAPIServer interface {
 	GetOperation(context.Context, *workflow.Operation) (*workflow.Operation, error)
 	// rpc SetOperation (operation.Operation) returns (status.StatusResponse) {}
 	DeleteOperation(context.Context, *workflow.Operation) (*status.StatusResponse, error)
+	// alerts
+	ListAlerts(context.Context, *events.ListAlertsRequest) (*events.Alerts, error)
+	GetAlert(context.Context, *events.Alert) (*events.Alert, error)
+	// rpc SetAlert (events.Alert) returns (events.Alert) {}
+	NewAlertComment(context.Context, *events.AlertNewCommentRequest) (*events.Alert, error)
+	DeleteAlert(context.Context, *events.Alert) (*status.StatusResponse, error)
+	// metrics
 	MetricsQuery(context.Context, *metrics.InfluxQuery) (*metrics.InfluxQueryResult, error)
+	// data queries
+	DataQuery(context.Context, *resource.MongoQuery) (*resource.MongoQueryResult, error)
 	mustEmbedUnimplementedCoreAPIServer()
 }
 
@@ -967,8 +1031,8 @@ func (UnimplementedCoreAPIServer) CreateGenericNode(context.Context, *network.No
 func (UnimplementedCoreAPIServer) CreateKubernetesGateway(context.Context, *network.NodeInstanceRequest) (*network.NodeInstance, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method CreateKubernetesGateway not implemented")
 }
-func (UnimplementedCoreAPIServer) GetNodeInstallLinuxWebhook(context.Context, *network.NodeInstanceRequest) (*network.NodeInstance, error) {
-	return nil, status1.Errorf(codes.Unimplemented, "method GetNodeInstallLinuxWebhook not implemented")
+func (UnimplementedCoreAPIServer) CreateNodeInstallLinuxWebhook(context.Context, *network.NodeInstanceRequest) (*network.NodeInstance, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method CreateNodeInstallLinuxWebhook not implemented")
 }
 func (UnimplementedCoreAPIServer) ListNodeMMIDs(context.Context, *account.Account) (*network.MMIDs, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method ListNodeMMIDs not implemented")
@@ -1024,8 +1088,23 @@ func (UnimplementedCoreAPIServer) GetOperation(context.Context, *workflow.Operat
 func (UnimplementedCoreAPIServer) DeleteOperation(context.Context, *workflow.Operation) (*status.StatusResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method DeleteOperation not implemented")
 }
+func (UnimplementedCoreAPIServer) ListAlerts(context.Context, *events.ListAlertsRequest) (*events.Alerts, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ListAlerts not implemented")
+}
+func (UnimplementedCoreAPIServer) GetAlert(context.Context, *events.Alert) (*events.Alert, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method GetAlert not implemented")
+}
+func (UnimplementedCoreAPIServer) NewAlertComment(context.Context, *events.AlertNewCommentRequest) (*events.Alert, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method NewAlertComment not implemented")
+}
+func (UnimplementedCoreAPIServer) DeleteAlert(context.Context, *events.Alert) (*status.StatusResponse, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method DeleteAlert not implemented")
+}
 func (UnimplementedCoreAPIServer) MetricsQuery(context.Context, *metrics.InfluxQuery) (*metrics.InfluxQueryResult, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method MetricsQuery not implemented")
+}
+func (UnimplementedCoreAPIServer) DataQuery(context.Context, *resource.MongoQuery) (*resource.MongoQueryResult, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method DataQuery not implemented")
 }
 func (UnimplementedCoreAPIServer) mustEmbedUnimplementedCoreAPIServer() {}
 
@@ -1886,20 +1965,20 @@ func _CoreAPI_CreateKubernetesGateway_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CoreAPI_GetNodeInstallLinuxWebhook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _CoreAPI_CreateNodeInstallLinuxWebhook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(network.NodeInstanceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CoreAPIServer).GetNodeInstallLinuxWebhook(ctx, in)
+		return srv.(CoreAPIServer).CreateNodeInstallLinuxWebhook(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.CoreAPI/GetNodeInstallLinuxWebhook",
+		FullMethod: "/api.CoreAPI/CreateNodeInstallLinuxWebhook",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).GetNodeInstallLinuxWebhook(ctx, req.(*network.NodeInstanceRequest))
+		return srv.(CoreAPIServer).CreateNodeInstallLinuxWebhook(ctx, req.(*network.NodeInstanceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2228,6 +2307,78 @@ func _CoreAPI_DeleteOperation_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CoreAPI_ListAlerts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(events.ListAlertsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoreAPIServer).ListAlerts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.CoreAPI/ListAlerts",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoreAPIServer).ListAlerts(ctx, req.(*events.ListAlertsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CoreAPI_GetAlert_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(events.Alert)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoreAPIServer).GetAlert(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.CoreAPI/GetAlert",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoreAPIServer).GetAlert(ctx, req.(*events.Alert))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CoreAPI_NewAlertComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(events.AlertNewCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoreAPIServer).NewAlertComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.CoreAPI/NewAlertComment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoreAPIServer).NewAlertComment(ctx, req.(*events.AlertNewCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CoreAPI_DeleteAlert_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(events.Alert)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoreAPIServer).DeleteAlert(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.CoreAPI/DeleteAlert",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoreAPIServer).DeleteAlert(ctx, req.(*events.Alert))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _CoreAPI_MetricsQuery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(metrics.InfluxQuery)
 	if err := dec(in); err != nil {
@@ -2242,6 +2393,24 @@ func _CoreAPI_MetricsQuery_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CoreAPIServer).MetricsQuery(ctx, req.(*metrics.InfluxQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CoreAPI_DataQuery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(resource.MongoQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoreAPIServer).DataQuery(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.CoreAPI/DataQuery",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoreAPIServer).DataQuery(ctx, req.(*resource.MongoQuery))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2442,8 +2611,8 @@ var CoreAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _CoreAPI_CreateKubernetesGateway_Handler,
 		},
 		{
-			MethodName: "GetNodeInstallLinuxWebhook",
-			Handler:    _CoreAPI_GetNodeInstallLinuxWebhook_Handler,
+			MethodName: "CreateNodeInstallLinuxWebhook",
+			Handler:    _CoreAPI_CreateNodeInstallLinuxWebhook_Handler,
 		},
 		{
 			MethodName: "ListNodeMMIDs",
@@ -2518,8 +2687,28 @@ var CoreAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _CoreAPI_DeleteOperation_Handler,
 		},
 		{
+			MethodName: "ListAlerts",
+			Handler:    _CoreAPI_ListAlerts_Handler,
+		},
+		{
+			MethodName: "GetAlert",
+			Handler:    _CoreAPI_GetAlert_Handler,
+		},
+		{
+			MethodName: "NewAlertComment",
+			Handler:    _CoreAPI_NewAlertComment_Handler,
+		},
+		{
+			MethodName: "DeleteAlert",
+			Handler:    _CoreAPI_DeleteAlert_Handler,
+		},
+		{
 			MethodName: "MetricsQuery",
 			Handler:    _CoreAPI_MetricsQuery_Handler,
+		},
+		{
+			MethodName: "DataQuery",
+			Handler:    _CoreAPI_DataQuery_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

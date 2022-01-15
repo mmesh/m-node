@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"mmesh.dev/m-api-go/grpc/common/datetime"
-	"mmesh.dev/m-lib/pkg/cli/status"
 )
 
 func GetDateTime(t *datetime.DateTime) (int64, error) {
@@ -23,11 +22,11 @@ func GetDateTime(t *datetime.DateTime) (int64, error) {
 	return time.Date(y, m, d, hr, min, 0, 0, loc).Unix(), nil
 }
 
-func ParseTimestamp(s string) time.Time {
+func ParseTimestamp(s string) (time.Time, error) {
 	tm, err := strconv.ParseInt(s, 10, 64)
 	if err != nil {
-		status.Error(err, "Unable to parse timestamp")
+		return time.Time{}, err
 	}
 
-	return time.Unix(tm, 0)
+	return time.Unix(tm, 0), nil
 }

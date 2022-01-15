@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
+	"mmesh.dev/m-api-go/grpc/network/mmsp/command"
 	"mmesh.dev/m-lib/pkg/mmp/streaming"
 	"mmesh.dev/m-lib/pkg/mmp/term"
 	"mmesh.dev/m-lib/pkg/xlog"
@@ -20,10 +21,22 @@ func shellExec(ctx context.Context, p *mmsp.Payload) {
 	}
 
 	switch p.Command.CommandType {
-	case commandTypeShell:
+	case command.CommandType_SHELL:
 		xlog.Debugf("Received shell exec request from %s", p.SrcID)
 		runShell(p)
 	}
+}
+
+func shellExecDisabled(payload *mmsp.Payload) {
+	mmID := viper.GetString("mm.id")
+
+	p := &mmsp.Payload{
+		SrcID:       mmID,
+		DstID:       payload.SrcID,
+		PayloadType: mmsp.PayloadType_COMMAND_SHELL_DISABLED,
+	}
+
+	TxControlQueue <- p
 }
 
 func runShell(payload *mmsp.Payload) {
@@ -86,4 +99,12 @@ func runShell(payload *mmsp.Payload) {
 	// Finish cli session
 	p := NewShellExit(mmID, payload)
 	TxControlQueue <- p
+}
+
+func NewShellExit(srcID string, p *mmsp.Payload) *mmsp.Payload {
+	return &mmsp.Payload{
+		SrcID:       srcID,
+		DstID:       p.SrcID,
+		PayloadType: mmsp.PayloadType_COMMAND_SHELL_EXIT,
+	}
 }

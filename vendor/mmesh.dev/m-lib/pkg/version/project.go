@@ -3,7 +3,7 @@ package version
 const (
 	NAME               = "mmesh"
 	SHORTNAME          = "mmesh"
-	PLATFORM_NAME      = "mmesh management platform"
+	PLATFORM_NAME      = "mmesh cloud integration platform"
 	PLATFORM_SHORTNAME = "mmesh platform"
 
 	NODE_NAME      = "mmesh-node"

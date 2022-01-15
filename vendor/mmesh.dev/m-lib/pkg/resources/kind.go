@@ -24,6 +24,7 @@ var ObjectKindMap = map[resource.Kind]string{
 	resource.Kind_VRF:            "VRF",
 	resource.Kind_NODE:           "Node",
 	resource.Kind_ROUTING_TABLE:  "RoutingTable",
+	resource.Kind_ALERT:          "Alert",
 
 	// billingAPI
 	// resource.Kind_CUSTOMER:         "Customer", // stripe customer
@@ -45,11 +46,15 @@ var ObjectKindMap = map[resource.Kind]string{
 	// resource.Kind_ITSM_INCIDENT: "Incident",
 	// resource.Kind_ITSM_REQUEST:  "Request",
 
-	resource.Kind_CLOUD_COMPUTE_INSTANCE:   "ComputeInstance",
-	resource.Kind_CLOUD_APP:                "CloudApp",
+	resource.Kind_CLOUD_COMPUTE_INSTANCE: "ComputeInstance",
+	// resource.Kind_CLOUD_APP:                "CloudApp",
 	resource.Kind_CLOUD_KUBERNETES_CLUSTER: "KubernetesCluster",
-	resource.Kind_CRM_OPPORTUNITY:          "Opportunity",
-	resource.Kind_PRO_SERVICE_CONTRACT:     "ServiceContract",
+
+	resource.Kind_CRM_OPPORTUNITY: "Opportunity",
+	// resource.Kind_PRO_SERVICE_CONTRACT:     "ServiceContract",
+
+	resource.Kind_SYS_DATABASE:   "Database",
+	resource.Kind_SYS_DATASOURCE: "DataSource",
 }
 
 var ObjSetKindMap = map[resource.Kind]string{
@@ -74,6 +79,7 @@ var ObjSetKindMap = map[resource.Kind]string{
 	resource.Kind_VRF:            "vrfs",
 	resource.Kind_NODE:           "nodes",
 	resource.Kind_ROUTING_TABLE:  "rt",
+	resource.Kind_ALERT:          "alerts",
 
 	// billingAPI
 	// resource.Kind_CUSTOMER:         "customers", // stripe customer
@@ -95,9 +101,13 @@ var ObjSetKindMap = map[resource.Kind]string{
 	// resource.Kind_ITSM_INCIDENT: "itsm:incidents",
 	// resource.Kind_ITSM_REQUEST:  "itsm:requests",
 
-	resource.Kind_CLOUD_COMPUTE_INSTANCE:   "services:cloud:computeInstances",
-	resource.Kind_CLOUD_APP:                "services:cloud:apps",
-	resource.Kind_CLOUD_KUBERNETES_CLUSTER: "services:cloud:k8sClusters",
-	resource.Kind_CRM_OPPORTUNITY:          "services:crm:opportunities",
-	resource.Kind_PRO_SERVICE_CONTRACT:     "services:pro:serviceContracts",
+	resource.Kind_CLOUD_COMPUTE_INSTANCE: "cloud:computeInstances",
+	// resource.Kind_CLOUD_APP:                "cloud:apps",
+	resource.Kind_CLOUD_KUBERNETES_CLUSTER: "cloud:k8sClusters",
+
+	resource.Kind_CRM_OPPORTUNITY: "services:crm:opportunities",
+	// resource.Kind_PRO_SERVICE_CONTRACT:     "services:pro:serviceContracts",
+
+	resource.Kind_SYS_DATABASE:   "sys:databases",
+	resource.Kind_SYS_DATASOURCE: "sys:dataSources",
 }

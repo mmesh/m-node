@@ -13,7 +13,7 @@ import (
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-api-go/grpc/resources/itsm"
 	"mmesh.dev/m-api-go/grpc/resources/messaging"
-	"mmesh.dev/m-lib/pkg/cli/output"
+	"mmesh.dev/m-lib/pkg/mmp/cli"
 	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
@@ -109,7 +109,7 @@ func newChatUserInput(srcID string, p *mmsp.Payload) *mmsp.Payload {
 
 func (a *API) chatReadOperatorOutput(ctx context.Context, p *mmsp.Payload) error {
 	if len(p.ChatMessage.Payload) > 0 {
-		prefix := tview.TranslateANSI(output.ChatUserRemote(p.ChatMessage.Timestamp, p.ChatMessage.OperatorNickname))
+		prefix := tview.TranslateANSI(cli.ChatUserRemote(p.ChatMessage.Timestamp, p.ChatMessage.OperatorNickname))
 		msg := fmt.Sprintf("[silver::b]%s", string(p.ChatMessage.Payload))
 		fmt.Fprintf(View.conversation, "%s %s\n", prefix, msg)
 	}
@@ -140,7 +140,7 @@ func (a *API) chatWriteUserInput(ctx context.Context, payload *mmsp.Payload) {
 
 				a.TxControlQueue <- p
 
-				prefix := tview.TranslateANSI(output.ChatUserLocal(tm, payload.ChatMessage.UserNickname))
+				prefix := tview.TranslateANSI(cli.ChatUserLocal(tm, payload.ChatMessage.UserNickname))
 				msg = fmt.Sprintf("[silver::b]%s", msg)
 				fmt.Fprintf(View.conversation, "%s %s\n", prefix, msg)
 			case <-closeUserInputCh:
@@ -165,8 +165,8 @@ func chatExit() {
 		View.Stop()
 	}
 
-	// output.EndOfTransmission()
-	output.Disconnected()
+	// cli.EndOfTransmission()
+	cli.Disconnected()
 
 	cliStdinActive = false
 
@@ -179,7 +179,7 @@ func chatUnavailable() {
 	alert := fmt.Sprintf("%s%s%s", colors.Black("["), colors.Red(text), colors.Black("]"))
 	fmt.Println(alert)
 
-	output.Disconnected()
+	cli.Disconnected()
 
 	os.Exit(0)
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/mgutz/ansi"
+	"mmesh.dev/m-lib/pkg/utils/colors"
 )
 
 const (
@@ -29,9 +30,9 @@ var msgPrefixes = map[int]string{
 }
 
 var msgColorFuncs = map[int]func(string) string{
-	TRACE: ansi.ColorFunc("white+bh:black"),
-	DEBUG: ansi.ColorFunc("white+bh:cyan"),
-	INFO:  ansi.ColorFunc("white+bh:blue"),
+	TRACE: ansi.ColorFunc("white+bh:blue"),
+	DEBUG: ansi.ColorFunc("white+bh:blue+h"),
+	INFO:  ansi.ColorFunc("white+bh:cyan"),
 	OK:    ansi.ColorFunc("white+bh:green"),
 	FAIL:  ansi.ColorFunc("white+bh:red"),
 	WARN:  ansi.ColorFunc("white+bh:yellow"),
@@ -40,20 +41,23 @@ var msgColorFuncs = map[int]func(string) string{
 }
 
 func msgLevelPrefix(level int) string {
-	prefix := "[" + msgPrefixes[level] + "]"
+	// prefix := "[" + msgPrefixes[level] + "]"
+	prefix := "  "
 
 	return msgColorFuncs[level](prefix)
 }
 
 func msg(level int, args ...interface{}) {
-	all := append([]interface{}{msgLevelPrefix(level)}, args...)
+	all := append([]interface{}{msgLevelPrefix(level)}, colors.Black(fmt.Sprintf("%v", args...)))
 	fmt.Println()
 	fmt.Println(all...)
+	fmt.Println()
 }
 
 func msgf(level int, format string, args ...interface{}) {
 	fmt.Println()
-	fmt.Println(msgLevelPrefix(level), fmt.Sprintf(format, args...))
+	fmt.Println(msgLevelPrefix(level), colors.Black(fmt.Sprintf(format, args...)))
+	fmt.Println()
 }
 
 func Trace(args ...interface{}) {

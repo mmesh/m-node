@@ -51,7 +51,11 @@ type ProviderAPIClient interface {
 	ListAccounts(ctx context.Context, in *account.ListAccountsRequest, opts ...grpc.CallOption) (*account.Accounts, error)
 	GetAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Account, error)
 	GetAccountUsage(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Usage, error)
-	GetAccountTraffic(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Traffic, error)
+	//   rpc GetAccountTraffic(account.Account) returns (account.Traffic) {
+	//     option (google.api.http) = {
+	//       get: "/api/v1/accounts/{accountID}:traffic"
+	//     };
+	//   }
 	GetAccountStats(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Stats, error)
 	UpdateAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Account, error)
 	DeleteAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*status.StatusResponse, error)
@@ -257,15 +261,6 @@ func (c *providerAPIClient) GetAccountUsage(ctx context.Context, in *account.Acc
 	return out, nil
 }
 
-func (c *providerAPIClient) GetAccountTraffic(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Traffic, error) {
-	out := new(account.Traffic)
-	err := c.cc.Invoke(ctx, "/api.ProviderAPI/GetAccountTraffic", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *providerAPIClient) GetAccountStats(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Stats, error) {
 	out := new(account.Stats)
 	err := c.cc.Invoke(ctx, "/api.ProviderAPI/GetAccountStats", in, out, opts...)
@@ -430,7 +425,11 @@ type ProviderAPIServer interface {
 	ListAccounts(context.Context, *account.ListAccountsRequest) (*account.Accounts, error)
 	GetAccount(context.Context, *account.Account) (*account.Account, error)
 	GetAccountUsage(context.Context, *account.Account) (*account.Usage, error)
-	GetAccountTraffic(context.Context, *account.Account) (*account.Traffic, error)
+	//   rpc GetAccountTraffic(account.Account) returns (account.Traffic) {
+	//     option (google.api.http) = {
+	//       get: "/api/v1/accounts/{accountID}:traffic"
+	//     };
+	//   }
 	GetAccountStats(context.Context, *account.Account) (*account.Stats, error)
 	UpdateAccount(context.Context, *account.Account) (*account.Account, error)
 	DeleteAccount(context.Context, *account.Account) (*status.StatusResponse, error)
@@ -512,9 +511,6 @@ func (UnimplementedProviderAPIServer) GetAccount(context.Context, *account.Accou
 }
 func (UnimplementedProviderAPIServer) GetAccountUsage(context.Context, *account.Account) (*account.Usage, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method GetAccountUsage not implemented")
-}
-func (UnimplementedProviderAPIServer) GetAccountTraffic(context.Context, *account.Account) (*account.Traffic, error) {
-	return nil, status1.Errorf(codes.Unimplemented, "method GetAccountTraffic not implemented")
 }
 func (UnimplementedProviderAPIServer) GetAccountStats(context.Context, *account.Account) (*account.Stats, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method GetAccountStats not implemented")
@@ -934,24 +930,6 @@ func _ProviderAPI_GetAccountUsage_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProviderAPI_GetAccountTraffic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(account.Account)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProviderAPIServer).GetAccountTraffic(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.ProviderAPI/GetAccountTraffic",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProviderAPIServer).GetAccountTraffic(ctx, req.(*account.Account))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _ProviderAPI_GetAccountStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(account.Account)
 	if err := dec(in); err != nil {
@@ -1308,10 +1286,6 @@ var ProviderAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAccountUsage",
 			Handler:    _ProviderAPI_GetAccountUsage_Handler,
-		},
-		{
-			MethodName: "GetAccountTraffic",
-			Handler:    _ProviderAPI_GetAccountTraffic_Handler,
 		},
 		{
 			MethodName: "GetAccountStats",
