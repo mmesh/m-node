@@ -1,5 +1,6 @@
 package k8s
 
+/*
 import (
 	"fmt"
 
@@ -99,3 +100,4 @@ func (c *controller) managePodEvent(p *v1.Pod, evt eventType) error {
 
 	return nil
 }
+*/

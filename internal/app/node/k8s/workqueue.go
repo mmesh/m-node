@@ -3,7 +3,7 @@ package k8s
 import (
 	"time"
 
-	//"k8s.io/klog"
+	// "k8s.io/klog"
 	v1 "k8s.io/api/core/v1"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/fields"
@@ -50,7 +50,7 @@ func (c *controller) processNextItem() bool {
 	defer c.queue.Done(objEvt)
 
 	// Invoke the method containing the business logic
-	//err := c.syncToStdout(key.(string))
+	// err := c.syncToStdout(key.(string))
 
 	var err error
 	oevt := objEvt.(*objEvent)
@@ -58,7 +58,7 @@ func (c *controller) processNextItem() bool {
 	case *v1.Service:
 		err = c.manageSvcEvent(o, oevt.evt)
 	case *v1.Pod:
-		err = c.managePodEvent(o, oevt.evt)
+		// err = c.managePodEvent(o, oevt.evt)
 	}
 
 	// Handle the error if something went wrong during the execution of the business logic
@@ -113,8 +113,8 @@ func (c *controller) handleErr(err error, objEvt interface{}) {
 
 	c.queue.Forget(objEvt)
 	// Report to an external entity that, even after several retries, we could not successfully process this key
-	//runtime.HandleError(err)
-	//runtime.Hanror(err)
+	// runtime.HandleError(err)
+	// runtime.Hanror(err)
 	xlog.Errorf("Dropping object %s out of the queue: %v", objEvt.(*objEvent).key, err)
 }
 

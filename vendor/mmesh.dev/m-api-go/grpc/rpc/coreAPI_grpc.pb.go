@@ -31,7 +31,6 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CoreAPIClient interface {
-	ListResources(ctx context.Context, in *resource.Resource, opts ...grpc.CallOption) (*resource.Resources, error)
 	// iam
 	ListIAMPermissions(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*iam.Permissions, error)
 	CreateUser(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
@@ -134,15 +133,6 @@ type coreAPIClient struct {
 
 func NewCoreAPIClient(cc grpc.ClientConnInterface) CoreAPIClient {
 	return &coreAPIClient{cc}
-}
-
-func (c *coreAPIClient) ListResources(ctx context.Context, in *resource.Resource, opts ...grpc.CallOption) (*resource.Resources, error) {
-	out := new(resource.Resources)
-	err := c.cc.Invoke(ctx, "/api.CoreAPI/ListResources", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *coreAPIClient) ListIAMPermissions(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*iam.Permissions, error) {
@@ -788,7 +778,6 @@ func (c *coreAPIClient) DataQuery(ctx context.Context, in *resource.MongoQuery, 
 // All implementations must embed UnimplementedCoreAPIServer
 // for forward compatibility
 type CoreAPIServer interface {
-	ListResources(context.Context, *resource.Resource) (*resource.Resources, error)
 	// iam
 	ListIAMPermissions(context.Context, *empty.Empty) (*iam.Permissions, error)
 	CreateUser(context.Context, *iam.User) (*iam.User, error)
@@ -890,9 +879,6 @@ type CoreAPIServer interface {
 type UnimplementedCoreAPIServer struct {
 }
 
-func (UnimplementedCoreAPIServer) ListResources(context.Context, *resource.Resource) (*resource.Resources, error) {
-	return nil, status1.Errorf(codes.Unimplemented, "method ListResources not implemented")
-}
 func (UnimplementedCoreAPIServer) ListIAMPermissions(context.Context, *empty.Empty) (*iam.Permissions, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method ListIAMPermissions not implemented")
 }
@@ -1117,24 +1103,6 @@ type UnsafeCoreAPIServer interface {
 
 func RegisterCoreAPIServer(s grpc.ServiceRegistrar, srv CoreAPIServer) {
 	s.RegisterService(&CoreAPI_ServiceDesc, srv)
-}
-
-func _CoreAPI_ListResources_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(resource.Resource)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CoreAPIServer).ListResources(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.CoreAPI/ListResources",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).ListResources(ctx, req.(*resource.Resource))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _CoreAPI_ListIAMPermissions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -2422,10 +2390,6 @@ var CoreAPI_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "api.CoreAPI",
 	HandlerType: (*CoreAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "ListResources",
-			Handler:    _CoreAPI_ListResources_Handler,
-		},
 		{
 			MethodName: "ListIAMPermissions",
 			Handler:    _CoreAPI_ListIAMPermissions_Handler,
