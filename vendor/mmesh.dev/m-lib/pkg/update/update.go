@@ -117,6 +117,10 @@ func Update(app string) error {
 func getURL(file string) string {
 	goos := runtime.GOOS
 	goarch := runtime.GOARCH
+	
+	if goarch == "arm" {
+		goarch = "arm_6"
+	}
 
 	binBranch := viper.GetString("version.branch")
 	if len(binBranch) == 0 {
