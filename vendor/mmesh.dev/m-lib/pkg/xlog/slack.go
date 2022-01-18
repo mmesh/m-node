@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/nlopes/slack"
+	"github.com/slack-go/slack"
 	"mmesh.dev/m-lib/pkg/errors"
 )
 
