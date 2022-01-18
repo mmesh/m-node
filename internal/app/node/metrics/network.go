@@ -104,6 +104,7 @@ func UpdateNetworkMetric(addr string, tx, rx uint64, droppedPkt bool) {
 	networkMetrics.update(addr, tx, rx, droppedPkt)
 }
 
+/*
 func GetNetworkMetrics() *metrics.NetworkMetrics {
 	if networkMetrics == nil {
 		networkMetrics = newNetworkMetricsMap()
@@ -121,6 +122,7 @@ func GetNetworkTraffic() map[string]*metrics.NetworkMetrics {
 
 	return networkMetrics.networkTraffic
 }
+*/
 
 // func GetNetDevStats() *metrics.NetworkMetrics {
 // 	if networkMetrics == nil {

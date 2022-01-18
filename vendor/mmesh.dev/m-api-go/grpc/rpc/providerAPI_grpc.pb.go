@@ -11,7 +11,6 @@ import (
 	account "mmesh.dev/m-api-go/grpc/resources/account"
 	billing "mmesh.dev/m-api-go/grpc/resources/billing"
 	controller "mmesh.dev/m-api-go/grpc/resources/controller"
-	iam "mmesh.dev/m-api-go/grpc/resources/iam"
 	auth "mmesh.dev/m-api-go/grpc/resources/iam/auth"
 	location "mmesh.dev/m-api-go/grpc/resources/location"
 	webhook "mmesh.dev/m-api-go/grpc/resources/webhook"
@@ -68,9 +67,6 @@ type ProviderAPIClient interface {
 	CancelAccountService(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Account, error)
 	GetAccountCustomer(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*billing.Customer, error)
 	SetAccountCustomer(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*billing.Customer, error)
-	GetAccountAdmin(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*iam.User, error)
-	SetAccountAdmin(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
-	ResetAccountAdminPassword(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*status.StatusResponse, error)
 }
 
 type providerAPIClient struct {
@@ -369,33 +365,6 @@ func (c *providerAPIClient) SetAccountCustomer(ctx context.Context, in *account.
 	return out, nil
 }
 
-func (c *providerAPIClient) GetAccountAdmin(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*iam.User, error) {
-	out := new(iam.User)
-	err := c.cc.Invoke(ctx, "/api.ProviderAPI/GetAccountAdmin", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *providerAPIClient) SetAccountAdmin(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error) {
-	out := new(iam.User)
-	err := c.cc.Invoke(ctx, "/api.ProviderAPI/SetAccountAdmin", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *providerAPIClient) ResetAccountAdminPassword(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*status.StatusResponse, error) {
-	out := new(status.StatusResponse)
-	err := c.cc.Invoke(ctx, "/api.ProviderAPI/ResetAccountAdminPassword", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // ProviderAPIServer is the server API for ProviderAPI service.
 // All implementations must embed UnimplementedProviderAPIServer
 // for forward compatibility
@@ -442,9 +411,6 @@ type ProviderAPIServer interface {
 	CancelAccountService(context.Context, *account.Account) (*account.Account, error)
 	GetAccountCustomer(context.Context, *account.Account) (*billing.Customer, error)
 	SetAccountCustomer(context.Context, *account.Account) (*billing.Customer, error)
-	GetAccountAdmin(context.Context, *account.Account) (*iam.User, error)
-	SetAccountAdmin(context.Context, *iam.User) (*iam.User, error)
-	ResetAccountAdminPassword(context.Context, *account.Account) (*status.StatusResponse, error)
 	mustEmbedUnimplementedProviderAPIServer()
 }
 
@@ -547,15 +513,6 @@ func (UnimplementedProviderAPIServer) GetAccountCustomer(context.Context, *accou
 }
 func (UnimplementedProviderAPIServer) SetAccountCustomer(context.Context, *account.Account) (*billing.Customer, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method SetAccountCustomer not implemented")
-}
-func (UnimplementedProviderAPIServer) GetAccountAdmin(context.Context, *account.Account) (*iam.User, error) {
-	return nil, status1.Errorf(codes.Unimplemented, "method GetAccountAdmin not implemented")
-}
-func (UnimplementedProviderAPIServer) SetAccountAdmin(context.Context, *iam.User) (*iam.User, error) {
-	return nil, status1.Errorf(codes.Unimplemented, "method SetAccountAdmin not implemented")
-}
-func (UnimplementedProviderAPIServer) ResetAccountAdminPassword(context.Context, *account.Account) (*status.StatusResponse, error) {
-	return nil, status1.Errorf(codes.Unimplemented, "method ResetAccountAdminPassword not implemented")
 }
 func (UnimplementedProviderAPIServer) mustEmbedUnimplementedProviderAPIServer() {}
 
@@ -1146,60 +1103,6 @@ func _ProviderAPI_SetAccountCustomer_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProviderAPI_GetAccountAdmin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(account.Account)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProviderAPIServer).GetAccountAdmin(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.ProviderAPI/GetAccountAdmin",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProviderAPIServer).GetAccountAdmin(ctx, req.(*account.Account))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProviderAPI_SetAccountAdmin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(iam.User)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProviderAPIServer).SetAccountAdmin(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.ProviderAPI/SetAccountAdmin",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProviderAPIServer).SetAccountAdmin(ctx, req.(*iam.User))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProviderAPI_ResetAccountAdminPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(account.Account)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProviderAPIServer).ResetAccountAdminPassword(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.ProviderAPI/ResetAccountAdminPassword",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProviderAPIServer).ResetAccountAdminPassword(ctx, req.(*account.Account))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // ProviderAPI_ServiceDesc is the grpc.ServiceDesc for ProviderAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1334,18 +1237,6 @@ var ProviderAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetAccountCustomer",
 			Handler:    _ProviderAPI_SetAccountCustomer_Handler,
-		},
-		{
-			MethodName: "GetAccountAdmin",
-			Handler:    _ProviderAPI_GetAccountAdmin_Handler,
-		},
-		{
-			MethodName: "SetAccountAdmin",
-			Handler:    _ProviderAPI_SetAccountAdmin_Handler,
-		},
-		{
-			MethodName: "ResetAccountAdminPassword",
-			Handler:    _ProviderAPI_ResetAccountAdminPassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

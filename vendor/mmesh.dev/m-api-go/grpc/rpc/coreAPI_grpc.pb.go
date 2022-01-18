@@ -96,7 +96,7 @@ type CoreAPIClient interface {
 	GetNode(ctx context.Context, in *network.Node, opts ...grpc.CallOption) (*network.Node, error)
 	// rpc SetNode (network.Node) returns (network.Node) {}
 	DeleteNode(ctx context.Context, in *network.Node, opts ...grpc.CallOption) (*status.StatusResponse, error)
-	ResetNodeNetworkTraffic(ctx context.Context, in *network.Node, opts ...grpc.CallOption) (*network.Node, error)
+	// rpc ResetNodeNetworkTraffic(network.Node) returns (network.Node) {}
 	// rpc GetNetworkEndpoint(network.Endpoint) returns (blob.Blob) {}
 	DeleteNetworkEndpoint(ctx context.Context, in *network.Endpoint, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	// projects
@@ -594,15 +594,6 @@ func (c *coreAPIClient) DeleteNode(ctx context.Context, in *network.Node, opts .
 	return out, nil
 }
 
-func (c *coreAPIClient) ResetNodeNetworkTraffic(ctx context.Context, in *network.Node, opts ...grpc.CallOption) (*network.Node, error) {
-	out := new(network.Node)
-	err := c.cc.Invoke(ctx, "/api.CoreAPI/ResetNodeNetworkTraffic", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *coreAPIClient) DeleteNetworkEndpoint(ctx context.Context, in *network.Endpoint, opts ...grpc.CallOption) (*status.StatusResponse, error) {
 	out := new(status.StatusResponse)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/DeleteNetworkEndpoint", in, out, opts...)
@@ -843,7 +834,7 @@ type CoreAPIServer interface {
 	GetNode(context.Context, *network.Node) (*network.Node, error)
 	// rpc SetNode (network.Node) returns (network.Node) {}
 	DeleteNode(context.Context, *network.Node) (*status.StatusResponse, error)
-	ResetNodeNetworkTraffic(context.Context, *network.Node) (*network.Node, error)
+	// rpc ResetNodeNetworkTraffic(network.Node) returns (network.Node) {}
 	// rpc GetNetworkEndpoint(network.Endpoint) returns (blob.Blob) {}
 	DeleteNetworkEndpoint(context.Context, *network.Endpoint) (*status.StatusResponse, error)
 	// projects
@@ -1031,9 +1022,6 @@ func (UnimplementedCoreAPIServer) GetNode(context.Context, *network.Node) (*netw
 }
 func (UnimplementedCoreAPIServer) DeleteNode(context.Context, *network.Node) (*status.StatusResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method DeleteNode not implemented")
-}
-func (UnimplementedCoreAPIServer) ResetNodeNetworkTraffic(context.Context, *network.Node) (*network.Node, error) {
-	return nil, status1.Errorf(codes.Unimplemented, "method ResetNodeNetworkTraffic not implemented")
 }
 func (UnimplementedCoreAPIServer) DeleteNetworkEndpoint(context.Context, *network.Endpoint) (*status.StatusResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method DeleteNetworkEndpoint not implemented")
@@ -2023,24 +2011,6 @@ func _CoreAPI_DeleteNode_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CoreAPI_ResetNodeNetworkTraffic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(network.Node)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CoreAPIServer).ResetNodeNetworkTraffic(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.CoreAPI/ResetNodeNetworkTraffic",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).ResetNodeNetworkTraffic(ctx, req.(*network.Node))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _CoreAPI_DeleteNetworkEndpoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(network.Endpoint)
 	if err := dec(in); err != nil {
@@ -2593,10 +2563,6 @@ var CoreAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteNode",
 			Handler:    _CoreAPI_DeleteNode_Handler,
-		},
-		{
-			MethodName: "ResetNodeNetworkTraffic",
-			Handler:    _CoreAPI_ResetNodeNetworkTraffic_Handler,
 		},
 		{
 			MethodName: "DeleteNetworkEndpoint",
