@@ -28,6 +28,13 @@ var closeUserInputCh = make(chan struct{}, 1)
 func NewChatInit(issue *itsm.Issue, txControlQueue chan *mmsp.Payload) {
 	mmID := viper.GetString("mm.id")
 
+	var threadID string
+	var chatBackendType messaging.ChatBackendType
+	if issue.Crisp != nil {
+		threadID = issue.Crisp.SessionID
+		chatBackendType = messaging.ChatBackendType_CRISP
+	}
+
 	p := &mmsp.Payload{
 		SrcID: mmID,
 		// DstID:,
@@ -36,15 +43,15 @@ func NewChatInit(issue *itsm.Issue, txControlQueue chan *mmsp.Payload) {
 		ChatMessage: &messaging.ChatMessage{
 			ServiceID:  issue.ServiceID,
 			ProviderID: issue.ProviderID,
-			IssueID:    issue.IssueID,
-			// ThreadID: ,
+			// ProviderChannel: ,
+			IssueID:  issue.IssueID,
+			ThreadID: threadID,
 			// ThreadTS: ,
-			// BackendType: ,
+			BackendType:  chatBackendType,
 			Direction:    messaging.ChatMessageDirection_USER_TO_PROVIDER,
 			AccountID:    issue.AccountID,
 			UserEmail:    issue.OwnerUserEmail,
 			UserNickname: issue.OwnerUserNickname,
-			// ProviderChannel: ,
 			// OperatorEmail: ,
 			// OperatorNickname: ,
 			Payload:   nil,

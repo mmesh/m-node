@@ -71,7 +71,7 @@ func metricsAgentCtl() {
 		}()
 		go func() {
 			for {
-				time.Sleep(300 * time.Second)
+				time.Sleep(900 * time.Second)
 				updateNodeMetrics <- struct{}{}
 			}
 		}()

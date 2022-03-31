@@ -11,6 +11,7 @@ import (
 	account "mmesh.dev/m-api-go/grpc/resources/account"
 	billing "mmesh.dev/m-api-go/grpc/resources/billing"
 	controller "mmesh.dev/m-api-go/grpc/resources/controller"
+	iam "mmesh.dev/m-api-go/grpc/resources/iam"
 	auth "mmesh.dev/m-api-go/grpc/resources/iam/auth"
 	location "mmesh.dev/m-api-go/grpc/resources/location"
 	webhook "mmesh.dev/m-api-go/grpc/resources/webhook"
@@ -27,6 +28,10 @@ const _ = grpc.SupportPackageIsVersion7
 type ProviderAPIClient interface {
 	// login
 	Login(ctx context.Context, in *auth.LoginRequest, opts ...grpc.CallOption) (*auth.LoginResponse, error)
+	// password-reset
+	PasswordReset(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*status.StatusResponse, error)
+	// confirmation mail resend
+	ConfirmationMailResend(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	// webhook
 	ListWebhooks(ctx context.Context, in *webhook.ListWebhooksRequest, opts ...grpc.CallOption) (*webhook.Webhooks, error)
 	GetWebhook(ctx context.Context, in *webhook.Webhook, opts ...grpc.CallOption) (*webhook.Webhook, error)
@@ -57,6 +62,7 @@ type ProviderAPIClient interface {
 	//   }
 	GetAccountStats(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Stats, error)
 	UpdateAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Account, error)
+	CancelAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	DeleteAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	SetAccountIntegrations(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Account, error)
 	EnableAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Account, error)
@@ -80,6 +86,24 @@ func NewProviderAPIClient(cc grpc.ClientConnInterface) ProviderAPIClient {
 func (c *providerAPIClient) Login(ctx context.Context, in *auth.LoginRequest, opts ...grpc.CallOption) (*auth.LoginResponse, error) {
 	out := new(auth.LoginResponse)
 	err := c.cc.Invoke(ctx, "/api.ProviderAPI/Login", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *providerAPIClient) PasswordReset(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*status.StatusResponse, error) {
+	out := new(status.StatusResponse)
+	err := c.cc.Invoke(ctx, "/api.ProviderAPI/PasswordReset", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *providerAPIClient) ConfirmationMailResend(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*status.StatusResponse, error) {
+	out := new(status.StatusResponse)
+	err := c.cc.Invoke(ctx, "/api.ProviderAPI/ConfirmationMailResend", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -275,6 +299,15 @@ func (c *providerAPIClient) UpdateAccount(ctx context.Context, in *account.Accou
 	return out, nil
 }
 
+func (c *providerAPIClient) CancelAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*status.StatusResponse, error) {
+	out := new(status.StatusResponse)
+	err := c.cc.Invoke(ctx, "/api.ProviderAPI/CancelAccount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *providerAPIClient) DeleteAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*status.StatusResponse, error) {
 	out := new(status.StatusResponse)
 	err := c.cc.Invoke(ctx, "/api.ProviderAPI/DeleteAccount", in, out, opts...)
@@ -371,6 +404,10 @@ func (c *providerAPIClient) SetAccountCustomer(ctx context.Context, in *account.
 type ProviderAPIServer interface {
 	// login
 	Login(context.Context, *auth.LoginRequest) (*auth.LoginResponse, error)
+	// password-reset
+	PasswordReset(context.Context, *iam.UserRequest) (*status.StatusResponse, error)
+	// confirmation mail resend
+	ConfirmationMailResend(context.Context, *iam.UserRequest) (*status.StatusResponse, error)
 	// webhook
 	ListWebhooks(context.Context, *webhook.ListWebhooksRequest) (*webhook.Webhooks, error)
 	GetWebhook(context.Context, *webhook.Webhook) (*webhook.Webhook, error)
@@ -401,6 +438,7 @@ type ProviderAPIServer interface {
 	//   }
 	GetAccountStats(context.Context, *account.Account) (*account.Stats, error)
 	UpdateAccount(context.Context, *account.Account) (*account.Account, error)
+	CancelAccount(context.Context, *account.Account) (*status.StatusResponse, error)
 	DeleteAccount(context.Context, *account.Account) (*status.StatusResponse, error)
 	SetAccountIntegrations(context.Context, *account.Account) (*account.Account, error)
 	EnableAccount(context.Context, *account.Account) (*account.Account, error)
@@ -420,6 +458,12 @@ type UnimplementedProviderAPIServer struct {
 
 func (UnimplementedProviderAPIServer) Login(context.Context, *auth.LoginRequest) (*auth.LoginResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedProviderAPIServer) PasswordReset(context.Context, *iam.UserRequest) (*status.StatusResponse, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method PasswordReset not implemented")
+}
+func (UnimplementedProviderAPIServer) ConfirmationMailResend(context.Context, *iam.UserRequest) (*status.StatusResponse, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ConfirmationMailResend not implemented")
 }
 func (UnimplementedProviderAPIServer) ListWebhooks(context.Context, *webhook.ListWebhooksRequest) (*webhook.Webhooks, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method ListWebhooks not implemented")
@@ -484,6 +528,9 @@ func (UnimplementedProviderAPIServer) GetAccountStats(context.Context, *account.
 func (UnimplementedProviderAPIServer) UpdateAccount(context.Context, *account.Account) (*account.Account, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method UpdateAccount not implemented")
 }
+func (UnimplementedProviderAPIServer) CancelAccount(context.Context, *account.Account) (*status.StatusResponse, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method CancelAccount not implemented")
+}
 func (UnimplementedProviderAPIServer) DeleteAccount(context.Context, *account.Account) (*status.StatusResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method DeleteAccount not implemented")
 }
@@ -541,6 +588,42 @@ func _ProviderAPI_Login_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProviderAPIServer).Login(ctx, req.(*auth.LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProviderAPI_PasswordReset_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(iam.UserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProviderAPIServer).PasswordReset(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.ProviderAPI/PasswordReset",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProviderAPIServer).PasswordReset(ctx, req.(*iam.UserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProviderAPI_ConfirmationMailResend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(iam.UserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProviderAPIServer).ConfirmationMailResend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.ProviderAPI/ConfirmationMailResend",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProviderAPIServer).ConfirmationMailResend(ctx, req.(*iam.UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -923,6 +1006,24 @@ func _ProviderAPI_UpdateAccount_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProviderAPI_CancelAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(account.Account)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProviderAPIServer).CancelAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.ProviderAPI/CancelAccount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProviderAPIServer).CancelAccount(ctx, req.(*account.Account))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ProviderAPI_DeleteAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(account.Account)
 	if err := dec(in); err != nil {
@@ -1115,6 +1216,14 @@ var ProviderAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ProviderAPI_Login_Handler,
 		},
 		{
+			MethodName: "PasswordReset",
+			Handler:    _ProviderAPI_PasswordReset_Handler,
+		},
+		{
+			MethodName: "ConfirmationMailResend",
+			Handler:    _ProviderAPI_ConfirmationMailResend_Handler,
+		},
+		{
 			MethodName: "ListWebhooks",
 			Handler:    _ProviderAPI_ListWebhooks_Handler,
 		},
@@ -1197,6 +1306,10 @@ var ProviderAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateAccount",
 			Handler:    _ProviderAPI_UpdateAccount_Handler,
+		},
+		{
+			MethodName: "CancelAccount",
+			Handler:    _ProviderAPI_CancelAccount_Handler,
 		},
 		{
 			MethodName: "DeleteAccount",

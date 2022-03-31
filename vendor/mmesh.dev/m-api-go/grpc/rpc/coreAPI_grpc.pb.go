@@ -46,7 +46,12 @@ type CoreAPIClient interface {
 	EnableUser(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.User, error)
 	DisableUser(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.User, error)
 	SetUserEmail(ctx context.Context, in *iam.SetUserEmailRequest, opts ...grpc.CallOption) (*iam.User, error)
-	ResetUserPassword(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*status.StatusResponse, error)
+	//   rpc ResetUserPassword(iam.UserRequest) returns (status.StatusResponse) {
+	//     option (google.api.http) = {
+	//       post: "/api/v1/accounts/{accountID}/iam/users/{email}:password-reset"
+	//       body: "*"
+	//     };
+	//   }
 	SetUserCredentialsPassword(ctx context.Context, in *iam.SetUserCredentialsPasswordRequest, opts ...grpc.CallOption) (*iam.User, error)
 	SetUserCredentialsSSH(ctx context.Context, in *iam.SetUserCredentialsSSHRequest, opts ...grpc.CallOption) (*iam.User, error)
 	DeleteUserCredentialsSSH(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.User, error)
@@ -201,15 +206,6 @@ func (c *coreAPIClient) DisableUser(ctx context.Context, in *iam.UserRequest, op
 func (c *coreAPIClient) SetUserEmail(ctx context.Context, in *iam.SetUserEmailRequest, opts ...grpc.CallOption) (*iam.User, error) {
 	out := new(iam.User)
 	err := c.cc.Invoke(ctx, "/api.CoreAPI/SetUserEmail", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *coreAPIClient) ResetUserPassword(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*status.StatusResponse, error) {
-	out := new(status.StatusResponse)
-	err := c.cc.Invoke(ctx, "/api.CoreAPI/ResetUserPassword", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -784,7 +780,12 @@ type CoreAPIServer interface {
 	EnableUser(context.Context, *iam.UserRequest) (*iam.User, error)
 	DisableUser(context.Context, *iam.UserRequest) (*iam.User, error)
 	SetUserEmail(context.Context, *iam.SetUserEmailRequest) (*iam.User, error)
-	ResetUserPassword(context.Context, *iam.UserRequest) (*status.StatusResponse, error)
+	//   rpc ResetUserPassword(iam.UserRequest) returns (status.StatusResponse) {
+	//     option (google.api.http) = {
+	//       post: "/api/v1/accounts/{accountID}/iam/users/{email}:password-reset"
+	//       body: "*"
+	//     };
+	//   }
 	SetUserCredentialsPassword(context.Context, *iam.SetUserCredentialsPasswordRequest) (*iam.User, error)
 	SetUserCredentialsSSH(context.Context, *iam.SetUserCredentialsSSHRequest) (*iam.User, error)
 	DeleteUserCredentialsSSH(context.Context, *iam.UserRequest) (*iam.User, error)
@@ -893,9 +894,6 @@ func (UnimplementedCoreAPIServer) DisableUser(context.Context, *iam.UserRequest)
 }
 func (UnimplementedCoreAPIServer) SetUserEmail(context.Context, *iam.SetUserEmailRequest) (*iam.User, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method SetUserEmail not implemented")
-}
-func (UnimplementedCoreAPIServer) ResetUserPassword(context.Context, *iam.UserRequest) (*status.StatusResponse, error) {
-	return nil, status1.Errorf(codes.Unimplemented, "method ResetUserPassword not implemented")
 }
 func (UnimplementedCoreAPIServer) SetUserCredentialsPassword(context.Context, *iam.SetUserCredentialsPasswordRequest) (*iam.User, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method SetUserCredentialsPassword not implemented")
@@ -1233,24 +1231,6 @@ func _CoreAPI_SetUserEmail_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CoreAPIServer).SetUserEmail(ctx, req.(*iam.SetUserEmailRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _CoreAPI_ResetUserPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(iam.UserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(CoreAPIServer).ResetUserPassword(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/api.CoreAPI/ResetUserPassword",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CoreAPIServer).ResetUserPassword(ctx, req.(*iam.UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2391,10 +2371,6 @@ var CoreAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetUserEmail",
 			Handler:    _CoreAPI_SetUserEmail_Handler,
-		},
-		{
-			MethodName: "ResetUserPassword",
-			Handler:    _CoreAPI_ResetUserPassword_Handler,
 		},
 		{
 			MethodName: "SetUserCredentialsPassword",

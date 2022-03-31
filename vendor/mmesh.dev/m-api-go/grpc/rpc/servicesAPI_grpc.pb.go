@@ -80,14 +80,15 @@ type ServicesAPIClient interface {
 	NewIssue(ctx context.Context, in *itsm.Issue, opts ...grpc.CallOption) (*itsm.Issue, error)
 	NewIssueComment(ctx context.Context, in *itsm.IssueNewCommentRequest, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	ListIssues(ctx context.Context, in *itsm.ListIssuesRequest, opts ...grpc.CallOption) (*itsm.Issues, error)
-	GetIssue(ctx context.Context, in *itsm.Issue, opts ...grpc.CallOption) (*itsm.Issue, error)
+	GetIssue(ctx context.Context, in *itsm.IssueRequest, opts ...grpc.CallOption) (*itsm.Issue, error)
 	//   rpc SetIssue(itsm.Issue) returns (itsm.Issue) {
 	//     option (google.api.http) = {
 	//       post: "/api/v1/accounts/{accountID}/itsm/issues/{issueID}"
 	//       body: "*"
 	//     };
 	//   }
-	DeleteIssue(ctx context.Context, in *itsm.Issue, opts ...grpc.CallOption) (*status.StatusResponse, error)
+	DeleteIssue(ctx context.Context, in *itsm.IssueRequest, opts ...grpc.CallOption) (*status.StatusResponse, error)
+	CloseIssue(ctx context.Context, in *itsm.IssueRequest, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	// cloud-instances
 	CreateCloudInstance(ctx context.Context, in *cloud.InstanceRequest, opts ...grpc.CallOption) (*cloud.Instance, error)
 	ListCloudInstances(ctx context.Context, in *cloud.ListInstancesRequest, opts ...grpc.CallOption) (*cloud.Instances, error)
@@ -264,7 +265,7 @@ func (c *servicesAPIClient) ListIssues(ctx context.Context, in *itsm.ListIssuesR
 	return out, nil
 }
 
-func (c *servicesAPIClient) GetIssue(ctx context.Context, in *itsm.Issue, opts ...grpc.CallOption) (*itsm.Issue, error) {
+func (c *servicesAPIClient) GetIssue(ctx context.Context, in *itsm.IssueRequest, opts ...grpc.CallOption) (*itsm.Issue, error) {
 	out := new(itsm.Issue)
 	err := c.cc.Invoke(ctx, "/api.ServicesAPI/GetIssue", in, out, opts...)
 	if err != nil {
@@ -273,9 +274,18 @@ func (c *servicesAPIClient) GetIssue(ctx context.Context, in *itsm.Issue, opts .
 	return out, nil
 }
 
-func (c *servicesAPIClient) DeleteIssue(ctx context.Context, in *itsm.Issue, opts ...grpc.CallOption) (*status.StatusResponse, error) {
+func (c *servicesAPIClient) DeleteIssue(ctx context.Context, in *itsm.IssueRequest, opts ...grpc.CallOption) (*status.StatusResponse, error) {
 	out := new(status.StatusResponse)
 	err := c.cc.Invoke(ctx, "/api.ServicesAPI/DeleteIssue", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *servicesAPIClient) CloseIssue(ctx context.Context, in *itsm.IssueRequest, opts ...grpc.CallOption) (*status.StatusResponse, error) {
+	out := new(status.StatusResponse)
+	err := c.cc.Invoke(ctx, "/api.ServicesAPI/CloseIssue", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -540,14 +550,15 @@ type ServicesAPIServer interface {
 	NewIssue(context.Context, *itsm.Issue) (*itsm.Issue, error)
 	NewIssueComment(context.Context, *itsm.IssueNewCommentRequest) (*status.StatusResponse, error)
 	ListIssues(context.Context, *itsm.ListIssuesRequest) (*itsm.Issues, error)
-	GetIssue(context.Context, *itsm.Issue) (*itsm.Issue, error)
+	GetIssue(context.Context, *itsm.IssueRequest) (*itsm.Issue, error)
 	//   rpc SetIssue(itsm.Issue) returns (itsm.Issue) {
 	//     option (google.api.http) = {
 	//       post: "/api/v1/accounts/{accountID}/itsm/issues/{issueID}"
 	//       body: "*"
 	//     };
 	//   }
-	DeleteIssue(context.Context, *itsm.Issue) (*status.StatusResponse, error)
+	DeleteIssue(context.Context, *itsm.IssueRequest) (*status.StatusResponse, error)
+	CloseIssue(context.Context, *itsm.IssueRequest) (*status.StatusResponse, error)
 	// cloud-instances
 	CreateCloudInstance(context.Context, *cloud.InstanceRequest) (*cloud.Instance, error)
 	ListCloudInstances(context.Context, *cloud.ListInstancesRequest) (*cloud.Instances, error)
@@ -631,11 +642,14 @@ func (UnimplementedServicesAPIServer) NewIssueComment(context.Context, *itsm.Iss
 func (UnimplementedServicesAPIServer) ListIssues(context.Context, *itsm.ListIssuesRequest) (*itsm.Issues, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method ListIssues not implemented")
 }
-func (UnimplementedServicesAPIServer) GetIssue(context.Context, *itsm.Issue) (*itsm.Issue, error) {
+func (UnimplementedServicesAPIServer) GetIssue(context.Context, *itsm.IssueRequest) (*itsm.Issue, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method GetIssue not implemented")
 }
-func (UnimplementedServicesAPIServer) DeleteIssue(context.Context, *itsm.Issue) (*status.StatusResponse, error) {
+func (UnimplementedServicesAPIServer) DeleteIssue(context.Context, *itsm.IssueRequest) (*status.StatusResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method DeleteIssue not implemented")
+}
+func (UnimplementedServicesAPIServer) CloseIssue(context.Context, *itsm.IssueRequest) (*status.StatusResponse, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method CloseIssue not implemented")
 }
 func (UnimplementedServicesAPIServer) CreateCloudInstance(context.Context, *cloud.InstanceRequest) (*cloud.Instance, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method CreateCloudInstance not implemented")
@@ -987,7 +1001,7 @@ func _ServicesAPI_ListIssues_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _ServicesAPI_GetIssue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(itsm.Issue)
+	in := new(itsm.IssueRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -999,13 +1013,13 @@ func _ServicesAPI_GetIssue_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/api.ServicesAPI/GetIssue",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServicesAPIServer).GetIssue(ctx, req.(*itsm.Issue))
+		return srv.(ServicesAPIServer).GetIssue(ctx, req.(*itsm.IssueRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ServicesAPI_DeleteIssue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(itsm.Issue)
+	in := new(itsm.IssueRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1017,7 +1031,25 @@ func _ServicesAPI_DeleteIssue_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: "/api.ServicesAPI/DeleteIssue",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServicesAPIServer).DeleteIssue(ctx, req.(*itsm.Issue))
+		return srv.(ServicesAPIServer).DeleteIssue(ctx, req.(*itsm.IssueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ServicesAPI_CloseIssue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(itsm.IssueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServicesAPIServer).CloseIssue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.ServicesAPI/CloseIssue",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServicesAPIServer).CloseIssue(ctx, req.(*itsm.IssueRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1492,6 +1524,10 @@ var ServicesAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteIssue",
 			Handler:    _ServicesAPI_DeleteIssue_Handler,
+		},
+		{
+			MethodName: "CloseIssue",
+			Handler:    _ServicesAPI_CloseIssue_Handler,
 		},
 		{
 			MethodName: "CreateCloudInstance",

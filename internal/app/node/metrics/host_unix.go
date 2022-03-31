@@ -28,7 +28,7 @@ func UpdateHostMetrics() {
 	// if err != nil {
 	// 	return
 	// }
-	cpuPercent, err := cpu.Percent(300*time.Second, false)
+	cpuPercent, err := cpu.Percent(900*time.Second, false)
 	if err != nil {
 		return
 	}

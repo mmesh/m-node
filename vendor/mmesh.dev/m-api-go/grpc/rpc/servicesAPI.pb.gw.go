@@ -1308,12 +1308,8 @@ func local_request_ServicesAPI_ListIssues_0(ctx context.Context, marshaler runti
 
 }
 
-var (
-	filter_ServicesAPI_GetIssue_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "issueID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
-)
-
 func request_ServicesAPI_GetIssue_0(ctx context.Context, marshaler runtime.Marshaler, client ServicesAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq itsm.Issue
+	var protoReq itsm.IssueRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -1341,13 +1337,6 @@ func request_ServicesAPI_GetIssue_0(ctx context.Context, marshaler runtime.Marsh
 	protoReq.IssueID, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "issueID", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ServicesAPI_GetIssue_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.GetIssue(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -1356,7 +1345,7 @@ func request_ServicesAPI_GetIssue_0(ctx context.Context, marshaler runtime.Marsh
 }
 
 func local_request_ServicesAPI_GetIssue_0(ctx context.Context, marshaler runtime.Marshaler, server ServicesAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq itsm.Issue
+	var protoReq itsm.IssueRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -1384,13 +1373,6 @@ func local_request_ServicesAPI_GetIssue_0(ctx context.Context, marshaler runtime
 	protoReq.IssueID, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "issueID", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ServicesAPI_GetIssue_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := server.GetIssue(ctx, &protoReq)
@@ -1398,12 +1380,8 @@ func local_request_ServicesAPI_GetIssue_0(ctx context.Context, marshaler runtime
 
 }
 
-var (
-	filter_ServicesAPI_DeleteIssue_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "issueID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
-)
-
 func request_ServicesAPI_DeleteIssue_0(ctx context.Context, marshaler runtime.Marshaler, client ServicesAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq itsm.Issue
+	var protoReq itsm.IssueRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -1431,13 +1409,6 @@ func request_ServicesAPI_DeleteIssue_0(ctx context.Context, marshaler runtime.Ma
 	protoReq.IssueID, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "issueID", err)
-	}
-
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ServicesAPI_DeleteIssue_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.DeleteIssue(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -1446,7 +1417,7 @@ func request_ServicesAPI_DeleteIssue_0(ctx context.Context, marshaler runtime.Ma
 }
 
 func local_request_ServicesAPI_DeleteIssue_0(ctx context.Context, marshaler runtime.Marshaler, server ServicesAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq itsm.Issue
+	var protoReq itsm.IssueRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -1476,14 +1447,79 @@ func local_request_ServicesAPI_DeleteIssue_0(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "issueID", err)
 	}
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ServicesAPI_DeleteIssue_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	msg, err := server.DeleteIssue(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_ServicesAPI_CloseIssue_0(ctx context.Context, marshaler runtime.Marshaler, client ServicesAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq itsm.IssueRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["accountID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
 	}
 
-	msg, err := server.DeleteIssue(ctx, &protoReq)
+	protoReq.AccountID, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
+	}
+
+	val, ok = pathParams["issueID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "issueID")
+	}
+
+	protoReq.IssueID, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "issueID", err)
+	}
+
+	msg, err := client.CloseIssue(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_ServicesAPI_CloseIssue_0(ctx context.Context, marshaler runtime.Marshaler, server ServicesAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq itsm.IssueRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["accountID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
+	}
+
+	protoReq.AccountID, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
+	}
+
+	val, ok = pathParams["issueID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "issueID")
+	}
+
+	protoReq.IssueID, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "issueID", err)
+	}
+
+	msg, err := server.CloseIssue(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -3817,6 +3853,29 @@ func RegisterServicesAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 
 	})
 
+	mux.Handle("PATCH", pattern_ServicesAPI_CloseIssue_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ServicesAPI/CloseIssue", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/itsm/issues/{issueID}:close"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ServicesAPI_CloseIssue_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ServicesAPI_CloseIssue_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_ServicesAPI_CreateCloudInstance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -4704,6 +4763,26 @@ func RegisterServicesAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 
 	})
 
+	mux.Handle("PATCH", pattern_ServicesAPI_CloseIssue_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ServicesAPI/CloseIssue", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/itsm/issues/{issueID}:close"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ServicesAPI_CloseIssue_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ServicesAPI_CloseIssue_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_ServicesAPI_CreateCloudInstance_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -5182,6 +5261,8 @@ var (
 
 	pattern_ServicesAPI_DeleteIssue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"api", "v1", "accounts", "accountID", "itsm", "issues", "issueID"}, ""))
 
+	pattern_ServicesAPI_CloseIssue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5, 1, 0, 4, 1, 5, 6}, []string{"api", "v1", "accounts", "accountID", "itsm", "issues", "issueID"}, "close"))
+
 	pattern_ServicesAPI_CreateCloudInstance_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5}, []string{"api", "v1", "accounts", "accountID", "cloud", "instances"}, "new"))
 
 	pattern_ServicesAPI_ListCloudInstances_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5}, []string{"api", "v1", "accounts", "accountID", "cloud", "instances"}, ""))
@@ -5261,6 +5342,8 @@ var (
 	forward_ServicesAPI_GetIssue_0 = runtime.ForwardResponseMessage
 
 	forward_ServicesAPI_DeleteIssue_0 = runtime.ForwardResponseMessage
+
+	forward_ServicesAPI_CloseIssue_0 = runtime.ForwardResponseMessage
 
 	forward_ServicesAPI_CreateCloudInstance_0 = runtime.ForwardResponseMessage
 

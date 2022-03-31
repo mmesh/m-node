@@ -21,7 +21,8 @@ import (
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
-const binURL string = "https://storage.googleapis.com/mmesh-io/binaries"
+// const binURL string = "https://storage.googleapis.com/mmesh-io/binaries"
+const binURL string = "https://mmesh.s3.nl-ams.scw.cloud/binaries"
 const binVersion string = "latest"
 const branchStable string = "stable"
 
@@ -117,7 +118,7 @@ func Update(app string) error {
 func getURL(file string) string {
 	goos := runtime.GOOS
 	goarch := runtime.GOARCH
-	
+
 	if goarch == "arm" {
 		goarch = "arm_6"
 	}
