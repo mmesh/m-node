@@ -78,8 +78,8 @@ tasks:
     cmds:
     - task: docker:docker-push
       vars: {IMAGE: "mmesh-node", VERSION: "snapshot", REPO: "mmeshdev", TAG: "dev"}
-    - task: docker:image-scan
-      vars: {IMAGE: "mmesh-node", REPO: "mmeshdev", TAG: "dev"}
+    # - task: docker:image-scan
+    #   vars: {IMAGE: "mmesh-node", REPO: "mmeshdev", TAG: "dev"}
 
   # docker-push-node-stable:
   #   desc: docker push -- mmesh-node (stable build)
