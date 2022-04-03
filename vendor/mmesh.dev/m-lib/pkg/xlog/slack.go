@@ -22,7 +22,7 @@ type SlackOptions struct {
 	AlertChannel string
 }
 
-type slackLoggerCfg struct {
+type slackLogger struct {
 	webhook  string
 	user     string
 	icon     string
@@ -32,7 +32,7 @@ type slackLoggerCfg struct {
 }
 
 func (l *LoggerSpec) SetSlackLogger(opt *SlackOptions) *LoggerSpec {
-	l.slackLogger = &slackLoggerCfg{
+	l.slackLogger = &slackLogger{
 		webhook:  opt.Webhook,
 		user:     opt.User,
 		icon:     opt.Icon,

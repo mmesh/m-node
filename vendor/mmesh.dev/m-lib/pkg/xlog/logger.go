@@ -69,9 +69,10 @@ type LoggerSpec struct {
 
 	ansiColor bool
 
-	stdLog      map[LogLevel]*log.Logger
-	stdLogFile  map[LogLevel]*log.Logger
-	slackLogger *slackLoggerCfg
+	stdLog          map[LogLevel]*log.Logger
+	stdLogFile      map[LogLevel]*log.Logger
+	sumologicLogger *sumologicLogger
+	slackLogger     *slackLogger
 }
 
 var l = &LoggerSpec{
@@ -128,6 +129,12 @@ func (l *LoggerSpec) SetLogFile(logfile string) *LoggerSpec {
 	return l
 }
 
+func (l *LoggerSpec) Close() {
+	if l.sumologicLogger != nil {
+		l.sumologicLogger.endCh <- struct{}{}
+	}
+}
+
 func (l *LoggerSpec) logLevelPrefix(level LogLevel) string {
 	prefix := "[" + logPrefixes[level] + "]"
 
@@ -139,7 +146,7 @@ func (l *LoggerSpec) logLevelPrefix(level LogLevel) string {
 }
 
 func (l *LoggerSpec) logPrefix(level LogLevel, timestamp time.Time) string {
-	//hostID := "[" + colors.White(l.hostID) + "]"
+	// hostID := "[" + colors.White(l.hostID) + "]"
 	// return l.logLevelPrefix(level) + " " + timestamp + " " + hostID
 
 	if l.ansiColor {
@@ -170,10 +177,19 @@ func (l *LoggerSpec) log(level LogLevel, args ...interface{}) {
 			fmt.Println(all...)
 		}
 
+		if l.sumologicLogger != nil {
+			if level >= l.sumologicLogger.logLevel {
+				if err := l.sumologicLog(level, timestamp, fmt.Sprint(args...)); err != nil {
+					sumologicErr := fmt.Sprintf("Unable to post log msg to SumoLogic: %v", err)
+					fmt.Println(l.logPrefix(level, timestamp), sumologicErr)
+				}
+			}
+		}
+
 		if l.slackLogger != nil {
 			if level >= l.slackLogger.logLevel {
 				if err := l.slackLog(level, timestamp, fmt.Sprint(args...)); err != nil {
-					slackErr := fmt.Errorf("Unable to post to Slack: %v", err)
+					slackErr := fmt.Sprintf("Unable to post log msg to Slack: %v", err)
 					fmt.Println(l.logPrefix(level, timestamp), slackErr)
 				}
 			}
