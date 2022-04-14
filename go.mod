@@ -8,7 +8,7 @@ replace mmesh.dev/m-lib => ../m-lib
 
 require (
 	github.com/google/gopacket v1.1.19
-	github.com/ipfs/go-datastore v0.4.5
+	github.com/ipfs/go-datastore v0.5.1
 	github.com/kardianos/service v1.2.0
 	github.com/libp2p/go-libp2p v0.13.0
 	github.com/libp2p/go-libp2p-circuit v0.4.0
