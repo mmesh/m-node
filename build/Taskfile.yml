@@ -1,0 +1,183 @@
+version: '3'
+
+includes:
+  golang:
+    taskfile: ./build/_deps/taskfiles/build/golangTasks.yml
+    optional: true
+  docker:
+    taskfile: ./build/_deps/taskfiles/build/dockerTasks.yml
+    optional: true
+
+silent: true
+
+vars:
+  NAME: m-node
+  ORG: mmesh
+  DOMAIN: mmesh.dev
+  PROJECT: mmesh
+  GITHUB_PKG: 'github.com/{{.ORG}}/{{.NAME}}'
+  PREFIX:
+    sh: pwd
+  PROJECT_DIR: '{{.PREFIX}}/..'
+  DIST_DIR: '{{.PREFIX}}/_dist'
+  VERSION:
+    sh: svu current
+  VERSION_DATE:
+    sh: date -u +%Y%m%d%H%M%S
+  GO_VERSION:
+    sh: go version | cut -f 3 -d ' '
+  PKG_REPO: 'mmesh'
+  PKG_REPO_DEV: 'mmesh-dev'
+  # GS_BUCKET: 'gs://mmesh-io'
+  S3_BUCKET: 'nl-ams_scaleway:mmesh'
+
+env:
+  PKG: '{{.DOMAIN}}/{{.PROJECT}}'
+  VERSION: '{{.VERSION}}'
+  VERSION_DATE: '{{.VERSION_DATE}}'
+  GO_VERSION: '{{.GO_VERSION}}'
+  # GO111MODULE: on
+  # CGO_ENABLED: 0
+  # GOPRIVATE: mmesh.dev/m-api-go,mmesh.dev/m-lib
+
+tasks:
+  deps:
+    desc: Install build dependencies.
+    cmds:
+      - rm -rf ./build/_deps
+      - git clone --depth 1 git@github.com:x6a/scripts.git ./build/_deps/scripts
+      - git clone --depth 1 git@github.com:x6a/taskfiles.git ./build/_deps/taskfiles
+
+  _docker-builder:
+    deps: [golang:golang-builder]
+    vars:
+      GITHUB_TOKEN:
+        sh: cat $HOME/.cloud/github/github_token.buildbot
+      COSIGN_PWD:
+        sh: cat $HOME/.x6a/mmesh/cosign/pw.txt
+      LOCAL_UID:
+        sh: id -u
+      LOCAL_GID:
+        sh: id -g
+    cmds:
+      - |-
+        docker run --rm \
+          -e GITHUB_TOKEN={{.GITHUB_TOKEN}} \
+          -e COSIGN_PWD={{.COSIGN_PWD}} \
+          -v $HOME/.x6a/mmesh/cosign:/cosign:ro \
+          -v {{.PROJECT_DIR}}:/go/src/{{.PROJECT}} \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -w /go/src/{{.PROJECT}}/{{.NAME}} \
+          --cap-add=IPC_LOCK --ulimit memlock=-1:-1 \
+          x6adev/golang-builder:latest {{.TASK_CMD}}
+      - sudo chown -R {{.LOCAL_UID}}:{{.LOCAL_GID}} .
+
+  _goreleaser:
+    cmds:
+      # - task: golang:go-verify-vendor
+      # - task: golang:go-generate
+      # - task: golang:go-fmt
+      ## - task: golang:go-vet
+      ## - task: golang:golangci-lint
+      - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist {{.OPTS}}
+      # - goreleaser build -f build/ci/goreleaser/release.yml --rm-dist {{.OPTS}}
+
+  _build-all:
+    cmds:
+      - task: _build-node
+
+  _build-node:
+    cmds:
+      - task: _goreleaser
+        vars:
+          OPTS: --snapshot
+
+  build-all:
+    desc: Build all binaries.
+    cmds:
+      - task: _docker-builder
+        vars:
+          TASK_CMD: _build-all
+
+  build-node:
+    desc: Build the node binary.
+    cmds:
+      - task: _docker-builder
+        vars:
+          TASK_CMD: _build-node
+
+  docker-push-node-dev:
+    desc: docker push -- mmesh-node (dev build)
+    deps: [docker:docker-login, docker:ghcr-login]
+    cmds:
+      - docker push mmeshdev/mmesh-node:snapshot
+      - docker push mmeshdev/mmesh-node:dev
+      - docker push ghcr.io/mmesh/mmesh-node:snapshot
+      - docker push ghcr.io/mmesh/mmesh-node:dev
+      - task: docker:image-scan
+        vars: {IMAGE: "mmesh-node", REPO: "mmeshdev", TAG: "dev"}
+
+  publish-binaries-dev:
+    desc: Publish binaries (dev build)
+    dir: '{{.PREFIX}}'
+    cmds:
+      # - ./build/_deps/scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO_DEV}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_linux_amd64.deb '{{.PKG_REPO_DEV}}'
+      # - ./build/_deps/scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO_DEV}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_linux_amd64.rpm '{{.PKG_REPO_DEV}}'
+      # - ./build/_deps/scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.GS_BUCKET}}' 'dev'
+      - ./build/_deps/scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.S3_BUCKET}}' 'dev'
+
+  publish-binaries-stable:
+    desc: Publish binaries (stable build)
+    dir: '{{.PREFIX}}'
+    cmds:
+      # - ./build/_deps/scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_linux_amd64.deb '{{.PKG_REPO}}'
+      # - ./build/_deps/scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_linux_amd64.rpm '{{.PKG_REPO}}'
+      # - ./build/_deps/scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.GS_BUCKET}}' 'stable'
+      - ./build/_deps/scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.S3_BUCKET}}' 'stable'
+
+  publish-all-dev:
+    desc: Publish docker images and binaries (dev build)
+    cmds:
+      - task: docker-push-node-dev
+      - task: publish-binaries-dev
+
+  publish-all-stable:
+    desc: Publish binaries (stable build)
+    cmds:
+      - task: publish-binaries-stable
+
+  _release:
+    cmds:
+      - task: _goreleaser
+        vars:
+          OPTS: ""
+
+  release:
+    desc: Build and release all the packages.
+    deps: [docker:docker-login, docker:ghcr-login]
+    vars:
+      NEXT_VERSION:
+        sh: svu next
+    cmds:
+      - echo "Executing git tag with {{.NEXT_VERSION}}..."
+      - git tag -sa {{.NEXT_VERSION}} -m "{{.NEXT_VERSION}}"
+      - echo "Running git push origin {{.NEXT_VERSION}} to push new tag to GitHu
+      - git push origin {{.NEXT_VERSION}}
+      - task: _docker-builder
+        vars:
+          TASK_CMD: _release
+      - task: docker:image-scan
+        vars: {IMAGE: "mmesh-node", REPO: "mmeshdev", TAG: "stable"}
+      - task: publish-all-stable
+      # - ./scripts/_local/build/gh-tag-delete.sh '{{.VERSION}}'
+
+  clean:
+    desc: Clean everything.
+    deps: [golang:go-clean, docker:docker-images-clean]
+    cmds:
+      - echo 'Cleaning dist working directory...'
+      - rm -rf {{.DIST_DIR}}
