@@ -1,0 +1,236 @@
+project_name: mmesh-node
+
+dist: _dist
+
+env_files:
+  github_token: ~/.cloud/github/github_token.buildbot
+
+env:
+  - GO111MODULE=on
+  # - PKG_REPO='mmesh'
+  # - PKG_REPO_DEV='mmesh-dev'
+
+before:
+  hooks:
+    - go generate $(go list ./... | grep -v /vendor/)
+    - go fmt $(go list ./... | grep -v '/vendor/' | grep -v '.pb.go' | grep -v '.twirp.go' | grep -v 'bindata.go') | tee /dev/stderr
+    - go mod tidy -v
+    - go mod vendor
+    - go mod verify
+
+builds:
+- id: "mmesh-node"
+  main: cmd/node/main.go
+  binary: mmesh-node
+  flags:
+    #- -tags=dev
+    - -tags="static_build,netgo"
+    - -v
+    - -a
+    - -mod=vendor
+    - -installsuffix=netgo
+    - -trimpath
+    #- -race # requires CGO_ENABLED=1
+  # Custom ldflags templates.
+  # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
+  ldflags:
+    - -s
+    - -w
+    - -X mmesh.dev/m-lib/pkg/version.GitRepository={{.GitURL}}
+    - -X mmesh.dev/m-lib/pkg/version.GitCommit={{.ShortCommit}}
+    - -X mmesh.dev/m-lib/pkg/version.VersionNumber={{.Tag}}
+    - -X mmesh.dev/m-lib/pkg/version.VersionDate={{.Env.VERSION_DATE}}
+    - -X mmesh.dev/m-lib/pkg/version.GoVersion={{.Env.GO_VERSION}}
+    - -extldflags -static
+    #- ./usemsan=-msan
+  env:
+    - CGO_ENABLED=0
+  goos:
+    - linux
+    - darwin
+    - windows
+  goarch:
+    - amd64
+    - arm64
+    - arm
+  # lang: go
+
+snapshot:
+  # name_template: '{{ .Tag }}-SNAPSHOT-{{.ShortCommit}}'
+  # name_template: '{{ .Version }}-SNAPSHOT-{{.ShortCommit}}'
+  name_template: '{{ .Version }}-{{.Env.VERSION_DATE}}-SNAPSHOT-{{.ShortCommit}}'
+
+checksum:
+  # name_template: '{{ .ProjectName }}_{{ .Tag }}_checksums.txt'
+  # name_template: '{{ .ProjectName }}_{{ .Version }}_checksums.txt'
+  name_template: 'checksums.txt'
+  algorithm: sha256
+
+signs:
+  - cmd: cosign
+    env:
+    - COSIGN_EXPERIMENTAL=1
+    stdin: '{{ .Env.COSIGN_PWD }}'
+    certificate: '${artifact}.pem'
+    args:
+      - 'sign-blob'
+      - '--key=/cosign/cosign.key'
+      - '--output-certificate=${certificate}'
+      - '--output-signature=${signature}'
+      - '${artifact}'
+    artifacts: all
+    output: true
+
+docker_signs:
+- cmd: cosign
+  env:
+  - COSIGN_EXPERIMENTAL=1
+  artifacts: manifests
+  output: true
+  args:
+  - 'sign'
+  - '${artifact}'
+
+sboms:
+  - artifacts: archive
+
+archives:
+- id: mmesh-node
+  builds:
+    - mmesh-node
+  # name_template: "{{ .ProjectName }}_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
+  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+  wrap_in_directory: false
+  format: tar.gz
+  format_overrides:
+    - goos: windows
+      format: zip
+
+nfpms:
+  - id: mmesh-node
+    package_name: mmesh-node
+    # file_name_template: "{{ .ProjectName }}_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
+    # file_name_template: "{{ .ProjectName }}_{{ .Arch }}"
+    file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    builds:
+      - mmesh-node
+    vendor: mmesh.io
+    homepage: https://mmesh.io
+    maintainer: buildbot <no-reply@mmesh.io>
+    description: mmesh-node agent
+    license: "Apache License 2.0"
+    formats:
+      - deb
+      - rpm
+      - apk
+    bindir: /usr/bin
+    dependencies:
+      # - iproute2
+    section: default
+    priority: extra
+    meta: false
+    contents:
+      # basic files that apply to all packagers
+      - src: ./build/package/linux/mmesh-node.service
+        dst: /etc/systemd/system/mmesh-node.service
+      - src: ./README.md
+        dst: /usr/share/doc/mmesh-node/README.md
+      - src: ./LICENSE
+        dst: /usr/share/doc/mmesh-node/LICENSE
+      # config files:
+      - src: ./configs/mmesh-node.yml
+        dst: /etc/mmesh/mmesh-node.yml
+        type: config
+      # empty dir
+      - dst: /var/lib/mmesh
+        type: dir
+
+dockers:
+  - dockerfile: ./build/package/dockerfiles/dockerfile-node
+    image_templates:
+      - "mmeshdev/mmesh-node:latest"
+      - "mmeshdev/mmesh-node:snapshot"
+      - "mmeshdev/mmesh-node:dev"
+      - "mmeshdev/mmesh-node:stable"
+      - "mmeshdev/mmesh-node:{{ .Tag }}"
+      - "mmeshdev/mmesh-node:{{ .Tag }}-{{ .Env.GO_VERSION }}"
+      - "mmeshdev/mmesh-node:v{{ .Major }}"
+      - "mmeshdev/mmesh-node:v{{ .Major }}.{{ .Minor }}"
+      - "ghcr.io/mmesh/mmesh-node:latest"
+      - "ghcr.io/mmesh/mmesh-node:snapshot"
+      - "ghcr.io/mmesh/mmesh-node:dev"
+      - "ghcr.io/mmesh/mmesh-node:stable"
+      - "ghcr.io/mmesh/mmesh-node:{{ .Tag }}"
+      - "ghcr.io/mmesh/mmesh-node:{{ .Tag }}-{{ .Env.GO_VERSION }}"
+      - "ghcr.io/mmesh/mmesh-node:v{{ .Major }}"
+      - "ghcr.io/mmesh/mmesh-node:v{{ .Major }}.{{ .Minor }}"
+    use: docker
+    goos: linux
+    goarch: amd64
+    build_flag_templates:
+      - "--pull"
+      - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/mmesh/m-node/main/README.md"
+      - "--label=io.artifacthub.package.license=Apache License 2.0"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      # - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--label=org.opencontainers.image.source=https://github.com/mmesh/m-node"
+      - "--platform=linux/amd64"
+      - "--rm"
+      - "--force-rm"
+      - "--no-cache"
+
+release:
+  github:
+    owner: mmesh
+    name: m-node
+  draft: false
+  prerelease: auto # auto | true | false
+  name_template: '{{.Tag}}'
+  disable: false
+  # extra_files:
+  #   - glob: ./_dist/*.sig
+  footer: |
+    **Full Changelog**: https://github.com/mmesh/m-node/compare/{{ .PreviousTag }}...{{ .Tag }}
+
+    ## What to do next?
+
+    - Read the [documentation](https://mmesh.io/docs/)
+    - Join our [Discord server](https://mmesh.io/discord)
+    - Follow us on [Twitter](https://twitter.com/mmesh_io)
+
+changelog:
+  skip: false
+  use: github
+  sort: asc
+  groups:
+    - title: Features
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: 'Bug fixes'
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 1
+    - title: Others
+      order: 999
+  filters:
+    exclude:
+    - "^.*docs"
+    - "^.*test"
+    - "^.*wip"
+    - '^\[wip\]'
+    - "^.*bump version"
+    - typo
+
+# publishers:
+#   # dev repos
+#   - name: repo.mmesh.dev/apt
+#     cmd: ./build/_deps/scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.deb' '{{.Env.PKG_REPO_DEV}}'
+#   - name: repo.mmesh.dev/yum
+#     cmd: ./build/_deps/scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.rpm' '{{.Env.PKG_REPO_DEV}}'
+#   # stable repos
+#   - name: repo.mmesh.io/apt
+#     cmd: ./build/_deps/scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.deb' '{{.Env.PKG_REPO}}'
+#   - name: repo.mmesh.io/yum
+#     cmd: ./build/_deps/scripts/_local/build/pkg-upload.sh '{{ dir .ArtifactPath }}/{{ .ProjectName }}-node_{{ .Tag }}_{{ .Os }}_{{ .Arch }}.rpm' '{{.Env.PKG_REPO}}'

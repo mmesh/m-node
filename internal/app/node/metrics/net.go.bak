@@ -1,0 +1,115 @@
+package metrics
+
+import (
+	"sync"
+	"time"
+
+	"mmesh.dev/m-api-go/grpc/resources/metrics"
+)
+
+type netMetrics struct {
+  net_rxBytes uint64
+  net_txBytes uint64
+  // net_rxPkts uint64
+  // net_txPkts uint64
+  net_droppedPkts uint64
+}
+
+type netMetricsMap struct {
+	netMetrics *netMetrics
+	netTraffic map[string]*netMetrics
+	tm_start time.Time
+	tm_end time.Time
+	sync.RWMutex
+}
+
+var nmm *netMetricsMap
+
+func newNetMetricsMap() *netMetricsMap {
+	return &netMetricsMap{
+		netMetrics: &netMetrics{},
+		netTraffic: make(map[string]*netMetrics),
+	}
+}
+
+func (m *netMetricsMap) zero() {
+	m.Lock()
+	defer m.Unlock()
+
+	m.netMetrics.net_rxBytes = 0
+	m.netMetrics.net_txBytes = 0
+	// m.netMetrics.net_rxPkts = 0
+	// m.netMetrics.net_txPkts = 0
+	m.netMetrics.net_droppedPkts = 0
+
+	for addr := range m.netTraffic {
+		delete(m.netTraffic, addr)
+	}
+
+	m.tm_start = time.Now()
+}
+
+func (m *netMetricsMap) update(addr string, tx, rx uint64, droppedPkt bool) {
+	m.Lock()
+	defer m.Unlock()
+
+	if _, ok := m.netTraffic[addr]; !ok {
+		m.netTraffic[addr] = &netMetrics{}
+	}
+
+	m.netMetrics.net_rxBytes += rx
+	m.netMetrics.net_txBytes += tx
+
+	m.netTraffic[addr].net_rxBytes += rx
+	m.netTraffic[addr].net_txBytes += tx
+
+	// if rx > 0 {
+	// 	m.networkMetrics.net_rxPkts++
+	// 	m.networkTraffic[addr].net_rxPkts++
+	// }
+	// if tx > 0 {
+	// 	m.networkMetrics.net_txPkts++
+	// 	m.networkTraffic[addr].net_txPkts++
+	// }
+
+	if droppedPkt {
+		m.netMetrics.net_droppedPkts++
+		m.netTraffic[addr].net_droppedPkts++
+	}
+}
+
+func ClearNetMetrics() {
+	if nmm == nil {
+		nmm = newNetMetricsMap()
+		return
+	}
+
+	nmm.zero()
+}
+
+func UpdateNetMetric(addr string, tx, rx uint64, droppedPkt bool) {
+	if nmm == nil {
+		nmm = newNetMetricsMap()
+		return
+	}
+
+	nmm.update(addr, tx, rx, droppedPkt)
+}
+
+func GetNetMetrics() *netMetrics {
+	if nmm == nil {
+		nmm = newNetMetricsMap()
+		return nil
+	}
+
+	return nmm.netMetrics
+}
+
+func GetNetTraffic() map[string]*netMetrics {
+	if nmm == nil {
+		nmm = newNetMetricsMap()
+		return nil
+	}
+
+	return nmm.netTraffic
+}
