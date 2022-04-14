@@ -12,12 +12,12 @@ require (
 	github.com/kardianos/service v1.2.0
 	github.com/libp2p/go-libp2p v0.13.0
 	github.com/libp2p/go-libp2p-circuit v0.4.0
-	github.com/libp2p/go-libp2p-core v0.8.5
+	github.com/libp2p/go-libp2p-core v0.15.0
 	github.com/libp2p/go-libp2p-kad-dht v0.11.1
 	github.com/libp2p/go-libp2p-swarm v0.4.0
 	github.com/lorenzosaino/go-sysctl v0.1.0
 	github.com/miekg/dns v1.1.31
-	github.com/multiformats/go-multiaddr v0.3.1
+	github.com/multiformats/go-multiaddr v0.4.1
 	github.com/pkg/errors v0.9.1
 	github.com/robfig/cron/v3 v3.0.0
 	github.com/shirou/gopsutil/v3 v3.21.10
@@ -127,6 +127,7 @@ require (
 	github.com/multiformats/go-multiaddr-fmt v0.1.0 // indirect
 	github.com/multiformats/go-multiaddr-net v0.2.0 // indirect
 	github.com/multiformats/go-multibase v0.0.3 // indirect
+	github.com/multiformats/go-multicodec v0.4.1 // indirect
 	github.com/multiformats/go-multihash v0.0.14 // indirect
 	github.com/multiformats/go-multistream v0.2.0 // indirect
 	github.com/multiformats/go-varint v0.0.6 // indirect
