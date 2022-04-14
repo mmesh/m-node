@@ -21,4 +21,5 @@
 /_bin/**
 /_local/**
 /_dist/**
+/build/_deps/
 LocalTasks.yml
