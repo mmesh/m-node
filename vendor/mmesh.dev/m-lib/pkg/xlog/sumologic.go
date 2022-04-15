@@ -35,12 +35,14 @@ type sumologicMessages struct {
 }
 
 type sumologicLogger struct {
-	logLevel LogLevel
-	url      string
-	headers  *http.Header
-	client   *http.Client
+	logLevel    LogLevel
+	url         string
+	headers     *http.Header
+	client      *http.Client
 	logQueue    chan *sumologicLogMsg
 	logMessages *sumologicMessages
+	timerCtlRun bool
+	flushCh     chan struct{}
 	endCh       chan struct{}
 }
 
@@ -56,7 +58,9 @@ func (l *LoggerSpec) SetSumologicLogger(opts *SumologicOptions) *LoggerSpec {
 			mediumPriority: make([]*sumologicLogMsg, 0),
 			highPriority:   make([]*sumologicLogMsg, 0),
 		},
-		endCh: make(chan struct{}),
+		timerCtlRun: false,
+		flushCh:     make(chan struct{}),
+		endCh:       make(chan struct{}),
 	}
 
 	// set headers
@@ -71,6 +75,8 @@ func (l *LoggerSpec) SetSumologicLogger(opts *SumologicOptions) *LoggerSpec {
 	}
 
 	go l.sumologicLogger.processor()
+
+	go l.sumologicLogger.timer()
 
 	return l
 }
@@ -89,28 +95,30 @@ func (sml *sumologicLogger) processor() {
 	for {
 		select {
 		case m := <-sml.logQueue:
-			var logMessages []*sumologicLogMsg
 			prio := logPriorities[m.level]
 			switch prio {
 			case LOW:
 				sml.logMessages.lowPriority = append(sml.logMessages.lowPriority, m)
-				logMessages = sml.logMessages.lowPriority
+				if len(sml.logMessages.lowPriority) > 100 {
+					sml.flushCh <- struct{}{}
+				}
 			case MEDIUM:
 				sml.logMessages.mediumPriority = append(sml.logMessages.mediumPriority, m)
-				logMessages = sml.logMessages.mediumPriority
+				if len(sml.logMessages.mediumPriority) > 100 {
+					sml.flushCh <- struct{}{}
+				}
 			case HIGH:
 				sml.logMessages.highPriority = append(sml.logMessages.highPriority, m)
-				logMessages = sml.logMessages.highPriority
+				if len(sml.logMessages.highPriority) > 100 {
+					sml.flushCh <- struct{}{}
+				}
 			default:
-				prio = LOW
 				sml.logMessages.lowPriority = append(sml.logMessages.lowPriority, m)
-				logMessages = sml.logMessages.lowPriority
+				if len(sml.logMessages.lowPriority) > 100 {
+					sml.flushCh <- struct{}{}
+				}
 			}
-			if err := sml.send(logMessages, prio, false); err != nil {
-				tm := time.Now().Format(TIME_FORMAT)
-				fmt.Printf("[ERROR] %s %v\n", tm, err)
-			}
-		case <-time.After(300 * time.Second):
+		case <-sml.flushCh:
 			sml.flushAll()
 		case <-sml.endCh:
 			sml.flushAll()
@@ -119,30 +127,48 @@ func (sml *sumologicLogger) processor() {
 	}
 }
 
-func (sml *sumologicLogger) flushAll() {
-	if err := sml.send(sml.logMessages.highPriority, HIGH, true); err != nil {
-		tm := time.Now().Format(TIME_FORMAT)
-		fmt.Printf("[ERROR] %s %v\n", tm, err)
-	}
-	if err := sml.send(sml.logMessages.mediumPriority, MEDIUM, true); err != nil {
-		tm := time.Now().Format(TIME_FORMAT)
-		fmt.Printf("[ERROR] %s %v\n", tm, err)
-	}
-	if err := sml.send(sml.logMessages.lowPriority, LOW, true); err != nil {
-		tm := time.Now().Format(TIME_FORMAT)
-		fmt.Printf("[ERROR] %s %v\n", tm, err)
+func (sml *sumologicLogger) timer() {
+	if !sml.timerCtlRun {
+		sml.timerCtlRun = true
+		go func() {
+			for {
+				time.Sleep(300 * time.Second)
+				sml.flushCh <- struct{}{}
+			}
+		}()
 	}
 }
 
-func (sml *sumologicLogger) send(logMessages []*sumologicLogMsg, prio Priority, now bool) error {
-	if len(logMessages) == 0 {
-		return nil
+func (sml *sumologicLogger) flushAll() {
+	// HIGH priority
+	if len(sml.logMessages.highPriority) > 0 {
+		if err := sml.send(sml.logMessages.highPriority, HIGH); err != nil {
+			tm := time.Now().Format(TIME_FORMAT)
+			fmt.Printf("[ERROR] %s %v\n", tm, err)
+		}
+		sml.logMessages.highPriority = make([]*sumologicLogMsg, 0)
 	}
 
-	if len(logMessages) < 100 && !now {
-		return nil
+	// MEDIUM priority
+	if len(sml.logMessages.mediumPriority) > 0 {
+		if err := sml.send(sml.logMessages.mediumPriority, MEDIUM); err != nil {
+			tm := time.Now().Format(TIME_FORMAT)
+			fmt.Printf("[ERROR] %s %v\n", tm, err)
+		}
+		sml.logMessages.mediumPriority = make([]*sumologicLogMsg, 0)
 	}
 
+	// LOW priority
+	if len(sml.logMessages.lowPriority) > 0 {
+		if err := sml.send(sml.logMessages.lowPriority, LOW); err != nil {
+			tm := time.Now().Format(TIME_FORMAT)
+			fmt.Printf("[ERROR] %s %v\n", tm, err)
+		}
+		sml.logMessages.lowPriority = make([]*sumologicLogMsg, 0)
+	}
+}
+
+func (sml *sumologicLogger) send(logMessages []*sumologicLogMsg, prio Priority) error {
 	var payload string
 	for _, m := range logMessages {
 		prefix := "[" + logPrefixes[m.level] + "]"
@@ -158,15 +184,6 @@ func (sml *sumologicLogger) send(logMessages []*sumologicLogMsg, prio Priority, 
 
 		if err := sml.upload(strings.NewReader(payload), headers); err != nil {
 			return errors.Wrapf(err, "[%v] function sml.upload()", errors.Trace())
-		}
-
-		switch prio {
-		case LOW:
-			sml.logMessages.lowPriority = make([]*sumologicLogMsg, 0)
-		case MEDIUM:
-			sml.logMessages.mediumPriority = make([]*sumologicLogMsg, 0)
-		case HIGH:
-			sml.logMessages.highPriority = make([]*sumologicLogMsg, 0)
 		}
 	}
 

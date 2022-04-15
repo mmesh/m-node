@@ -954,8 +954,8 @@ k8s.io/klog/v2
 k8s.io/utils/buffer
 k8s.io/utils/integer
 k8s.io/utils/trace
-# mmesh.dev/m-api-go v0.0.0-00010101000000-000000000000 => ./modules/m-api-go
-## explicit; go 1.15
+# mmesh.dev/m-api-go v0.0.0-00010101000000-000000000000 => ../m-api/_dist/mmesh.dev/m-api-go
+## explicit; go 1.17
 mmesh.dev/m-api-go/grpc/common/datetime
 mmesh.dev/m-api-go/grpc/common/empty
 mmesh.dev/m-api-go/grpc/common/jwt
@@ -995,7 +995,7 @@ mmesh.dev/m-api-go/grpc/resources/services/thirdParty
 mmesh.dev/m-api-go/grpc/resources/tenant
 mmesh.dev/m-api-go/grpc/resources/webhook
 mmesh.dev/m-api-go/grpc/rpc
-# mmesh.dev/m-lib v0.0.0-00010101000000-000000000000 => ./modules/m-lib
+# mmesh.dev/m-lib v0.0.0-00010101000000-000000000000 => ../m-lib
 ## explicit; go 1.17
 mmesh.dev/m-lib/pkg/errors
 mmesh.dev/m-lib/pkg/grpc/client
@@ -1026,5 +1026,5 @@ sigs.k8s.io/structured-merge-diff/v4/value
 # sigs.k8s.io/yaml v1.2.0
 ## explicit; go 1.12
 sigs.k8s.io/yaml
-# mmesh.dev/m-api-go => ./modules/m-api-go
-# mmesh.dev/m-lib => ./modules/m-lib
+# mmesh.dev/m-api-go => ../m-api/_dist/mmesh.dev/m-api-go
+# mmesh.dev/m-lib => ../m-lib

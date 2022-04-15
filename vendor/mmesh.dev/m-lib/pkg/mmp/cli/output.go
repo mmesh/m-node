@@ -12,7 +12,7 @@ func Connected() {
 }
 
 func Disconnected() {
-	fmt.Printf("\n%s\n\n", colors.InvertedDarkRedAlt("Disconnected"))
+	fmt.Printf("\n\n%s\n\n", colors.InvertedDarkRedAlt("Disconnected"))
 }
 
 func ChatUserLocal(tm int64, user string) string {

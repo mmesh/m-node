@@ -43,6 +43,20 @@ DwIt2q7+1TeUXK8X5zrCstUCAwEAAQ==
 -----END PUBLIC KEY-----
 `)
 
+func IsBinaryOutdated(app string) (bool, error) {
+	exe, err := os.Executable()
+	if err != nil {
+		return false, errors.Wrapf(err, "[%v] function os.Executable()", errors.Trace())
+	}
+
+	checksum, err := getChecksum(app)
+	if err != nil {
+		return false, errors.Wrapf(err, "[%v] function getChecksum()", errors.Trace())
+	}
+
+	return binaryIsOutdated(exe, checksum), nil
+}
+
 func Update(app string) error {
 	exe, err := os.Executable()
 	if err != nil {
@@ -171,7 +185,7 @@ func getChecksum(app string) ([]byte, error) {
 	scanner := bufio.NewScanner(f)
 	scanner.Split(bufio.ScanWords)
 
-	var words []string
+	words := make([]string, 0)
 
 	for scanner.Scan() {
 		words = append(words, scanner.Text())
