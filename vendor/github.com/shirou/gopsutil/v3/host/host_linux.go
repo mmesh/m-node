@@ -1,3 +1,4 @@
+//go:build linux
 // +build linux
 
 package host
@@ -9,7 +10,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -121,7 +121,6 @@ func UsersWithContext(ctx context.Context) ([]UserStat, error) {
 	}
 
 	return ret, nil
-
 }
 
 func getlsbStruct() (*lsbStruct, error) {
@@ -148,11 +147,7 @@ func getlsbStruct() (*lsbStruct, error) {
 			}
 		}
 	} else if common.PathExists("/usr/bin/lsb_release") {
-		lsb_release, err := exec.LookPath("lsb_release")
-		if err != nil {
-			return ret, err
-		}
-		out, err := invoke.Command(lsb_release)
+		out, err := invoke.Command("/usr/bin/lsb_release")
 		if err != nil {
 			return ret, err
 		}
@@ -283,7 +278,7 @@ func PlatformInformationWithContext(ctx context.Context) (platform string, famil
 		family = "debian"
 	case "fedora":
 		family = "fedora"
-	case "oracle", "centos", "redhat", "scientific", "enterpriseenterprise", "amazon", "xenserver", "cloudlinux", "ibm_powerkvm", "rocky":
+	case "oracle", "centos", "redhat", "scientific", "enterpriseenterprise", "amazon", "xenserver", "cloudlinux", "ibm_powerkvm", "rocky", "almalinux":
 		family = "rhel"
 	case "suse", "opensuse", "opensuse-leap", "opensuse-tumbleweed", "opensuse-tumbleweed-kubic", "sles", "sled", "caasp":
 		family = "suse"
@@ -304,7 +299,6 @@ func PlatformInformationWithContext(ctx context.Context) (platform string, famil
 	}
 
 	return platform, family, version, nil
-
 }
 
 func KernelVersionWithContext(ctx context.Context) (version string, err error) {
