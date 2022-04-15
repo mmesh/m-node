@@ -17,7 +17,7 @@ require (
 	github.com/libp2p/go-libp2p-swarm v0.4.0
 	github.com/lorenzosaino/go-sysctl v0.3.0
 	github.com/miekg/dns v1.1.31
-	github.com/multiformats/go-multiaddr v0.3.1
+	github.com/multiformats/go-multiaddr v0.5.0
 	github.com/pkg/errors v0.9.1
 	github.com/robfig/cron/v3 v3.0.0
 	github.com/shirou/gopsutil/v3 v3.22.3
