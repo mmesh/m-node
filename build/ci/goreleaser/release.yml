@@ -79,14 +79,14 @@ signs:
       - '--output-signature=${signature}'
       - '${artifact}'
     artifacts: all
-    output: true
+    output: false
 
 docker_signs:
 - cmd: cosign
   env:
   - COSIGN_EXPERIMENTAL=1
   artifacts: manifests
-  output: true
+  output: false
   args:
   - 'sign'
   - '${artifact}'
