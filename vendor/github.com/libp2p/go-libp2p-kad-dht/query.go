@@ -393,7 +393,6 @@ func (q *query) queryPeer(ctx context.Context, ch chan<- *queryUpdate, p peer.ID
 	defer q.waitGroup.Done()
 	dialCtx, queryCtx := ctx, ctx
 
-	startQuery := time.Now()
 	// dial the peer
 	if err := q.dht.dialPeer(dialCtx, p); err != nil {
 		// remove the peer if there was a dial failure..but not because of a context cancellation
@@ -404,6 +403,7 @@ func (q *query) queryPeer(ctx context.Context, ch chan<- *queryUpdate, p peer.ID
 		return
 	}
 
+	startQuery := time.Now()
 	// send query RPC to the remote peer
 	newPeers, err := q.queryFn(queryCtx, p)
 	if err != nil {
@@ -432,7 +432,11 @@ func (q *query) queryPeer(ctx context.Context, ch chan<- *queryUpdate, p peer.ID
 		next.Addrs = append(next.Addrs, curInfo.Addrs...)
 
 		// add their addresses to the dialer's peerstore
-		if q.dht.queryPeerFilter(q.dht, *next) {
+		//
+		// add the next peer to the query if matches the query target even if it would otherwise fail the query filter
+		// TODO: this behavior is really specific to how FindPeer works and not GetClosestPeers or any other function
+		isTarget := string(next.ID) == q.key
+		if isTarget || q.dht.queryPeerFilter(q.dht, *next) {
 			q.dht.maybeAddAddrs(next.ID, next.Addrs, pstore.TempAddrTTL)
 			saw = append(saw, next.ID)
 		}

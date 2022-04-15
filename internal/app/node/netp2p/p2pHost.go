@@ -4,12 +4,12 @@ import (
 	"context"
 	"crypto/rand"
 
-	//mrand "math/rand"
+	// mrand "math/rand"
 
 	ds "github.com/ipfs/go-datastore"
 	dsync "github.com/ipfs/go-datastore/sync"
 	"github.com/libp2p/go-libp2p"
-	circuit "github.com/libp2p/go-libp2p-circuit"
+	// circuit "github.com/libp2p/go-libp2p-circuit"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/routing"
@@ -97,7 +97,7 @@ func newP2PHost(port int32, p2pHostType int) (host.Host, error) {
 			libp2p.ListenAddrs(getLocalMAddrs(port)...),
 			libp2p.Identity(prvKey),
 			// libp2p.EnableRelay(circuit.OptDiscovery),
-			libp2p.EnableRelay(circuit.OptHop),
+			libp2p.EnableRelay(),
 			libp2p.EnableAutoRelay(),
 			// libp2p.Transport(libp2pquic.NewTransport),
 			libp2p.DefaultTransports,
@@ -116,7 +116,7 @@ func newP2PHost(port int32, p2pHostType int) (host.Host, error) {
 
 	ctx := context.TODO()
 
-	host, err := libp2p.New(ctx, opts...)
+	host, err := libp2p.New(opts...)
 	if err != nil {
 		return nil, errors.Wrapf(err, "[%v] function libp2p.New()", errors.Trace())
 	}
