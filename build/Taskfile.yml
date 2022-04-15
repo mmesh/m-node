@@ -72,10 +72,6 @@ tasks:
           x6adev/golang-builder:latest {{.TASK_CMD}}
       - sudo chown -R {{.LOCAL_UID}}:{{.LOCAL_GID}} .
 
-  _goreleaser:
-    cmds:
-      - goreleaser {{.CMD}} -f build/ci/goreleaser/release.yml --rm-dist {{.OPTS}}
-
   _verify-mods:
     cmds:
       - task: golang:go-verify-vendor
@@ -83,6 +79,11 @@ tasks:
       - task: golang:go-fmt
       # - task: golang:go-vet
       # - task: golang:golangci-lint
+
+  _goreleaser:
+    deps: [_verify-mods]
+    cmds:
+      - goreleaser {{.CMD}} -f build/ci/goreleaser/release.yml --rm-dist {{.OPTS}}
 
   test-mods:
     desc: Test vendor modules.
@@ -92,7 +93,6 @@ tasks:
           TASK_CMD: _verify-mods
 
   _test-node:
-    deps: [_verify-mods]
     cmds:
       - task: _goreleaser
         vars:
@@ -111,7 +111,6 @@ tasks:
       - task: _build-node
 
   _build-node:
-    deps: [_verify-mods]
     cmds:
       - task: _goreleaser
         vars:
