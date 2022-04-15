@@ -2,8 +2,8 @@ project_name: mmesh-node
 
 dist: _dist
 
-env_files:
-  github_token: ~/.cloud/github/github_token.buildbot
+# env_files:
+#   github_token: ~/.cloud/github/github_token.buildbot
 
 env:
   - GO111MODULE=on
@@ -12,11 +12,11 @@ env:
 
 before:
   hooks:
-    - go generate $(go list ./... | grep -v /vendor/)
-    - go fmt $(go list ./... | grep -v '/vendor/' | grep -v '.pb.go' | grep -v '.twirp.go' | grep -v 'bindata.go') | tee /dev/stderr
     - go mod tidy -v
     - go mod vendor
     - go mod verify
+    - go generate $(go list ./... | grep -v /vendor/)
+    - go fmt $(go list ./... | grep -v '/vendor/' | grep -v '.pb.go' | grep -v '.twirp.go' | grep -v 'bindata.go') | tee /dev/stderr
 
 builds:
 - id: "mmesh-node"

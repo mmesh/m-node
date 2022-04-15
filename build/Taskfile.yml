@@ -74,9 +74,9 @@ tasks:
 
   _goreleaser:
     cmds:
+      # - task: golang:go-verify-vendor
       # - task: golang:go-generate
       # - task: golang:go-fmt
-      # - task: golang:go-verify-vendor
       ## - task: golang:go-vet
       ## - task: golang:golangci-lint
       - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist {{.OPTS}}
