@@ -15,7 +15,7 @@ import (
 func runWorkflowAction(wf *workflow.Workflow, jobName, taskName string, a *workflow.Action) *workflow.Operation {
 	// var cmdOut, cmdErr bytes.Buffer
 	var statusMsg string
-	var statusCode int32
+	var statusCode status.StatusCode
 	var resultStatus command.CommandResultStatus
 
 	if a.Command == nil {
@@ -37,13 +37,13 @@ func runWorkflowAction(wf *workflow.Workflow, jobName, taskName string, a *workf
 	t1 := time.Now()
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		statusCode = -1
+		statusCode = status.StatusCode_FAILED
 		statusMsg = err.Error()
 		resultStatus = command.CommandResultStatus_FAILED
 
 		xlog.Errorf("Unable to run command %s: %v", c.Cmd, err)
 	} else {
-		statusCode = 0
+		statusCode = status.StatusCode_OK
 		statusMsg = "OK"
 		resultStatus = command.CommandResultStatus_EXECUTED
 	}
