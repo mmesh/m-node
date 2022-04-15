@@ -29,4 +29,8 @@ struct CPUStats {
 	natural_t idle;
 };
 
-extern int v3readdrivestat(DriveStats a[], int n);
+extern int gopsutil_v3_readdrivestat(DriveStats a[], int n);
+
+#if (MAC_OS_X_VERSION_MIN_REQUIRED < 120000) // Before macOS 12 Monterey
+       #define IOMainPort IOMasterPort
+#endif
