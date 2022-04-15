@@ -8,12 +8,12 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/peerstore"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 
 	"github.com/gogo/protobuf/proto"
 	ds "github.com/ipfs/go-datastore"
 	u "github.com/ipfs/go-ipfs-util"
+	"github.com/libp2p/go-libp2p-kad-dht/internal"
 	pb "github.com/libp2p/go-libp2p-kad-dht/pb"
 	recpb "github.com/libp2p/go-libp2p-record/pb"
 	"github.com/multiformats/go-base32"
@@ -61,7 +61,7 @@ func (dht *IpfsDHT) handleGetValue(ctx context.Context, p peer.ID, pmes *pb.Mess
 	// setup response
 	resp := pb.NewMessage(pmes.GetType(), pmes.GetKey(), pmes.GetClusterLevel())
 
-	rec, err := dht.checkLocalDatastore(k)
+	rec, err := dht.checkLocalDatastore(ctx, k)
 	if err != nil {
 		return nil, err
 	}
@@ -89,10 +89,10 @@ func (dht *IpfsDHT) handleGetValue(ctx context.Context, p peer.ID, pmes *pb.Mess
 	return resp, nil
 }
 
-func (dht *IpfsDHT) checkLocalDatastore(k []byte) (*recpb.Record, error) {
+func (dht *IpfsDHT) checkLocalDatastore(ctx context.Context, k []byte) (*recpb.Record, error) {
 	logger.Debugf("%s handleGetValue looking into ds", dht.self)
 	dskey := convertToDsKey(k)
-	buf, err := dht.datastore.Get(dskey)
+	buf, err := dht.datastore.Get(ctx, dskey)
 	logger.Debugf("%s handleGetValue looking into ds GOT %v", dht.self, buf)
 
 	if err == ds.ErrNotFound {
@@ -131,7 +131,7 @@ func (dht *IpfsDHT) checkLocalDatastore(k []byte) (*recpb.Record, error) {
 	// may be computationally expensive
 
 	if recordIsBad {
-		err := dht.datastore.Delete(dskey)
+		err := dht.datastore.Delete(ctx, dskey)
 		if err != nil {
 			logger.Error("Failed to delete bad record from datastore: ", err)
 		}
@@ -167,7 +167,7 @@ func (dht *IpfsDHT) handlePutValue(ctx context.Context, p peer.ID, pmes *pb.Mess
 
 	// Make sure the record is valid (not expired, valid signature etc)
 	if err = dht.Validator.Validate(string(rec.GetKey()), rec.GetValue()); err != nil {
-		logger.Infow("bad dht record in PUT", "from", p, "key", loggableRecordKeyBytes(rec.GetKey()), "error", err)
+		logger.Infow("bad dht record in PUT", "from", p, "key", internal.LoggableRecordKeyBytes(rec.GetKey()), "error", err)
 		return nil, err
 	}
 
@@ -187,7 +187,7 @@ func (dht *IpfsDHT) handlePutValue(ctx context.Context, p peer.ID, pmes *pb.Mess
 	// Make sure the new record is "better" than the record we have locally.
 	// This prevents a record with for example a lower sequence number from
 	// overwriting a record with a higher sequence number.
-	existing, err := dht.getRecordFromDatastore(dskey)
+	existing, err := dht.getRecordFromDatastore(ctx, dskey)
 	if err != nil {
 		return nil, err
 	}
@@ -196,11 +196,11 @@ func (dht *IpfsDHT) handlePutValue(ctx context.Context, p peer.ID, pmes *pb.Mess
 		recs := [][]byte{rec.GetValue(), existing.GetValue()}
 		i, err := dht.Validator.Select(string(rec.GetKey()), recs)
 		if err != nil {
-			logger.Warnw("dht record passed validation but failed select", "from", p, "key", loggableRecordKeyBytes(rec.GetKey()), "error", err)
+			logger.Warnw("dht record passed validation but failed select", "from", p, "key", internal.LoggableRecordKeyBytes(rec.GetKey()), "error", err)
 			return nil, err
 		}
 		if i != 0 {
-			logger.Infow("DHT record in PUT older than existing record (ignoring)", "peer", p, "key", loggableRecordKeyBytes(rec.GetKey()))
+			logger.Infow("DHT record in PUT older than existing record (ignoring)", "peer", p, "key", internal.LoggableRecordKeyBytes(rec.GetKey()))
 			return nil, errors.New("old record")
 		}
 	}
@@ -213,14 +213,14 @@ func (dht *IpfsDHT) handlePutValue(ctx context.Context, p peer.ID, pmes *pb.Mess
 		return nil, err
 	}
 
-	err = dht.datastore.Put(dskey, data)
+	err = dht.datastore.Put(ctx, dskey, data)
 	return pmes, err
 }
 
 // returns nil, nil when either nothing is found or the value found doesn't properly validate.
 // returns nil, some_error when there's a *datastore* error (i.e., something goes very wrong)
-func (dht *IpfsDHT) getRecordFromDatastore(dskey ds.Key) (*recpb.Record, error) {
-	buf, err := dht.datastore.Get(dskey)
+func (dht *IpfsDHT) getRecordFromDatastore(ctx context.Context, dskey ds.Key) (*recpb.Record, error) {
+	buf, err := dht.datastore.Get(ctx, dskey)
 	if err == ds.ErrNotFound {
 		return nil, nil
 	}
@@ -317,13 +317,11 @@ func (dht *IpfsDHT) handleGetProviders(ctx context.Context, p peer.ID, pmes *pb.
 	resp := pb.NewMessage(pmes.GetType(), pmes.GetKey(), pmes.GetClusterLevel())
 
 	// setup providers
-	providers := dht.ProviderManager.GetProviders(ctx, key)
-
-	if len(providers) > 0 {
-		// TODO: pstore.PeerInfos should move to core (=> peerstore.AddrInfos).
-		infos := pstore.PeerInfos(dht.peerstore, providers)
-		resp.ProviderPeers = pb.PeerInfosToPBPeers(dht.host.Network(), infos)
+	providers, err := dht.providerStore.GetProviders(ctx, key)
+	if err != nil {
+		return nil, err
 	}
+	resp.ProviderPeers = pb.PeerInfosToPBPeers(dht.host.Network(), providers)
 
 	// Also send closer peers.
 	closer := dht.betterPeersToQuery(pmes, p, dht.bucketSize)
@@ -344,7 +342,7 @@ func (dht *IpfsDHT) handleAddProvider(ctx context.Context, p peer.ID, pmes *pb.M
 		return nil, fmt.Errorf("handleAddProvider key is empty")
 	}
 
-	logger.Debugf("adding provider", "from", p, "key", loggableProviderRecordBytes(key))
+	logger.Debugf("adding provider", "from", p, "key", internal.LoggableProviderRecordBytes(key))
 
 	// add provider should use the address given in the message
 	pinfos := pb.PBPeersToPeerInfos(pmes.GetProviderPeers())
@@ -361,11 +359,7 @@ func (dht *IpfsDHT) handleAddProvider(ctx context.Context, p peer.ID, pmes *pb.M
 			continue
 		}
 
-		if pi.ID != dht.self { // don't add own addrs.
-			// add the received addresses to our peerstore.
-			dht.peerstore.AddAddrs(pi.ID, pi.Addrs, peerstore.ProviderAddrTTL)
-		}
-		dht.ProviderManager.AddProvider(ctx, key, p)
+		dht.providerStore.AddProvider(ctx, key, peer.AddrInfo{ID: p})
 	}
 
 	return nil, nil
