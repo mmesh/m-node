@@ -6212,12 +6212,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListIAMPermissions", runtime.WithHTTPPathPattern("/api/v1/iam:permissions"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListIAMPermissions", runtime.WithHTTPPathPattern("/api/v1/iam:permissions"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_ListIAMPermissions_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_ListIAMPermissions_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6235,12 +6236,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/CreateUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users:new"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/CreateUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users:new"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_CreateUser_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_CreateUser_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6258,12 +6260,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListUsers", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListUsers", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_ListUsers_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_ListUsers_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6281,12 +6284,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_GetUser_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_GetUser_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6304,12 +6308,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DeleteUser_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DeleteUser_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6327,12 +6332,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/EnableUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:enable"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/EnableUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:enable"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_EnableUser_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_EnableUser_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6350,12 +6356,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DisableUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:disable"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DisableUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:disable"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DisableUser_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DisableUser_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6373,12 +6380,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetUserEmail", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:email"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetUserEmail", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:email"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_SetUserEmail_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_SetUserEmail_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6396,12 +6404,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetUserCredentialsPassword", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:password"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetUserCredentialsPassword", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_SetUserCredentialsPassword_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_SetUserCredentialsPassword_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6419,12 +6428,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetUserCredentialsSSH", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetUserCredentialsSSH", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_SetUserCredentialsSSH_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_SetUserCredentialsSSH_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6442,12 +6452,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteUserCredentialsSSH", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteUserCredentialsSSH", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DeleteUserCredentialsSSH_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DeleteUserCredentialsSSH_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6465,12 +6476,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetUserCredentialsTOTP", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:totp"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetUserCredentialsTOTP", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:totp"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_SetUserCredentialsTOTP_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_SetUserCredentialsTOTP_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6488,12 +6500,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetUserSSHKeys", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh-keys"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetUserSSHKeys", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh-keys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_SetUserSSHKeys_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_SetUserSSHKeys_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6511,12 +6524,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetUserSSHKeys", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh-keys"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetUserSSHKeys", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh-keys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_GetUserSSHKeys_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_GetUserSSHKeys_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6534,12 +6548,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetUserPermissions", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:perms"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetUserPermissions", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:perms"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_SetUserPermissions_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_SetUserPermissions_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6557,12 +6572,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListSecurityGroups", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListSecurityGroups", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_ListSecurityGroups_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_ListSecurityGroups_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6580,12 +6596,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetSecurityGroup", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups/{securityGroupID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetSecurityGroup", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups/{securityGroupID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_GetSecurityGroup_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_GetSecurityGroup_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6603,12 +6620,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetSecurityGroup", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups/{securityGroupID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetSecurityGroup", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups/{securityGroupID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_SetSecurityGroup_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_SetSecurityGroup_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6626,12 +6644,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteSecurityGroup", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups/{securityGroupID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteSecurityGroup", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups/{securityGroupID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DeleteSecurityGroup_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DeleteSecurityGroup_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6649,12 +6668,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListRoles", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListRoles", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_ListRoles_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_ListRoles_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6672,12 +6692,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetRole", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles/{roleID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetRole", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles/{roleID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_GetRole_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_GetRole_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6695,12 +6716,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetRole", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles/{roleID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetRole", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles/{roleID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_SetRole_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_SetRole_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6718,12 +6740,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteRole", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles/{roleID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteRole", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles/{roleID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DeleteRole_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DeleteRole_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6741,12 +6764,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListACLs", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListACLs", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_ListACLs_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_ListACLs_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6764,12 +6788,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetACL", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls/{ACLID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetACL", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls/{ACLID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_GetACL_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_GetACL_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6787,12 +6812,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetACL", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls/{ACLID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetACL", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls/{ACLID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_SetACL_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_SetACL_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6810,12 +6836,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteACL", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls/{ACLID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteACL", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls/{ACLID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DeleteACL_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DeleteACL_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6833,12 +6860,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListTenants", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListTenants", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_ListTenants_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_ListTenants_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6856,12 +6884,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetTenant", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetTenant", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_GetTenant_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_GetTenant_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6879,12 +6908,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetTenant", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetTenant", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_SetTenant_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_SetTenant_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6902,12 +6932,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteTenant", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteTenant", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DeleteTenant_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DeleteTenant_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6925,12 +6956,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListNetworks", runtime.WithHTTPPathPattern("/api/v1/accounts/{tenant.accountID}/tenants/{tenant.tenantID}/networks"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListNetworks", runtime.WithHTTPPathPattern("/api/v1/accounts/{tenant.accountID}/tenants/{tenant.tenantID}/networks"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_ListNetworks_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_ListNetworks_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6948,12 +6980,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetNetwork", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetNetwork", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_GetNetwork_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_GetNetwork_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6971,12 +7004,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetNetwork", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetNetwork", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_SetNetwork_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_SetNetwork_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -6994,12 +7028,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteNetwork", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteNetwork", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DeleteNetwork_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DeleteNetwork_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7017,12 +7052,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListVRFs", runtime.WithHTTPPathPattern("/api/v1/accounts/{network.accountID}/tenants/{network.tenantID}/networks/{network.netID}/subnets"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListVRFs", runtime.WithHTTPPathPattern("/api/v1/accounts/{network.accountID}/tenants/{network.tenantID}/networks/{network.netID}/subnets"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_ListVRFs_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_ListVRFs_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7040,12 +7076,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetVRF", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetVRF", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_GetVRF_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_GetVRF_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7063,12 +7100,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetVRF", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetVRF", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_SetVRF_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_SetVRF_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7086,12 +7124,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteVRF", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteVRF", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DeleteVRF_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DeleteVRF_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7109,12 +7148,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetNetworkPolicy", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}:policy"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetNetworkPolicy", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}:policy"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_GetNetworkPolicy_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_GetNetworkPolicy_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7132,12 +7172,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetNetworkPolicy", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{networkPolicyConfig.tenant}/networks/{networkPolicyConfig.network}/subnets/{networkPolicyConfig.subnet}:policy"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetNetworkPolicy", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{networkPolicyConfig.tenant}/networks/{networkPolicyConfig.network}/subnets/{networkPolicyConfig.subnet}:policy"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_SetNetworkPolicy_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_SetNetworkPolicy_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7155,12 +7196,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteNetworkPolicy", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}:policy"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteNetworkPolicy", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}:policy"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DeleteNetworkPolicy_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DeleteNetworkPolicy_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7178,12 +7220,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListRoutes", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}:routes"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListRoutes", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}:routes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_ListRoutes_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_ListRoutes_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7201,12 +7244,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/CreateNodeInstallLinuxWebhook", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}/nodes/{nodeID}:webhook-linux"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/CreateNodeInstallLinuxWebhook", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}/nodes/{nodeID}:webhook-linux"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_CreateNodeInstallLinuxWebhook_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_CreateNodeInstallLinuxWebhook_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7224,12 +7268,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListNodeMMIDs", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:nodes"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListNodeMMIDs", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:nodes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_ListNodeMMIDs_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_ListNodeMMIDs_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7247,12 +7292,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListNodes", runtime.WithHTTPPathPattern("/api/v1/accounts/{VRF.accountID}/tenants/{VRF.tenantID}/networks/{VRF.netID}/subnets/{VRF.VRFID}/nodes"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListNodes", runtime.WithHTTPPathPattern("/api/v1/accounts/{VRF.accountID}/tenants/{VRF.tenantID}/networks/{VRF.netID}/subnets/{VRF.VRFID}/nodes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_ListNodes_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_ListNodes_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7270,12 +7316,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}/nodes/{nodeID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}/nodes/{nodeID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_GetNode_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_GetNode_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7293,12 +7340,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}/nodes/{nodeID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}/nodes/{nodeID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DeleteNode_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DeleteNode_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7316,12 +7364,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListProjects", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListProjects", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_ListProjects_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_ListProjects_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7339,12 +7388,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetProject", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetProject", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_GetProject_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_GetProject_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7362,12 +7412,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetProject", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetProject", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_SetProject_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_SetProject_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7385,12 +7436,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteProject", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteProject", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DeleteProject_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DeleteProject_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7408,12 +7460,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListWorkflows", runtime.WithHTTPPathPattern("/api/v1/accounts/{project.accountID}/projects/{project.projectID}/workflows"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListWorkflows", runtime.WithHTTPPathPattern("/api/v1/accounts/{project.accountID}/projects/{project.projectID}/workflows"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_ListWorkflows_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_ListWorkflows_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7431,12 +7484,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetWorkflow", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetWorkflow", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_GetWorkflow_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_GetWorkflow_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7454,12 +7508,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetWorkflow", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/SetWorkflow", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_SetWorkflow_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_SetWorkflow_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7477,12 +7532,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteWorkflow", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteWorkflow", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DeleteWorkflow_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DeleteWorkflow_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7500,12 +7556,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListOperations", runtime.WithHTTPPathPattern("/api/v1/accounts/{workflow.accountID}/projects/{workflow.projectID}/workflows/{workflow.workflowID}/operations"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListOperations", runtime.WithHTTPPathPattern("/api/v1/accounts/{workflow.accountID}/projects/{workflow.projectID}/workflows/{workflow.workflowID}/operations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_ListOperations_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_ListOperations_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7523,12 +7580,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetOperation", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}/operations/{operationID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetOperation", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}/operations/{operationID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_GetOperation_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_GetOperation_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7546,12 +7604,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteOperation", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}/operations/{operationID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteOperation", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}/operations/{operationID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DeleteOperation_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DeleteOperation_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7569,12 +7628,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListAlerts", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/ListAlerts", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_ListAlerts_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_ListAlerts_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7592,12 +7652,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetAlert", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts/{alertID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/GetAlert", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts/{alertID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_GetAlert_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_GetAlert_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7615,12 +7676,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/NewAlertComment", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts/{alertID}:comment"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/NewAlertComment", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts/{alertID}:comment"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_NewAlertComment_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_NewAlertComment_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7638,12 +7700,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteAlert", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts/{alertID}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DeleteAlert", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts/{alertID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DeleteAlert_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DeleteAlert_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7661,12 +7724,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/MetricsQuery", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/metrics"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/MetricsQuery", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/metrics"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_MetricsQuery_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_MetricsQuery_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7684,12 +7748,13 @@ func RegisterCoreAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DataQuery", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/data"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.CoreAPI/DataQuery", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/data"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_CoreAPI_DataQuery_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_CoreAPI_DataQuery_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -7731,7 +7796,7 @@ func RegisterCoreAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeM
 
 // RegisterCoreAPIHandler registers the http handlers for service CoreAPI to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterCoreAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
+func RegisterCoreAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
 	return RegisterCoreAPIHandlerClient(ctx, mux, NewCoreAPIClient(conn))
 }
 
@@ -7746,12 +7811,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListIAMPermissions", runtime.WithHTTPPathPattern("/api/v1/iam:permissions"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListIAMPermissions", runtime.WithHTTPPathPattern("/api/v1/iam:permissions"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_ListIAMPermissions_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_ListIAMPermissions_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -7766,12 +7832,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/CreateUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users:new"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/CreateUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users:new"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_CreateUser_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_CreateUser_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -7786,12 +7853,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListUsers", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListUsers", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_ListUsers_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_ListUsers_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -7806,12 +7874,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_GetUser_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_GetUser_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -7826,12 +7895,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DeleteUser_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DeleteUser_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -7846,12 +7916,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/EnableUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:enable"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/EnableUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:enable"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_EnableUser_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_EnableUser_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -7866,12 +7937,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DisableUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:disable"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DisableUser", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:disable"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DisableUser_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DisableUser_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -7886,12 +7958,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetUserEmail", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:email"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetUserEmail", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:email"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_SetUserEmail_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_SetUserEmail_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -7906,12 +7979,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetUserCredentialsPassword", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:password"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetUserCredentialsPassword", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:password"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_SetUserCredentialsPassword_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_SetUserCredentialsPassword_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -7926,12 +8000,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetUserCredentialsSSH", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetUserCredentialsSSH", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_SetUserCredentialsSSH_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_SetUserCredentialsSSH_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -7946,12 +8021,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteUserCredentialsSSH", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteUserCredentialsSSH", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DeleteUserCredentialsSSH_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DeleteUserCredentialsSSH_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -7966,12 +8042,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetUserCredentialsTOTP", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:totp"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetUserCredentialsTOTP", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:totp"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_SetUserCredentialsTOTP_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_SetUserCredentialsTOTP_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -7986,12 +8063,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetUserSSHKeys", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh-keys"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetUserSSHKeys", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh-keys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_SetUserSSHKeys_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_SetUserSSHKeys_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8006,12 +8084,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetUserSSHKeys", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh-keys"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetUserSSHKeys", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:ssh-keys"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_GetUserSSHKeys_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_GetUserSSHKeys_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8026,12 +8105,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetUserPermissions", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:perms"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetUserPermissions", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/users/{email}:perms"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_SetUserPermissions_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_SetUserPermissions_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8046,12 +8126,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListSecurityGroups", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListSecurityGroups", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_ListSecurityGroups_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_ListSecurityGroups_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8066,12 +8147,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetSecurityGroup", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups/{securityGroupID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetSecurityGroup", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups/{securityGroupID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_GetSecurityGroup_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_GetSecurityGroup_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8086,12 +8168,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetSecurityGroup", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups/{securityGroupID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetSecurityGroup", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups/{securityGroupID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_SetSecurityGroup_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_SetSecurityGroup_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8106,12 +8189,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteSecurityGroup", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups/{securityGroupID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteSecurityGroup", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/securityGroups/{securityGroupID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DeleteSecurityGroup_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DeleteSecurityGroup_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8126,12 +8210,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListRoles", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListRoles", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_ListRoles_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_ListRoles_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8146,12 +8231,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetRole", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles/{roleID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetRole", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles/{roleID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_GetRole_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_GetRole_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8166,12 +8252,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetRole", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles/{roleID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetRole", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles/{roleID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_SetRole_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_SetRole_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8186,12 +8273,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteRole", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles/{roleID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteRole", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/roles/{roleID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DeleteRole_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DeleteRole_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8206,12 +8294,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListACLs", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListACLs", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_ListACLs_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_ListACLs_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8226,12 +8315,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetACL", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls/{ACLID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetACL", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls/{ACLID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_GetACL_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_GetACL_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8246,12 +8336,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetACL", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls/{ACLID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetACL", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls/{ACLID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_SetACL_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_SetACL_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8266,12 +8357,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteACL", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls/{ACLID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteACL", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/iam/acls/{ACLID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DeleteACL_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DeleteACL_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8286,12 +8378,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListTenants", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListTenants", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_ListTenants_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_ListTenants_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8306,12 +8399,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetTenant", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetTenant", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_GetTenant_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_GetTenant_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8326,12 +8420,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetTenant", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetTenant", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_SetTenant_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_SetTenant_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8346,12 +8441,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteTenant", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteTenant", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DeleteTenant_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DeleteTenant_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8366,12 +8462,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListNetworks", runtime.WithHTTPPathPattern("/api/v1/accounts/{tenant.accountID}/tenants/{tenant.tenantID}/networks"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListNetworks", runtime.WithHTTPPathPattern("/api/v1/accounts/{tenant.accountID}/tenants/{tenant.tenantID}/networks"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_ListNetworks_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_ListNetworks_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8386,12 +8483,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetNetwork", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetNetwork", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_GetNetwork_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_GetNetwork_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8406,12 +8504,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetNetwork", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetNetwork", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_SetNetwork_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_SetNetwork_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8426,12 +8525,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteNetwork", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteNetwork", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DeleteNetwork_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DeleteNetwork_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8446,12 +8546,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListVRFs", runtime.WithHTTPPathPattern("/api/v1/accounts/{network.accountID}/tenants/{network.tenantID}/networks/{network.netID}/subnets"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListVRFs", runtime.WithHTTPPathPattern("/api/v1/accounts/{network.accountID}/tenants/{network.tenantID}/networks/{network.netID}/subnets"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_ListVRFs_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_ListVRFs_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8466,12 +8567,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetVRF", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetVRF", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_GetVRF_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_GetVRF_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8486,12 +8588,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetVRF", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetVRF", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_SetVRF_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_SetVRF_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8506,12 +8609,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteVRF", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteVRF", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DeleteVRF_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DeleteVRF_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8526,12 +8630,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetNetworkPolicy", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}:policy"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetNetworkPolicy", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}:policy"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_GetNetworkPolicy_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_GetNetworkPolicy_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8546,12 +8651,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetNetworkPolicy", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{networkPolicyConfig.tenant}/networks/{networkPolicyConfig.network}/subnets/{networkPolicyConfig.subnet}:policy"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetNetworkPolicy", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{networkPolicyConfig.tenant}/networks/{networkPolicyConfig.network}/subnets/{networkPolicyConfig.subnet}:policy"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_SetNetworkPolicy_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_SetNetworkPolicy_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8566,12 +8672,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteNetworkPolicy", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}:policy"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteNetworkPolicy", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}:policy"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DeleteNetworkPolicy_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DeleteNetworkPolicy_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8586,12 +8693,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListRoutes", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}:routes"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListRoutes", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}:routes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_ListRoutes_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_ListRoutes_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8606,12 +8714,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/CreateNodeInstallLinuxWebhook", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}/nodes/{nodeID}:webhook-linux"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/CreateNodeInstallLinuxWebhook", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}/nodes/{nodeID}:webhook-linux"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_CreateNodeInstallLinuxWebhook_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_CreateNodeInstallLinuxWebhook_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8626,12 +8735,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListNodeMMIDs", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:nodes"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListNodeMMIDs", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:nodes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_ListNodeMMIDs_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_ListNodeMMIDs_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8646,12 +8756,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListNodes", runtime.WithHTTPPathPattern("/api/v1/accounts/{VRF.accountID}/tenants/{VRF.tenantID}/networks/{VRF.netID}/subnets/{VRF.VRFID}/nodes"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListNodes", runtime.WithHTTPPathPattern("/api/v1/accounts/{VRF.accountID}/tenants/{VRF.tenantID}/networks/{VRF.netID}/subnets/{VRF.VRFID}/nodes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_ListNodes_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_ListNodes_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8666,12 +8777,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}/nodes/{nodeID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}/nodes/{nodeID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_GetNode_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_GetNode_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8686,12 +8798,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}/nodes/{nodeID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{VRFID}/nodes/{nodeID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DeleteNode_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DeleteNode_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8706,12 +8819,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListProjects", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListProjects", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_ListProjects_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_ListProjects_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8726,12 +8840,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetProject", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetProject", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_GetProject_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_GetProject_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8746,12 +8861,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetProject", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetProject", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_SetProject_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_SetProject_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8766,12 +8882,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteProject", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteProject", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DeleteProject_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DeleteProject_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8786,12 +8903,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListWorkflows", runtime.WithHTTPPathPattern("/api/v1/accounts/{project.accountID}/projects/{project.projectID}/workflows"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListWorkflows", runtime.WithHTTPPathPattern("/api/v1/accounts/{project.accountID}/projects/{project.projectID}/workflows"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_ListWorkflows_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_ListWorkflows_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8806,12 +8924,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetWorkflow", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetWorkflow", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_GetWorkflow_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_GetWorkflow_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8826,12 +8945,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetWorkflow", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/SetWorkflow", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_SetWorkflow_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_SetWorkflow_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8846,12 +8966,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteWorkflow", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteWorkflow", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DeleteWorkflow_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DeleteWorkflow_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8866,12 +8987,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListOperations", runtime.WithHTTPPathPattern("/api/v1/accounts/{workflow.accountID}/projects/{workflow.projectID}/workflows/{workflow.workflowID}/operations"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListOperations", runtime.WithHTTPPathPattern("/api/v1/accounts/{workflow.accountID}/projects/{workflow.projectID}/workflows/{workflow.workflowID}/operations"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_ListOperations_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_ListOperations_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8886,12 +9008,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetOperation", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}/operations/{operationID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetOperation", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}/operations/{operationID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_GetOperation_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_GetOperation_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8906,12 +9029,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteOperation", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}/operations/{operationID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteOperation", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/projects/{projectID}/workflows/{workflowID}/operations/{operationID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DeleteOperation_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DeleteOperation_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8926,12 +9050,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListAlerts", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/ListAlerts", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_ListAlerts_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_ListAlerts_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8946,12 +9071,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetAlert", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts/{alertID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/GetAlert", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts/{alertID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_GetAlert_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_GetAlert_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8966,12 +9092,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/NewAlertComment", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts/{alertID}:comment"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/NewAlertComment", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts/{alertID}:comment"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_NewAlertComment_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_NewAlertComment_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -8986,12 +9113,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteAlert", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts/{alertID}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DeleteAlert", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/alerts/{alertID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DeleteAlert_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DeleteAlert_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -9006,12 +9134,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/MetricsQuery", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/metrics"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/MetricsQuery", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/metrics"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_MetricsQuery_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_MetricsQuery_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -9026,12 +9155,13 @@ func RegisterCoreAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DataQuery", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/data"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/api.CoreAPI/DataQuery", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/data"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_CoreAPI_DataQuery_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_CoreAPI_DataQuery_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)

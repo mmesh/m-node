@@ -209,6 +209,15 @@ func (l *LoggerSpec) logf(level LogLevel, format string, args ...interface{}) {
 			fmt.Println(l.logPrefix(level, timestamp), fmt.Sprintf(format, args...))
 		}
 
+		if l.sumologicLogger != nil {
+			if level >= l.sumologicLogger.logLevel {
+				if err := l.sumologicLog(level, timestamp, fmt.Sprintf(format, args...)); err != nil {
+					sumologicErr := fmt.Sprintf("Unable to post log msg to SumoLogic: %v", err)
+					fmt.Println(l.logPrefix(level, timestamp), sumologicErr)
+				}
+			}
+		}
+
 		if l.slackLogger != nil {
 			if level >= l.slackLogger.logLevel {
 				if err := l.slackLog(level, timestamp, fmt.Sprintf(format, args...)); err != nil {
