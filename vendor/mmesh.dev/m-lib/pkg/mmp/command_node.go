@@ -7,9 +7,9 @@ import (
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
 	"mmesh.dev/m-api-go/grpc/network/mmsp/command"
+	"mmesh.dev/m-lib/pkg/mmp/auth"
 	"mmesh.dev/m-lib/pkg/mmp/streaming"
 	"mmesh.dev/m-lib/pkg/mmp/term"
-	"mmesh.dev/m-lib/pkg/mmp/auth"
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
