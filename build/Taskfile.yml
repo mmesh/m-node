@@ -74,22 +74,48 @@ tasks:
 
   _goreleaser:
     cmds:
-      # - task: golang:go-verify-vendor
-      # - task: golang:go-generate
-      # - task: golang:go-fmt
-      ## - task: golang:go-vet
-      ## - task: golang:golangci-lint
-      - goreleaser release -f build/ci/goreleaser/release.yml --rm-dist {{.OPTS}}
-      # - goreleaser build -f build/ci/goreleaser/release.yml --rm-dist {{.OPTS}}
+      - goreleaser {{.CMD}} -f build/ci/goreleaser/release.yml --rm-dist {{.OPTS}}
+
+  _verify-mods:
+    cmds:
+      - task: golang:go-verify-vendor
+      - task: golang:go-generate
+      - task: golang:go-fmt
+      # - task: golang:go-vet
+      # - task: golang:golangci-lint
+
+  test-mods:
+    desc: Test vendor modules.
+    cmds:
+      - task: _docker-builder
+        vars:
+          TASK_CMD: _verify-mods
+
+  _test-node:
+    deps: [_verify-mods]
+    cmds:
+      - task: _goreleaser
+        vars:
+          CMD: build
+          OPTS: --snapshot
+
+  test-node:
+    desc: Test build the cli binary.
+    cmds:
+      - task: _docker-builder
+        vars:
+          TASK_CMD: _test-node
 
   _build-all:
     cmds:
       - task: _build-node
 
   _build-node:
+    deps: [_verify-mods]
     cmds:
       - task: _goreleaser
         vars:
+          CMD: release
           OPTS: --snapshot
 
   build-all:
@@ -154,6 +180,7 @@ tasks:
     cmds:
       - task: _goreleaser
         vars:
+          CMD: release
           OPTS: ""
 
   release:
