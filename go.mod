@@ -36,7 +36,6 @@ require (
 )
 
 require (
-	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/btcsuite/btcd v0.20.1-beta // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/creack/pty v1.1.17 // indirect
@@ -132,6 +131,7 @@ require (
 	github.com/multiformats/go-varint v0.0.6 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pelletier/go-toml v1.2.0 // indirect
+	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/rivo/tview v0.0.0-20211001102648-5508f4b00266 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/slack-go/slack v0.10.1 // indirect
@@ -147,6 +147,7 @@ require (
 	github.com/vishvananda/netns v0.0.0-20191106174202-0a2b9b5464df // indirect
 	github.com/whyrusleeping/go-keyspace v0.0.0-20160322163242-5b898ac5add1 // indirect
 	github.com/whyrusleeping/multiaddr-filter v0.0.0-20160516205228-e903e4adabd7 // indirect
+	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.opencensus.io v0.22.4 // indirect
 	go.uber.org/atomic v1.6.0 // indirect
 	go.uber.org/multierr v1.5.0 // indirect
