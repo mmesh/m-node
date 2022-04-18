@@ -54,12 +54,14 @@ func newP2PHost(port int32, p2pHostType int) (host.Host, error) {
 		// }
 
 		opts = []libp2p.Option{
-			//libp2p.ListenAddrStrings("/ip4/127.0.0.1/tcp/0"),
+			// libp2p.ListenAddrStrings("/ip4/127.0.0.1/tcp/0"),
 			libp2p.ListenAddrs(),
-			//libp2p.ListenAddrs(sourceMultiAddr),
+			// libp2p.ListenAddrs(sourceMultiAddr),
 			libp2p.Identity(prvKey),
 			// libp2p.EnableRelay(circuit.OptDiscovery),
+			libp2p.EnableRelay(), // Enable the use of relays
 			libp2p.EnableAutoRelay(),
+			libp2p.ForceReachabilityPrivate(),
 			// libp2p.Transport(libp2pquic.NewTransport),
 			libp2p.DefaultTransports,
 			libp2p.DefaultMuxers,
@@ -78,6 +80,7 @@ func newP2PHost(port int32, p2pHostType int) (host.Host, error) {
 			libp2p.ListenAddrs(getLocalMAddrs(port)...),
 			libp2p.Identity(prvKey),
 			// libp2p.EnableRelay(circuit.OptDiscovery),
+			libp2p.EnableRelay(), // Enable the use of relays
 			libp2p.EnableAutoRelay(),
 			// libp2p.Transport(libp2pquic.NewTransport),
 			libp2p.DefaultTransports,
@@ -97,8 +100,10 @@ func newP2PHost(port int32, p2pHostType int) (host.Host, error) {
 			libp2p.ListenAddrs(getLocalMAddrs(port)...),
 			libp2p.Identity(prvKey),
 			// libp2p.EnableRelay(circuit.OptDiscovery),
-			libp2p.EnableRelay(),
+			libp2p.EnableRelay(), // Enable the use of relays
 			libp2p.EnableAutoRelay(),
+			libp2p.EnableRelayService(), // Configure the node as a relay
+			libp2p.ForceReachabilityPublic(),
 			// libp2p.Transport(libp2pquic.NewTransport),
 			libp2p.DefaultTransports,
 			libp2p.DefaultMuxers,
