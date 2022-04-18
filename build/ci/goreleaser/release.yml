@@ -53,6 +53,8 @@ builds:
     - amd64
     - arm64
     - arm
+  goamd64:
+    - v1
   # lang: go
 
 snapshot:
