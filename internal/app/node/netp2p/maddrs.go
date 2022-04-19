@@ -12,6 +12,7 @@ import (
 
 type addrList []multiaddr.Multiaddr
 
+/*
 func (al *addrList) string() string {
 	strs := make([]string, len(*al))
 	for i, addr := range *al {
@@ -19,7 +20,9 @@ func (al *addrList) string() string {
 	}
 	return strings.Join(strs, ",")
 }
+*/
 
+/*
 func (al *addrList) set(value string) error {
 	addr, err := multiaddr.NewMultiaddr(value)
 	if err != nil {
@@ -28,6 +31,7 @@ func (al *addrList) set(value string) error {
 	*al = append(*al, addr)
 	return nil
 }
+*/
 
 func (al *addrList) strings() []string {
 	var strs []string
@@ -38,6 +42,7 @@ func (al *addrList) strings() []string {
 	return strs
 }
 
+/*
 func stringsToMAddrs(addrStrings []string) (maddrs []multiaddr.Multiaddr, err error) {
 	for _, addrString := range addrStrings {
 		addr, err := multiaddr.NewMultiaddr(addrString)
@@ -48,6 +53,7 @@ func stringsToMAddrs(addrStrings []string) (maddrs []multiaddr.Multiaddr, err er
 	}
 	return
 }
+*/
 
 func getLocalMAddrs(port int32) []multiaddr.Multiaddr {
 	var maddrs []multiaddr.Multiaddr
