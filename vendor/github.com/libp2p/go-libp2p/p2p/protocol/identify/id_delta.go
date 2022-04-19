@@ -1,12 +1,11 @@
 package identify
 
 import (
-	"time"
-
 	"github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	"time"
 
 	pb "github.com/libp2p/go-libp2p/p2p/protocol/identify/pb"
 
@@ -15,28 +14,13 @@ import (
 
 const IDDelta = "/p2p/id/delta/1.0.0"
 
-const deltaMsgSize = 2048
-
 // deltaHandler handles incoming delta updates from peers.
-func (ids *idService) deltaHandler(s network.Stream) {
-	if err := s.Scope().SetService(ServiceName); err != nil {
-		log.Warnf("error attaching stream to identify service: %s", err)
-		s.Reset()
-		return
-	}
-
-	if err := s.Scope().ReserveMemory(deltaMsgSize, network.ReservationPriorityAlways); err != nil {
-		log.Warnf("error reserving memory for identify stream: %s", err)
-		s.Reset()
-		return
-	}
-	defer s.Scope().ReleaseMemory(deltaMsgSize)
-
+func (ids *IDService) deltaHandler(s network.Stream) {
 	_ = s.SetReadDeadline(time.Now().Add(StreamReadTimeout))
 
 	c := s.Conn()
 
-	r := protoio.NewDelimitedReader(s, deltaMsgSize)
+	r := protoio.NewDelimitedReader(s, 2048)
 	mes := pb.Identify{}
 	if err := r.ReadMsg(&mes); err != nil {
 		log.Warn("error reading identify message: ", err)
@@ -62,7 +46,7 @@ func (ids *idService) deltaHandler(s network.Stream) {
 
 // consumeDelta processes an incoming delta from a peer, updating the peerstore
 // and emitting the appropriate events.
-func (ids *idService) consumeDelta(id peer.ID, delta *pb.Delta) error {
+func (ids *IDService) consumeDelta(id peer.ID, delta *pb.Delta) error {
 	err := ids.Host.Peerstore().AddProtocols(id, delta.GetAddedProtocols()...)
 	if err != nil {
 		return err

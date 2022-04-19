@@ -13,8 +13,6 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var config Config
-
 func init() {
 	SetupLogging(configFromEnv())
 }
@@ -94,12 +92,6 @@ var primaryCore zapcore.Core
 // loggerCore is the base for all loggers created by this package
 var loggerCore = &lockedMultiCore{}
 
-// GetConfig returns a copy of the saved config. It can be inspected, modified,
-// and re-applied using a subsequent call to SetupLogging().
-func GetConfig() Config {
-	return config
-}
-
 // SetupLogging will initialize the logger backend and set the flags.
 // TODO calling this in `init` pushes all configuration to env variables
 // - move it out of `init`? then we need to change all the code (js-ipfs, go-ipfs) to call this explicitly
@@ -107,8 +99,6 @@ func GetConfig() Config {
 func SetupLogging(cfg Config) {
 	loggerMutex.Lock()
 	defer loggerMutex.Unlock()
-
-	config = cfg
 
 	primaryFormat = cfg.Format
 	defaultLevel = cfg.Level
@@ -360,13 +350,9 @@ func configFromEnv() Config {
 		}
 	}
 
-	// Check that neither of the requested Std* nor the file are TTYs
-	// At this stage (configFromEnv) we do not have a uniform list to examine yet
 	if noExplicitFormat &&
-		!(cfg.Stdout && isTerm(os.Stdout)) &&
-		!(cfg.Stderr && isTerm(os.Stderr)) &&
-		// check this last: expensive
-		!(cfg.File != "" && pathIsTerm(cfg.File)) {
+		(!cfg.Stdout || !isTerm(os.Stdout)) &&
+		(!cfg.Stderr || !isTerm(os.Stderr)) {
 		cfg.Format = PlaintextOutput
 	}
 
@@ -388,13 +374,4 @@ func configFromEnv() Config {
 
 func isTerm(f *os.File) bool {
 	return isatty.IsTerminal(f.Fd()) || isatty.IsCygwinTerminal(f.Fd())
-}
-
-func pathIsTerm(p string) bool {
-	// !!!no!!! O_CREAT, if we fail - we fail
-	f, err := os.OpenFile(p, os.O_WRONLY, 0)
-	if f != nil {
-		defer f.Close() // nolint:errcheck
-	}
-	return err == nil && isTerm(f)
 }

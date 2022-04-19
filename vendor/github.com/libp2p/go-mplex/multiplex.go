@@ -11,25 +11,14 @@ import (
 	"sync"
 	"time"
 
+	logging "github.com/ipfs/go-log"
 	pool "github.com/libp2p/go-buffer-pool"
-
-	logging "github.com/ipfs/go-log/v2"
 	"github.com/multiformats/go-varint"
 )
 
 var log = logging.Logger("mplex")
 
-const (
-	MaxMessageSize = 1 << 20
-	BufferSize     = 4096
-	MaxBuffers     = 4
-
-	MinMemoryReservation = 3 * BufferSize
-)
-
-var (
-	ChunkSize = BufferSize - 20
-)
+var MaxMessageSize = 1 << 20
 
 // Max time to block waiting for a slow reader to read from a stream before
 // resetting it. Preferably, we'd have some form of back-pressure mechanism but
@@ -47,29 +36,27 @@ var ErrTwoInitiators = errors.New("two initiators")
 var ErrInvalidState = errors.New("received an unexpected message from the peer")
 
 var errTimeout = timeout{}
+var errStreamClosed = errors.New("stream closed")
 
-var ResetStreamTimeout = 2 * time.Minute
+var (
+	ResetStreamTimeout = 2 * time.Minute
 
-var getInputBufferTimeout = time.Minute
+	WriteCoalesceDelay = 100 * time.Microsecond
+)
 
 type timeout struct{}
 
-func (timeout) Error() string   { return "i/o deadline exceeded" }
-func (timeout) Temporary() bool { return true }
-func (timeout) Timeout() bool   { return true }
-
-// The MemoryManager allows management of memory allocations.
-type MemoryManager interface {
-	// ReserveMemory reserves memory / buffer.
-	ReserveMemory(size int, prio uint8) error
-	// ReleaseMemory explicitly releases memory previously reserved with ReserveMemory
-	ReleaseMemory(size int)
+func (_ timeout) Error() string {
+	return "i/o deadline exceeded"
 }
 
-type nullMemoryManager struct{}
+func (_ timeout) Temporary() bool {
+	return true
+}
 
-func (m *nullMemoryManager) ReserveMemory(size int, prio uint8) error { return nil }
-func (m *nullMemoryManager) ReleaseMemory(size int)                   {}
+func (_ timeout) Timeout() bool {
+	return true
+}
 
 // +1 for initiator
 const (
@@ -86,84 +73,46 @@ type Multiplex struct {
 	nextID    uint64
 	initiator bool
 
-	memoryManager MemoryManager
-
 	closed       chan struct{}
 	shutdown     chan struct{}
 	shutdownErr  error
 	shutdownLock sync.Mutex
 
-	writeCh  chan []byte
+	writeCh         chan []byte
+	writeTimer      *time.Timer
+	writeTimerFired bool
+
 	nstreams chan *Stream
 
 	channels map[streamID]*Stream
 	chLock   sync.Mutex
-
-	bufIn, bufOut  chan struct{}
-	bufInTimer     *time.Timer
-	reservedMemory int
 }
 
 // NewMultiplex creates a new multiplexer session.
-func NewMultiplex(con net.Conn, initiator bool, memoryManager MemoryManager) (*Multiplex, error) {
-	if memoryManager == nil {
-		memoryManager = &nullMemoryManager{}
-	}
+func NewMultiplex(con net.Conn, initiator bool) *Multiplex {
 	mp := &Multiplex{
-		con:           con,
-		initiator:     initiator,
-		channels:      make(map[streamID]*Stream),
-		closed:        make(chan struct{}),
-		shutdown:      make(chan struct{}),
-		nstreams:      make(chan *Stream, 16),
-		memoryManager: memoryManager,
-	}
-
-	// up-front reserve memory for the essential buffers (1 input, 1 output + the reader buffer)
-	if err := mp.memoryManager.ReserveMemory(MinMemoryReservation, 255); err != nil {
-		return nil, err
-	}
-
-	mp.reservedMemory += MinMemoryReservation
-	bufs := 1
-
-	// reserve some more memory for buffers if possible
-	for i := 1; i < MaxBuffers; i++ {
-		var prio uint8
-		if bufs < 2 {
-			prio = 192
-		} else {
-			prio = 128
-		}
-
-		// 2xBufferSize -- one for input and one for output
-		if err := mp.memoryManager.ReserveMemory(2*BufferSize, prio); err != nil {
-			break
-		}
-		mp.reservedMemory += 2 * BufferSize
-		bufs++
-	}
-
-	mp.buf = bufio.NewReaderSize(con, BufferSize)
-	mp.writeCh = make(chan []byte, bufs)
-	mp.bufIn = make(chan struct{}, bufs)
-	mp.bufOut = make(chan struct{}, bufs)
-	mp.bufInTimer = time.NewTimer(0)
-	if !mp.bufInTimer.Stop() {
-		<-mp.bufInTimer.C
+		con:        con,
+		initiator:  initiator,
+		buf:        bufio.NewReader(con),
+		channels:   make(map[streamID]*Stream),
+		closed:     make(chan struct{}),
+		shutdown:   make(chan struct{}),
+		writeCh:    make(chan []byte, 16),
+		writeTimer: time.NewTimer(0),
+		nstreams:   make(chan *Stream, 16),
 	}
 
 	go mp.handleIncoming()
 	go mp.handleOutgoing()
 
-	return mp, nil
+	return mp
 }
 
 func (mp *Multiplex) newStream(id streamID, name string) (s *Stream) {
 	s = &Stream{
 		id:          id,
 		name:        name,
-		dataIn:      make(chan []byte, 1),
+		dataIn:      make(chan []byte, 8),
 		rDeadline:   makePipeDeadline(),
 		wDeadline:   makePipeDeadline(),
 		mp:          mp,
@@ -201,7 +150,6 @@ func (mp *Multiplex) closeNoWait() {
 	select {
 	case <-mp.shutdown:
 	default:
-		mp.memoryManager.ReleaseMemory(mp.reservedMemory)
 		mp.con.Close()
 		close(mp.shutdown)
 	}
@@ -218,16 +166,8 @@ func (mp *Multiplex) IsClosed() bool {
 	}
 }
 
-// CloseChan returns a read-only channel which will be closed when the session is closed
-func (mp *Multiplex) CloseChan() <-chan struct{} {
-	return mp.closed
-}
-
 func (mp *Multiplex) sendMsg(timeout, cancel <-chan struct{}, header uint64, data []byte) error {
-	buf, err := mp.getBufferOutbound(len(data)+20, timeout, cancel)
-	if err != nil {
-		return err
-	}
+	buf := pool.Get(len(data) + 20)
 
 	n := 0
 	n += binary.PutUvarint(buf[n:], header)
@@ -238,13 +178,10 @@ func (mp *Multiplex) sendMsg(timeout, cancel <-chan struct{}, header uint64, dat
 	case mp.writeCh <- buf[:n]:
 		return nil
 	case <-mp.shutdown:
-		mp.putBufferOutbound(buf)
 		return ErrShutdown
 	case <-timeout:
-		mp.putBufferOutbound(buf)
 		return errTimeout
 	case <-cancel:
-		mp.putBufferOutbound(buf)
 		return ErrStreamClosed
 	}
 }
@@ -256,13 +193,79 @@ func (mp *Multiplex) handleOutgoing() {
 			return
 
 		case data := <-mp.writeCh:
+			// FIXME: https://github.com/libp2p/go-libp2p/issues/644
+			// write coalescing disabled until this can be fixed.
+			//err := mp.writeMsg(data)
 			err := mp.doWriteMsg(data)
-			mp.putBufferOutbound(data)
+			pool.Put(data)
 			if err != nil {
 				// the connection is closed by this time
 				log.Warnf("error writing data: %s", err.Error())
 				return
 			}
+		}
+	}
+}
+
+func (mp *Multiplex) writeMsg(data []byte) error {
+	if len(data) >= 512 {
+		err := mp.doWriteMsg(data)
+		pool.Put(data)
+		return err
+	}
+
+	buf := pool.Get(4096)
+	defer pool.Put(buf)
+
+	n := copy(buf, data)
+	pool.Put(data)
+
+	if !mp.writeTimerFired {
+		if !mp.writeTimer.Stop() {
+			<-mp.writeTimer.C
+		}
+	}
+	mp.writeTimer.Reset(WriteCoalesceDelay)
+	mp.writeTimerFired = false
+
+	for {
+		select {
+		case data = <-mp.writeCh:
+			wr := copy(buf[n:], data)
+			if wr < len(data) {
+				// we filled the buffer, send it
+				err := mp.doWriteMsg(buf)
+				if err != nil {
+					pool.Put(data)
+					return err
+				}
+
+				if len(data)-wr >= 512 {
+					// the remaining data is not a small write, send it
+					err := mp.doWriteMsg(data[wr:])
+					pool.Put(data)
+					return err
+				}
+
+				n = copy(buf, data[wr:])
+
+				// we've written some, reset the timer to coalesce the rest
+				if !mp.writeTimer.Stop() {
+					<-mp.writeTimer.C
+				}
+				mp.writeTimer.Reset(WriteCoalesceDelay)
+			} else {
+				n += wr
+			}
+
+			pool.Put(data)
+
+		case <-mp.writeTimer.C:
+			mp.writeTimerFired = true
+			return mp.doWriteMsg(buf[:n])
+
+		case <-mp.shutdown:
+			return ErrShutdown
 		}
 	}
 }
@@ -353,9 +356,11 @@ func (mp *Multiplex) handleIncoming() {
 
 	recvTimeout := time.NewTimer(0)
 	defer recvTimeout.Stop()
-	recvTimeoutFired := false
 
-loop:
+	if !recvTimeout.Stop() {
+		<-recvTimeout.C
+	}
+
 	for {
 		chID, tag, err := mp.readNextHeader()
 		if err != nil {
@@ -377,7 +382,7 @@ loop:
 		// etc...
 		tag += (tag & 1)
 
-		mlen, err := mp.readNextMsgLen()
+		b, err := mp.readNext()
 		if err != nil {
 			mp.shutdownErr = err
 			return
@@ -395,13 +400,10 @@ loop:
 				return
 			}
 
-			// skip stream name, this is not at all useful in the context of libp2p streams
-			if err := mp.skipNextMsg(mlen); err != nil {
-				mp.shutdownErr = err
-				return
-			}
+			name := string(b)
+			pool.Put(b)
 
-			msch = mp.newStream(ch, "")
+			msch = mp.newStream(ch, name)
 			mp.chLock.Lock()
 			mp.channels[ch] = msch
 			mp.chLock.Unlock()
@@ -412,11 +414,6 @@ loop:
 			}
 
 		case resetTag:
-			if err := mp.skipNextMsg(mlen); err != nil {
-				mp.shutdownErr = err
-				return
-			}
-
 			if !ok {
 				// This is *ok*. We forget the stream on reset.
 				continue
@@ -426,11 +423,6 @@ loop:
 			msch.cancelRead(ErrStreamReset)
 			msch.cancelWrite(ErrStreamReset)
 		case closeTag:
-			if err := mp.skipNextMsg(mlen); err != nil {
-				mp.shutdownErr = err
-				return
-			}
-
 			if !ok {
 				// may have canceled our reads already.
 				continue
@@ -454,69 +446,33 @@ loop:
 				// We're not accepting data on this stream, for
 				// some reason. It's likely that we reset it, or
 				// simply canceled reads (e.g., called Close).
-				if err := mp.skipNextMsg(mlen); err != nil {
-					mp.shutdownErr = err
-					return
-				}
+				pool.Put(b)
 				continue
 			}
 
-		read:
-			for rd := 0; rd < mlen; {
-				nextChunk := mlen - rd
-				if nextChunk > BufferSize {
-					nextChunk = BufferSize
-				}
-
-				b, err := mp.readNextChunk(nextChunk)
-				if err != nil {
-					mp.shutdownErr = err
-					return
-				}
-
-				rd += nextChunk
-
-				if !recvTimeout.Stop() && !recvTimeoutFired {
-					<-recvTimeout.C
-				}
-				recvTimeout.Reset(ReceiveTimeout)
-				recvTimeoutFired = false
-
-				select {
-				case msch.dataIn <- b:
-
-				case <-msch.readCancel:
-					// the user has canceled reading. walk away.
-					mp.putBufferInbound(b)
-					if err := mp.skipNextMsg(mlen - rd); err != nil {
-						mp.shutdownErr = err
-						return
-					}
-					break read
-
-				case <-recvTimeout.C:
-					recvTimeoutFired = true
-					mp.putBufferInbound(b)
-					log.Warnf("timed out receiving message into stream queue.")
-					// Do not do this asynchronously. Otherwise, we
-					// could drop a message, then receive a message,
-					// then reset.
-					msch.Reset()
-					if err := mp.skipNextMsg(mlen - rd); err != nil {
-						mp.shutdownErr = err
-						return
-					}
-					continue loop
-
-				case <-mp.shutdown:
-					mp.putBufferInbound(b)
-					return
-				}
+			recvTimeout.Reset(ReceiveTimeout)
+			select {
+			case msch.dataIn <- b:
+			case <-msch.readCancel:
+				// the user has canceled reading. walk away.
+				pool.Put(b)
+			case <-recvTimeout.C:
+				pool.Put(b)
+				log.Warnf("timed out receiving message into stream queue.")
+				// Do not do this asynchronously. Otherwise, we
+				// could drop a message, then receive a message,
+				// then reset.
+				msch.Reset()
+				continue
+			case <-mp.shutdown:
+				pool.Put(b)
+				return
 			}
-
+			if !recvTimeout.Stop() {
+				<-recvTimeout.C
+			}
 		default:
 			log.Debugf("message with unknown header on stream %s", ch)
-			mp.skipNextMsg(mlen)
 			if ok {
 				msch.Reset()
 			}
@@ -562,95 +518,34 @@ func (mp *Multiplex) readNextHeader() (uint64, uint64, error) {
 	return ch, rem, nil
 }
 
-func (mp *Multiplex) readNextMsgLen() (int, error) {
+func (mp *Multiplex) readNext() ([]byte, error) {
+	// get length
 	l, err := varint.ReadUvarint(mp.buf)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 
 	if l > uint64(MaxMessageSize) {
-		return 0, fmt.Errorf("message size too large")
+		return nil, fmt.Errorf("message size too large!")
 	}
 
 	if l == 0 {
-		return 0, nil
+		return nil, nil
 	}
 
-	return int(l), nil
-}
-
-func (mp *Multiplex) readNextChunk(mlen int) ([]byte, error) {
-	buf, err := mp.getBufferInbound(mlen)
+	buf := pool.Get(int(l))
+	n, err := io.ReadFull(mp.buf, buf)
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = io.ReadFull(mp.buf, buf)
-	if err != nil {
-		mp.putBufferInbound(buf)
-		return nil, err
+	return buf[:n], nil
+}
+
+func isFatalNetworkError(err error) bool {
+	nerr, ok := err.(net.Error)
+	if ok {
+		return !(nerr.Timeout() || nerr.Temporary())
 	}
-
-	return buf, nil
-}
-
-func (mp *Multiplex) skipNextMsg(mlen int) error {
-	if mlen == 0 {
-		return nil
-	}
-
-	_, err := mp.buf.Discard(mlen)
-	return err
-}
-
-func (mp *Multiplex) getBufferInbound(length int) ([]byte, error) {
-	timerFired := false
-	defer func() {
-		if !mp.bufInTimer.Stop() && !timerFired {
-			<-mp.bufInTimer.C
-		}
-	}()
-	mp.bufInTimer.Reset(getInputBufferTimeout)
-
-	select {
-	case mp.bufIn <- struct{}{}:
-	case <-mp.bufInTimer.C:
-		timerFired = true
-		return nil, errTimeout
-	case <-mp.shutdown:
-		return nil, ErrShutdown
-	}
-
-	return mp.getBuffer(length), nil
-}
-
-func (mp *Multiplex) getBufferOutbound(length int, timeout, cancel <-chan struct{}) ([]byte, error) {
-	select {
-	case mp.bufOut <- struct{}{}:
-	case <-timeout:
-		return nil, errTimeout
-	case <-cancel:
-		return nil, ErrStreamClosed
-	case <-mp.shutdown:
-		return nil, ErrShutdown
-	}
-
-	return mp.getBuffer(length), nil
-}
-
-func (mp *Multiplex) getBuffer(length int) []byte {
-	return pool.Get(length)
-}
-
-func (mp *Multiplex) putBufferInbound(b []byte) {
-	mp.putBuffer(b, mp.bufIn)
-}
-
-func (mp *Multiplex) putBufferOutbound(b []byte) {
-	mp.putBuffer(b, mp.bufOut)
-}
-
-func (mp *Multiplex) putBuffer(slice []byte, putBuf chan struct{}) {
-	<-putBuf
-	pool.Put(slice)
+	return false
 }

@@ -60,7 +60,7 @@ func (t *Transport) LocalPrivateKey() ci.PrivKey {
 //
 // SecureInbound may fail if the remote peer sends an ID and public key that are inconsistent
 // with each other, or if a network error occurs during the ID exchange.
-func (t *Transport) SecureInbound(ctx context.Context, insecure net.Conn, p peer.ID) (sec.SecureConn, error) {
+func (t *Transport) SecureInbound(ctx context.Context, insecure net.Conn) (sec.SecureConn, error) {
 	conn := &Conn{
 		Conn:         insecure,
 		local:        t.id,
@@ -70,10 +70,6 @@ func (t *Transport) SecureInbound(ctx context.Context, insecure net.Conn, p peer
 	err := conn.runHandshakeSync()
 	if err != nil {
 		return nil, err
-	}
-
-	if t.key != nil && p != "" && p != conn.remote {
-		return nil, fmt.Errorf("remote peer sent unexpected peer ID. expected=%s received=%s", p, conn.remote)
 	}
 
 	return conn, nil

@@ -46,7 +46,7 @@ func (s *Swarm) AddListenAddr(a ma.Multiaddr) error {
 		//
 		// Distinguish between these two cases to avoid confusing users.
 		select {
-		case <-s.ctx.Done():
+		case <-s.proc.Closing():
 			return ErrSwarmClosed
 		default:
 			return ErrNoTransport
