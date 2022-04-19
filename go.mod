@@ -11,8 +11,8 @@ require (
 	github.com/kardianos/service v1.2.1
 	github.com/libp2p/go-libp2p v0.15.1
 	github.com/libp2p/go-libp2p-circuit v0.4.0
-	github.com/libp2p/go-libp2p-core v0.9.0
-	github.com/libp2p/go-libp2p-swarm v0.5.3
+	github.com/libp2p/go-libp2p-core v0.14.0
+	github.com/libp2p/go-libp2p-swarm v0.10.2
 	github.com/lorenzosaino/go-sysctl v0.3.0
 	github.com/miekg/dns v1.1.48
 	github.com/multiformats/go-multiaddr v0.5.0
@@ -64,7 +64,7 @@ require (
 	github.com/ipfs/go-cid v0.0.7 // indirect
 	github.com/ipfs/go-ipfs-util v0.0.2 // indirect
 	github.com/ipfs/go-log v1.0.5 // indirect
-	github.com/ipfs/go-log/v2 v2.3.0 // indirect
+	github.com/ipfs/go-log/v2 v2.5.0 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
 	github.com/jbenet/go-temp-err-catcher v0.1.0 // indirect
 	github.com/jbenet/goprocess v0.1.4 // indirect
@@ -74,31 +74,31 @@ require (
 	github.com/koron/go-ssdp v0.0.2 // indirect
 	github.com/libp2p/go-addr-util v0.1.0 // indirect
 	github.com/libp2p/go-buffer-pool v0.0.2 // indirect
-	github.com/libp2p/go-conn-security-multistream v0.2.1 // indirect
+	github.com/libp2p/go-conn-security-multistream v0.3.0 // indirect
 	github.com/libp2p/go-eventbus v0.2.1 // indirect
 	github.com/libp2p/go-flow-metrics v0.0.3 // indirect
 	github.com/libp2p/go-libp2p-autonat v0.4.2 // indirect
 	github.com/libp2p/go-libp2p-blankhost v0.2.0 // indirect
 	github.com/libp2p/go-libp2p-discovery v0.5.1 // indirect
-	github.com/libp2p/go-libp2p-mplex v0.4.1 // indirect
+	github.com/libp2p/go-libp2p-mplex v0.5.0 // indirect
 	github.com/libp2p/go-libp2p-nat v0.0.6 // indirect
 	github.com/libp2p/go-libp2p-noise v0.2.2 // indirect
-	github.com/libp2p/go-libp2p-peerstore v0.2.8 // indirect
+	github.com/libp2p/go-libp2p-peerstore v0.6.0 // indirect
 	github.com/libp2p/go-libp2p-pnet v0.2.0 // indirect
-	github.com/libp2p/go-libp2p-tls v0.2.0 // indirect
-	github.com/libp2p/go-libp2p-transport-upgrader v0.4.6 // indirect
-	github.com/libp2p/go-libp2p-yamux v0.5.4 // indirect
+	github.com/libp2p/go-libp2p-tls v0.3.0 // indirect
+	github.com/libp2p/go-libp2p-transport-upgrader v0.7.0 // indirect
+	github.com/libp2p/go-libp2p-yamux v0.8.1 // indirect
 	github.com/libp2p/go-maddr-filter v0.1.0 // indirect
-	github.com/libp2p/go-mplex v0.3.0 // indirect
+	github.com/libp2p/go-mplex v0.4.0 // indirect
 	github.com/libp2p/go-msgio v0.0.6 // indirect
 	github.com/libp2p/go-nat v0.0.5 // indirect
-	github.com/libp2p/go-netroute v0.1.6 // indirect
+	github.com/libp2p/go-netroute v0.2.0 // indirect
 	github.com/libp2p/go-openssl v0.0.7 // indirect
-	github.com/libp2p/go-reuseport v0.0.2 // indirect
-	github.com/libp2p/go-reuseport-transport v0.0.5 // indirect
+	github.com/libp2p/go-reuseport v0.1.0 // indirect
+	github.com/libp2p/go-reuseport-transport v0.1.0 // indirect
 	github.com/libp2p/go-sockaddr v0.1.1 // indirect
-	github.com/libp2p/go-stream-muxer-multistream v0.3.0 // indirect
-	github.com/libp2p/go-tcp-transport v0.2.8 // indirect
+	github.com/libp2p/go-stream-muxer-multistream v0.4.0 // indirect
+	github.com/libp2p/go-tcp-transport v0.5.0 // indirect
 	github.com/libp2p/go-ws-transport v0.5.0 // indirect
 	github.com/libp2p/go-yamux/v2 v2.2.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
@@ -150,7 +150,7 @@ require (
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
-	go.uber.org/zap v1.19.0 // indirect
+	go.uber.org/zap v1.19.1 // indirect
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
 	golang.org/x/exp/typeparams v0.0.0-20220317015231-48e79f11773a // indirect
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
