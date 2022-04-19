@@ -27,7 +27,6 @@ import (
 	// libp2ptls "github.com/libp2p/go-libp2p-tls"
 	// rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
 	"mmesh.dev/m-lib/pkg/errors"
-	// "mmesh.dev/m-lib/pkg/xlog"
 )
 
 const (
@@ -37,8 +36,6 @@ const (
 )
 
 func newP2PHost(port int32, p2pHostType int) (host.Host, error) {
-	var opts []libp2p.Option
-
 	r := rand.Reader
 	// r := mrand.New(mrand.NewSource(int64(port)))
 
@@ -47,12 +44,6 @@ func newP2PHost(port int32, p2pHostType int) (host.Host, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "[%v] function crypto.GenerateKeyPairWithReader(crypto.RSA, 2048, r)", errors.Trace())
 	}
-
-	// 0.0.0.0 will listen on any interface device.
-	// sourceMultiAddr, err := multiaddr.NewMultiaddr(fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", port))
-	// if err != nil {
-	// 	return nil, errors.Wrapf(err, "[%v] function multiaddr.NewMultiaddr()", errors.Trace())
-	// }
 
 	// cm, err := connmgr.NewConnManager(
 	// 	512,                                    // Lowwater
@@ -63,115 +54,56 @@ func newP2PHost(port int32, p2pHostType int) (host.Host, error) {
 	// 	return nil, errors.Wrapf(err, "[%v] function connmgr.NewConnManager()", errors.Trace())
 	// }
 
-	switch p2pHostType {
-	case p2pHostTypeHiddenHost:
-		// sourceMultiAddr, err := multiaddr.NewMultiaddr("/ip4/0.0.0.0/tcp/0")
-		// if err != nil {
-		// 	return nil, errors.Wrapf(err, "[%v] function multiaddr.NewMultiaddr()", errors.Trace())
-		// }
-
-		opts = []libp2p.Option{
-			// libp2p.ListenAddrStrings("/ip4/127.0.0.1/tcp/0"),
-			libp2p.ListenAddrs(),
-			// libp2p.ListenAddrs(sourceMultiAddr),
-			libp2p.Identity(prvKey),
-			// libp2p.Transport(libp2pquic.NewTransport),
-			libp2p.DefaultTransports,
-			libp2p.DefaultMuxers,
-			// support TLS connections
-			// libp2p.Security(libp2ptls.ID, libp2ptls.New),
-			// support secio connections
-			// libp2p.Security(secio.ID, secio.New),
-			libp2p.DefaultSecurity,
-			// Enable the use of relays
-			libp2p.EnableRelay(),
-			// Let's prevent our peer from having too many
-			// connections by attaching a connection manager.
-			// libp2p.ConnectionManager(cm),
-			// Attempt to open ports using uPNP for NATed hosts.
-			libp2p.NATPortMap(),
-			// Let this host use the DHT to find other hosts (required by autoRelay)
-			// libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
-			// 	return dht.New(context.TODO(), h)
-			// }),
-			// Let this host use relays and advertise itself on relays if
-			// it finds it is behind NAT. Use libp2p.Relay(options...) to
-			// enable active relays and more.
-			// libp2p.EnableAutoRelay(),
-			libp2p.ForceReachabilityPrivate(),
-		}
-	case p2pHostTypeBasicHost:
-		opts = []libp2p.Option{
-			libp2p.ListenAddrs(getLocalMAddrs(port)...),
-			libp2p.Identity(prvKey),
-			// libp2p.Transport(libp2pquic.NewTransport),
-			libp2p.DefaultTransports,
-			libp2p.DefaultMuxers,
-			// support TLS connections
-			// libp2p.Security(libp2ptls.ID, libp2ptls.New),
-			// support secio connections
-			// libp2p.Security(secio.ID, secio.New),
-			libp2p.DefaultSecurity,
-			// Enable the use of relays
-			libp2p.EnableRelay(),
-			// Let's prevent our peer from having too many
-			// connections by attaching a connection manager.
-			// libp2p.ConnectionManager(cm),
-			// Attempt to open ports using uPNP for NATed hosts.
-			libp2p.NATPortMap(),
-			// Let this host use the DHT to find other hosts (required by autoRelay)
-			// libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
-			// 	return dht.New(context.TODO(), h)
-			// }),
-			// Let this host use relays and advertise itself on relays if
-			// it finds it is behind NAT. Use libp2p.Relay(options...) to
-			// enable active relays and more.
-			// libp2p.EnableAutoRelay(),
-		}
-	case p2pHostTypeRelayHost:
-		opts = []libp2p.Option{
-			libp2p.ListenAddrs(getLocalMAddrs(port)...),
-			libp2p.Identity(prvKey),
-			// libp2p.Transport(libp2pquic.NewTransport),
-			libp2p.DefaultTransports,
-			libp2p.DefaultMuxers,
-			// support TLS connections
-			// libp2p.Security(libp2ptls.ID, libp2ptls.New),
-			// support secio connections
-			// libp2p.Security(secio.ID, secio.New),
-			libp2p.DefaultSecurity,
-			// Enable the use of relays
-			// libp2p.EnableRelay(),
-			// Configure the node as a relay
-			libp2p.EnableRelay(circuit.OptHop),
-			// libp2p.EnableRelayService(),
-			// Let's prevent our peer from having too many
-			// connections by attaching a connection manager.
-			// libp2p.ConnectionManager(cm),
-			// Attempt to open ports using uPNP for NATed hosts.
-			libp2p.NATPortMap(),
-			// Let this host use the DHT to find other hosts (required by autoRelay)
-			// libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
-			// 	return dht.New(context.TODO(), h)
-			// }),
-			// Let this host use relays and advertise itself on relays if
-			// it finds it is behind NAT. Use libp2p.Relay(options...) to
-			// enable active relays and more.
-			// libp2p.EnableAutoRelay(),
-			libp2p.ForceReachabilityPublic(),
-			// If you want to help other peers to figure out if they are behind
-			// NATs, you can launch the server-side of AutoNAT too (AutoRelay
-			// already runs the client)
-			//
-			// This service is highly rate-limited and should not cause any
-			// performance issues.
-			// libp2p.EnableNATService(),
-		}
+	opts := []libp2p.Option{
+		libp2p.Identity(prvKey),
+		// libp2p.Transport(libp2pquic.NewTransport),
+		libp2p.DefaultTransports,
+		libp2p.DefaultMuxers,
+		// support TLS connections
+		// libp2p.Security(libp2ptls.ID, libp2ptls.New),
+		// support secio connections
+		// libp2p.Security(secio.ID, secio.New),
+		libp2p.DefaultSecurity,
+		// Let's prevent our peer from having too many
+		// connections by attaching a connection manager.
+		// libp2p.ConnectionManager(cm),
+		// Attempt to open ports using uPNP for NATed hosts.
+		libp2p.NATPortMap(),
+		// Let this host use the DHT to find other hosts (required by autoRelay)
+		// libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
+		// 	return dht.New(context.TODO(), h)
+		// }),
+		// Let this host use relays and advertise itself on relays if
+		// it finds it is behind NAT. Use libp2p.Relay(options...) to
+		// enable active relays and more.
+		// libp2p.EnableAutoRelay(),
 	}
 
-	ctx := context.TODO()
+	switch p2pHostType {
+	case p2pHostTypeHiddenHost:
+		opts = append(opts,
+			// libp2p.ListenAddrStrings("/ip4/127.0.0.1/tcp/0"),
+			libp2p.ListenAddrs(),
+			// Enable the use of relays
+			libp2p.EnableRelay(),
+			libp2p.ForceReachabilityPrivate(),
+		)
+	case p2pHostTypeBasicHost:
+		opts = append(opts,
+			libp2p.ListenAddrs(getLocalMAddrs(port)...),
+			// Enable the use of relays
+			libp2p.EnableRelay(),
+		)
+	case p2pHostTypeRelayHost:
+		opts = append(opts,
+			libp2p.ListenAddrs(getLocalMAddrs(port)...),
+			libp2p.EnableRelay(circuit.OptHop),
+			// libp2p.EnableRelayService(), // circuitv2
+			libp2p.ForceReachabilityPublic(),
+		)
+	}
 
-	host, err := libp2p.New(ctx, opts...)
+	host, err := libp2p.New(context.TODO(), opts...)
 	if err != nil {
 		return nil, errors.Wrapf(err, "[%v] function libp2p.New()", errors.Trace())
 	}

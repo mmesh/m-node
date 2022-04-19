@@ -152,7 +152,7 @@ func decodeIPPacket(pkt []byte) (*ipPacket, error) {
 		dstAddr, err := ipnet.GetIPv6Endpoint(header.Dst.String())
 		if err != nil {
 			dstAddr = header.Dst.String()
-			//xlog.Warnf("Unable to get valid pkt dst addr: %v", err)
+			// xlog.Warnf("Unable to get valid pkt dst addr: %v", err)
 			// return nil, err
 		}
 
