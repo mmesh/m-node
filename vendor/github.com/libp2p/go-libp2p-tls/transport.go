@@ -45,9 +45,8 @@ func New(key ci.PrivKey) (*Transport, error) {
 var _ sec.SecureTransport = &Transport{}
 
 // SecureInbound runs the TLS handshake as a server.
-// If p is empty, connections from any peer are accepted.
-func (t *Transport) SecureInbound(ctx context.Context, insecure net.Conn, p peer.ID) (sec.SecureConn, error) {
-	config, keyCh := t.identity.ConfigForPeer(p)
+func (t *Transport) SecureInbound(ctx context.Context, insecure net.Conn) (sec.SecureConn, error) {
+	config, keyCh := t.identity.ConfigForAny()
 	cs, err := t.handshake(ctx, tls.Server(insecure, config), keyCh)
 	if err != nil {
 		insecure.Close()

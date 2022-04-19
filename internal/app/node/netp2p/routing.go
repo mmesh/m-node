@@ -174,6 +174,24 @@ func (mma *mmAgent) connectRelays() {
 					xlog.Errorf("Unable to get peer info: %v", err)
 					continue
 				}
+
+				/*
+					// circuitv2 requires slot reservations in relays
+					go func() {
+						if err := relayReservation(peerInfo); err != nil {
+							xlog.Errorf("Unable to get reservation at relay: %v", err)
+							return
+						}
+
+						if err := mma.connectPeer(peerInfo); err != nil {
+							xlog.Errorf("Unable to connect to relay: %v", err)
+							return
+						}
+						xlog.Debugf("Connection ESTABLISHED with relay %s", peerInfo.ID.Pretty())
+					}()
+				*/
+
+				// circuitv1 code (libp2p 0.16.1)
 				go mma.connectPeer(peerInfo)
 			}
 		}

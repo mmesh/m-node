@@ -20,7 +20,6 @@ type Conn interface {
 	ConnSecurity
 	ConnMultiaddrs
 	ConnStat
-	ConnScoper
 
 	// ID returns an identifier that uniquely identifies this Conn within this
 	// host, during this run. Connection IDs may repeat across restarts.
@@ -64,12 +63,5 @@ type ConnMultiaddrs interface {
 // ConnStat is an interface mixin for connection types that provide connection statistics.
 type ConnStat interface {
 	// Stat stores metadata pertaining to this conn.
-	Stat() ConnStats
-}
-
-// ConnScoper is the interface that one can mix into a connection interface to give it a resource
-// management scope
-type ConnScoper interface {
-	// Scope returns the user view of this connection's resource scope
-	Scope() ConnScope
+	Stat() Stat
 }
