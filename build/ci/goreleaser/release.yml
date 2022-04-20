@@ -148,7 +148,7 @@ nfpms:
         type: dir
 
 dockers:
-  - dockerfile: ./build/package/dockerfiles/dockerfile-node
+  - dockerfile: ./build/package/dockerfiles/Dockerfile
     image_templates:
       - "mmeshdev/mmesh-node:latest"
       - "mmeshdev/mmesh-node:snapshot"
