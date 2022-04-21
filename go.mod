@@ -26,9 +26,9 @@ require (
 	golang.org/x/net v0.0.0-20220412020605-290c469a71a5
 	golang.zx2c4.com/wireguard v0.0.0-20211116201604-ffb742d43d92
 	google.golang.org/grpc v1.45.0
-	k8s.io/api v0.23.5
-	k8s.io/apimachinery v0.23.5
-	k8s.io/client-go v0.23.5
+	k8s.io/api v0.23.6
+	k8s.io/apimachinery v0.23.6
+	k8s.io/client-go v0.23.6
 	mmesh.dev/m-api-go v0.0.0-00010101000000-000000000000
 	mmesh.dev/m-lib v0.0.0-00010101000000-000000000000
 )
