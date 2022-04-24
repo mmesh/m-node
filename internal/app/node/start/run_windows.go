@@ -42,10 +42,11 @@ func (p *program) Stop(s service.Service) error {
 
 func runAsWindowsService(action windowsAction) {
 	svcConfig := &service.Config{
-		Name:        version.NODE_NAME,
-		DisplayName: version.NODE_NAME,
-		Description: "mmesh-node",
-		Arguments:   []string{"service-start"},
+		Name:             version.NODE_NAME,
+		DisplayName:      version.NODE_NAME,
+		Description:      "mmesh-node",
+		Arguments:        []string{"service-start"},
+		WorkingDirectory: "c:\\",
 		Option: service.KeyValue{
 			"OnFailure": "restart",
 		},

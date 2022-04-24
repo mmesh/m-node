@@ -4,6 +4,7 @@
 package start
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -43,12 +44,14 @@ func (p *program) Stop(s service.Service) error {
 
 func runAsService(action serviceAction) {
 	svcConfig := &service.Config{
-		Name:        version.NODE_NAME,
-		DisplayName: version.NODE_NAME,
-		Description: "mmesh-node",
-		Arguments:   []string{"service-start"},
+		Name:             fmt.Sprintf("io.mmesh.%s", version.NODE_NAME),
+		DisplayName:      version.NODE_NAME,
+		Description:      "mmesh-node",
+		Arguments:        []string{"service-start"},
+		WorkingDirectory: "/var/tmp",
 		Option: service.KeyValue{
-			"OnFailure": "restart",
+			"KeepAlive": true,
+			"RunAtLoad": true,
 		},
 	}
 
@@ -98,7 +101,7 @@ func ServiceInstall() {
 	xlog.Infof("Installing %s as Service", version.NODE_NAME)
 	runAsService(actionServiceInstall)
 
-	cmd := exec.Command("launchctl", "load", "/Library/LaunchDaemons/mmesh-node.plist")
+	cmd := exec.Command("launchctl", "load", "/Library/LaunchDaemons/io.mmesh.mmesh-node.plist")
 	if err := cmd.Run(); err != nil {
 		xlog.Warnf("Unable to load launchctl mmesh-node service, please check: %v", err)
 	}
@@ -110,7 +113,7 @@ func ServiceUninstall() {
 	xlog.Infof("Uninstalling %s Service", version.NODE_NAME)
 	runAsService(actionServiceUninstall)
 
-	// cmd := exec.Command("launchctl", "unload", "/Library/LaunchDaemons/mmesh-node.plist")
+	// cmd := exec.Command("launchctl", "unload", "/Library/LaunchDaemons/io.mmesh.mmesh-node.plist")
 	// if err := cmd.Run(); err != nil {
 	// 	xlog.Warnf("Unable to unload launchctl mmesh-node service, please check: %v", err)
 	// }

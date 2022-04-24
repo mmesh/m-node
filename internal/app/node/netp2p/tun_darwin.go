@@ -4,6 +4,8 @@
 package netp2p
 
 import (
+	"strings"
+
 	"github.com/songgao/water"
 	"github.com/spf13/viper"
 	"mmesh.dev/m-lib/pkg/errors"
@@ -25,6 +27,10 @@ func createTUN() error {
 	}
 
 	ifcName := viper.GetString("agent.iface")
+
+	if !strings.HasPrefix(ifcName, "utun") {
+		ifcName = "utun5"
+	}
 
 	config := water.Config{
 		DeviceType: water.TUN,
