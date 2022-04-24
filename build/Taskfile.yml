@@ -20,12 +20,6 @@ vars:
     sh: pwd
   PROJECT_DIR: '{{.PREFIX}}/..'
   DIST_DIR: '{{.PREFIX}}/_dist'
-  VERSION:
-    sh: svu current
-  VERSION_DATE:
-    sh: date -u +%Y%m%d%H%M%S
-  GO_VERSION:
-    sh: go version | cut -f 3 -d ' '
   PKG_REPO: 'mmesh'
   PKG_REPO_DEV: 'mmesh-dev'
   # GS_BUCKET: 'gs://mmesh-io'
@@ -33,12 +27,21 @@ vars:
 
 env:
   PKG: '{{.DOMAIN}}/{{.PROJECT}}'
-  VERSION: '{{.VERSION}}'
-  VERSION_DATE: '{{.VERSION_DATE}}'
-  GO_VERSION: '{{.GO_VERSION}}'
+  VERSION_DATE:
+    sh: date -u +%Y%m%d%H%M%S
+  GO_VERSION:
+    sh: go version | cut -f 3 -d ' '
   # GO111MODULE: on
   # CGO_ENABLED: 0
   # GOPRIVATE: mmesh.dev/m-api-go,mmesh.dev/m-lib
+  GITHUB_TOKEN:
+    sh: if [[ -f $HOME/.cloud/github/github_token.mmeshbot ]]; then cat $HOME/.cloud/github/github_token.mmeshbot; else echo "${GITHUB_TOKEN}"; fi
+  DOCKER_USER:
+    sh: if [[ -f $HOME/.docker/docker.x6a ]]; then awk '/user/ {print $2}' $HOME/.docker/docker.x6a; else echo "${DOCKER_USER}"; fi
+  DOCKER_PASSWORD:
+    sh: if [[ -f $HOME/.docker/docker.x6a ]]; then awk '/pw/ {print $2}' $HOME/.docker/docker.x6a; else echo "${DOCKER_PASSWORD}"; fi
+  COSIGN_PWD:
+    sh: if [[ -f $HOME/.x6a/mmesh/cosign/pw.txt ]]; then cat $HOME/.x6a/mmesh/cosign/pw.txt; else echo "${COSIGN_PWD}"; fi
 
 tasks:
   deps:
@@ -51,10 +54,6 @@ tasks:
   _docker-builder:
     deps: [golang:golang-builder]
     vars:
-      GITHUB_TOKEN:
-        sh: cat $HOME/.cloud/github/github_token.buildbot
-      COSIGN_PWD:
-        sh: cat $HOME/.x6a/mmesh/cosign/pw.txt
       LOCAL_UID:
         sh: id -u
       LOCAL_GID:
@@ -62,8 +61,10 @@ tasks:
     cmds:
       - |-
         docker run --rm \
-          -e GITHUB_TOKEN={{.GITHUB_TOKEN}} \
-          -e COSIGN_PWD={{.COSIGN_PWD}} \
+          -e GITHUB_TOKEN="${GITHUB_TOKEN}" \
+          -e DOCKER_USER="${DOCKER_USER}" \
+          -e DOCKER_PASSWORD="${DOCKER_PASSWORD}" \
+          -e COSIGN_PWD="${COSIGN_PWD}" \
           -v $HOME/.x6a/mmesh/cosign:/cosign:ro \
           -v {{.PROJECT_DIR}}:/go/src/{{.PROJECT}} \
           -v /var/run/docker.sock:/var/run/docker.sock \
@@ -133,8 +134,9 @@ tasks:
 
   docker-push-node-dev:
     desc: docker push -- mmesh-node (dev build)
-    deps: [docker:docker-login, docker:ghcr-login]
     cmds:
+      - task: docker:docker-login
+      - task: docker:ghcr-login
       - docker push mmeshdev/mmesh-node:snapshot
       - docker push mmeshdev/mmesh-node:dev
       - docker push ghcr.io/mmesh/mmesh-node:snapshot
@@ -145,6 +147,9 @@ tasks:
   publish-binaries-dev:
     desc: Publish binaries (dev build)
     dir: '{{.PREFIX}}'
+    vars:
+      VERSION:
+        sh: svu current
     cmds:
       # - ./build/_deps/scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO_DEV}}'
       - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_linux_amd64.deb '{{.PKG_REPO_DEV}}'
@@ -156,6 +161,9 @@ tasks:
   publish-binaries-stable:
     desc: Publish binaries (stable build)
     dir: '{{.PREFIX}}'
+    vars:
+      VERSION:
+        sh: svu current
     cmds:
       # - ./build/_deps/scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO}}'
       - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_linux_amd64.deb '{{.PKG_REPO}}'
@@ -177,6 +185,8 @@ tasks:
 
   _release:
     cmds:
+      - task: docker:docker-login
+      - task: docker:ghcr-login
       - task: _goreleaser
         vars:
           CMD: release
@@ -184,14 +194,13 @@ tasks:
 
   release:
     desc: Build and release all the packages.
-    deps: [docker:docker-login, docker:ghcr-login]
     vars:
       NEXT_VERSION:
         sh: svu next
     cmds:
       - echo "Executing git tag with {{.NEXT_VERSION}}..."
       - git tag -sa {{.NEXT_VERSION}} -m "{{.NEXT_VERSION}}"
-      - echo "Running git push origin {{.NEXT_VERSION}} to push new tag to GitHu
+      - echo "Running git push origin {{.NEXT_VERSION}} to push new tag to GitHub..."
       - git push origin {{.NEXT_VERSION}}
       - task: _docker-builder
         vars:
