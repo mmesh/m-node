@@ -7,8 +7,8 @@ import (
 	"io"
 	"os/exec"
 
-	// "mmesh.dev/m-lib/pkg/mmp/term/pty"
-	"github.com/creack/pty"
+	"mmesh.dev/m-lib/pkg/mmp/term/pty"
+	// "github.com/creack/pty"
 )
 
 func PTYRun(c *exec.Cmd, inrp *io.PipeReader, outwp *io.PipeWriter) error {
