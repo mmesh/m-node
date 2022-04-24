@@ -108,6 +108,47 @@ archives:
     - goos: windows
       format: zip
 
+brews:
+  - tap:
+      owner: mmesh
+      name: homebrew-tap
+      branch: master
+    folder: Formula
+    goarm: "7"
+    goamd64: v1
+    commit_author:
+      name: mmeshbot
+      email: mmeshbot@mmesh.io
+    homepage: https://mmesh.io
+    description: mmesh-node agent
+    license: "Apache License 2.0"
+    # plist: |
+    #   <?xml version="1.0" encoding="UTF-8"?>
+    #   <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+    #   <plist version="1.0">
+    #       <dict>
+    #           <key>Label</key>
+    #           <string>com.mmesh.mmesh-node</string>
+    #           <key>ProgramArguments</key>
+    #           <array>
+    #               <string>/usr/local/libexec/mmesh-node</string>
+    #               <string>start</string>
+    #               <string>--config</string>
+    #               <string>/etc/mmesh/mmesh-node.yml</string>
+    #           </array>
+    #           <key>RunAtLoad</key>
+    #           <true/>
+    #           <key>KeepAlive</key>
+    #           <true/>
+    #           <key>Disabled</key>
+    #           <false/>
+    #       </dict>
+    #   </plist>
+    install: |-
+      bin.install "mmesh-node"
+    # post_install: |-
+    #   etc.install "mmesh-node.yml"
+
 nfpms:
   - id: mmesh-node
     package_name: mmesh-node
@@ -118,7 +159,7 @@ nfpms:
       - mmesh-node
     vendor: mmesh.io
     homepage: https://mmesh.io
-    maintainer: buildbot <no-reply@mmesh.io>
+    maintainer: mmeshbot <mmeshbot@mmesh.io>
     description: mmesh-node agent
     license: "Apache License 2.0"
     formats:
