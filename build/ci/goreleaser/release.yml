@@ -80,7 +80,7 @@ signs:
       - '--output-certificate=${certificate}'
       - '--output-signature=${signature}'
       - '${artifact}'
-    artifacts: all
+    artifacts: checksum
     output: false
 
 docker_signs:
@@ -259,12 +259,12 @@ changelog:
       order: 999
   filters:
     exclude:
-    - "^.*docs"
-    - "^.*test"
-    - "^.*wip"
-    - '^\[wip\]'
-    - "^.*bump version"
-    - typo
+      - "^doc"
+      - "^chore"
+      - "^wip"
+      - "^test"
+      - "^typo"
+      - "^Merge"
 
 # publishers:
 #   # dev repos
