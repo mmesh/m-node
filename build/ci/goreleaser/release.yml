@@ -19,94 +19,99 @@ before:
     # - go fmt $(go list ./... | grep -v '/vendor/' | grep -v '.pb.go' | grep -v '.twirp.go' | grep -v 'bindata.go') | tee /dev/stderr
 
 builds:
-- id: "mmesh-node"
-  main: cmd/node/main.go
-  binary: mmesh-node
-  flags:
-    #- -tags=dev
-    - -tags="static_build,netgo"
-    - -v
-    - -a
-    - -mod=vendor
-    - -installsuffix=netgo
-    - -trimpath
-    #- -race # requires CGO_ENABLED=1
-  # Custom ldflags templates.
-  # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
-  ldflags:
-    - -s
-    - -w
-    - -X mmesh.dev/m-lib/pkg/version.GitRepository={{.GitURL}}
-    - -X mmesh.dev/m-lib/pkg/version.GitCommit={{.ShortCommit}}
-    - -X mmesh.dev/m-lib/pkg/version.VersionNumber={{.Tag}}
-    - -X mmesh.dev/m-lib/pkg/version.VersionDate={{.Env.VERSION_DATE}}
-    - -X mmesh.dev/m-lib/pkg/version.GoVersion={{.Env.GO_VERSION}}
-    - -extldflags -static
-    #- ./usemsan=-msan
-  env:
-    - CGO_ENABLED=0
-  goos:
-    - linux
-    - darwin
-    - windows
-  goarch:
-    - amd64
-    - arm64
-    - arm
-  goamd64:
-    - v1
-  # lang: go
+  - id: "mmesh-node"
+    main: cmd/node/main.go
+    binary: mmesh-node
+    flags:
+      #- -tags=dev
+      - -tags="static_build,netgo"
+      - -v
+      - -a
+      - -mod=vendor
+      - -installsuffix=netgo
+      - -trimpath
+      #- -race # requires CGO_ENABLED=1
+    # Custom ldflags templates.
+    # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
+    ldflags:
+      - -s
+      - -w
+      - -X mmesh.dev/m-lib/pkg/version.GitRepository={{.GitURL}}
+      - -X mmesh.dev/m-lib/pkg/version.GitCommit={{.ShortCommit}}
+      - -X mmesh.dev/m-lib/pkg/version.VersionNumber={{.Tag}}
+      - -X mmesh.dev/m-lib/pkg/version.VersionDate={{.Env.VERSION_DATE}}
+      - -X mmesh.dev/m-lib/pkg/version.GoVersion={{.Env.GO_VERSION}}
+      - -extldflags -static
+      #- ./usemsan=-msan
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+      - arm
+    goamd64:
+      - v1
+    # lang: go
 
 snapshot:
   # name_template: '{{ .Tag }}-SNAPSHOT-{{.ShortCommit}}'
   # name_template: '{{ .Version }}-SNAPSHOT-{{.ShortCommit}}'
-  name_template: '{{ .Version }}-{{.Env.VERSION_DATE}}-SNAPSHOT-{{.ShortCommit}}'
+  name_template: "{{ .Version }}-{{.Env.VERSION_DATE}}-SNAPSHOT-{{.ShortCommit}}"
 
 checksum:
   # name_template: '{{ .ProjectName }}_{{ .Tag }}_checksums.txt'
   # name_template: '{{ .ProjectName }}_{{ .Version }}_checksums.txt'
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
   algorithm: sha256
 
 signs:
   - cmd: cosign
     env:
-    - COSIGN_EXPERIMENTAL=1
-    stdin: '{{ .Env.COSIGN_PWD }}'
-    certificate: '${artifact}.pem'
+      - COSIGN_EXPERIMENTAL=1
+    stdin: "{{ .Env.COSIGN_PWD }}"
+    certificate: "${artifact}.pem"
     args:
-      - 'sign-blob'
-      - '--key=/cosign/cosign.key'
-      - '--output-certificate=${certificate}'
-      - '--output-signature=${signature}'
-      - '${artifact}'
+      - "sign-blob"
+      - "--key=/cosign/cosign.key"
+      - "--output-certificate=${certificate}"
+      - "--output-signature=${signature}"
+      - "${artifact}"
     artifacts: checksum
     output: false
 
 docker_signs:
-- cmd: cosign
-  env:
-  - COSIGN_EXPERIMENTAL=1
-  artifacts: manifests
-  output: false
-  args:
-  - 'sign'
-  - '${artifact}'
+  - cmd: cosign
+    env:
+      - COSIGN_EXPERIMENTAL=1
+    artifacts: manifests
+    output: false
+    args:
+      - "sign"
+      - "${artifact}"
 
 sboms:
   - artifacts: archive
 
 archives:
-- id: mmesh-node
-  builds:
-    - mmesh-node
-  # name_template: "{{ .ProjectName }}_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
-  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
-  wrap_in_directory: false
-  format: tar.gz
-  format_overrides:
-    - goos: windows
-      format: zip
+  - id: mmesh-node
+    builds:
+      - mmesh-node
+    # name_template: "{{ .ProjectName }}_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    wrap_in_directory: false
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - ./README.md
+      - ./SECURITY.md
+      - ./SUPPORT.md
+      - ./LICENSE
 
 brews:
   - tap:
@@ -154,7 +159,8 @@ nfpms:
     package_name: mmesh-node
     # file_name_template: "{{ .ProjectName }}_{{ .Tag }}_{{ .Os }}_{{ .Arch }}"
     # file_name_template: "{{ .ProjectName }}_{{ .Arch }}"
-    file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    # file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    file_name_template: "{{ .ConventionalFileName }}"
     builds:
       - mmesh-node
     vendor: mmesh.io
@@ -169,8 +175,8 @@ nfpms:
     bindir: /usr/bin
     dependencies:
       # - iproute2
-    section: default
-    priority: extra
+    section: misc
+    priority: optional
     meta: false
     contents:
       # basic files that apply to all packagers
@@ -178,6 +184,10 @@ nfpms:
         dst: /etc/systemd/system/mmesh-node.service
       - src: ./README.md
         dst: /usr/share/doc/mmesh-node/README.md
+      - src: ./SECURITY.md
+        dst: /usr/share/doc/mmesh-node/SECURITY.md
+      - src: ./SUPPORT.md
+        dst: /usr/share/doc/mmesh-node/SUPPORT.md
       - src: ./LICENSE
         dst: /usr/share/doc/mmesh-node/LICENSE
       # config files:
@@ -187,6 +197,10 @@ nfpms:
       # empty dir
       - dst: /var/lib/mmesh
         type: dir
+    deb:
+      lintian_overrides:
+        - statically-linked-binary
+        - changelog-file-missing-in-native-package
 
 dockers:
   - dockerfile: ./build/package/dockerfiles/Dockerfile
@@ -231,7 +245,7 @@ release:
     name: m-node
   draft: false
   prerelease: auto # auto | true | false
-  name_template: '{{.Tag}}'
+  name_template: "{{.Tag}}"
   disable: false
   # extra_files:
   #   - glob: ./_dist/*.sig
@@ -252,7 +266,7 @@ changelog:
     - title: Features
       regexp: "^.*feat[(\\w)]*:+.*$"
       order: 0
-    - title: 'Bug fixes'
+    - title: "Bug fixes"
       regexp: "^.*fix[(\\w)]*:+.*$"
       order: 1
     - title: Others

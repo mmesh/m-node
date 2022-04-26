@@ -151,11 +151,8 @@ tasks:
       VERSION:
         sh: svu current
     cmds:
-      # - ./build/_deps/scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO_DEV}}'
-      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_linux_amd64.deb '{{.PKG_REPO_DEV}}'
-      # - ./build/_deps/scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO_DEV}}'
-      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_linux_amd64.rpm '{{.PKG_REPO_DEV}}'
-      # - ./build/_deps/scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.GS_BUCKET}}' 'dev'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_amd64.deb '{{.PKG_REPO_DEV}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node-*.x86_64.rpm '{{.PKG_REPO_DEV}}'
       - ./build/_deps/scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.S3_BUCKET}}' 'dev'
 
   publish-binaries-stable:
@@ -165,11 +162,8 @@ tasks:
       VERSION:
         sh: svu current
     cmds:
-      # - ./build/_deps/scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.deb' '{{.PKG_REPO}}'
-      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_linux_amd64.deb '{{.PKG_REPO}}'
-      # - ./build/_deps/scripts/_local/build/pkg-upload.sh '{{.DIST_DIR}}/mmesh-node_{{.VERSION}}_linux_amd64.rpm' '{{.PKG_REPO}}'
-      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_linux_amd64.rpm '{{.PKG_REPO}}'
-      # - ./build/_deps/scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.GS_BUCKET}}' 'stable'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_amd64.deb '{{.PKG_REPO}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node-*.x86_64.rpm '{{.PKG_REPO}}'
       - ./build/_deps/scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.S3_BUCKET}}' 'stable'
 
   publish-all-dev:

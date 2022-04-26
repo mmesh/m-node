@@ -20,6 +20,7 @@
 /__tmp/**
 /_bin/**
 /_local/**
+/_build/**
 /_dist/**
 /build/_deps/
 LocalTasks.yml
