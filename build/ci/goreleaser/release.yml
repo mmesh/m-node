@@ -226,7 +226,7 @@ dockers:
     goarch: amd64
     build_flag_templates:
       - "--pull"
-      - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/mmesh/m-node/main/README.md"
+      - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/mmesh/m-node/master/README.md"
       - "--label=io.artifacthub.package.license=Apache License 2.0"
       - "--label=org.opencontainers.image.created={{.Date}}"
       - "--label=org.opencontainers.image.name={{.ProjectName}}"
@@ -283,9 +283,9 @@ changelog:
 announce:
   discord:
     enabled: true
-    author: mmeshbot
-    color: 00B4DB
-    icon_url: https://github.com/mmesh/assets/blob/HEAD/images/mmesh-bot/mmesh-bot.png
+    author: mmesh
+    color: "46299"
+    icon_url: https://raw.githubusercontent.com/mmesh/assets/master/images/logo/mmesh_logo_v4.1_512x512.png
   twitter:
     enabled: true
 
