@@ -35,13 +35,75 @@ env:
   # CGO_ENABLED: 0
   # GOPRIVATE: mmesh.dev/m-api-go,mmesh.dev/m-lib
   GITHUB_TOKEN:
-    sh: if [[ -f $HOME/.cloud/github/github_token.mmeshbot ]]; then cat $HOME/.cloud/github/github_token.mmeshbot; else echo "${GITHUB_TOKEN}"; fi
+    sh: |
+      if [[ -f $HOME/.cloud/github/github_token.mmeshbot ]]; then
+        cat $HOME/.cloud/github/github_token.mmeshbot;
+      else
+        echo "${GITHUB_TOKEN}";
+      fi
   DOCKER_USER:
-    sh: if [[ -f $HOME/.docker/docker.x6a ]]; then awk '/user/ {print $2}' $HOME/.docker/docker.x6a; else echo "${DOCKER_USER}"; fi
+    sh: |
+      if [[ -f $HOME/.docker/docker.x6a ]]; then
+        awk '/user/ {print $2}' $HOME/.docker/docker.x6a;
+      else
+        echo "${DOCKER_USER}";
+      fi
   DOCKER_PASSWORD:
-    sh: if [[ -f $HOME/.docker/docker.x6a ]]; then awk '/pw/ {print $2}' $HOME/.docker/docker.x6a; else echo "${DOCKER_PASSWORD}"; fi
+    sh: |
+      if [[ -f $HOME/.docker/docker.x6a ]]; then
+        awk '/pw/ {print $2}' $HOME/.docker/docker.x6a;
+      else
+        echo "${DOCKER_PASSWORD}";
+      fi
   COSIGN_PWD:
-    sh: if [[ -f $HOME/.x6a/mmesh/cosign/pw.txt ]]; then cat $HOME/.x6a/mmesh/cosign/pw.txt; else echo "${COSIGN_PWD}"; fi
+    sh: |
+      if [[ -f $HOME/.x6a/mmesh/cosign/pw.txt ]]; then
+        cat $HOME/.x6a/mmesh/cosign/pw.txt;
+      else
+        echo "${COSIGN_PWD}";
+      fi
+  DISCORD_WEBHOOK_ID:
+    sh: |
+      if [[ -f $HOME/.cloud/discord/mmeshbot-announcements.webhook ]]; then
+        awk '/webhook_id/ {print $2}' $HOME/.cloud/discord/mmeshbot-announcements.webhook;
+      else
+        echo "${DISCORD_WEBHOOK_ID}";
+      fi
+  DISCORD_WEBHOOK_TOKEN:
+    sh: |
+      if [[ -f $HOME/.cloud/discord/mmeshbot-announcements.webhook ]]; then
+        awk '/webhook_token/ {print $2}' $HOME/.cloud/discord/mmeshbot-announcements.webhook;
+      else
+        echo "${DISCORD_WEBHOOK_TOKEN}";
+      fi
+  TWITTER_CONSUMER_KEY:
+    sh: |
+      if [[ -f $HOME/.cloud/twitter/mmesh_io ]]; then
+        awk '/api_key/ {print $2}' $HOME/.cloud/twitter/mmesh_io;
+      else
+        echo "${TWITTER_CONSUMER_KEY}";
+      fi
+  TWITTER_CONSUMER_SECRET:
+    sh: |
+      if [[ -f $HOME/.cloud/twitter/mmesh_io ]]; then
+        awk '/api_secret/ {print $2}' $HOME/.cloud/twitter/mmesh_io;
+      else
+        echo "${TWITTER_CONSUMER_SECRET}";
+      fi
+  TWITTER_ACCESS_TOKEN:
+    sh: |
+      if [[ -f $HOME/.cloud/twitter/mmesh_io ]]; then
+        awk '/access_token/ {print $2}' $HOME/.cloud/twitter/mmesh_io;
+      else
+        echo "${TWITTER_ACCESS_TOKEN}";
+      fi
+  TWITTER_ACCESS_TOKEN_SECRET:
+    sh: |
+      if [[ -f $HOME/.cloud/twitter/mmesh_io ]]; then
+        awk '/access_secret/ {print $2}' $HOME/.cloud/twitter/mmesh_io;
+      else
+        echo "${TWITTER_ACCESS_TOKEN_SECRET}";
+      fi
 
 tasks:
   deps:
@@ -65,6 +127,12 @@ tasks:
           -e DOCKER_USER="${DOCKER_USER}" \
           -e DOCKER_PASSWORD="${DOCKER_PASSWORD}" \
           -e COSIGN_PWD="${COSIGN_PWD}" \
+          -e DISCORD_WEBHOOK_ID="${DISCORD_WEBHOOK_ID}" \
+          -e DISCORD_WEBHOOK_TOKEN="${DISCORD_WEBHOOK_TOKEN}" \
+          -e TWITTER_CONSUMER_KEY="${TWITTER_CONSUMER_KEY}" \
+          -e TWITTER_CONSUMER_SECRET="${TWITTER_CONSUMER_SECRET}" \
+          -e TWITTER_ACCESS_TOKEN="${TWITTER_ACCESS_TOKEN}" \
+          -e TWITTER_ACCESS_TOKEN_SECRET="${TWITTER_ACCESS_TOKEN_SECRET}" \
           -v $HOME/.x6a/mmesh/cosign:/cosign:ro \
           -v {{.PROJECT_DIR}}:/go/src/{{.PROJECT}} \
           -v /var/run/docker.sock:/var/run/docker.sock \

@@ -280,6 +280,15 @@ changelog:
       - "^typo"
       - "^Merge"
 
+announce:
+  discord:
+    enabled: true
+    author: mmeshbot
+    color: 00B4DB
+    icon_url: https://github.com/mmesh/assets/blob/HEAD/images/mmesh-bot/mmesh-bot.png
+  twitter:
+    enabled: true
+
 # publishers:
 #   # dev repos
 #   - name: repo.mmesh.dev/apt
