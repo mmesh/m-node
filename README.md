@@ -1,4 +1,4 @@
-![mmesh](https://github.com/mmesh/assets/blob/HEAD/images/logo/mmesh_logo_v5_180x30.png)
+[![mmesh.io](https://github.com/mmesh/assets/blob/HEAD/images/logo/mmesh_logo_v5_180x30.png)](https://mmesh.io)
 
 [![Discord](https://img.shields.io/discord/654291649572241408?color=%236d82cb&style=flat&logo=discord&logoColor=%23ffffff&label=Chat)](https://mmesh.io/discord)
 [![GitHub Discussions](https://img.shields.io/badge/GitHub_Discussions-181717?style=flat&logo=github&logoColor=white)](https://github.com/orgs/mmesh/discussions)
