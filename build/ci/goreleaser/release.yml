@@ -127,6 +127,7 @@ brews:
     homepage: https://mmesh.io
     description: mmesh-node agent
     license: "Apache License 2.0"
+    # Reference: https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html#//apple_ref/doc/uid/10000172i-SW7-SW3
     # plist: |
     #   <?xml version="1.0" encoding="UTF-8"?>
     #   <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -285,7 +286,7 @@ announce:
     enabled: true
     author: mmesh
     color: "46299"
-    icon_url: https://raw.githubusercontent.com/mmesh/assets/master/images/logo/mmesh_logo_v4.1_512x512.png
+    icon_url: https://raw.githubusercontent.com/mmesh/assets/master/images/logo/mmesh_logo_v5_symbol_512x512.png
   twitter:
     enabled: true
 
