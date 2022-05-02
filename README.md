@@ -8,6 +8,7 @@ Open source projects from [mmesh](https://mmesh.io).
 
 # mmesh-node
 
+[![Go Report Card](https://goreportcard.com/badge/mmesh.dev/m-node)](https://goreportcard.com/report/mmesh.dev/m-node)
 [![Release](https://img.shields.io/github/v/release/mmesh/m-node?display_name=tag&style=flat)](https://github.com/mmesh/m-node/releases/latest)
 [![GitHub](https://img.shields.io/github/license/mmesh/m-node?style=flat)](/LICENSE)
 
