@@ -16,7 +16,7 @@ import (
 	"mmesh.dev/m-lib/pkg/ipnet"
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"mmesh.dev/m-node/internal/app/node/netp2p"
+	"mmesh.dev/m-node/internal/app/node/mnet"
 )
 
 // const dnsPortAlt int = 53535
@@ -100,14 +100,14 @@ func (h *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 
 		if (len(s) == 4 && s[1] == "mmesh" && s[2] == "local") || s[1] == "mm" || s[1] == "mmesh" {
 			qHost := &dns_pb.Host{
-				Node: netp2p.GetNodeWithoutEndpoints(),
+				Node: mnet.LocalNode().NetworkNodeWithoutEndpoints(),
 				Name: s[0],
 			}
 			ipv4, err := h.nxnc.DNS(context.Background(), qHost)
 			if err != nil {
 				ipv4 = &dns_pb.IPv4{}
 				xlog.Errorf("Unable to connect to mmesh DNS controller: %v", err)
-				networkErrorEventsQueue <- struct{}{}
+				mnet.LocalNode().Connection().Watcher() <- struct{}{}
 			}
 
 			if len(ipv4.IPv4) > 0 {
@@ -255,7 +255,7 @@ func mmesh64Resolver(name string) []string {
 	if s[5] == "mmesh" && s[6] == "local" {
 		ipv4 := fmt.Sprintf("%s.%s.%s.%s", s[0], s[1], s[2], s[3])
 		if net.ParseIP(ipv4) != nil {
-			addr, err := ipnet.GetMMesh64Addr(netp2p.GetNodeIPv6(), ipv4)
+			addr, err := ipnet.GetMMesh64Addr(mnet.LocalNode().Router().IPv6(), ipv4)
 			if err != nil {
 				return []string{}
 			}

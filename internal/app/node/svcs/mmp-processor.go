@@ -24,7 +24,7 @@ func MMPProcessor(w *runtime.Wrkr) {
 				xlog.Debugf("Received command on queue from %s", payload.SrcID)
 				mmpProcessor(context.TODO(), payload)
 			case <-close:
-				xlog.Debug("Closing mmp processor")
+				// xlog.Debug("Closing mmp processor")
 				return
 			}
 		}

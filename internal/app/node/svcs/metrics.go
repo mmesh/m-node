@@ -9,7 +9,7 @@ import (
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/metrics"
-	"mmesh.dev/m-node/internal/app/node/netp2p"
+	"mmesh.dev/m-node/internal/app/node/mnet"
 )
 
 var updateNodeMetrics = make(chan struct{}, 1)
@@ -27,14 +27,14 @@ func MetricsAgent(w *runtime.Wrkr) {
 				n := getNodeMetrics()
 
 				if _, err := w.NxNC.Metrics(context.TODO(), n); err != nil {
-					xlog.Errorf("Unable to send metrics to mmesh controller: %v", err)
-					networkErrorEventsQueue <- struct{}{}
+					xlog.Errorf("Unable to send metrics to controller: %v", err)
+					mnet.LocalNode().Connection().Watcher() <- struct{}{}
 					return
 				}
 
 				if _, err := w.NxNC.DataPointMetrics(context.TODO(), getDataPointMetrics(n)); err != nil {
-					xlog.Errorf("Unable to send data point metrics to mmesh controller: %v", err)
-					networkErrorEventsQueue <- struct{}{}
+					xlog.Errorf("Unable to send data point metrics to controller: %v", err)
+					mnet.LocalNode().Connection().Watcher() <- struct{}{}
 					return
 				}
 
@@ -42,7 +42,7 @@ func MetricsAgent(w *runtime.Wrkr) {
 
 				metrics.ClearNetworkMetrics()
 			case <-quitMetrics:
-				xlog.Debug("Closing metrics processor")
+				// xlog.Debug("Closing metrics processor")
 				return
 			}
 		}
@@ -79,7 +79,8 @@ func metricsAgentCtl() {
 }
 
 func getNodeMetrics() *network.Node {
-	n := netp2p.GetNode()
+	// n := netp2p.GetNode()
+	n := mnet.LocalNode().NetworkNode()
 
 	if n.Agent.Metrics == nil {
 		n.Agent.Metrics = &network.AgentMetrics{}

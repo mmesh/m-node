@@ -10,14 +10,17 @@ import (
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-lib/pkg/update"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"mmesh.dev/m-node/internal/app/node/connection"
-	"mmesh.dev/m-node/internal/app/node/netp2p"
+	"mmesh.dev/m-node/internal/app/node/mnet"
 )
 
 var done = make(chan struct{})
 
 func start() {
-	nxnc := connection.AgentConnect()
+	if err := mnet.Init(); err != nil {
+		xlog.Alertf("Unable to initialize node: %s", err)
+		os.Exit(1)
+	}
+	nxnc := mnet.LocalNode().Connection().NetworkClient()
 	initWrkrs(nxnc)
 	runtime.StartWrkrs()
 
@@ -45,10 +48,7 @@ func finish() {
 	wg.Wait()
 
 	xlog.Debug("Closing agent connection handlers...")
-	netp2p.Disconnect()
-	if err := connection.GRPCClientConn.Close(); err != nil {
-		xlog.Errorf("Unable to close gRPC network connection: %v", err)
-	}
+	mnet.LocalNode().Close()
 
 	time.Sleep(time.Second)
 
@@ -66,10 +66,7 @@ func restart() {
 	wg.Wait()
 
 	xlog.Debug("Closing agent connection handlers...")
-	netp2p.Disconnect()
-	if err := connection.GRPCClientConn.Close(); err != nil {
-		xlog.Errorf("Unable to close gRPC network connection: %v", err)
-	}
+	mnet.LocalNode().Close()
 
 	update.RestartReady <- struct{}{}
 }

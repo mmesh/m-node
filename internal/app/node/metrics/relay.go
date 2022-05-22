@@ -25,8 +25,8 @@ func (rm *relayMetricsMap) getRelayMetrics() map[string]*metrics.RelayMetrics {
 	rm.RLock()
 	defer rm.RUnlock()
 
-	for rmaddr, conns := range rm.relay {
-		rmetrics[rmaddr] = &metrics.RelayMetrics{
+	for rP2PHostID, conns := range rm.relay {
+		rmetrics[rP2PHostID] = &metrics.RelayMetrics{
 			Connections: conns,
 		}
 	}
@@ -34,18 +34,18 @@ func (rm *relayMetricsMap) getRelayMetrics() map[string]*metrics.RelayMetrics {
 	return rmetrics
 }
 
-func (rm *relayMetricsMap) incr(rmaddr string) {
+func (rm *relayMetricsMap) incr(rP2PHostID string) {
 	rm.Lock()
 	defer rm.Unlock()
 
-	rm.relay[rmaddr]++
+	rm.relay[rP2PHostID]++
 }
 
-func (rm *relayMetricsMap) decr(rmaddr string) {
+func (rm *relayMetricsMap) decr(rP2PHostID string) {
 	rm.Lock()
 	defer rm.Unlock()
 
-	rm.relay[rmaddr]--
+	rm.relay[rP2PHostID]--
 }
 
 func GetRelayMetrics() map[string]*metrics.RelayMetrics {
@@ -57,19 +57,19 @@ func GetRelayMetrics() map[string]*metrics.RelayMetrics {
 	return relayMetrics.getRelayMetrics()
 }
 
-func IncrRelayConns(rmaddr string) {
+func IncrRelayConns(rP2PHostID string) {
 	if relayMetrics == nil {
 		relayMetrics = newRelayMetricsMap()
 	}
 
-	relayMetrics.incr(rmaddr)
+	relayMetrics.incr(rP2PHostID)
 }
 
-func DecrRelayConns(rmaddr string) {
+func DecrRelayConns(rP2PHostID string) {
 	if relayMetrics == nil {
 		relayMetrics = newRelayMetricsMap()
 		return
 	}
 
-	relayMetrics.decr(rmaddr)
+	relayMetrics.decr(rP2PHostID)
 }

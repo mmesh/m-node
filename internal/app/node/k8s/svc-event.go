@@ -7,8 +7,8 @@ import (
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/ipnet"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"mmesh.dev/m-node/internal/app/node/netp2p"
-	"mmesh.dev/m-node/internal/app/node/proxy"
+	"mmesh.dev/m-node/internal/app/node/mnet"
+	"mmesh.dev/m-node/internal/app/node/mnet/proxy"
 )
 
 // manageSvcEvent is the business logic of the controller.
@@ -42,27 +42,31 @@ func (c *controller) manageSvcEvent(s *v1.Service, evt eventType) error {
 	switch evt {
 	case eventAdd:
 		if k8sSvcCfg.valid {
-			vIP, err = netp2p.AddNetworkEndpoint(endpointID, dnsName, reqIPv4)
+			// vIP, err = netp2p.AddNetworkEndpoint(endpointID, dnsName, reqIPv4)
+			vIP, err = mnet.LocalNode().AddNetworkEndpoint(endpointID, dnsName, reqIPv4)
 			if err != nil {
 				xlog.Errorf("Unable to add k8s network endpoint: %v", err)
 				return errors.Wrapf(err, "[%v] function netp2p.AddNetworkEndpoint()", errors.Trace())
 			}
 		}
 	case eventUpdate:
-		if err = netp2p.RemoveNetworkEndpoint(endpointID); err != nil {
+		// if err = netp2p.RemoveNetworkEndpoint(endpointID); err != nil {
+		if err = mnet.LocalNode().RemoveNetworkEndpoint(endpointID); err != nil {
 			xlog.Errorf("Unable to remove k8s network endpoint: %v", err)
 			return errors.Wrapf(err, "[%v] function netp2p.RemoveNetworkEndpoint()", errors.Trace())
 		}
 
 		if k8sSvcCfg.valid {
-			vIP, err = netp2p.AddNetworkEndpoint(endpointID, dnsName, reqIPv4)
+			// vIP, err = netp2p.AddNetworkEndpoint(endpointID, dnsName, reqIPv4)
+			vIP, err = mnet.LocalNode().AddNetworkEndpoint(endpointID, dnsName, reqIPv4)
 			if err != nil {
 				xlog.Errorf("Unable to add k8s network endpoint: %v", err)
 				return errors.Wrapf(err, "[%v] function netp2p.AddNetworkEndpoint()", errors.Trace())
 			}
 		}
 	case eventDelete:
-		if err = netp2p.RemoveNetworkEndpoint(endpointID); err != nil {
+		// if err = netp2p.RemoveNetworkEndpoint(endpointID); err != nil {
+		if err = mnet.LocalNode().RemoveNetworkEndpoint(endpointID); err != nil {
 			xlog.Errorf("Unable to remove k8s network endpoint: %v", err)
 			return errors.Wrapf(err, "[%v] function netp2p.RemoveNetworkEndpoint()", errors.Trace())
 		}

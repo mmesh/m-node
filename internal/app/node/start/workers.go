@@ -11,7 +11,7 @@ import (
 
 const (
 	errorEventsHandler = iota
-	networkErrorEventsHandler
+	// networkErrorEventsHandler
 	mmDispatcher
 	mmProcessor
 	dnsAgent
@@ -21,10 +21,10 @@ const (
 	cronAgent
 	atdAgent
 	k8sConnector
-	proxy64gc
+	// proxy64gc
 	federationMonitor
 	updateAgent
-	//bgpAgent
+	// bgpAgent
 )
 
 func initWrkrs(nxnc rpc.NetworkAPIClient) {
@@ -33,11 +33,11 @@ func initWrkrs(nxnc rpc.NetworkAPIClient) {
 		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmErrorEventsHandler"),
 		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, runtime.ErrorEventsHandler),
 	)
-	runtime.RegisterWrkr(
-		networkErrorEventsHandler,
-		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmNetworkErrorEventsHandler"),
-		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, svcs.NetworkErrorEventsHandler),
-	)
+	// runtime.RegisterWrkr(
+	// 	networkErrorEventsHandler,
+	// 	runtime.SetWrkrOpt(runtime.WrkrOptName, "mmNetworkErrorEventsHandler"),
+	// 	runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, svcs.NetworkErrorEventsHandler),
+	// )
 	runtime.RegisterWrkr(
 		mmDispatcher,
 		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmDispatcher"),
@@ -88,11 +88,11 @@ func initWrkrs(nxnc rpc.NetworkAPIClient) {
 		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, svcs.KubernetesConnector),
 		runtime.SetWrkrOpt(runtime.WrkrOptNxNetworkClient, nxnc),
 	)
-	runtime.RegisterWrkr(
-		proxy64gc,
-		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmProxy64GC"),
-		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, svcs.Proxy64GC),
-	)
+	// runtime.RegisterWrkr(
+	// 	proxy64gc,
+	// 	runtime.SetWrkrOpt(runtime.WrkrOptName, "mmProxy64GC"),
+	// 	runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, svcs.Proxy64GC),
+	// )
 	runtime.RegisterWrkr(
 		federationMonitor,
 		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmFederationMonitor"),

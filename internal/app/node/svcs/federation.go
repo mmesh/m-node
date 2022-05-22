@@ -6,7 +6,8 @@ import (
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"mmesh.dev/m-node/internal/app/node/connection"
+	"mmesh.dev/m-node/internal/app/node/mnet"
+	"mmesh.dev/m-node/internal/app/node/mnet/connection"
 )
 
 var federationMonitorCh = make(chan struct{}, 1)
@@ -24,12 +25,12 @@ func FederationMonitor(w *runtime.Wrkr) {
 				xlog.Info("Federation Monitor: Updating controller list...")
 				if err := connection.FederationUpdate(w.NxNC); err != nil {
 					xlog.Errorf("Unable to update controller list: %v", errors.Cause(err))
-					networkErrorEventsQueue <- struct{}{}
+					mnet.LocalNode().Connection().Watcher() <- struct{}{}
 					return
 				}
 
 			case <-endCh:
-				xlog.Debug("Closing federation monitor")
+				// xlog.Debug("Closing federation monitor")
 				return
 			}
 		}

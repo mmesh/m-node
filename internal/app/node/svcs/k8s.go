@@ -1,10 +1,10 @@
 package svcs
 
 import (
-	"github.com/spf13/viper"
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/k8s"
+	"mmesh.dev/m-node/internal/app/node/mnet"
 )
 
 func KubernetesConnector(w *runtime.Wrkr) {
@@ -14,7 +14,7 @@ func KubernetesConnector(w *runtime.Wrkr) {
 	quitKCtrlCh := make(chan struct{})
 
 	go func() {
-		if !viper.GetBool("agent.kubernetes.controller.enabled") {
+		if !mnet.LocalNode().IsK8sGwEnabled() {
 			xlog.Info("Kubernetes controller not enabled")
 			return
 		}

@@ -10,7 +10,7 @@ import (
 	"mmesh.dev/m-lib/pkg/mmp"
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"mmesh.dev/m-node/internal/app/node/netp2p"
+	"mmesh.dev/m-node/internal/app/node/mnet"
 )
 
 // Control method implementation of NetworkAPI gRPC Service
@@ -25,8 +25,8 @@ func MMPControl(w *runtime.Wrkr) {
 		// defer cancel()
 		stream, err := w.NxNC.Control(context.TODO())
 		if err != nil {
-			xlog.Errorf("Unable to get mmp stream from mmesh controller: %v", err)
-			networkErrorEventsQueue <- struct{}{}
+			xlog.Errorf("Unable to get mmp stream from controller: %v", err)
+			mnet.LocalNode().Connection().Watcher() <- struct{}{}
 			return
 		}
 
@@ -34,13 +34,13 @@ func MMPControl(w *runtime.Wrkr) {
 			for {
 				payload, err := stream.Recv()
 				if err == io.EOF {
-					xlog.Warnf("Ended (io.EOF) mmp stream: %v", err)
-					networkErrorEventsQueue <- struct{}{}
+					// xlog.Warnf("Ended (io.EOF) mmp stream: %v", err)
+					mnet.LocalNode().Connection().Watcher() <- struct{}{}
 					break
 				}
 				if err != nil {
-					xlog.Warnf("Unable to receive mmp payload: %v", err)
-					networkErrorEventsQueue <- struct{}{}
+					// xlog.Warnf("Unable to receive mmp payload: %v", err)
+					mnet.LocalNode().Connection().Watcher() <- struct{}{}
 					break
 				}
 
@@ -50,7 +50,7 @@ func MMPControl(w *runtime.Wrkr) {
 				xlog.Errorf("Unable to close mmp stream: %v", err)
 			}
 			endCh <- struct{}{}
-			xlog.Warn("Closing mmp recv stream")
+			// xlog.Warn("Closing mmp recv stream")
 		}()
 
 		go func() {
@@ -58,15 +58,15 @@ func MMPControl(w *runtime.Wrkr) {
 				select {
 				case payload := <-mmp.TxControlQueue:
 					if err := stream.Send(payload); err != nil {
-						xlog.Warnf("Unable to send mmp payload: %v", err)
-						networkErrorEventsQueue <- struct{}{}
+						// xlog.Warnf("Unable to send mmp payload: %v", err)
+						mnet.LocalNode().Connection().Watcher() <- struct{}{}
 						if err := stream.CloseSend(); err != nil {
 							xlog.Errorf("Unable to close mmp stream: %v", err)
 						}
 						return
 					}
 				case <-endCh:
-					xlog.Warn("Closing mmp send stream")
+					// xlog.Warn("Closing mmp send stream")
 					return
 				}
 			}
@@ -75,7 +75,7 @@ func MMPControl(w *runtime.Wrkr) {
 		mmp.TxControlQueue <- &mmsp.Payload{
 			SrcID:       viper.GetString("mm.id"),
 			PayloadType: mmsp.PayloadType_NODE_INIT,
-			Node:        netp2p.GetNodeWithoutEndpoints(),
+			Node:        mnet.LocalNode().NetworkNodeWithoutEndpoints(),
 		}
 	}()
 

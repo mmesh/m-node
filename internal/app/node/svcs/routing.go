@@ -3,12 +3,13 @@ package svcs
 import (
 	"context"
 	"io"
+	"os"
 	"time"
 
 	"mmesh.dev/m-api-go/grpc/network/mmnp/routing"
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"mmesh.dev/m-node/internal/app/node/netp2p"
+	"mmesh.dev/m-node/internal/app/node/mnet"
 )
 
 var rtCtlQueue = make(chan struct{})
@@ -25,8 +26,8 @@ func RoutingAgent(w *runtime.Wrkr) {
 		// defer cancel()
 		stream, err := w.NxNC.Routing(context.TODO())
 		if err != nil {
-			xlog.Errorf("Unable to get routing stream from mmesh controller: %v", err)
-			networkErrorEventsQueue <- struct{}{}
+			xlog.Errorf("Unable to get routing stream from controller: %v", err)
+			mnet.LocalNode().Connection().Watcher() <- struct{}{}
 			return
 		}
 
@@ -34,23 +35,30 @@ func RoutingAgent(w *runtime.Wrkr) {
 			for {
 				rtResp, err := stream.Recv()
 				if err == io.EOF {
-					xlog.Warnf("Ended (io.EOF) routing stream: %v", err)
-					networkErrorEventsQueue <- struct{}{}
+					// xlog.Warnf("Ended (io.EOF) routing stream: %v", err)
+					mnet.LocalNode().Connection().Watcher() <- struct{}{}
 					break
 				}
 				if err != nil {
-					xlog.Warnf("Unable to receive rtResponse: %v", err)
-					networkErrorEventsQueue <- struct{}{}
+					// xlog.Warnf("Unable to receive rtResponse: %v", err)
+					mnet.LocalNode().Connection().Watcher() <- struct{}{}
 					break
 				}
 
-				netp2p.UpdateRoutingTable(rtResp.RT)
+				if rtResp.RT.Disabled {
+					xlog.Alert("Service is DISABLED")
+					xlog.Alert("Please contact mmesh customer service urgently")
+					// break
+					os.Exit(1)
+				}
+
+				mnet.LocalNode().Router().UpdateRoutingTable(rtResp.RT)
 			}
 			if err := stream.CloseSend(); err != nil {
 				xlog.Errorf("Unable to close routing stream: %v", err)
 			}
 			endCh <- struct{}{}
-			xlog.Warn("Closing rtResponse recv stream")
+			// xlog.Warn("Closing rtResponse recv stream")
 		}()
 
 		go func() {
@@ -58,19 +66,19 @@ func RoutingAgent(w *runtime.Wrkr) {
 				select {
 				case <-rtCtlQueue:
 					rtReq := &routing.RTRequest{
-						Node:        netp2p.GetNode(),
-						Connections: netp2p.GetLinkStatusConnections(),
+						Node:        mnet.LocalNode().NetworkNode(),
+						Connections: mnet.LocalNode().Router().GetLinkStatusConnections(),
 					}
 					if err := stream.Send(rtReq); err != nil {
-						xlog.Warnf("Unable to send rtRequest: %v", err)
-						networkErrorEventsQueue <- struct{}{}
+						// xlog.Warnf("Unable to send rtRequest: %v", err)
+						mnet.LocalNode().Connection().Watcher() <- struct{}{}
 						if err := stream.CloseSend(); err != nil {
 							xlog.Errorf("Unable to close routing stream: %v", err)
 						}
 						return
 					}
 				case <-endCh:
-					xlog.Warn("Closing rtRequest send stream")
+					// xlog.Warn("Closing rtRequest send stream")
 					return
 				}
 			}
@@ -103,7 +111,7 @@ func rtCtl() {
 
 		go func() {
 			rtrqCtlRun := false
-			rtrq := netp2p.GetRTRQueue()
+			rtrq := mnet.LocalNode().Router().RtrQueue()
 			for {
 				<-rtrq
 				if !rtrqCtlRun {
