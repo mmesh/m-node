@@ -30,8 +30,8 @@ func newPortFwdListen(authKey *auth.AuthKey, ipProto, srcPort, dstPort uint32, s
 		RequesterID: mmID,
 		Interactive: interactive,
 		AuthKey:     authKey,
-		//PSK: viper.GetString("agent.management.auth.psk"),
-		//SecurityToken: viper.GetString("agent.management.auth.securityToken"),
+		// PSK: viper.GetString("agent.management.auth.psk"),
+		// SecurityToken: viper.GetString("agent.management.auth.securityToken"),
 		PayloadType: mmsp.PayloadType_PORTFWD_LISTEN,
 		PortFwd: &portFwd.PortFwd{
 			Link: &portFwd.Link{

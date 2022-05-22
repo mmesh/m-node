@@ -12,7 +12,7 @@ type pfLinkID string
 type portFwdConnection struct {
 	io        map[pfConnectionID]*streaming.IOPipes
 	dialAckCh map[pfConnectionID]chan struct{}
-	//sync.RWMutex
+	// sync.RWMutex
 }
 
 type portFwdSession struct {

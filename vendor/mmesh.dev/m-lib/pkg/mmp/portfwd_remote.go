@@ -112,12 +112,12 @@ func portFwdDial(ctx context.Context, payload *mmsp.Payload) error {
 
 	go func() {
 		if _, err := io.Copy(iop.Out.WP, conn); err != nil {
-			//logging.Tracef("io.Copy(iop.Out.WP, conn): %v", err)
+			// logging.Tracef("io.Copy(iop.Out.WP, conn): %v", err)
 		}
 	}()
 	go func() {
 		if _, err := io.Copy(conn, iop.In.RP); err != nil {
-			//logging.Tracef("io.Copy(conn, iop.In.RP): %v", err)
+			// logging.Tracef("io.Copy(conn, iop.In.RP): %v", err)
 		}
 		waitc <- struct{}{}
 	}()

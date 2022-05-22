@@ -13,7 +13,7 @@ import (
 	status1 "google.golang.org/grpc/status"
 	status "mmesh.dev/m-api-go/grpc/common/status"
 	dns "mmesh.dev/m-api-go/grpc/network/dns"
-	natProbe "mmesh.dev/m-api-go/grpc/network/mmnp/natProbe"
+	natprobe "mmesh.dev/m-api-go/grpc/network/mmnp/natprobe"
 	register "mmesh.dev/m-api-go/grpc/network/mmnp/register"
 	routing "mmesh.dev/m-api-go/grpc/network/mmnp/routing"
 	mmsp "mmesh.dev/m-api-go/grpc/network/mmsp"
@@ -31,7 +31,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NetworkAPIClient interface {
-	NATProbe(ctx context.Context, in *natProbe.NATProbe, opts ...grpc.CallOption) (*natProbe.NATProbe, error)
+	NATProbe(ctx context.Context, in *natprobe.NATProbe, opts ...grpc.CallOption) (*natprobe.NATProbe, error)
 	RegisterEndpoint(ctx context.Context, in *register.EndpointRegRequest, opts ...grpc.CallOption) (*register.EndpointRegResponse, error)
 	RemoveEndpoint(ctx context.Context, in *register.EndpointRegRequest, opts ...grpc.CallOption) (*network.Node, error)
 	RegisterNode(ctx context.Context, in *register.NodeRegRequest, opts ...grpc.CallOption) (*register.NodeRegResponse, error)
@@ -52,8 +52,8 @@ func NewNetworkAPIClient(cc grpc.ClientConnInterface) NetworkAPIClient {
 	return &networkAPIClient{cc}
 }
 
-func (c *networkAPIClient) NATProbe(ctx context.Context, in *natProbe.NATProbe, opts ...grpc.CallOption) (*natProbe.NATProbe, error) {
-	out := new(natProbe.NATProbe)
+func (c *networkAPIClient) NATProbe(ctx context.Context, in *natprobe.NATProbe, opts ...grpc.CallOption) (*natprobe.NATProbe, error) {
+	out := new(natprobe.NATProbe)
 	err := c.cc.Invoke(ctx, "/network.NetworkAPI/NATProbe", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -190,7 +190,7 @@ func (c *networkAPIClient) FederationEndpoints(ctx context.Context, in *network.
 // All implementations must embed UnimplementedNetworkAPIServer
 // for forward compatibility
 type NetworkAPIServer interface {
-	NATProbe(context.Context, *natProbe.NATProbe) (*natProbe.NATProbe, error)
+	NATProbe(context.Context, *natprobe.NATProbe) (*natprobe.NATProbe, error)
 	RegisterEndpoint(context.Context, *register.EndpointRegRequest) (*register.EndpointRegResponse, error)
 	RemoveEndpoint(context.Context, *register.EndpointRegRequest) (*network.Node, error)
 	RegisterNode(context.Context, *register.NodeRegRequest) (*register.NodeRegResponse, error)
@@ -208,7 +208,7 @@ type NetworkAPIServer interface {
 type UnimplementedNetworkAPIServer struct {
 }
 
-func (UnimplementedNetworkAPIServer) NATProbe(context.Context, *natProbe.NATProbe) (*natProbe.NATProbe, error) {
+func (UnimplementedNetworkAPIServer) NATProbe(context.Context, *natprobe.NATProbe) (*natprobe.NATProbe, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method NATProbe not implemented")
 }
 func (UnimplementedNetworkAPIServer) RegisterEndpoint(context.Context, *register.EndpointRegRequest) (*register.EndpointRegResponse, error) {
@@ -252,7 +252,7 @@ func RegisterNetworkAPIServer(s grpc.ServiceRegistrar, srv NetworkAPIServer) {
 }
 
 func _NetworkAPI_NATProbe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(natProbe.NATProbe)
+	in := new(natprobe.NATProbe)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -264,7 +264,7 @@ func _NetworkAPI_NATProbe_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/network.NetworkAPI/NATProbe",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NetworkAPIServer).NATProbe(ctx, req.(*natProbe.NATProbe))
+		return srv.(NetworkAPIServer).NATProbe(ctx, req.(*natprobe.NATProbe))
 	}
 	return interceptor(ctx, in, info, handler)
 }

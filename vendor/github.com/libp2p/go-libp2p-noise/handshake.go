@@ -5,6 +5,8 @@ import (
 	"crypto/rand"
 	"encoding/binary"
 	"fmt"
+	"os"
+	"runtime/debug"
 	"time"
 
 	"golang.org/x/crypto/poly1305"
@@ -28,7 +30,14 @@ var cipherSuite = noise.NewCipherSuite(noise.DH25519, noise.CipherChaChaPoly, no
 
 // runHandshake exchanges handshake messages with the remote peer to establish
 // a noise-libp2p session. It blocks until the handshake completes or fails.
-func (s *secureSession) runHandshake(ctx context.Context) error {
+func (s *secureSession) runHandshake(ctx context.Context) (err error) {
+	defer func() {
+		if rerr := recover(); rerr != nil {
+			fmt.Fprintf(os.Stderr, "caught panic: %s\n%s\n", rerr, debug.Stack())
+			err = fmt.Errorf("panic in Noise handshake: %s", rerr)
+		}
+	}()
+
 	kp, err := noise.DH25519.GenerateKeypair(rand.Reader)
 	if err != nil {
 		return fmt.Errorf("error generating static keypair: %w", err)
@@ -60,9 +69,9 @@ func (s *secureSession) runHandshake(ctx context.Context) error {
 		}
 	}
 
-	// We can re-use this buffer for all handshake messages as it's size
+	// We can re-use this buffer for all handshake messages as its size
 	// will be the size of the maximum handshake message for the Noise XX pattern.
-	// Also, since we prefix every noise handshake message with it's length, we need to account for
+	// Also, since we prefix every noise handshake message with its length, we need to account for
 	// it when we fetch the buffer from the pool
 	maxMsgSize := 2*noise.DH25519.DHLen() + len(payload) + 2*poly1305.TagSize
 	hbuf := pool.Get(maxMsgSize + LengthPrefixLength)
@@ -102,7 +111,7 @@ func (s *secureSession) runHandshake(ctx context.Context) error {
 
 		// stage 1 //
 		// Handshake Msg Len = len(DH ephemeral key) + len(DHT static key) +  MAC(static key is encrypted) + len(Payload) +
-		//MAC(payload is encrypted)
+		// MAC(payload is encrypted)
 		err = s.sendHandshakeMessage(hs, payload, hbuf)
 		if err != nil {
 			return fmt.Errorf("error sending handshake message: %w", err)
@@ -242,8 +251,10 @@ func (s *secureSession) handleRemoteHandshakePayload(payload []byte, remoteStati
 		return err
 	}
 
-	// if we know who we're trying to reach, make sure we have the right peer
-	if s.initiator && s.remoteID != id {
+	// check the peer ID for:
+	// * all outbound connection
+	// * inbound connections, if we know which peer we want to connect to (SecureInbound called with a peer ID)
+	if (s.initiator && s.remoteID != id) || (!s.initiator && s.remoteID != "" && s.remoteID != id) {
 		// use Pretty() as it produces the full b58-encoded string, rather than abbreviated forms.
 		return fmt.Errorf("peer id mismatch: expected %s, but remote key matches %s", s.remoteID.Pretty(), id.Pretty())
 	}

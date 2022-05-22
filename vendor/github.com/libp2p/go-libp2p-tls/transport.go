@@ -4,8 +4,10 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
+	"fmt"
 	"net"
-	"sync"
+	"os"
+	"runtime/debug"
 
 	ci "github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -45,8 +47,9 @@ func New(key ci.PrivKey) (*Transport, error) {
 var _ sec.SecureTransport = &Transport{}
 
 // SecureInbound runs the TLS handshake as a server.
-func (t *Transport) SecureInbound(ctx context.Context, insecure net.Conn) (sec.SecureConn, error) {
-	config, keyCh := t.identity.ConfigForAny()
+// If p is empty, connections from any peer are accepted.
+func (t *Transport) SecureInbound(ctx context.Context, insecure net.Conn, p peer.ID) (sec.SecureConn, error) {
+	config, keyCh := t.identity.ConfigForPeer(p)
 	cs, err := t.handshake(ctx, tls.Server(insecure, config), keyCh)
 	if err != nil {
 		insecure.Close()
@@ -70,44 +73,16 @@ func (t *Transport) SecureOutbound(ctx context.Context, insecure net.Conn, p pee
 	return cs, err
 }
 
-func (t *Transport) handshake(
-	ctx context.Context,
-	tlsConn *tls.Conn,
-	keyCh <-chan ci.PubKey,
-) (sec.SecureConn, error) {
-	// There's no way to pass a context to tls.Conn.Handshake().
-	// See https://github.com/golang/go/issues/18482.
-	// Close the connection instead.
-	select {
-	case <-ctx.Done():
-		tlsConn.Close()
-	default:
-	}
+func (t *Transport) handshake(ctx context.Context, tlsConn *tls.Conn, keyCh <-chan ci.PubKey) (_sconn sec.SecureConn, err error) {
+	defer func() {
+		if rerr := recover(); rerr != nil {
+			fmt.Fprintf(os.Stderr, "panic in TLS handshake: %s\n%s\n", rerr, debug.Stack())
+			err = fmt.Errorf("panic in TLS handshake: %s", rerr)
 
-	done := make(chan struct{})
-	var wg sync.WaitGroup
-
-	// Ensure that we do not return before
-	// either being done or having a context
-	// cancellation.
-	defer wg.Wait()
-	defer close(done)
-
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		select {
-		case <-done:
-		case <-ctx.Done():
-			tlsConn.Close()
 		}
 	}()
 
-	if err := tlsConn.Handshake(); err != nil {
-		// if the context was canceled, return the context error
-		if ctxErr := ctx.Err(); ctxErr != nil {
-			return nil, ctxErr
-		}
+	if err := tlsConn.HandshakeContext(ctx); err != nil {
 		return nil, err
 	}
 
@@ -121,15 +96,7 @@ func (t *Transport) handshake(
 		return nil, errors.New("go-libp2p-tls BUG: expected remote pub key to be set")
 	}
 
-	conn, err := t.setupConn(tlsConn, remotePubKey)
-	if err != nil {
-		// if the context was canceled, return the context error
-		if ctxErr := ctx.Err(); ctxErr != nil {
-			return nil, ctxErr
-		}
-		return nil, err
-	}
-	return conn, nil
+	return t.setupConn(tlsConn, remotePubKey)
 }
 
 func (t *Transport) setupConn(tlsConn *tls.Conn, remotePubKey ci.PubKey) (sec.SecureConn, error) {

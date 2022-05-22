@@ -145,12 +145,12 @@ func portFwdListen(ctx context.Context, payload *mmsp.Payload) error {
 
 			go func() {
 				if _, err := io.Copy(iop.Out.WP, c); err != nil {
-					//logging.Tracef("io.Copy(iop.Out.WP, c): %v", err)
+					// logging.Tracef("io.Copy(iop.Out.WP, c): %v", err)
 				}
 			}()
 			go func() {
 				if _, err := io.Copy(c, iop.In.RP); err != nil {
-					//logging.Tracef("io.Copy(c, iop.In.RP): %v", err)
+					// logging.Tracef("io.Copy(c, iop.In.RP): %v", err)
 				}
 				waitc <- struct{}{}
 			}()
