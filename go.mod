@@ -10,7 +10,7 @@ require (
 	github.com/google/gopacket v1.1.19
 	github.com/kardianos/service v1.2.1
 	github.com/libp2p/go-libp2p v0.19.2
-	github.com/libp2p/go-libp2p-core v0.15.1
+	github.com/libp2p/go-libp2p-core v0.16.1
 	github.com/libp2p/go-libp2p-quic-transport v0.17.0
 	github.com/libp2p/go-libp2p-swarm v0.10.2
 	github.com/libp2p/go-tcp-transport v0.5.1
@@ -39,7 +39,9 @@ require (
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/benbjohnson/clock v1.3.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/btcsuite/btcd v0.22.0-beta // indirect
+	github.com/btcsuite/btcd v0.22.1 // indirect
+	github.com/btcsuite/btcd/btcec/v2 v2.1.3 // indirect
+	github.com/btcsuite/btcd/chaincfg/chainhash v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/cheekybits/genny v1.0.0 // indirect
 	github.com/containerd/cgroups v1.0.3 // indirect
@@ -49,6 +51,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/davidlazar/go-crypto v0.0.0-20200604182044-b73af7476f6c // indirect
 	github.com/dchest/blake2b v1.0.0 // indirect
+	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 // indirect
 	github.com/docker/go-units v0.4.0 // indirect
 	github.com/elastic/gosigar v0.14.2 // indirect
 	github.com/emicklei/go-restful v2.9.5+incompatible // indirect
