@@ -534,8 +534,7 @@ type NetRelay struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	VRFID string `protobuf:"bytes,1,opt,name=VRFID,proto3" json:"VRFID,omitempty"`
-	// string MAddr = 2;
+	VRFID       string   `protobuf:"bytes,1,opt,name=VRFID,proto3" json:"VRFID,omitempty"`
 	P2PHostID   string   `protobuf:"bytes,2,opt,name=P2PHostID,proto3" json:"P2PHostID,omitempty"`
 	Connections int32    `protobuf:"varint,3,opt,name=connections,proto3" json:"connections,omitempty"`
 	MAddrs      []string `protobuf:"bytes,11,rep,name=MAddrs,proto3" json:"MAddrs,omitempty"`

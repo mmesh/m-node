@@ -210,53 +210,6 @@ func (x *NetworkMetrics) GetDroppedPkts() uint64 {
 	return 0
 }
 
-type RelayMetrics struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Connections int32 `protobuf:"varint,1,opt,name=connections,proto3" json:"connections,omitempty"`
-}
-
-func (x *RelayMetrics) Reset() {
-	*x = RelayMetrics{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_mmesh_protobuf_resources_v1_metrics_node_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *RelayMetrics) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*RelayMetrics) ProtoMessage() {}
-
-func (x *RelayMetrics) ProtoReflect() protoreflect.Message {
-	mi := &file_mmesh_protobuf_resources_v1_metrics_node_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use RelayMetrics.ProtoReflect.Descriptor instead.
-func (*RelayMetrics) Descriptor() ([]byte, []int) {
-	return file_mmesh_protobuf_resources_v1_metrics_node_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *RelayMetrics) GetConnections() int32 {
-	if x != nil {
-		return x.Connections
-	}
-	return 0
-}
-
 var File_mmesh_protobuf_resources_v1_metrics_node_proto protoreflect.FileDescriptor
 
 var file_mmesh_protobuf_resources_v1_metrics_node_proto_rawDesc = []byte{
@@ -293,13 +246,10 @@ var file_mmesh_protobuf_resources_v1_metrics_node_proto_rawDesc = []byte{
 	0x73, 0x18, 0x18, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0b, 0x72, 0x78, 0x54, 0x6f, 0x74, 0x61, 0x6c,
 	0x50, 0x6b, 0x74, 0x73, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x72, 0x6f, 0x70, 0x70, 0x65, 0x64, 0x50,
 	0x6b, 0x74, 0x73, 0x18, 0x19, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0b, 0x64, 0x72, 0x6f, 0x70, 0x70,
-	0x65, 0x64, 0x50, 0x6b, 0x74, 0x73, 0x22, 0x30, 0x0a, 0x0c, 0x52, 0x65, 0x6c, 0x61, 0x79, 0x4d,
-	0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x12, 0x20, 0x0a, 0x0b, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63,
-	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0b, 0x63, 0x6f, 0x6e,
-	0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42, 0x2b, 0x5a, 0x29, 0x6d, 0x6d, 0x65, 0x73,
-	0x68, 0x2e, 0x64, 0x65, 0x76, 0x2f, 0x6d, 0x2d, 0x61, 0x70, 0x69, 0x2d, 0x67, 0x6f, 0x2f, 0x67,
-	0x72, 0x70, 0x63, 0x2f, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x73, 0x2f, 0x6d, 0x65,
-	0x74, 0x72, 0x69, 0x63, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x64, 0x50, 0x6b, 0x74, 0x73, 0x42, 0x2b, 0x5a, 0x29, 0x6d, 0x6d, 0x65, 0x73, 0x68, 0x2e,
+	0x64, 0x65, 0x76, 0x2f, 0x6d, 0x2d, 0x61, 0x70, 0x69, 0x2d, 0x67, 0x6f, 0x2f, 0x67, 0x72, 0x70,
+	0x63, 0x2f, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x73, 0x2f, 0x6d, 0x65, 0x74, 0x72,
+	0x69, 0x63, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -314,11 +264,10 @@ func file_mmesh_protobuf_resources_v1_metrics_node_proto_rawDescGZIP() []byte {
 	return file_mmesh_protobuf_resources_v1_metrics_node_proto_rawDescData
 }
 
-var file_mmesh_protobuf_resources_v1_metrics_node_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_mmesh_protobuf_resources_v1_metrics_node_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_mmesh_protobuf_resources_v1_metrics_node_proto_goTypes = []interface{}{
 	(*HostMetrics)(nil),    // 0: metrics.HostMetrics
 	(*NetworkMetrics)(nil), // 1: metrics.NetworkMetrics
-	(*RelayMetrics)(nil),   // 2: metrics.RelayMetrics
 }
 var file_mmesh_protobuf_resources_v1_metrics_node_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -358,18 +307,6 @@ func file_mmesh_protobuf_resources_v1_metrics_node_proto_init() {
 				return nil
 			}
 		}
-		file_mmesh_protobuf_resources_v1_metrics_node_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RelayMetrics); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -377,7 +314,7 @@ func file_mmesh_protobuf_resources_v1_metrics_node_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_mmesh_protobuf_resources_v1_metrics_node_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

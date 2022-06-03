@@ -74,7 +74,7 @@ type PricingPlan struct {
 	Description              string            `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	UnitLabel                string            `protobuf:"bytes,6,opt,name=unitLabel,proto3" json:"unitLabel,omitempty"`
 	StripeProductID          string            `protobuf:"bytes,11,opt,name=stripeProductID,proto3" json:"stripeProductID,omitempty"`
-	Prices                   map[string]*Price `protobuf:"bytes,41,rep,name=prices,proto3" json:"prices,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // map[stripePriceID]*Price
+	Prices                   map[string]*Price `protobuf:"bytes,41,rep,name=prices,proto3" json:"prices,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // map[stripePriceRecurringInterval]*Price
 	Resources                *Resources        `protobuf:"bytes,51,opt,name=resources,proto3" json:"resources,omitempty"`
 	Type                     PlanType          `protobuf:"varint,61,opt,name=type,proto3,enum=services.PlanType" json:"type,omitempty"`
 	NetworkLimits            *NetworkLimits    `protobuf:"bytes,71,opt,name=networkLimits,proto3" json:"networkLimits,omitempty"`

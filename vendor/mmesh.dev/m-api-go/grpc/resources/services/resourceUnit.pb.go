@@ -30,7 +30,7 @@ type ResourceUnit struct {
 	ResourceUnitID  string            `protobuf:"bytes,2,opt,name=resourceUnitID,proto3" json:"resourceUnitID,omitempty"`
 	Description     string            `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	StripeProductID string            `protobuf:"bytes,11,opt,name=stripeProductID,proto3" json:"stripeProductID,omitempty"`
-	Prices          map[string]*Price `protobuf:"bytes,41,rep,name=prices,proto3" json:"prices,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // map[stripePriceID]*Price
+	Prices          map[string]*Price `protobuf:"bytes,41,rep,name=prices,proto3" json:"prices,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // map[stripePriceRecurringInterval]*Price
 	Type            PlanType          `protobuf:"varint,61,opt,name=type,proto3,enum=services.PlanType" json:"type,omitempty"`
 	CreationDate    int64             `protobuf:"varint,101,opt,name=creationDate,proto3" json:"creationDate,omitempty"`
 	LastModified    int64             `protobuf:"varint,102,opt,name=lastModified,proto3" json:"lastModified,omitempty"`
