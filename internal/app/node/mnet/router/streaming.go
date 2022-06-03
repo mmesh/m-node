@@ -7,7 +7,6 @@ import (
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/metrics"
-	"mmesh.dev/m-node/internal/app/node/mnet/p2p/peer"
 )
 
 // https://github.com/lucas-clemente/quic-go/wiki/UDP-Receive-Buffer-Size
@@ -24,13 +23,13 @@ func (r *router) handleStream(s network.Stream) {
 	rw := bufio.NewReadWriter(bufio.NewReader(s), bufio.NewWriter(s))
 
 	// Create a thread to read data from new buffered stream.
-	go r.readStream(rw, nil)
+	go r.readStream(rw)
 
 	// stream 's' will stay open until you close it (or the other side closes it).
 	r.linkStatus.Connections++
 }
 
-func (r *router) readStream(rw *bufio.ReadWriter, pc *peer.Connection) {
+func (r *router) readStream(rw *bufio.ReadWriter) {
 	pkt := make([]byte, BUFFER_SIZE)
 	for {
 		plen, err := rw.Read(pkt)
@@ -46,11 +45,11 @@ func (r *router) readStream(rw *bufio.ReadWriter, pc *peer.Connection) {
 	}
 	r.linkStatus.Connections--
 
-	if pc != nil {
-		if !pc.DirectConnection {
-			go metrics.DecrRelayConns(pc.PeerInfo.ID.Pretty())
-		}
-	}
+	// if pc != nil {
+	// 	if !pc.DirectConnection {
+	// 		go metrics.DecrRelayConns(pc.PeerInfo.ID.Pretty())
+	// 	}
+	// }
 
 	xlog.Info("[!] Stream terminated")
 }
@@ -117,9 +116,13 @@ func (r *router) readInterface() {
 			rw := r.getTunnel(ipPkt.dstAddr)
 			if rw == nil {
 				go func(ipPkt ipPacket) {
-					if err := r.newTunnel(&ipPkt); err != nil {
+					ok, err := r.newTunnel(&ipPkt)
+					if err != nil {
 						xlog.Warnf("Unable to get tunnel to %s: %v",
 							ipPkt.dstIP.String(), errors.Cause(err))
+						return
+					}
+					if !ok {
 						return
 					}
 					rw := r.getTunnel(ipPkt.dstAddr)

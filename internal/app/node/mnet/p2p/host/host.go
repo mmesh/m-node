@@ -2,6 +2,7 @@ package host
 
 import (
 	"crypto/rand"
+	"fmt"
 
 	// mrand "math/rand"
 
@@ -16,22 +17,21 @@ import (
 	// relayv2 "github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/relay"
 	// "github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
 
-	quic "github.com/libp2p/go-libp2p-quic-transport"
-	// "github.com/libp2p/go-libp2p/p2p/transport/quic"
-	tcp "github.com/libp2p/go-tcp-transport"
-	// "github.com/libp2p/go-libp2p/p2p/transport/tcp"
+	// quic "github.com/libp2p/go-libp2p-quic-transport"
+	quic "github.com/libp2p/go-libp2p/p2p/transport/quic"
+	// tcp "github.com/libp2p/go-tcp-transport"
+	tcp "github.com/libp2p/go-libp2p/p2p/transport/tcp"
 
 	// secio "github.com/libp2p/go-libp2p-secio"
 	// libp2ptls "github.com/libp2p/go-libp2p-tls"
 	"mmesh.dev/m-lib/pkg/errors"
-	"mmesh.dev/m-node/internal/app/node/mnet/maddr"
 )
 
 type P2PHostType int
 
 const (
-	P2PHostTypeBasicHost P2PHostType = iota
-	P2PHostTypeHiddenHost
+	P2PHostTypeHiddenHost P2PHostType = iota
+	P2PHostTypeBasicHost
 	P2PHostTypeRelayHost
 )
 
@@ -43,11 +43,6 @@ func New(hostType P2PHostType, port int) (host.Host, error) {
 	prvKey, _, err := crypto.GenerateKeyPairWithReader(crypto.RSA, 2048, r)
 	if err != nil {
 		return nil, errors.Wrapf(err, "[%v] function crypto.GenerateKeyPairWithReader()", errors.Trace())
-	}
-
-	maddrs, err := maddr.GetLocalMAddrs(port)
-	if err != nil {
-		return nil, errors.Wrapf(err, "[%v] function maddr.GetLocalMAddrs()", errors.Trace())
 	}
 
 	// cm, err := connmgr.NewConnManager(
@@ -85,6 +80,11 @@ func New(hostType P2PHostType, port int) (host.Host, error) {
 		// libp2p.EnableAutoRelay(),
 	}
 
+	maddrs := []string{
+		fmt.Sprintf("/ip4/0.0.0.0/udp/%d/quic", port), // UDP endpoint for the QUIC transport
+		fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", port),      // regular TCP connections
+	}
+
 	switch hostType {
 	case P2PHostTypeHiddenHost:
 		opts = append(opts,
@@ -94,11 +94,11 @@ func New(hostType P2PHostType, port int) (host.Host, error) {
 		)
 	case P2PHostTypeBasicHost:
 		opts = append(opts,
-			libp2p.ListenAddrs(maddrs...),
+			libp2p.ListenAddrStrings(maddrs...),
 		)
 	case P2PHostTypeRelayHost:
 		opts = append(opts,
-			libp2p.ListenAddrs(maddrs...),
+			libp2p.ListenAddrStrings(maddrs...),
 			// libp2p.EnableRelayService(), // circuitv2
 			libp2p.ForceReachabilityPublic(),
 		)

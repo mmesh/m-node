@@ -19,14 +19,13 @@ func (r *router) connectRelays() {
 				continue
 			}
 
-			peerHop := &peer.Hop{
-				ID:      relay.P2PHostID,
-				MAddrs:  relay.MAddrs,
-				IsRelay: true,
+			peerHop := &peer.NetHop{
+				// ID:      relay.P2PHostID,
+				MAddrs: relay.MAddrs,
 			}
 
 			// circuitv1 relays
-			go peer.ConnectHop(r.p2pHost, peerHop)
+			go peer.Connect(r.p2pHost, peerHop)
 
 			/*
 				// circuitv2 requires slot reservations in relays

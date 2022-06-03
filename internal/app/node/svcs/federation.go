@@ -22,7 +22,7 @@ func FederationMonitor(w *runtime.Wrkr) {
 		for {
 			select {
 			case <-federationMonitorCh:
-				xlog.Info("Federation Monitor: Updating controller list...")
+				xlog.Debug("Federation Monitor: Updating controller list...")
 				if err := connection.FederationUpdate(w.NxNC); err != nil {
 					xlog.Errorf("Unable to update controller list: %v", errors.Cause(err))
 					mnet.LocalNode().Connection().Watcher() <- struct{}{}

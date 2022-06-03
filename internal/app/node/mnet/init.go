@@ -40,16 +40,22 @@ func Init() error {
 		localForwarding = false
 	}
 
-	endpoints := &endpointsMap{
-		endpt: make(map[string]*network.NetworkEndpoint),
-	}
-
 	conn := connection.New()
 
 	rtr := router.New(conn.GetExternalIPv4(), vrfID, port, isRelay, localForwarding, rtImported, rtExported)
 	if err := rtr.Init(); err != nil {
 		return errors.Wrapf(err, "[%v] function r.Init()", errors.Trace())
 	}
+
+	maddrs := maddr.GetGlobalUnicastAddrStrings(rtr.P2PHost().Addrs()...)
+
+	if len(maddrs) > 0 {
+		xlog.Info("Node multi-addresses:")
+		for _, ma := range maddrs {
+			xlog.Infof(" => %s", ma)
+		}
+	}
+	xlog.Debugf("p2pHostID: %s", rtr.P2PHost().ID().Pretty())
 
 	localnode = &localNode{
 		accountID: viper.GetString("node.account"),
@@ -60,7 +66,7 @@ func Init() error {
 		agent: &network.Agent{
 			AgentID:      agentID,
 			P2PHostID:    rtr.P2PHost().ID().Pretty(),
-			MAddrs:       maddr.String(rtr.P2PHost().Addrs()...),
+			MAddrs:       maddrs,
 			ExternalIPv4: conn.GetExternalIPv4(),
 			Port:         int32(port),
 			Priority:     prio,
@@ -92,7 +98,9 @@ func Init() error {
 			},
 			Healthy: true,
 		},
-		endpoints:  endpoints,
+		endpoints: &endpointsMap{
+			endpt: make(map[string]*network.NetworkEndpoint),
+		},
 		replicaSet: viper.GetBool("node.replicaSet"),
 		connection: conn,
 		router:     rtr,

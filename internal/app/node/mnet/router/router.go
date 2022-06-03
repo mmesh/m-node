@@ -44,6 +44,7 @@ type router struct {
 
 	rib     *routingTable
 	routes  *routeMap
+	dialing *dialMap
 	streams *streamMap
 	proxy64 *proxy64Map
 
@@ -70,6 +71,11 @@ type routeMap struct {
 	sync.RWMutex
 }
 
+type dialMap struct {
+	addr map[string]struct{}
+	sync.RWMutex
+}
+
 type streamMap struct {
 	tunnel map[string]*bufio.ReadWriter
 	sync.RWMutex
@@ -93,6 +99,9 @@ func New(externalIPv4, vrfID string, port int, isRelay, localForwarding bool, rt
 			imported: rtImported,
 			exported: rtExported,
 		},
+		dialing: &dialMap{
+			addr: make(map[string]struct{}),
+		},
 		streams: &streamMap{
 			tunnel: make(map[string]*bufio.ReadWriter),
 		},
@@ -110,6 +119,36 @@ func (r *router) Init() error {
 	var p2pHost libp2pHost.Host
 	var err error
 
+	// if r.isRelay && len(r.externalIPv4) > 0 {
+	// 	xlog.Info("Initializing tier-1 node...")
+	// 	p2pHost, err = host.New(host.P2PHostTypeRelayHost, r.port)
+	// } else if len(r.externalIPv4) > 0 {
+	// 	xlog.Info("Initializing basic node...")
+	// 	p2pHost, err = host.New(host.P2PHostTypeBasicHost, r.port)
+	// } else {
+	// 	xlog.Info("Initializing hidden node...")
+	// 	p2pHost, err = host.New(host.P2PHostTypeHiddenHost, r.port)
+	// }
+
+	if r.isRelay && len(r.externalIPv4) > 0 {
+		xlog.Info("Initializing tier-1 node...")
+		p2pHost, err = host.New(host.P2PHostTypeRelayHost, r.port)
+	} else {
+		xlog.Info("Initializing basic node...")
+		p2pHost, err = host.New(host.P2PHostTypeBasicHost, r.port)
+	}
+	if err != nil {
+		return errors.Wrapf(err, "[%v] function libp2p.NewHost()", errors.Trace())
+	}
+
+	r.p2pHost = p2pHost
+
+	// Set a function as stream handler.
+	// This function is called when a peer connects, and starts a stream with this protocol.
+	// Only applies on the receiving side.
+	r.p2pHost.SetStreamHandler(p2p.ProtocolID, r.handleStream)
+
+	// set network interface
 	if r.localForwarding {
 		if err := r.ifDown(); err != nil {
 			xlog.Alertf("Unable to reset interface: %v", err)
@@ -122,35 +161,6 @@ func (r *router) Init() error {
 
 		go r.proxy64GC()
 	}
-
-	if r.isRelay && len(r.externalIPv4) > 0 {
-		xlog.Info("Initializing relay host...")
-		p2pHost, err = host.New(host.P2PHostTypeRelayHost, r.port)
-	} else if len(r.externalIPv4) > 0 {
-		xlog.Info("Initializing basic host...")
-		p2pHost, err = host.New(host.P2PHostTypeBasicHost, r.port)
-	} else {
-		xlog.Info("Initializing hidden host...")
-		p2pHost, err = host.New(host.P2PHostTypeHiddenHost, r.port)
-	}
-	if err != nil {
-		return errors.Wrapf(err, "[%v] function libp2p.NewHost()", errors.Trace())
-	}
-
-	// if len(p2pHost.Addrs()) > 0 {
-	// 	xlog.Info("This endpoint's multi-addresses:")
-	// 	for _, ma := range p2pHost.Addrs() {
-	// 		xlog.Infof(" => %s", ma.String())
-	// 	}
-	// }
-	// xlog.Infof("p2pHostID: %s", p2pHost.ID().Pretty())
-
-	r.p2pHost = p2pHost
-
-	// Set a function as stream handler.
-	// This function is called when a peer connects, and starts a stream with this protocol.
-	// Only applies on the receiving side.
-	r.p2pHost.SetStreamHandler(p2p.ProtocolID, r.handleStream)
 
 	return nil
 }

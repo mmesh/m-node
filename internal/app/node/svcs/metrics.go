@@ -97,7 +97,7 @@ func getNodeMetrics() *network.Node {
 	// n.Agent.Metrics.NetworkMetrics = metrics.GetNetworkMetrics()
 	// n.Agent.Metrics.NetworkTraffic = metrics.GetNetworkTraffic()
 	n.Agent.Metrics.HostMetrics = metrics.GetHostMetrics()
-	n.Agent.Metrics.RelayMetrics = metrics.GetRelayMetrics()
+	// n.Agent.Metrics.RelayMetrics = metrics.GetRelayMetrics()
 
 	return n
 }

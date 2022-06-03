@@ -99,7 +99,7 @@ func setDefaults(nodeID string) {
 
 	dnsPort := viper.GetInt("agent.dns.port")
 	if dnsPort == 0 {
-		viper.Set("agent.dns.port", int(5353))
+		viper.Set("agent.dns.port", int(53535))
 	}
 
 	ifaceName := viper.GetString("agent.iface")
