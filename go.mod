@@ -10,7 +10,7 @@ require (
 	github.com/google/gopacket v1.1.19
 	github.com/kardianos/service v1.2.1
 	github.com/libp2p/go-libp2p v0.20.1
-	github.com/libp2p/go-libp2p-core v0.16.1
+	github.com/libp2p/go-libp2p-core v0.17.0
 	github.com/lorenzosaino/go-sysctl v0.3.0
 	github.com/miekg/dns v1.1.49
 	github.com/multiformats/go-multiaddr v0.5.0
