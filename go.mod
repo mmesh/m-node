@@ -10,7 +10,7 @@ require (
 	github.com/google/gopacket v1.1.19
 	github.com/kardianos/service v1.2.1
 	github.com/libp2p/go-libp2p v0.20.1
-	github.com/libp2p/go-libp2p-core v0.16.1
+	github.com/libp2p/go-libp2p-core v0.19.1
 	github.com/lorenzosaino/go-sysctl v0.3.0
 	github.com/miekg/dns v1.1.49
 	github.com/multiformats/go-multiaddr v0.5.0
@@ -75,7 +75,7 @@ require (
 	github.com/huin/goupnp v1.0.3 // indirect
 	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/ipfs/go-cid v0.1.0 // indirect
+	github.com/ipfs/go-cid v0.2.0 // indirect
 	github.com/ipfs/go-ipfs-util v0.0.2 // indirect
 	github.com/ipfs/go-log/v2 v2.5.1 // indirect
 	github.com/jackpal/go-nat-pmp v1.0.2 // indirect
