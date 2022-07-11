@@ -17,7 +17,7 @@ require (
 	github.com/robfig/cron/v3 v3.0.0
 	github.com/shirou/gopsutil/v3 v3.22.4
 	github.com/songgao/water v0.0.0-20200317203138-2b4b6d7c09d8
-	github.com/spf13/cobra v1.4.0
+	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.12.0
 	github.com/vishvananda/netlink v1.1.0
 	golang.org/x/net v0.0.0-20220520000938-2e3eb7b945c2
