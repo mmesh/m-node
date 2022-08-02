@@ -13,7 +13,7 @@ require (
 	github.com/libp2p/go-libp2p-core v0.16.1
 	github.com/lorenzosaino/go-sysctl v0.3.0
 	github.com/miekg/dns v1.1.49
-	github.com/multiformats/go-multiaddr v0.5.0
+	github.com/multiformats/go-multiaddr v0.6.0
 	github.com/robfig/cron/v3 v3.0.0
 	github.com/shirou/gopsutil/v3 v3.22.4
 	github.com/songgao/water v0.0.0-20200317203138-2b4b6d7c09d8
