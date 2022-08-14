@@ -3,6 +3,7 @@ package mnet
 import (
 	"context"
 	"os"
+	"time"
 
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/network/mmnp/register"
@@ -26,7 +27,10 @@ func (ln *localNode) AddNetworkEndpoint(endpointID, dnsName, reqIPv4 string) (st
 		Priority: int32(viper.GetInt("agent.priority")),
 	}
 
-	erResp, err := ln.Connection().NetworkClient().RegisterEndpoint(context.TODO(), erReq)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	erResp, err := ln.Connection().NetworkClient().RegisterEndpoint(ctx, erReq)
 	if err != nil {
 		return "", errors.Wrapf(err, "[%v] function ln.Connection().NetworkClient().RegisterEndpoint()", errors.Trace())
 	}
@@ -91,7 +95,10 @@ func (ln *localNode) RemoveNetworkEndpoint(endpointID string) error {
 		Priority: int32(viper.GetInt("agent.priority")),
 	}
 
-	_, err := ln.Connection().NetworkClient().RemoveEndpoint(context.TODO(), erReq)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	_, err := ln.Connection().NetworkClient().RemoveEndpoint(ctx, erReq)
 	if err != nil {
 		return errors.Wrapf(err, "[%v] function ln.Connection().NetworkClient().RemoveEndpoint()", errors.Trace())
 	}

@@ -24,6 +24,7 @@ func newConnection() *connection {
 	}
 	endpoint := fc.endpoint()
 	connectionFailed := false
+	conns := 0
 
 	for c.nxnc == nil || err != nil {
 		c.nxnc, c.grpcClientConn, err = client.NewNetworkAPIClient(endpoint, authKey, authSecret)
@@ -31,6 +32,7 @@ func newConnection() *connection {
 			xlog.Errorf("Unable to connect to controller %s: %v", endpoint, errors.Cause(err))
 
 			connectionFailed = true
+			conns = 0
 			fc.setUnhealthy(endpoint)
 
 			endpoint = fc.endpoint()
@@ -42,7 +44,9 @@ func newConnection() *connection {
 
 		if err := fc.update(c.nxnc); err != nil {
 			xlog.Errorf("Unable to get federation controllers: %v", errors.Cause(err))
-		} else if !connectionFailed {
+		} else if !connectionFailed && conns < 2 {
+			conns++
+
 			// get the least crowded federation controller endpoint
 			e := fc.endpoint()
 			if endpoint != e {

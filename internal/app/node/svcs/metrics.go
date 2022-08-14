@@ -24,21 +24,23 @@ func MetricsAgent(w *runtime.Wrkr) {
 		for {
 			select {
 			case <-updateNodeMetrics:
-				n := getNodeMetrics()
+				if serviceEnabled {
+					n := getNodeMetrics()
 
-				if _, err := w.NxNC.Metrics(context.TODO(), n); err != nil {
-					xlog.Errorf("Unable to send metrics to controller: %v", err)
-					mnet.LocalNode().Connection().Watcher() <- struct{}{}
-					return
+					if _, err := w.NxNC.Metrics(context.TODO(), n); err != nil {
+						xlog.Errorf("Unable to send metrics to controller: %v", err)
+						mnet.LocalNode().Connection().Watcher() <- struct{}{}
+						return
+					}
+
+					if _, err := w.NxNC.DataPointMetrics(context.TODO(), getDataPointMetrics(n)); err != nil {
+						xlog.Errorf("Unable to send data point metrics to controller: %v", err)
+						mnet.LocalNode().Connection().Watcher() <- struct{}{}
+						return
+					}
+
+					xlog.Debug("Metrics updated")
 				}
-
-				if _, err := w.NxNC.DataPointMetrics(context.TODO(), getDataPointMetrics(n)); err != nil {
-					xlog.Errorf("Unable to send data point metrics to controller: %v", err)
-					mnet.LocalNode().Connection().Watcher() <- struct{}{}
-					return
-				}
-
-				xlog.Debug("Metrics updated")
 
 				metrics.ClearNetworkMetrics()
 			case <-quitMetrics:

@@ -21,9 +21,7 @@ func MMPControl(w *runtime.Wrkr) {
 	endCh := make(chan struct{}, 2)
 
 	go func() {
-		// ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		// defer cancel()
-		stream, err := w.NxNC.Control(context.TODO())
+		stream, err := w.NxNC.Control(context.Background())
 		if err != nil {
 			xlog.Errorf("Unable to get mmp stream from controller: %v", err)
 			mnet.LocalNode().Connection().Watcher() <- struct{}{}
@@ -43,6 +41,10 @@ func MMPControl(w *runtime.Wrkr) {
 					mnet.LocalNode().Connection().Watcher() <- struct{}{}
 					break
 				}
+
+				// if !serviceEnabled {
+				// 	continue
+				// }
 
 				mmp.RxControlQueue <- payload
 			}

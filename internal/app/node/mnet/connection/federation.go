@@ -39,7 +39,10 @@ func (f *federationConnection) update(nxnc rpc.NetworkAPIClient) error {
 	f.Lock()
 	defer f.Unlock()
 
-	fe, err := nxnc.FederationEndpoints(context.TODO(), f.node)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	fe, err := nxnc.FederationEndpoints(ctx, f.node)
 	if err != nil {
 		f.healthy[f.controllerEndpoint] = false
 		return errors.Wrapf(err, "[%v] function nxnc.FederationEndpoints()", errors.Trace())
@@ -59,30 +62,31 @@ func (f *federationConnection) endpoint() string {
 		return f.controllerEndpoint
 	}
 
+	currentControllerEndpoint := f.controllerEndpoint
+
 	var connections int32
-	var controller *controller.Controller
 
 	for _, c := range f.controllers {
 		e := fmt.Sprintf("%s:%d", c.Host, c.Port)
 
-		if !f.healthy[e] && f.controllerEndpoint == e {
+		// current controller is not healthy
+		if currentControllerEndpoint == e && !f.healthy[e] {
 			continue
 		}
 
 		tm := time.Unix(c.Status.LastUpdated, 0)
 		if time.Since(tm) > 420*time.Second {
 			f.healthy[e] = false
+			continue
 		} else {
 			f.healthy[e] = true
 		}
 
 		if connections == 0 || c.Status.RoutedNodes < connections {
 			connections = c.Status.RoutedNodes
-			controller = c
+			f.controllerEndpoint = e
 		}
 	}
-
-	f.controllerEndpoint = fmt.Sprintf("%s:%d", controller.Host, controller.Port)
 
 	return f.controllerEndpoint
 }

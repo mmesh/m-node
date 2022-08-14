@@ -2,6 +2,7 @@ package mnet
 
 import (
 	"context"
+	"time"
 
 	"mmesh.dev/m-api-go/grpc/network/mmnp/register"
 	"mmesh.dev/m-api-go/grpc/resources/network"
@@ -36,7 +37,10 @@ func (ln *localNode) registerNode() error {
 		Node: ln.NetworkNode(),
 	}
 
-	_, err := ln.Connection().NetworkClient().RegisterNode(context.TODO(), nrReq)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	_, err := ln.Connection().NetworkClient().RegisterNode(ctx, nrReq)
 	if err != nil {
 		return errors.Wrapf(err, "[%v] function ln.Connection().NetworkClient().RegisterNode()", errors.Trace())
 	}

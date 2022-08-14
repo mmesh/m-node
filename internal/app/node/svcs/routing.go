@@ -13,6 +13,9 @@ import (
 )
 
 var rtCtlQueue = make(chan struct{})
+var rtCtlShortInterval time.Duration = 5 * time.Second
+var rtCtlLongInterval time.Duration = 20 * time.Second
+var serviceEnabled bool = true
 
 // RoutingAgent runs routing engine
 func RoutingAgent(w *runtime.Wrkr) {
@@ -22,9 +25,7 @@ func RoutingAgent(w *runtime.Wrkr) {
 	endCh := make(chan struct{}, 2)
 
 	go func() {
-		// ctx, cancel := context.WithTimeout(context.TODO(), 10*time.Second)
-		// defer cancel()
-		stream, err := w.NxNC.Routing(context.TODO())
+		stream, err := w.NxNC.Routing(context.Background())
 		if err != nil {
 			xlog.Errorf("Unable to get routing stream from controller: %v", err)
 			mnet.LocalNode().Connection().Watcher() <- struct{}{}
@@ -32,6 +33,8 @@ func RoutingAgent(w *runtime.Wrkr) {
 		}
 
 		go func() {
+			disabledRetries := 0
+
 			for {
 				rtResp, err := stream.Recv()
 				if err == io.EOF {
@@ -46,10 +49,31 @@ func RoutingAgent(w *runtime.Wrkr) {
 				}
 
 				if rtResp.RT.Disabled {
-					xlog.Alert("Service is DISABLED")
-					xlog.Alert("Please contact mmesh customer service urgently")
-					// break
-					os.Exit(1)
+					xlog.Alert("Service is DISABLED.")
+					xlog.Alert("Please contact mmesh customer service urgently.")
+
+				} else if rtResp.RT.OverLimit {
+					xlog.Alert("Account over tier limits. Service is DISABLED.")
+					xlog.Alert(`If you are on the Free Plan, make sure you
+					are not exceeding its limits. If not, please
+					contact mmesh customer service urgently.`)
+				}
+
+				if rtResp.RT.Disabled || rtResp.RT.OverLimit {
+					rtCtlShortInterval = 5 * time.Minute
+					rtCtlLongInterval = 20 * time.Minute
+					serviceEnabled = false
+
+					disabledRetries++
+					if disabledRetries > 8 {
+						os.Exit(1)
+					}
+					continue
+				} else {
+					rtCtlShortInterval = 5 * time.Second
+					rtCtlLongInterval = 20 * time.Second
+					serviceEnabled = true
+					disabledRetries = 0
 				}
 
 				mnet.LocalNode().Router().UpdateRoutingTable(rtResp.RT)
@@ -65,6 +89,8 @@ func RoutingAgent(w *runtime.Wrkr) {
 			for {
 				select {
 				case <-rtCtlQueue:
+					xlog.Debug("Sending rtRequest")
+
 					rtReq := &routing.RTRequest{
 						Node:        mnet.LocalNode().NetworkNode(),
 						Connections: mnet.LocalNode().Router().GetLinkStatusConnections(),
@@ -105,7 +131,7 @@ func rtCtl() {
 		go func() {
 			for {
 				rtCtlQueue <- struct{}{}
-				time.Sleep(20 * time.Second)
+				time.Sleep(rtCtlLongInterval)
 			}
 		}()
 
@@ -119,7 +145,7 @@ func rtCtl() {
 
 					go func() {
 						rtCtlQueue <- struct{}{}
-						time.Sleep(5 * time.Second)
+						time.Sleep(rtCtlShortInterval)
 						rtrqCtlRun = false
 					}()
 				}
