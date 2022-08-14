@@ -45,7 +45,10 @@ func (t *Transport) NewConn(nc net.Conn, isServer bool, scope network.PeerScope)
 	} else {
 		s, err = yamux.Client(nc, t.Config(), scope)
 	}
-	return (*conn)(s), err
+	if err != nil {
+		return nil, err
+	}
+	return NewMuxedConn(s), nil
 }
 
 func (t *Transport) Config() *yamux.Config {

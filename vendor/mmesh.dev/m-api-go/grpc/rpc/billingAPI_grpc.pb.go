@@ -28,28 +28,30 @@ type BillingAPIClient interface {
 	SearchCustomer(ctx context.Context, in *billing.Customer, opts ...grpc.CallOption) (*status.SearchResponse, error)
 	GetCustomerPortal(ctx context.Context, in *billing.CustomerPortalRequest, opts ...grpc.CallOption) (*billing.CustomerPortalResponse, error)
 	// invoice
-	//   rpc NewInvoice(billing.Invoice) returns (billing.Invoice) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/billing/invoices"
-	//       body: "*"
-	//     };
-	//   }
+	//
+	//	rpc NewInvoice(billing.Invoice) returns (billing.Invoice) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/billing/invoices"
+	//	    body: "*"
+	//	  };
+	//	}
 	ListInvoices(ctx context.Context, in *billing.ListInvoicesRequest, opts ...grpc.CallOption) (*billing.Invoices, error)
 	GetInvoice(ctx context.Context, in *billing.Invoice, opts ...grpc.CallOption) (*billing.Invoice, error)
-	//   rpc SetInvoice(billing.Invoice) returns (billing.Invoice) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/billing/invoices/{invoiceID}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetInvoice(billing.Invoice) returns (billing.Invoice) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/billing/invoices/{invoiceID}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeleteInvoice(ctx context.Context, in *billing.Invoice, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	// billed-item
-	//   rpc NewBilledItem(billing.InvoiceItem) returns (billing.InvoiceItem) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/billing/items"
-	//       body: "*"
-	//     };
-	//   }
+	//
+	//	rpc NewBilledItem(billing.InvoiceItem) returns (billing.InvoiceItem) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/billing/items"
+	//	    body: "*"
+	//	  };
+	//	}
 	ListBilledItems(ctx context.Context, in *billing.ListInvoiceItemsRequest, opts ...grpc.CallOption) (*billing.InvoiceItems, error)
 	GetBilledItem(ctx context.Context, in *billing.InvoiceItem, opts ...grpc.CallOption) (*billing.InvoiceItem, error)
 	// subscription
@@ -144,28 +146,30 @@ type BillingAPIServer interface {
 	SearchCustomer(context.Context, *billing.Customer) (*status.SearchResponse, error)
 	GetCustomerPortal(context.Context, *billing.CustomerPortalRequest) (*billing.CustomerPortalResponse, error)
 	// invoice
-	//   rpc NewInvoice(billing.Invoice) returns (billing.Invoice) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/billing/invoices"
-	//       body: "*"
-	//     };
-	//   }
+	//
+	//	rpc NewInvoice(billing.Invoice) returns (billing.Invoice) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/billing/invoices"
+	//	    body: "*"
+	//	  };
+	//	}
 	ListInvoices(context.Context, *billing.ListInvoicesRequest) (*billing.Invoices, error)
 	GetInvoice(context.Context, *billing.Invoice) (*billing.Invoice, error)
-	//   rpc SetInvoice(billing.Invoice) returns (billing.Invoice) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/billing/invoices/{invoiceID}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetInvoice(billing.Invoice) returns (billing.Invoice) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/billing/invoices/{invoiceID}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeleteInvoice(context.Context, *billing.Invoice) (*status.StatusResponse, error)
 	// billed-item
-	//   rpc NewBilledItem(billing.InvoiceItem) returns (billing.InvoiceItem) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/billing/items"
-	//       body: "*"
-	//     };
-	//   }
+	//
+	//	rpc NewBilledItem(billing.InvoiceItem) returns (billing.InvoiceItem) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/billing/items"
+	//	    body: "*"
+	//	  };
+	//	}
 	ListBilledItems(context.Context, *billing.ListInvoiceItemsRequest) (*billing.InvoiceItems, error)
 	GetBilledItem(context.Context, *billing.InvoiceItem) (*billing.InvoiceItem, error)
 	// subscription

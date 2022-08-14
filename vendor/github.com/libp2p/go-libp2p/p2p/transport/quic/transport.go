@@ -47,8 +47,8 @@ var quicConfig = &quic.Config{
 		// TODO(#6): require source address validation when under load
 		return true
 	},
-	KeepAlive: true,
-	Versions:  []quic.VersionNumber{quic.VersionDraft29, quic.Version1},
+	KeepAlivePeriod: 15 * time.Second,
+	Versions:        []quic.VersionNumber{quic.VersionDraft29, quic.Version1},
 }
 
 const statelessResetKeyInfo = "libp2p quic stateless reset key"
@@ -201,7 +201,7 @@ func (t *transport) Dial(ctx context.Context, raddr ma.Multiaddr, p peer.ID) (tp
 		return t.holePunch(ctx, netw, addr, p)
 	}
 
-	scope, err := t.rcmgr.OpenConnection(network.DirOutbound, false)
+	scope, err := t.rcmgr.OpenConnection(network.DirOutbound, false, raddr)
 	if err != nil {
 		log.Debugw("resource manager blocked outgoing connection", "peer", p, "addr", raddr, "error", err)
 		return nil, err

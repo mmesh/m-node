@@ -376,7 +376,7 @@ func (oas *ObservedAddrManager) maybeRecordObservation(conn network.Conn, observ
 	}
 
 	local := conn.LocalMultiaddr()
-	if !addrInAddrs(local, ifaceaddrs) && !addrInAddrs(local, oas.host.Network().ListenAddresses()) {
+	if !ma.Contains(ifaceaddrs, local) && !ma.Contains(oas.host.Network().ListenAddresses(), local) {
 		// not in our list
 		return
 	}

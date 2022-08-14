@@ -59,11 +59,11 @@ type ProviderAPIClient interface {
 	ListAccounts(ctx context.Context, in *account.ListAccountsRequest, opts ...grpc.CallOption) (*account.Accounts, error)
 	GetAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Account, error)
 	GetAccountUsage(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Usage, error)
-	//   rpc GetAccountTraffic(account.Account) returns (account.Traffic) {
-	//     option (google.api.http) = {
-	//       get: "/api/v1/accounts/{accountID}:traffic"
-	//     };
-	//   }
+	//	rpc GetAccountTraffic(account.Account) returns (account.Traffic) {
+	//	  option (google.api.http) = {
+	//	    get: "/api/v1/accounts/{accountID}:traffic"
+	//	  };
+	//	}
 	GetAccountStats(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Stats, error)
 	UpdateAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*account.Account, error)
 	CancelAccount(ctx context.Context, in *account.Account, opts ...grpc.CallOption) (*status.StatusResponse, error)
@@ -435,11 +435,11 @@ type ProviderAPIServer interface {
 	ListAccounts(context.Context, *account.ListAccountsRequest) (*account.Accounts, error)
 	GetAccount(context.Context, *account.Account) (*account.Account, error)
 	GetAccountUsage(context.Context, *account.Account) (*account.Usage, error)
-	//   rpc GetAccountTraffic(account.Account) returns (account.Traffic) {
-	//     option (google.api.http) = {
-	//       get: "/api/v1/accounts/{accountID}:traffic"
-	//     };
-	//   }
+	//	rpc GetAccountTraffic(account.Account) returns (account.Traffic) {
+	//	  option (google.api.http) = {
+	//	    get: "/api/v1/accounts/{accountID}:traffic"
+	//	  };
+	//	}
 	GetAccountStats(context.Context, *account.Account) (*account.Stats, error)
 	UpdateAccount(context.Context, *account.Account) (*account.Account, error)
 	CancelAccount(context.Context, *account.Account) (*status.StatusResponse, error)

@@ -87,10 +87,9 @@ var DefaultEnableRelay = func(cfg *Config) error {
 
 var DefaultResourceManager = func(cfg *Config) error {
 	// Default memory limit: 1/8th of total memory, minimum 128MB, maximum 1GB
-	limiter := rcmgr.NewDefaultLimiter()
-	SetDefaultServiceLimits(limiter)
-
-	mgr, err := rcmgr.NewResourceManager(limiter)
+	limits := rcmgr.DefaultLimits
+	SetDefaultServiceLimits(&limits)
+	mgr, err := rcmgr.NewResourceManager(rcmgr.NewFixedLimiter(limits.AutoScale()))
 	if err != nil {
 		return err
 	}
@@ -98,7 +97,7 @@ var DefaultResourceManager = func(cfg *Config) error {
 	return cfg.Apply(ResourceManager(mgr))
 }
 
-// DefaultConnManager creates a default connection manager
+// DefaultConnectionManager creates a default connection manager
 var DefaultConnectionManager = func(cfg *Config) error {
 	mgr, err := connmgr.NewConnManager(160, 192)
 	if err != nil {

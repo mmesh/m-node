@@ -195,7 +195,7 @@ func start(c *cmd, consoleHandle syscall.Handle) error {
 	//}
 	//c.childFiles = append(c.childFiles, c.ExtraFiles...)
 
-	envv, err := _cmd_envv(c)
+	env, err := _cmd_environ(c)
 	if err != nil {
 		return err
 	}
@@ -203,7 +203,7 @@ func start(c *cmd, consoleHandle syscall.Handle) error {
 	c.Process, err = startProcess(c.Path, _cmd_argv(c), &os.ProcAttr{
 		Dir:   c.Dir,
 		Files: c.childFiles,
-		Env:   addCriticalEnv(dedupEnv(envv)),
+		Env:   env,
 		Sys:   c.SysProcAttr,
 	}, consoleHandle)
 	if err != nil {

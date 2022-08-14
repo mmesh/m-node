@@ -40,22 +40,22 @@ type CoreAPIClient interface {
 	CreateUser(ctx context.Context, in *iam.User, opts ...grpc.CallOption) (*iam.User, error)
 	ListUsers(ctx context.Context, in *iam.ListUsersRequest, opts ...grpc.CallOption) (*iam.Users, error)
 	GetUser(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.User, error)
-	//   rpc SetUser(iam.User) returns (iam.User) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/iam/users/{email}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetUser(iam.User) returns (iam.User) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/iam/users/{email}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeleteUser(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	EnableUser(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.User, error)
 	DisableUser(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.User, error)
 	SetUserEmail(ctx context.Context, in *iam.SetUserEmailRequest, opts ...grpc.CallOption) (*iam.User, error)
-	//   rpc ResetUserPassword(iam.UserRequest) returns (status.StatusResponse) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/iam/users/{email}:password-reset"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc ResetUserPassword(iam.UserRequest) returns (status.StatusResponse) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/iam/users/{email}:password-reset"
+	//	    body: "*"
+	//	  };
+	//	}
 	SetUserCredentialsPassword(ctx context.Context, in *iam.SetUserCredentialsPasswordRequest, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	SetUserCredentialsSSH(ctx context.Context, in *iam.SetUserCredentialsSSHRequest, opts ...grpc.CallOption) (*iam.User, error)
 	DeleteUserCredentialsSSH(ctx context.Context, in *iam.UserRequest, opts ...grpc.CallOption) (*iam.User, error)
@@ -774,22 +774,22 @@ type CoreAPIServer interface {
 	CreateUser(context.Context, *iam.User) (*iam.User, error)
 	ListUsers(context.Context, *iam.ListUsersRequest) (*iam.Users, error)
 	GetUser(context.Context, *iam.UserRequest) (*iam.User, error)
-	//   rpc SetUser(iam.User) returns (iam.User) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/iam/users/{email}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetUser(iam.User) returns (iam.User) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/iam/users/{email}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeleteUser(context.Context, *iam.UserRequest) (*status.StatusResponse, error)
 	EnableUser(context.Context, *iam.UserRequest) (*iam.User, error)
 	DisableUser(context.Context, *iam.UserRequest) (*iam.User, error)
 	SetUserEmail(context.Context, *iam.SetUserEmailRequest) (*iam.User, error)
-	//   rpc ResetUserPassword(iam.UserRequest) returns (status.StatusResponse) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/iam/users/{email}:password-reset"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc ResetUserPassword(iam.UserRequest) returns (status.StatusResponse) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/iam/users/{email}:password-reset"
+	//	    body: "*"
+	//	  };
+	//	}
 	SetUserCredentialsPassword(context.Context, *iam.SetUserCredentialsPasswordRequest) (*status.StatusResponse, error)
 	SetUserCredentialsSSH(context.Context, *iam.SetUserCredentialsSSHRequest) (*iam.User, error)
 	DeleteUserCredentialsSSH(context.Context, *iam.UserRequest) (*iam.User, error)

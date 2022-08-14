@@ -29,89 +29,93 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ServicesAPIClient interface {
 	// pricingPlan
-	//   rpc NewPricingPlan(services.PricingPlan) returns (services.PricingPlan) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/pricingPlans:new"
-	//       body: "*"
-	//     };
-	//   }
+	//
+	//	rpc NewPricingPlan(services.PricingPlan) returns (services.PricingPlan) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/pricingPlans:new"
+	//	    body: "*"
+	//	  };
+	//	}
 	ListPricingPlans(ctx context.Context, in *services.ListPricingPlansRequest, opts ...grpc.CallOption) (*services.PricingPlans, error)
 	GetPricingPlan(ctx context.Context, in *services.PricingPlan, opts ...grpc.CallOption) (*services.PricingPlan, error)
-	//   rpc SetPricingPlan(services.PricingPlan) returns (services.PricingPlan) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/pricingPlans/{pricingPlanID}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetPricingPlan(services.PricingPlan) returns (services.PricingPlan) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/pricingPlans/{pricingPlanID}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeletePricingPlan(ctx context.Context, in *services.PricingPlan, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	// resourceUnit
-	//   rpc NewResourceUnit(services.ResourceUnit) returns (services.ResourceUnit) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/resourceUnits:new"
-	//       body: "*"
-	//     };
-	//   }
+	//
+	//	rpc NewResourceUnit(services.ResourceUnit) returns (services.ResourceUnit) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/resourceUnits:new"
+	//	    body: "*"
+	//	  };
+	//	}
 	ListResourceUnits(ctx context.Context, in *services.ListResourceUnitsRequest, opts ...grpc.CallOption) (*services.ResourceUnits, error)
 	GetResourceUnit(ctx context.Context, in *services.ResourceUnit, opts ...grpc.CallOption) (*services.ResourceUnit, error)
-	//   rpc SetResourceUnit(services.ResourceUnit) returns (services.ResourceUnit) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/resourceUnits/{resourceUnitID}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetResourceUnit(services.ResourceUnit) returns (services.ResourceUnit) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/resourceUnits/{resourceUnitID}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeleteResourceUnit(ctx context.Context, in *services.ResourceUnit, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	// provider
-	//   rpc NewProvider(services.Provider) returns (services.Provider) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/providers:new"
-	//       body: "*"
-	//     };
-	//   }
+	//
+	//	rpc NewProvider(services.Provider) returns (services.Provider) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/providers:new"
+	//	    body: "*"
+	//	  };
+	//	}
 	ListProviders(ctx context.Context, in *services.ListProvidersRequest, opts ...grpc.CallOption) (*services.Providers, error)
 	GetProvider(ctx context.Context, in *services.Provider, opts ...grpc.CallOption) (*services.Provider, error)
-	//   rpc SetProvider(services.Provider) returns (services.Provider) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/providers/{providerID}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetProvider(services.Provider) returns (services.Provider) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/providers/{providerID}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeleteProvider(ctx context.Context, in *services.Provider, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	// provider product catalog
 	SetProductCatalog(ctx context.Context, in *pro.ProductCatalog, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	// product
-	//   rpc NewProduct(services.Product) returns (services.Product) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/providers/{providerID}/products:new"
-	//       body: "*"
-	//     };
-	//   }
+	//
+	//	rpc NewProduct(services.Product) returns (services.Product) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/providers/{providerID}/products:new"
+	//	    body: "*"
+	//	  };
+	//	}
 	ListProducts(ctx context.Context, in *services.ListProductsRequest, opts ...grpc.CallOption) (*services.Products, error)
 	GetProduct(ctx context.Context, in *services.Product, opts ...grpc.CallOption) (*services.Product, error)
-	//   rpc SetProduct(services.Product) returns (services.Product) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/providers/{providerID}/products/{productID}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetProduct(services.Product) returns (services.Product) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/providers/{providerID}/products/{productID}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeleteProduct(ctx context.Context, in *services.Product, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	// itsm
 	RequestService(ctx context.Context, in *crm.ServiceRequest, opts ...grpc.CallOption) (*itsm.Issue, error)
-	//   rpc SubmitIssue(itsm.Issue) returns (itsm.Issue) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/itsm/issues:submit"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SubmitIssue(itsm.Issue) returns (itsm.Issue) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/itsm/issues:submit"
+	//	    body: "*"
+	//	  };
+	//	}
 	NewIssue(ctx context.Context, in *itsm.Issue, opts ...grpc.CallOption) (*itsm.Issue, error)
 	NewIssueComment(ctx context.Context, in *itsm.IssueNewCommentRequest, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	ListIssues(ctx context.Context, in *itsm.ListIssuesRequest, opts ...grpc.CallOption) (*itsm.Issues, error)
 	GetIssue(ctx context.Context, in *itsm.IssueRequest, opts ...grpc.CallOption) (*itsm.Issue, error)
-	//   rpc SetIssue(itsm.Issue) returns (itsm.Issue) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/itsm/issues/{issueID}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetIssue(itsm.Issue) returns (itsm.Issue) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/itsm/issues/{issueID}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeleteIssue(ctx context.Context, in *itsm.IssueRequest, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	CloseIssue(ctx context.Context, in *itsm.IssueRequest, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	// cloud-instances
@@ -136,12 +140,12 @@ type ServicesAPIClient interface {
 	// crm opportunities
 	ListOpportunities(ctx context.Context, in *crm.ListOpportunitiesRequest, opts ...grpc.CallOption) (*crm.Opportunities, error)
 	GetOpportunity(ctx context.Context, in *crm.Opportunity, opts ...grpc.CallOption) (*crm.Opportunity, error)
-	//   rpc SetOpportunity(crm.Opportunity) returns (crm.Opportunity) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/services/crm/opportunities/{opportunityID}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetOpportunity(crm.Opportunity) returns (crm.Opportunity) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/services/crm/opportunities/{opportunityID}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeleteOpportunity(ctx context.Context, in *crm.Opportunity, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	SetOpportunityMilestone(ctx context.Context, in *crm.OpportunityMilestoneSetRequest, opts ...grpc.CallOption) (*crm.Opportunity, error)
 	SetOpportunityOutcome(ctx context.Context, in *crm.OpportunityOutcomeSetRequest, opts ...grpc.CallOption) (*crm.Opportunity, error)
@@ -538,89 +542,93 @@ func (c *servicesAPIClient) SetOpportunityOutcome(ctx context.Context, in *crm.O
 // for forward compatibility
 type ServicesAPIServer interface {
 	// pricingPlan
-	//   rpc NewPricingPlan(services.PricingPlan) returns (services.PricingPlan) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/pricingPlans:new"
-	//       body: "*"
-	//     };
-	//   }
+	//
+	//	rpc NewPricingPlan(services.PricingPlan) returns (services.PricingPlan) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/pricingPlans:new"
+	//	    body: "*"
+	//	  };
+	//	}
 	ListPricingPlans(context.Context, *services.ListPricingPlansRequest) (*services.PricingPlans, error)
 	GetPricingPlan(context.Context, *services.PricingPlan) (*services.PricingPlan, error)
-	//   rpc SetPricingPlan(services.PricingPlan) returns (services.PricingPlan) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/pricingPlans/{pricingPlanID}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetPricingPlan(services.PricingPlan) returns (services.PricingPlan) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/pricingPlans/{pricingPlanID}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeletePricingPlan(context.Context, *services.PricingPlan) (*status.StatusResponse, error)
 	// resourceUnit
-	//   rpc NewResourceUnit(services.ResourceUnit) returns (services.ResourceUnit) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/resourceUnits:new"
-	//       body: "*"
-	//     };
-	//   }
+	//
+	//	rpc NewResourceUnit(services.ResourceUnit) returns (services.ResourceUnit) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/resourceUnits:new"
+	//	    body: "*"
+	//	  };
+	//	}
 	ListResourceUnits(context.Context, *services.ListResourceUnitsRequest) (*services.ResourceUnits, error)
 	GetResourceUnit(context.Context, *services.ResourceUnit) (*services.ResourceUnit, error)
-	//   rpc SetResourceUnit(services.ResourceUnit) returns (services.ResourceUnit) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/resourceUnits/{resourceUnitID}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetResourceUnit(services.ResourceUnit) returns (services.ResourceUnit) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/resourceUnits/{resourceUnitID}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeleteResourceUnit(context.Context, *services.ResourceUnit) (*status.StatusResponse, error)
 	// provider
-	//   rpc NewProvider(services.Provider) returns (services.Provider) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/providers:new"
-	//       body: "*"
-	//     };
-	//   }
+	//
+	//	rpc NewProvider(services.Provider) returns (services.Provider) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/providers:new"
+	//	    body: "*"
+	//	  };
+	//	}
 	ListProviders(context.Context, *services.ListProvidersRequest) (*services.Providers, error)
 	GetProvider(context.Context, *services.Provider) (*services.Provider, error)
-	//   rpc SetProvider(services.Provider) returns (services.Provider) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/providers/{providerID}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetProvider(services.Provider) returns (services.Provider) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/providers/{providerID}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeleteProvider(context.Context, *services.Provider) (*status.StatusResponse, error)
 	// provider product catalog
 	SetProductCatalog(context.Context, *pro.ProductCatalog) (*status.StatusResponse, error)
 	// product
-	//   rpc NewProduct(services.Product) returns (services.Product) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/providers/{providerID}/products:new"
-	//       body: "*"
-	//     };
-	//   }
+	//
+	//	rpc NewProduct(services.Product) returns (services.Product) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/providers/{providerID}/products:new"
+	//	    body: "*"
+	//	  };
+	//	}
 	ListProducts(context.Context, *services.ListProductsRequest) (*services.Products, error)
 	GetProduct(context.Context, *services.Product) (*services.Product, error)
-	//   rpc SetProduct(services.Product) returns (services.Product) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/services/{serviceID}/providers/{providerID}/products/{productID}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetProduct(services.Product) returns (services.Product) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/services/{serviceID}/providers/{providerID}/products/{productID}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeleteProduct(context.Context, *services.Product) (*status.StatusResponse, error)
 	// itsm
 	RequestService(context.Context, *crm.ServiceRequest) (*itsm.Issue, error)
-	//   rpc SubmitIssue(itsm.Issue) returns (itsm.Issue) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/itsm/issues:submit"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SubmitIssue(itsm.Issue) returns (itsm.Issue) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/itsm/issues:submit"
+	//	    body: "*"
+	//	  };
+	//	}
 	NewIssue(context.Context, *itsm.Issue) (*itsm.Issue, error)
 	NewIssueComment(context.Context, *itsm.IssueNewCommentRequest) (*status.StatusResponse, error)
 	ListIssues(context.Context, *itsm.ListIssuesRequest) (*itsm.Issues, error)
 	GetIssue(context.Context, *itsm.IssueRequest) (*itsm.Issue, error)
-	//   rpc SetIssue(itsm.Issue) returns (itsm.Issue) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/itsm/issues/{issueID}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetIssue(itsm.Issue) returns (itsm.Issue) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/itsm/issues/{issueID}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeleteIssue(context.Context, *itsm.IssueRequest) (*status.StatusResponse, error)
 	CloseIssue(context.Context, *itsm.IssueRequest) (*status.StatusResponse, error)
 	// cloud-instances
@@ -645,12 +653,12 @@ type ServicesAPIServer interface {
 	// crm opportunities
 	ListOpportunities(context.Context, *crm.ListOpportunitiesRequest) (*crm.Opportunities, error)
 	GetOpportunity(context.Context, *crm.Opportunity) (*crm.Opportunity, error)
-	//   rpc SetOpportunity(crm.Opportunity) returns (crm.Opportunity) {
-	//     option (google.api.http) = {
-	//       post: "/api/v1/accounts/{accountID}/services/crm/opportunities/{opportunityID}"
-	//       body: "*"
-	//     };
-	//   }
+	//	rpc SetOpportunity(crm.Opportunity) returns (crm.Opportunity) {
+	//	  option (google.api.http) = {
+	//	    post: "/api/v1/accounts/{accountID}/services/crm/opportunities/{opportunityID}"
+	//	    body: "*"
+	//	  };
+	//	}
 	DeleteOpportunity(context.Context, *crm.Opportunity) (*status.StatusResponse, error)
 	SetOpportunityMilestone(context.Context, *crm.OpportunityMilestoneSetRequest) (*crm.Opportunity, error)
 	SetOpportunityOutcome(context.Context, *crm.OpportunityOutcomeSetRequest) (*crm.Opportunity, error)

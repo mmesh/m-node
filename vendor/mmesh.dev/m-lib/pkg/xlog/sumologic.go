@@ -52,7 +52,7 @@ func (l *LoggerSpec) SetSumologicLogger(opts *SumologicOptions) *LoggerSpec {
 		url:      opts.URL,
 		headers:  &http.Header{},
 		client:   &http.Client{},
-		logQueue: make(chan *sumologicLogMsg, 128),
+		logQueue: make(chan *sumologicLogMsg, 1024),
 		logMessages: &sumologicMessages{
 			lowPriority:    make([]*sumologicLogMsg, 0),
 			mediumPriority: make([]*sumologicLogMsg, 0),
@@ -82,10 +82,14 @@ func (l *LoggerSpec) SetSumologicLogger(opts *SumologicOptions) *LoggerSpec {
 }
 
 func (l *LoggerSpec) sumologicLog(level LogLevel, timestamp time.Time, msg string) error {
-	l.sumologicLogger.logQueue <- &sumologicLogMsg{
+	select {
+	case l.sumologicLogger.logQueue <- &sumologicLogMsg{
 		level:     level,
 		timestamp: timestamp,
 		msg:       msg,
+	}:
+	default:
+		fmt.Printf("!!! [xlog] Sumologic buffer full, discarding msg: %s\n", msg)
 	}
 
 	return nil

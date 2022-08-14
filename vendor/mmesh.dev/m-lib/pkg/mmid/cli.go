@@ -22,5 +22,9 @@ func (mmid MMCLIID) String() string {
 }
 
 func IsMMCLIID(mmID string) bool {
-	return strings.HasPrefix(strings.Split(mmID, ":")[4], mmCLIIDPrefix)
+	s := strings.Split(mmID, ":")
+	if len(s) < 5 {
+		return false
+	}
+	return strings.HasPrefix(s[4], mmCLIIDPrefix)
 }

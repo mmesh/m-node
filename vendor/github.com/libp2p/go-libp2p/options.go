@@ -342,6 +342,8 @@ func ConnectionGater(cg connmgr.ConnectionGater) Option {
 }
 
 // ResourceManager configures libp2p to use the given ResourceManager.
+// When using the go-libp2p-resource-manager implementation of the ResourceManager interface,
+// it is recommended to set limits for libp2p protocol by calling SetDefaultServiceLimits.
 func ResourceManager(rcmgr network.ResourceManager) Option {
 	return func(cfg *Config) error {
 		if cfg.ResourceManager != nil {

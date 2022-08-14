@@ -115,8 +115,8 @@ type cmd struct {
 //go:linkname _cmd_closeDescriptors os/exec.(*Cmd).closeDescriptors
 func _cmd_closeDescriptors(c *cmd, closers []io.Closer)
 
-//go:linkname _cmd_envv os/exec.(*Cmd).envv
-func _cmd_envv(c *cmd) ([]string, error)
+//go:linkname _cmd_environ os/exec.(*Cmd).environ
+func _cmd_environ(c *cmd) ([]string, error)
 
 //go:linkname _cmd_argv os/exec.(*Cmd).argv
 func _cmd_argv(c *cmd) []string

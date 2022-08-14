@@ -13,6 +13,11 @@ type conn yamux.Session
 
 var _ network.MuxedConn = &conn{}
 
+// NewMuxedConn constructs a new MuxedConn from a yamux.Session.
+func NewMuxedConn(m *yamux.Session) network.MuxedConn {
+	return (*conn)(m)
+}
+
 // Close closes underlying yamux
 func (c *conn) Close() error {
 	return c.yamux().Close()
