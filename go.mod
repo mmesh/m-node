@@ -143,7 +143,7 @@ require (
 	github.com/raulk/go-watchdog v1.3.0 // indirect
 	github.com/rivo/tview v0.0.0-20211001102648-5508f4b00266 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/slack-go/slack v0.10.3 // indirect
+	github.com/slack-go/slack v0.11.2 // indirect
 	github.com/spacemonkeygo/spacelog v0.0.0-20180420211403-2296661a0572 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
