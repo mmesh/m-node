@@ -13,8 +13,6 @@ import (
 )
 
 var rtCtlQueue = make(chan struct{})
-var rtCtlShortInterval time.Duration = 5 * time.Second
-var rtCtlLongInterval time.Duration = 20 * time.Second
 var serviceEnabled bool = true
 
 // RoutingAgent runs routing engine
@@ -54,24 +52,20 @@ func RoutingAgent(w *runtime.Wrkr) {
 
 				} else if rtResp.RT.OverLimit {
 					xlog.Alert("Account over tier limits. Service is DISABLED.")
-					xlog.Alert(`If you are on the Free Plan, make sure you
-					are not exceeding its limits. If not, please
-					contact mmesh customer service urgently.`)
+					xlog.Alert("If you are on the Free Plan, make sure you")
+					xlog.Alert("are not exceeding its limits. If not, please")
+					xlog.Alert("contact mmesh customer service urgently.")
 				}
 
 				if rtResp.RT.Disabled || rtResp.RT.OverLimit {
-					rtCtlShortInterval = 5 * time.Minute
-					rtCtlLongInterval = 20 * time.Minute
 					serviceEnabled = false
 
 					disabledRetries++
-					if disabledRetries > 8 {
+					if disabledRetries > 10 {
 						os.Exit(1)
 					}
 					continue
 				} else {
-					rtCtlShortInterval = 5 * time.Second
-					rtCtlLongInterval = 20 * time.Second
 					serviceEnabled = true
 					disabledRetries = 0
 				}
@@ -131,7 +125,10 @@ func rtCtl() {
 		go func() {
 			for {
 				rtCtlQueue <- struct{}{}
-				time.Sleep(rtCtlLongInterval)
+				time.Sleep(20 * time.Second)
+				if !serviceEnabled {
+					time.Sleep(20 * time.Minute)
+				}
 			}
 		}()
 
@@ -145,7 +142,10 @@ func rtCtl() {
 
 					go func() {
 						rtCtlQueue <- struct{}{}
-						time.Sleep(rtCtlShortInterval)
+						time.Sleep(5 * time.Second)
+						if !serviceEnabled {
+							time.Sleep(5 * time.Minute)
+						}
 						rtrqCtlRun = false
 					}()
 				}
