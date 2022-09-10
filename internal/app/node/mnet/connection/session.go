@@ -52,7 +52,7 @@ func (c *connection) newSession() error {
 func (c *connection) natProbe(natp *natprobe.NATProbe) (*natprobe.NATProbe, error) {
 	var wg sync.WaitGroup
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	waitc := make(chan struct{})
