@@ -29,7 +29,7 @@ This repository contains the `mmesh-node` agent, the component that runs on the 
 
 The instructions in this repo assume you already have a mmesh account and are ready to start adding nodes.
 
-See [Quick Start](https://mmesh.io/docs/platform/getting-started/quickstart) to learn how to start building your mmesh.
+See [Quick Start](https://mmesh.io/docs/platform/getting-started/quickstart/) to learn how to start building your mmesh.
 
 The fastest way to add Linux nodes to your mmesh is by [generating a magic link](#linux-installation-with-magic-link) in the mmesh web UI or with `mmeshctl`:
 
@@ -41,7 +41,7 @@ See [Installation](#installation) for more details and other platforms.
 
 ## Documentation
 
-For the complete mmesh platform documentation visit [mmesh.io/docs](https://mmesh.io/docs).
+For the complete mmesh platform documentation visit [mmesh.io/docs](https://mmesh.io/docs/).
 
 ## Installation
 
@@ -65,7 +65,7 @@ You will be able to use the magic link to install the `mmesh-node` agent in seco
 
 Once installed you can review the configuration at `/etc/mmesh/mmesh-node.yml`.
 
-> See the [mmesh-node configuration reference](https://mmesh.io/docs/platform/reference/mmesh-node.yml) to find all the configuration options.
+> See the [mmesh-node configuration reference](https://mmesh.io/docs/platform/reference/mmesh-node.yml/) to find all the configuration options.
 
 #### Linux binary installation with curl
 
@@ -110,7 +110,7 @@ Once installed you can review the configuration at `/etc/mmesh/mmesh-node.yml`.
     sudo vim /etc/mmesh/mmesh-node.yml
     ```
 
-    See the [mmesh-node configuration reference](https://mmesh.io/docs/platform/reference/mmesh-node.yml) to find all the configuration options.
+    See the [mmesh-node configuration reference](https://mmesh.io/docs/platform/reference/mmesh-node.yml/) to find all the configuration options.
 
 4. Create the `mmesh-node.service` for systemd.
 
@@ -268,7 +268,7 @@ sudo yum install mmesh-node
 
     > **IMPORTANT**: In macOS, `agent.iface` must be `utun[0-9]+` in the `mmesh-node.yml`, being `utun5` usually a good choice for that setting. Use the command `ifconfig -a` before launching the `mmesh-node` service and check that the interface is not in-use.
 
-    See the [mmesh-node configuration reference](https://mmesh.io/docs/platform/reference/mmesh-node.yml) to find all the configuration options.
+    See the [mmesh-node configuration reference](https://mmesh.io/docs/platform/reference/mmesh-node.yml/) to find all the configuration options.
 
 4. Install and start the mmesh-node agent as a system service.
 
@@ -391,7 +391,7 @@ sudo rmdir /etc/mmesh
 
 6. Use an editor to create the mmesh-node configuration file `C:\Program Files\mmesh\mmesh-node.yml`.
 
-    See the [mmesh-node configuration reference](https://mmesh.io/docs/platform/reference/mmesh-node.yml) to find all the configuration options.
+    See the [mmesh-node configuration reference](https://mmesh.io/docs/platform/reference/mmesh-node.yml/) to find all the configuration options.
 
 7. Install the mmesh-node agent as a Windows service.
 
@@ -457,7 +457,7 @@ COSIGN_EXPERIMENTAL=1 cosign verify mmeshdev/mmesh-node
 
 ## Configuration
 
-See the [mmesh-node configuration reference](https://mmesh.io/docs/platform/reference/mmesh-node.yml) to find all the configuration options.
+See the [mmesh-node configuration reference](https://mmesh.io/docs/platform/reference/mmesh-node.yml/) to find all the configuration options.
 
 ## Running with Docker
 
