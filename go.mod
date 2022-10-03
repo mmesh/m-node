@@ -15,7 +15,7 @@ require (
 	github.com/miekg/dns v1.1.50
 	github.com/multiformats/go-multiaddr v0.6.0
 	github.com/robfig/cron/v3 v3.0.0
-	github.com/shirou/gopsutil/v3 v3.22.7
+	github.com/shirou/gopsutil/v3 v3.22.9
 	github.com/songgao/water v0.0.0-20200317203138-2b4b6d7c09d8
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.13.0
@@ -64,7 +64,7 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/gnostic v0.5.7-v3refs // indirect
-	github.com/google/go-cmp v0.5.8 // indirect
+	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.5.0 // indirect
