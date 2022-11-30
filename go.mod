@@ -22,7 +22,7 @@ require (
 	github.com/vishvananda/netlink v1.1.0
 	golang.org/x/net v0.0.0-20220812174116-3211cb980234
 	golang.zx2c4.com/wireguard v0.0.0-20211116201604-ffb742d43d92
-	google.golang.org/grpc v1.49.0
+	google.golang.org/grpc v1.51.0
 	k8s.io/api v0.25.0
 	k8s.io/apimachinery v0.25.0
 	k8s.io/client-go v0.25.0
@@ -163,7 +163,7 @@ require (
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
 	golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/text v0.4.0 // indirect
 	golang.org/x/time v0.0.0-20220210224613-90d013bbcef8 // indirect
 	golang.org/x/tools v0.1.12 // indirect
 	golang.zx2c4.com/wintun v0.0.0-20211104114900-415007cec224 // indirect
