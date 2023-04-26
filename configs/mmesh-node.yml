@@ -1,56 +1,22 @@
-# mmesh-node configuration template
-#
+# mmesh-node configuration
 
-loglevel: INFO # TRACE | DEBUG | INFO | WARN
+token:
 
-federation:
-  id: eu-west-01                      # env: MM_FEDERATION_ID
+# loglevel: INFO # TRACE | DEBUG | INFO | WARN
+port: 57775
+# dnsPort: 53535
 
-controller:
-  endpoint: eu-west-01.mmesh.network:443  # env: MM_CONTROLLER_ENDPOINT
-
-# basic node configuration
-node:
-  id: dev-test-01                      # env: MM_NODE_ID
-  account: dev-test                    # env: MM_NODE_ACCOUNT
-  tenant: default                      # env: MM_NODE_TENANT
-  network: default                     # env: MM_NODE_NETWORK
-  subnet: subnet-000                   # env: MM_NODE_SUBNET
-  # use 'mmeshctl subnet create' to create the subnet with its secret and authKey
-  #authSecret: ""
-                                       # env: MM_NODE_AUTHSECRET
-  #authKey: ""
-                                       # env: MM_NODE_AUTHKEY
-
-# mmesh agent configuration
-agent:
-  iface: mmesh0                        # env: MM_AGENT_IFACE
-  port: 27578                          # env: MM_AGENT_PORT
-  priority: 1                          # env: MM_AGENT_PRIORITY
-  relay: true        # true | false    # env: MM_AGENT_RELAY
-  # externalIPv4 should match your loadBalancer public ip
-  #externalIPv4: 1.2.3.4               # env: MM_AGENT_EXTERNALIPV4
-  dns:
-    port: 53535                        # env: MM_AGENT_DNS_PORT
-  kubernetes:
-    controller:
-      enabled: false                   # env: MM_AGENT_KUBERNETES_CONTROLLER_ENABLED
-  # mmesh remote management permissions
-  management:
-    auth:
-      psk: ""
-                                       # env: MM_AGENT_MANAGEMENT_AUTH_PSK
-      securityToken: ""
-                                       # env: MM_AGENT_MANAGEMENT_AUTH_SECURITYTOKEN
-    disableExec: false                 # env: MM_AGENT_MANAGEMENT_DISABLEEXEC
-    disableTransfer: false             # env: MM_AGENT_MANAGEMENT_DISABLETRANSFER
-    disablePortForwarding: false       # env: MM_AGENT_MANAGEMENT_DISABLEPORTFORWARDING
-
-# node network endpoint configuration
-endpoint:
-  dnsName: dev-test-01                 # env: MM_ENDPOINT_DNSNAME
-  # requested ipv4 in subnet's range or 'auto'
-  ipv4: auto                           # env: MM_ENDPOINT_IPV4
+# mmesh remote management permissions
+management:
+  # use 'openssl rand -base64 48' to generate both psk and securityToken
+  auth:
+    psk:
+    securityToken:
+  # specific features can be disabled (optional)
+  disableOps: false
+  disableExec: false
+  disableTransfer: false
+  disablePortForwarding: false
 
 # network routes behind this node (optional)
 routes:
@@ -62,8 +28,8 @@ routes:
     # - any
 
 maintenance:
-  autoUpdate: true                     # env: MM_MAINTENANCE_AUTOUPDATE
+  autoUpdate: true
   # default schedule: 00:00 (at midnight)
   schedule:
-    hour: 2                            # env: MM_MAINTENANCE_SCHEDULE_HOUR
-    minute: 0                          # env: MM_MAINTENANCE_SCHEDULE_MINUTE
+    hour: 2
+    minute: 0
