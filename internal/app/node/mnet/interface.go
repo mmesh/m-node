@@ -3,7 +3,8 @@ package mnet
 import (
 	"sync"
 
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/network/routing"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-node/internal/app/node/mnet/connection"
 	"mmesh.dev/m-node/internal/app/node/mnet/router"
 )
@@ -13,27 +14,25 @@ type LocalNodeInterface interface {
 	Router() router.Interface
 	AddNetworkEndpoint(endpointID, dnsName, reqIPv4 string) (string, error)
 	RemoveNetworkEndpoint(endpointID string) error
-	NetworkNodeWithoutEndpoints() *network.Node
-	NetworkNode() *network.Node
+	GetNodeLSA() *routing.LSA
+	NodeReq() *topology.NodeReq
+	Node() *topology.Node
+	NewCfg(ncfg *topology.NodeCfg) error
+	DNSPort() int
 	IsK8sGwEnabled() bool
 	Close()
 }
 
 type localNode struct {
-	accountID  string
-	tenantID   string
-	netID      string
-	vrfID      string
-	nodeID     string
-	agent      *network.Agent
-	endpoints  *endpointsMap
-	replicaSet bool
-	connection connection.Interface
-	router     router.Interface
+	node        *topology.Node
+	endpoints   *endpointsMap
+	connection  connection.Interface
+	router      router.Interface
+	initialized bool
 }
 
 type endpointsMap struct {
-	endpt map[string]*network.NetworkEndpoint
+	endpt map[string]*topology.Endpoint
 	sync.RWMutex
 }
 
@@ -59,8 +58,12 @@ func (ln *localNode) Router() router.Interface {
 	return ln.router
 }
 
+func (ln *localNode) DNSPort() int {
+	return int(ln.node.Agent.DNSPort)
+}
+
 func (ln *localNode) IsK8sGwEnabled() bool {
-	return ln.agent.Options.KubernetesGw
+	return ln.node.Cfg.KubernetesGw
 }
 
 func (ln *localNode) Close() {

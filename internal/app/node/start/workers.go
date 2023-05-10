@@ -13,10 +13,10 @@ const (
 	errorEventsHandler = iota
 	// networkErrorEventsHandler
 	mmDispatcher
-	mmProcessor
+	// mmProcessor
 	dnsAgent
 	metricsAgent
-	mmpControlAgent
+	mmpController
 	routingAgent
 	cronAgent
 	atdAgent
@@ -43,11 +43,11 @@ func initWrkrs(nxnc rpc.NetworkAPIClient) {
 		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmDispatcher"),
 		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, mmp.Dispatcher),
 	)
-	runtime.RegisterWrkr(
-		mmProcessor,
-		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmProcessor"),
-		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, svcs.MMPProcessor),
-	)
+	// runtime.RegisterWrkr(
+	// 	mmProcessor,
+	// 	runtime.SetWrkrOpt(runtime.WrkrOptName, "mmProcessor"),
+	// 	runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, svcs.MMPProcessor),
+	// )
 	runtime.RegisterWrkr(
 		dnsAgent,
 		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmDNSAgent"),
@@ -61,9 +61,9 @@ func initWrkrs(nxnc rpc.NetworkAPIClient) {
 		runtime.SetWrkrOpt(runtime.WrkrOptNxNetworkClient, nxnc),
 	)
 	runtime.RegisterWrkr(
-		mmpControlAgent,
-		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmpControlAgent"),
-		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, svcs.MMPControl),
+		mmpController,
+		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmpController"),
+		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, svcs.NetworkControl),
 		runtime.SetWrkrOpt(runtime.WrkrOptNxNetworkClient, nxnc),
 	)
 	runtime.RegisterWrkr(

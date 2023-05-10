@@ -1,0 +1,37 @@
+package svcs
+
+import (
+	"context"
+
+	"mmesh.dev/m-lib/pkg/runtime"
+	"mmesh.dev/m-lib/pkg/xlog"
+	"mmesh.dev/m-node/internal/app/node/mmsp"
+)
+
+func MMPProcessor(w *runtime.Wrkr) {
+	xlog.Infof("Started worker %s", w.Name)
+	w.Running = true
+
+	close := make(chan struct{}, 1)
+
+	go func() {
+		for {
+			select {
+			case payload := <-mmsp.RxQueue:
+				xlog.Debug("[mmp] Received mmp payload on queue")
+				mmsp.Processor(context.TODO(), payload)
+			case <-close:
+				// xlog.Debug("Closing mmp processor")
+				return
+			}
+		}
+	}()
+
+	<-w.QuitChan
+
+	close <- struct{}{}
+
+	w.WG.Done()
+	w.Running = false
+	xlog.Infof("Stopped worker %s", w.Name)
+}

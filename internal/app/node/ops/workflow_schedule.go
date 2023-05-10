@@ -9,8 +9,8 @@ import (
 
 // WorkflowSchedule configure the local cron with workflow-related operations.
 // This function usually will be executed on agents.
-func WorkflowSchedule(ctx context.Context, payload *mmsp.Payload) error {
-	wf := payload.Workflow
+func WorkflowSchedule(ctx context.Context, pdu *mmsp.WorkflowPDU) error {
+	wf := pdu.Workflow
 
 	if disabledOps {
 		xlog.Alertf("Ops disabled on this node. Unauthorized workflow schedule: %s", wf.WorkflowID)
@@ -24,11 +24,11 @@ func WorkflowSchedule(ctx context.Context, payload *mmsp.Payload) error {
 	}
 
 	if wf.Triggers.Schedule.DateTime != nil {
-		atdCommandQueue <- payload
+		atdCommandQueue <- pdu
 	}
 
 	if len(wf.Triggers.Schedule.Crontab) > 0 {
-		cronCommandQueue <- payload
+		cronCommandQueue <- pdu
 	}
 
 	return nil

@@ -9,20 +9,29 @@ import (
 // const maxIDChars int = 8
 
 type NetHop struct {
-	// ID     string
-	MAddrs []string
+	PeerMAddrs   []string
+	RelayMAddrs  []string
+	RouterMAddrs []string
 }
 
 type peerMap struct {
-	peer map[peer.ID]*peer.AddrInfo
+	peer   map[peer.ID]*peer.AddrInfo
+	relay  map[peer.ID]*peer.AddrInfo
+	router map[peer.ID]*peer.AddrInfo
 }
 
 func newPeerMapFromNetHop(hop *NetHop) *peerMap {
-	pm := &peerMap{
-		peer: make(map[peer.ID]*peer.AddrInfo, 0),
+	return &peerMap{
+		peer:   getPeerGroup(hop.PeerMAddrs),
+		relay:  getPeerGroup(hop.RelayMAddrs),
+		router: getPeerGroup(hop.RouterMAddrs),
 	}
+}
 
-	for _, ma := range hop.MAddrs {
+func getPeerGroup(maddrs []string) map[peer.ID]*peer.AddrInfo {
+	peerGroup := make(map[peer.ID]*peer.AddrInfo, 0)
+
+	for _, ma := range maddrs {
 		proto := maddr.GetTransport(ma)
 
 		if proto == transport.Invalid {
@@ -35,12 +44,12 @@ func newPeerMapFromNetHop(hop *NetHop) *peerMap {
 			continue
 		}
 
-		if _, ok := pm.peer[pi.ID]; !ok {
-			pm.peer[pi.ID] = pi
+		if _, ok := peerGroup[pi.ID]; !ok {
+			peerGroup[pi.ID] = pi
 		} else {
-			pm.peer[pi.ID].Addrs = append(pm.peer[pi.ID].Addrs, pi.Addrs...)
+			peerGroup[pi.ID].Addrs = append(peerGroup[pi.ID].Addrs, pi.Addrs...)
 		}
 	}
 
-	return pm
+	return peerGroup
 }

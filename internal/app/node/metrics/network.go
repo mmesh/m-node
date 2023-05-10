@@ -2,10 +2,8 @@ package metrics
 
 import (
 	"sync"
-	"time"
 
 	"mmesh.dev/m-api-go/grpc/resources/metrics"
-	"mmesh.dev/m-api-go/grpc/resources/network"
 )
 
 type networkMetricsMap struct {
@@ -132,23 +130,3 @@ func GetNetworkTraffic() map[string]*metrics.NetworkMetrics {
 
 // 	return networkMetrics.netDevStats
 // }
-
-func GetNetDataPoint(n *network.Node) *metrics.DataPoint {
-	if networkMetrics == nil {
-		networkMetrics = newNetworkMetricsMap()
-		return nil
-	}
-
-	return &metrics.DataPoint{
-		Timestamp:      time.Now().Unix(),
-		Measurement:    metrics.Measurement_NET,
-		AccountID:      n.AccountID,
-		TenantID:       n.TenantID,
-		NetID:          n.NetID,
-		VRFID:          n.VRFID,
-		NodeID:         n.NodeID,
-		NetRxBytes:     networkMetrics.networkMetrics.RxTotalBytes,
-		NetTxBytes:     networkMetrics.networkMetrics.TxTotalBytes,
-		NetDroppedPkts: networkMetrics.networkMetrics.DroppedPkts,
-	}
-}

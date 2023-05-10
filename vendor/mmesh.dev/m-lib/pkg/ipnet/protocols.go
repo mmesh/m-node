@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/google/gopacket/layers"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 )
 
 const (
@@ -13,63 +14,30 @@ const (
 	NetworkProtocolIPv6TCP      string = "tcp6"
 	NetworkProtocolIPv4UDP      string = "udp"
 	NetworkProtocolIPv6UDP      string = "udp6"
-	NetworkProtocolANY          string = "any"
+	// NetworkProtocolANY          string = "any"
 )
 
 func IPProtocol(proto string) layers.IPProtocol {
-	if strings.Contains(strings.ToLower(proto), "tcp") {
+	switch strings.ToUpper(proto) {
+	case topology.Protocol_TCP.String():
 		return layers.IPProtocolTCP
-	}
-
-	if strings.Contains(strings.ToLower(proto), "udp") {
+	case topology.Protocol_UDP.String():
 		return layers.IPProtocolUDP
-	}
-
-	if strings.Contains(strings.ToLower(proto), "gre") {
-		return layers.IPProtocolGRE
-	}
-
-	if strings.Contains(strings.ToLower(proto), "esp") {
-		return layers.IPProtocolESP
-	}
-
-	if strings.Contains(strings.ToLower(proto), "ah") {
-		return layers.IPProtocolAH
-	}
-
-	if strings.Contains(strings.ToLower(proto), "ospf") {
-		return layers.IPProtocolOSPF
-	}
-
-	if strings.Contains(strings.ToLower(proto), "ipip") {
-		return layers.IPProtocolIPIP
-	}
-
-	if strings.Contains(strings.ToLower(proto), "vrrp") {
-		return layers.IPProtocolVRRP
-	}
-
-	if strings.Contains(strings.ToLower(proto), "igmp") {
-		return layers.IPProtocolIGMP
-	}
-
-	if strings.Contains(strings.ToLower(proto), "icmpv4") {
+	case strings.ToUpper(topology.Protocol_ICMPv4.String()):
 		return layers.IPProtocolICMPv4
-	}
-
-	if strings.Contains(strings.ToLower(proto), "icmpv6") {
+	case strings.ToUpper(topology.Protocol_ICMPv6.String()):
 		return layers.IPProtocolICMPv6
 	}
 
 	return layers.IPProtocolIPv4
 }
 
-func validIPProtocol(proto string) bool {
-	if strings.ToLower(proto) == NetworkProtocolANY {
+func validIPProtocol(proto topology.Protocol) bool {
+	if proto == topology.Protocol_ANY {
 		return true
 	}
 
-	if IPProtocol(proto) != layers.IPProtocolIPv4 {
+	if IPProtocol(proto.String()) != layers.IPProtocolIPv4 {
 		return true
 	}
 

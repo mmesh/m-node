@@ -21,6 +21,234 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type TenantListRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AccountID string `protobuf:"bytes,1,opt,name=accountID,proto3" json:"accountID,omitempty"`
+}
+
+func (x *TenantListRequest) Reset() {
+	*x = TenantListRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TenantListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TenantListRequest) ProtoMessage() {}
+
+func (x *TenantListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TenantListRequest.ProtoReflect.Descriptor instead.
+func (*TenantListRequest) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *TenantListRequest) GetAccountID() string {
+	if x != nil {
+		return x.AccountID
+	}
+	return ""
+}
+
+type TenantList struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Tenants []*Tenant `protobuf:"bytes,1,rep,name=tenants,proto3" json:"tenants,omitempty"`
+}
+
+func (x *TenantList) Reset() {
+	*x = TenantList{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TenantList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TenantList) ProtoMessage() {}
+
+func (x *TenantList) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TenantList.ProtoReflect.Descriptor instead.
+func (*TenantList) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *TenantList) GetTenants() []*Tenant {
+	if x != nil {
+		return x.Tenants
+	}
+	return nil
+}
+
+type NewTenantRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AccountID   string `protobuf:"bytes,1,opt,name=accountID,proto3" json:"accountID,omitempty"`
+	Name        string `protobuf:"bytes,11,opt,name=name,proto3" json:"name,omitempty"`
+	Description string `protobuf:"bytes,12,opt,name=description,proto3" json:"description,omitempty"`
+}
+
+func (x *NewTenantRequest) Reset() {
+	*x = NewTenantRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NewTenantRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NewTenantRequest) ProtoMessage() {}
+
+func (x *NewTenantRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NewTenantRequest.ProtoReflect.Descriptor instead.
+func (*NewTenantRequest) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *NewTenantRequest) GetAccountID() string {
+	if x != nil {
+		return x.AccountID
+	}
+	return ""
+}
+
+func (x *NewTenantRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *NewTenantRequest) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+type UpdateTenantRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AccountID   string `protobuf:"bytes,1,opt,name=accountID,proto3" json:"accountID,omitempty"`
+	TenantID    string `protobuf:"bytes,2,opt,name=tenantID,proto3" json:"tenantID,omitempty"`
+	Name        string `protobuf:"bytes,11,opt,name=name,proto3" json:"name,omitempty"`
+	Description string `protobuf:"bytes,12,opt,name=description,proto3" json:"description,omitempty"`
+}
+
+func (x *UpdateTenantRequest) Reset() {
+	*x = UpdateTenantRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateTenantRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateTenantRequest) ProtoMessage() {}
+
+func (x *UpdateTenantRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateTenantRequest.ProtoReflect.Descriptor instead.
+func (*UpdateTenantRequest) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *UpdateTenantRequest) GetAccountID() string {
+	if x != nil {
+		return x.AccountID
+	}
+	return ""
+}
+
+func (x *UpdateTenantRequest) GetTenantID() string {
+	if x != nil {
+		return x.TenantID
+	}
+	return ""
+}
+
+func (x *UpdateTenantRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *UpdateTenantRequest) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
 type Tenant struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -28,13 +256,14 @@ type Tenant struct {
 
 	AccountID   string `protobuf:"bytes,1,opt,name=accountID,proto3" json:"accountID,omitempty"`
 	TenantID    string `protobuf:"bytes,2,opt,name=tenantID,proto3" json:"tenantID,omitempty"`
-	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Name        string `protobuf:"bytes,11,opt,name=name,proto3" json:"name,omitempty"`
+	Description string `protobuf:"bytes,12,opt,name=description,proto3" json:"description,omitempty"`
 }
 
 func (x *Tenant) Reset() {
 	*x = Tenant{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[0]
+		mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -47,7 +276,7 @@ func (x *Tenant) String() string {
 func (*Tenant) ProtoMessage() {}
 
 func (x *Tenant) ProtoReflect() protoreflect.Message {
-	mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[0]
+	mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -60,7 +289,7 @@ func (x *Tenant) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Tenant.ProtoReflect.Descriptor instead.
 func (*Tenant) Descriptor() ([]byte, []int) {
-	return file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDescGZIP(), []int{0}
+	return file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Tenant) GetAccountID() string {
@@ -73,6 +302,13 @@ func (x *Tenant) GetAccountID() string {
 func (x *Tenant) GetTenantID() string {
 	if x != nil {
 		return x.TenantID
+	}
+	return ""
+}
+
+func (x *Tenant) GetName() string {
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
@@ -96,7 +332,7 @@ type Tenants struct {
 func (x *Tenants) Reset() {
 	*x = Tenants{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[1]
+		mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -109,7 +345,7 @@ func (x *Tenants) String() string {
 func (*Tenants) ProtoMessage() {}
 
 func (x *Tenants) ProtoReflect() protoreflect.Message {
-	mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[1]
+	mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -122,7 +358,7 @@ func (x *Tenants) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Tenants.ProtoReflect.Descriptor instead.
 func (*Tenants) Descriptor() ([]byte, []int) {
-	return file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDescGZIP(), []int{1}
+	return file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Tenants) GetMeta() *resource.ListResponse {
@@ -151,7 +387,7 @@ type ListTenantsRequest struct {
 func (x *ListTenantsRequest) Reset() {
 	*x = ListTenantsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[2]
+		mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -164,7 +400,7 @@ func (x *ListTenantsRequest) String() string {
 func (*ListTenantsRequest) ProtoMessage() {}
 
 func (x *ListTenantsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[2]
+	mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -177,7 +413,7 @@ func (x *ListTenantsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTenantsRequest.ProtoReflect.Descriptor instead.
 func (*ListTenantsRequest) Descriptor() ([]byte, []int) {
-	return file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDescGZIP(), []int{2}
+	return file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ListTenantsRequest) GetMeta() *resource.ListRequest {
@@ -194,6 +430,61 @@ func (x *ListTenantsRequest) GetAccountID() string {
 	return ""
 }
 
+type TenantReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AccountID string `protobuf:"bytes,1,opt,name=accountID,proto3" json:"accountID,omitempty"`
+	TenantID  string `protobuf:"bytes,2,opt,name=tenantID,proto3" json:"tenantID,omitempty"`
+}
+
+func (x *TenantReq) Reset() {
+	*x = TenantReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TenantReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TenantReq) ProtoMessage() {}
+
+func (x *TenantReq) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TenantReq.ProtoReflect.Descriptor instead.
+func (*TenantReq) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *TenantReq) GetAccountID() string {
+	if x != nil {
+		return x.AccountID
+	}
+	return ""
+}
+
+func (x *TenantReq) GetTenantID() string {
+	if x != nil {
+		return x.TenantID
+	}
+	return ""
+}
+
 var File_mmesh_protobuf_resources_v1_tenant_tenant_proto protoreflect.FileDescriptor
 
 var file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDesc = []byte{
@@ -203,29 +494,56 @@ var file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDesc = []byte{
 	0x6f, 0x12, 0x06, 0x74, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x1a, 0x2f, 0x6d, 0x6d, 0x65, 0x73, 0x68,
 	0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72,
 	0x63, 0x65, 0x73, 0x2f, 0x76, 0x31, 0x2f, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x2f,
-	0x6c, 0x69, 0x73, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x64, 0x0a, 0x06, 0x54, 0x65,
-	0x6e, 0x61, 0x6e, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49,
-	0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74,
-	0x49, 0x44, 0x12, 0x1a, 0x0a, 0x08, 0x74, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x74, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x49, 0x44, 0x12, 0x20,
-	0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e,
-	0x22, 0x5f, 0x0a, 0x07, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x73, 0x12, 0x2a, 0x0a, 0x04, 0x6d,
-	0x65, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x72, 0x65, 0x73, 0x6f,
-	0x75, 0x72, 0x63, 0x65, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x52, 0x04, 0x6d, 0x65, 0x74, 0x61, 0x12, 0x28, 0x0a, 0x07, 0x74, 0x65, 0x6e, 0x61, 0x6e,
-	0x74, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x74, 0x65, 0x6e, 0x61, 0x6e,
-	0x74, 0x2e, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x52, 0x07, 0x74, 0x65, 0x6e, 0x61, 0x6e, 0x74,
-	0x73, 0x22, 0x5d, 0x0a, 0x12, 0x4c, 0x69, 0x73, 0x74, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x73,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x29, 0x0a, 0x04, 0x6d, 0x65, 0x74, 0x61, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65,
-	0x2e, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x04, 0x6d, 0x65,
-	0x74, 0x61, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44,
-	0x42, 0x2a, 0x5a, 0x28, 0x6d, 0x6d, 0x65, 0x73, 0x68, 0x2e, 0x64, 0x65, 0x76, 0x2f, 0x6d, 0x2d,
-	0x61, 0x70, 0x69, 0x2d, 0x67, 0x6f, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2f, 0x72, 0x65, 0x73, 0x6f,
-	0x75, 0x72, 0x63, 0x65, 0x73, 0x2f, 0x74, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x6c, 0x69, 0x73, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x31, 0x0a, 0x11, 0x54, 0x65,
+	0x6e, 0x61, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x1c, 0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x22, 0x36, 0x0a,
+	0x0a, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x28, 0x0a, 0x07, 0x74,
+	0x65, 0x6e, 0x61, 0x6e, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x74,
+	0x65, 0x6e, 0x61, 0x6e, 0x74, 0x2e, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x52, 0x07, 0x74, 0x65,
+	0x6e, 0x61, 0x6e, 0x74, 0x73, 0x22, 0x66, 0x0a, 0x10, 0x4e, 0x65, 0x77, 0x54, 0x65, 0x6e, 0x61,
+	0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x63, 0x63,
+	0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x63,
+	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18,
+	0x0b, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64,
+	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x85, 0x01,
+	0x0a, 0x13, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74,
+	0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x49, 0x44, 0x12, 0x1a, 0x0a, 0x08, 0x74, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x49, 0x44, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x74, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x49, 0x44, 0x12,
+	0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e,
+	0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69,
+	0x6f, 0x6e, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69,
+	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x78, 0x0a, 0x06, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x12,
+	0x1c, 0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x12, 0x1a, 0x0a,
+	0x08, 0x74, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x08, 0x74, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x49, 0x44, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d,
+	0x65, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a,
+	0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x0c, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x22,
+	0x5f, 0x0a, 0x07, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x73, 0x12, 0x2a, 0x0a, 0x04, 0x6d, 0x65,
+	0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x72, 0x65, 0x73, 0x6f, 0x75,
+	0x72, 0x63, 0x65, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x52, 0x04, 0x6d, 0x65, 0x74, 0x61, 0x12, 0x28, 0x0a, 0x07, 0x74, 0x65, 0x6e, 0x61, 0x6e, 0x74,
+	0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x74, 0x65, 0x6e, 0x61, 0x6e, 0x74,
+	0x2e, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x52, 0x07, 0x74, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x73,
+	0x22, 0x5d, 0x0a, 0x12, 0x4c, 0x69, 0x73, 0x74, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x73, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x29, 0x0a, 0x04, 0x6d, 0x65, 0x74, 0x61, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x2e,
+	0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x04, 0x6d, 0x65, 0x74,
+	0x61, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x22,
+	0x45, 0x0a, 0x09, 0x54, 0x65, 0x6e, 0x61, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x12, 0x1c, 0x0a, 0x09,
+	0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x12, 0x1a, 0x0a, 0x08, 0x74, 0x65,
+	0x6e, 0x61, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x74, 0x65,
+	0x6e, 0x61, 0x6e, 0x74, 0x49, 0x44, 0x42, 0x2a, 0x5a, 0x28, 0x6d, 0x6d, 0x65, 0x73, 0x68, 0x2e,
+	0x64, 0x65, 0x76, 0x2f, 0x6d, 0x2d, 0x61, 0x70, 0x69, 0x2d, 0x67, 0x6f, 0x2f, 0x67, 0x72, 0x70,
+	0x63, 0x2f, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x73, 0x2f, 0x74, 0x65, 0x6e, 0x61,
+	0x6e, 0x74, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -240,23 +558,29 @@ func file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDescGZIP() []byte {
 	return file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDescData
 }
 
-var file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_mmesh_protobuf_resources_v1_tenant_tenant_proto_goTypes = []interface{}{
-	(*Tenant)(nil),                // 0: tenant.Tenant
-	(*Tenants)(nil),               // 1: tenant.Tenants
-	(*ListTenantsRequest)(nil),    // 2: tenant.ListTenantsRequest
-	(*resource.ListResponse)(nil), // 3: resource.ListResponse
-	(*resource.ListRequest)(nil),  // 4: resource.ListRequest
+	(*TenantListRequest)(nil),     // 0: tenant.TenantListRequest
+	(*TenantList)(nil),            // 1: tenant.TenantList
+	(*NewTenantRequest)(nil),      // 2: tenant.NewTenantRequest
+	(*UpdateTenantRequest)(nil),   // 3: tenant.UpdateTenantRequest
+	(*Tenant)(nil),                // 4: tenant.Tenant
+	(*Tenants)(nil),               // 5: tenant.Tenants
+	(*ListTenantsRequest)(nil),    // 6: tenant.ListTenantsRequest
+	(*TenantReq)(nil),             // 7: tenant.TenantReq
+	(*resource.ListResponse)(nil), // 8: resource.ListResponse
+	(*resource.ListRequest)(nil),  // 9: resource.ListRequest
 }
 var file_mmesh_protobuf_resources_v1_tenant_tenant_proto_depIdxs = []int32{
-	3, // 0: tenant.Tenants.meta:type_name -> resource.ListResponse
-	0, // 1: tenant.Tenants.tenants:type_name -> tenant.Tenant
-	4, // 2: tenant.ListTenantsRequest.meta:type_name -> resource.ListRequest
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	4, // 0: tenant.TenantList.tenants:type_name -> tenant.Tenant
+	8, // 1: tenant.Tenants.meta:type_name -> resource.ListResponse
+	4, // 2: tenant.Tenants.tenants:type_name -> tenant.Tenant
+	9, // 3: tenant.ListTenantsRequest.meta:type_name -> resource.ListRequest
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_mmesh_protobuf_resources_v1_tenant_tenant_proto_init() }
@@ -266,7 +590,7 @@ func file_mmesh_protobuf_resources_v1_tenant_tenant_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Tenant); i {
+			switch v := v.(*TenantListRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -278,7 +602,7 @@ func file_mmesh_protobuf_resources_v1_tenant_tenant_proto_init() {
 			}
 		}
 		file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Tenants); i {
+			switch v := v.(*TenantList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -290,7 +614,67 @@ func file_mmesh_protobuf_resources_v1_tenant_tenant_proto_init() {
 			}
 		}
 		file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NewTenantRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateTenantRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Tenant); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Tenants); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ListTenantsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_mmesh_protobuf_resources_v1_tenant_tenant_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TenantReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -308,7 +692,7 @@ func file_mmesh_protobuf_resources_v1_tenant_tenant_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_mmesh_protobuf_resources_v1_tenant_tenant_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

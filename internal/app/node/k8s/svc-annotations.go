@@ -1,12 +1,13 @@
 package k8s
 
 import (
-	"github.com/spf13/viper"
 	v1 "k8s.io/api/core/v1"
+	"mmesh.dev/m-node/internal/app/node/mnet"
+	"mmesh.dev/m-node/internal/app/node/utils"
 )
 
 type k8sSvcAnnotationsCfg struct {
-	//enabled bool
+	// enabled bool
 	dnsName string
 	reqIPv4 string
 	valid   bool
@@ -24,10 +25,12 @@ func parseAnnotations(s *v1.Service) *k8sSvcAnnotationsCfg {
 	// 	}
 	// }
 
-	cfgAccountID := viper.GetString("node.account")
-	cfgTenantID := viper.GetString("node.tenant")
-	cfgNetID := viper.GetString("node.network")
-	cfgVRFID := viper.GetString("node.subnet")
+	n := mnet.LocalNode().NodeReq()
+
+	cfgAccountID := n.AccountID
+	cfgTenantID := n.TenantID
+	cfgNetID := n.NetID
+	cfgSubnetID := n.SubnetID
 
 	valid := true
 
@@ -55,11 +58,11 @@ func parseAnnotations(s *v1.Service) *k8sSvcAnnotationsCfg {
 		valid = false
 	}
 
-	vrfID, ok := s.ObjectMeta.Annotations["mmesh.io/subnet"]
+	subnetID, ok := s.ObjectMeta.Annotations["mmesh.io/subnet"]
 	if !ok {
 		valid = false
 	}
-	if vrfID != cfgVRFID {
+	if subnetID != cfgSubnetID {
 		valid = false
 	}
 
@@ -69,12 +72,16 @@ func parseAnnotations(s *v1.Service) *k8sSvcAnnotationsCfg {
 	}
 
 	reqIPv4, ok := s.ObjectMeta.Annotations["mmesh.io/ipv4"]
-	if !ok {
+	if ok {
+		if !utils.IPv4IsValid(reqIPv4) {
+			reqIPv4 = "auto"
+		}
+	} else {
 		reqIPv4 = "auto"
 	}
 
 	return &k8sSvcAnnotationsCfg{
-		//enabled: svcEnabled,
+		// enabled: svcEnabled,
 		dnsName: dnsName,
 		reqIPv4: reqIPv4,
 		valid:   valid,

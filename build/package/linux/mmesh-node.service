@@ -8,8 +8,8 @@ Type=simple
 #User=
 WorkingDirectory=/var/lib/mmesh
 ExecStart=/usr/bin/mmesh-node start
-Restart=on-failure
-# Other restart options: always, on-abort, etc
+Restart=always
+# Other restart options: always, on-failure, on-abort, etc
 
 # The install section is needed to use
 # `systemctl enable` to start on boot

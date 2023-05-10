@@ -15,12 +15,12 @@ import (
 type atTime int64
 
 type jobsAtTime struct {
-	jobs    map[atTime][]*mmsp.Payload
+	jobs    map[atTime][]*mmsp.WorkflowPDU
 	running map[atTime]bool
 	sync.RWMutex
 }
 
-var atdCommandQueue = make(chan *mmsp.Payload, 128)
+var atdCommandQueue = make(chan *mmsp.WorkflowPDU, 128)
 
 func Atd(w *runtime.Wrkr) {
 	xlog.Infof("Started worker %s", w.Name)
@@ -36,10 +36,10 @@ func Atd(w *runtime.Wrkr) {
 
 	for {
 		select {
-		case payload := <-atdCommandQueue:
-			xlog.Infof("Received workflow on atdCommandQueue from %s", payload.SrcID)
+		case pdu := <-atdCommandQueue:
+			xlog.Info("Received workflow on atdCommandQueue")
 
-			wf := payload.Workflow
+			wf := pdu.Workflow
 
 			t, err := utils.GetDateTime(wf.Triggers.Schedule.DateTime)
 			if err != nil {
@@ -53,7 +53,7 @@ func Atd(w *runtime.Wrkr) {
 
 			if wf.Enabled {
 				xlog.Infof("Enabling schedule for workflow %s", wf.WorkflowID)
-				jobsAtd.setAtJobs(t, payload)
+				jobsAtd.setAtJobs(t, pdu)
 			} else {
 				xlog.Infof("Schedule for workflow %s has been disabled", wf.WorkflowID)
 			}
@@ -110,14 +110,14 @@ func atdRunner(jobsAtd *jobsAtTime, waitc chan struct{}, wwg *sync.WaitGroup) {
 
 func newJobsAtTime() *jobsAtTime {
 	return &jobsAtTime{
-		jobs:    make(map[atTime][]*mmsp.Payload),
+		jobs:    make(map[atTime][]*mmsp.WorkflowPDU),
 		running: make(map[atTime]bool),
 	}
 }
 
-func (j *jobsAtTime) setAtJobs(t int64, p *mmsp.Payload) {
+func (j *jobsAtTime) setAtJobs(t int64, pdu *mmsp.WorkflowPDU) {
 	j.Lock()
-	j.jobs[atTime(t)] = append(j.jobs[atTime(t)], p)
+	j.jobs[atTime(t)] = append(j.jobs[atTime(t)], pdu)
 	j.running[atTime(t)] = false
 	j.Unlock()
 }
@@ -133,7 +133,7 @@ func (j *jobsAtTime) deleteAtJobs(t int64) {
 	j.Unlock()
 }
 
-func (j *jobsAtTime) runAtJobs(t int64) []*mmsp.Payload {
+func (j *jobsAtTime) runAtJobs(t int64) []*mmsp.WorkflowPDU {
 	j.Lock()
 	defer j.Unlock()
 

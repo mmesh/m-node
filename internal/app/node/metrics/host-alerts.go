@@ -2,166 +2,150 @@ package metrics
 
 import (
 	"fmt"
+	"time"
 
-	"github.com/spf13/viper"
-	"mmesh.dev/m-api-go/grpc/network/mmsp/alert"
-	"mmesh.dev/m-lib/pkg/mmp"
+	"mmesh.dev/m-api-go/grpc/resources/events"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 )
 
 var cpuAlert, memoryAlert, diskAlert bool
 
-func hostAlert(accountID, nodeID string) *alert.EventPayload {
-	mmID := viper.GetString("mm.id")
-
-	return &alert.EventPayload{
-		AccountID:    accountID,
+func hostAlert(nr *topology.NodeReq, nodeName string) *events.Event {
+	return &events.Event{
+		AccountID:    nr.AccountID,
 		AccountAlert: true,
-		SourceID:     mmID,
-		// Component:    component,
-		Group: "host-metrics",
-		// Message:      msg,
-		CustomDetails: map[string]string{
-			"Account": accountID,
-			"Tenant":  viper.GetString("node.tenant"),
-			"Network": viper.GetString("node.network"),
-			"Subnet":  viper.GetString("node.subnet"),
-			"Node":    nodeID,
+		Timestamp:    time.Now().UnixMilli(),
+		Source: &events.Source{
+			Type: events.SourceType_NODE,
+			Node: &events.SourceNode{
+				AccountID: nr.AccountID,
+				TenantID:  nr.TenantID,
+				NetID:     nr.NetID,
+				SubnetID:  nr.SubnetID,
+				NodeID:    nr.NodeID,
+				NodeName:  nodeName,
+			},
 		},
-		EventClass: alert.EventClass_HOST,
-		EventType:  alert.EventType_ALERT,
+		Type:  events.EventType_ALERT,
+		Class: events.Class_HOST,
+		Group: events.Group_HOST_METRICS,
+		// Component: string,
+		// Severity: events.Severity,
+		// ActionType: events.ActionType,
+		// Summary: string,
+		CustomDetails: make(map[string]string, 0),
 	}
 }
 
-func hostUptimeAlert(uptime string) {
-	accountID := viper.GetString("node.account")
-	nodeID := viper.GetString("node.id")
-
-	e := hostAlert(accountID, nodeID)
+func hostUptimeAlert(nr *topology.NodeReq, nodeName string, uptime string) {
+	e := hostAlert(nr, nodeName)
 	e.Component = "Uptime"
 	e.CustomDetails["Uptime"] = uptime
-	e.Message = fmt.Sprintf("[%s] REBOOT detected on node %s", accountID, nodeID)
-	e.Severity = alert.EventSeverity_WARNING
-	e.ActionType = alert.AlertActionType_TRIGGER
+	e.Severity = events.Severity_WARNING
+	e.Summary = fmt.Sprintf("[%s] REBOOT detected on node %s", e.Severity.String(), nodeName)
+	e.ActionType = events.ActionType_TRIGGER
 
-	mmp.NewEvent(e)
+	newAlertEvent(e)
 }
 
-func hostCPUHighAlert(load string) {
+func hostCPUHighAlert(nr *topology.NodeReq, nodeName string, load string) {
 	if cpuAlert {
 		return
 	}
 
 	cpuAlert = true
 
-	accountID := viper.GetString("node.account")
-	nodeID := viper.GetString("node.id")
-
-	e := hostAlert(accountID, nodeID)
+	e := hostAlert(nr, nodeName)
 	e.Component = "Load"
 	e.CustomDetails["Load Average"] = load
-	e.Message = fmt.Sprintf("[%s] High LOAD average on node %s", accountID, nodeID)
-	e.Severity = alert.EventSeverity_WARNING
-	e.ActionType = alert.AlertActionType_TRIGGER
+	e.Severity = events.Severity_WARNING
+	e.Summary = fmt.Sprintf("[%s] High LOAD average on node %s", e.Severity.String(), nodeName)
+	e.ActionType = events.ActionType_TRIGGER
 
-	mmp.NewEvent(e)
+	newAlertEvent(e)
 }
 
-func hostCPULowAlert(load string) {
+func hostCPULowAlert(nr *topology.NodeReq, nodeName string, load string) {
 	if !cpuAlert {
 		return
 	}
 
 	cpuAlert = false
 
-	accountID := viper.GetString("node.account")
-	nodeID := viper.GetString("node.id")
-
-	e := hostAlert(accountID, nodeID)
+	e := hostAlert(nr, nodeName)
 	e.Component = "Load"
 	e.CustomDetails["Load Average"] = load
-	e.Message = fmt.Sprintf("[%s] Normal LOAD average on node %s", accountID, nodeID)
-	e.Severity = alert.EventSeverity_INFO
-	e.ActionType = alert.AlertActionType_RESOLVE
+	e.Severity = events.Severity_INFO
+	e.Summary = fmt.Sprintf("[%s] Normal LOAD average on node %s", e.Severity.String(), nodeName)
+	e.ActionType = events.ActionType_RESOLVE
 
-	mmp.NewEvent(e)
+	newAlertEvent(e)
 }
 
-func hostMemHighAlert(usage string) {
+func hostMemHighAlert(nr *topology.NodeReq, nodeName string, usage string) {
 	if memoryAlert {
 		return
 	}
 
 	memoryAlert = true
 
-	accountID := viper.GetString("node.account")
-	nodeID := viper.GetString("node.id")
-
-	e := hostAlert(accountID, nodeID)
+	e := hostAlert(nr, nodeName)
 	e.Component = "Memory"
 	e.CustomDetails["Memory"] = usage
-	e.Message = fmt.Sprintf("[%s] MEMORY usage above 90%% on node %s", accountID, nodeID)
-	e.Severity = alert.EventSeverity_WARNING
-	e.ActionType = alert.AlertActionType_TRIGGER
+	e.Severity = events.Severity_WARNING
+	e.Summary = fmt.Sprintf("[%s] MEMORY usage above 90%% on node %s", e.Severity.String(), nodeName)
+	e.ActionType = events.ActionType_TRIGGER
 
-	mmp.NewEvent(e)
+	newAlertEvent(e)
 }
 
-func hostMemLowAlert(usage string) {
+func hostMemLowAlert(nr *topology.NodeReq, nodeName string, usage string) {
 	if !memoryAlert {
 		return
 	}
 
 	memoryAlert = false
 
-	accountID := viper.GetString("node.account")
-	nodeID := viper.GetString("node.id")
-
-	e := hostAlert(accountID, nodeID)
+	e := hostAlert(nr, nodeName)
 	e.Component = "Memory"
 	e.CustomDetails["Memory"] = usage
-	e.Message = fmt.Sprintf("[%s] MEMORY usage under 90%% on node %s", accountID, nodeID)
-	e.Severity = alert.EventSeverity_INFO
-	e.ActionType = alert.AlertActionType_RESOLVE
+	e.Severity = events.Severity_INFO
+	e.Summary = fmt.Sprintf("[%s] MEMORY usage under 90%% on node %s", e.Severity.String(), nodeName)
+	e.ActionType = events.ActionType_RESOLVE
 
-	mmp.NewEvent(e)
+	newAlertEvent(e)
 }
 
-func hostDiskHighAlert(usage string) {
+func hostDiskHighAlert(nr *topology.NodeReq, nodeName string, usage string) {
 	if diskAlert {
 		return
 	}
 
 	diskAlert = true
 
-	accountID := viper.GetString("node.account")
-	nodeID := viper.GetString("node.id")
-
-	e := hostAlert(accountID, nodeID)
+	e := hostAlert(nr, nodeName)
 	e.Component = "Disk"
 	e.CustomDetails["Disk"] = usage
-	e.Message = fmt.Sprintf("[%s] DISK usage above 90%% on node %s", accountID, nodeID)
-	e.Severity = alert.EventSeverity_WARNING
-	e.ActionType = alert.AlertActionType_TRIGGER
+	e.Severity = events.Severity_WARNING
+	e.Summary = fmt.Sprintf("[%s] DISK usage above 90%% on node %s", e.Severity.String(), nodeName)
+	e.ActionType = events.ActionType_TRIGGER
 
-	mmp.NewEvent(e)
+	newAlertEvent(e)
 }
 
-func hostDiskLowAlert(usage string) {
+func hostDiskLowAlert(nr *topology.NodeReq, nodeName string, usage string) {
 	if !diskAlert {
 		return
 	}
 
 	diskAlert = false
 
-	accountID := viper.GetString("node.account")
-	nodeID := viper.GetString("node.id")
-
-	e := hostAlert(accountID, nodeID)
+	e := hostAlert(nr, nodeName)
 	e.Component = "Disk"
 	e.CustomDetails["Disk"] = usage
-	e.Message = fmt.Sprintf("[%s] DISK usage under 90%% on node %s", accountID, nodeID)
-	e.Severity = alert.EventSeverity_INFO
-	e.ActionType = alert.AlertActionType_RESOLVE
+	e.Severity = events.Severity_INFO
+	e.Summary = fmt.Sprintf("[%s] DISK usage under 90%% on node %s", e.Severity.String(), nodeName)
+	e.ActionType = events.ActionType_RESOLVE
 
-	mmp.NewEvent(e)
+	newAlertEvent(e)
 }

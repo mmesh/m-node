@@ -11,18 +11,18 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-	"mmesh.dev/m-api-go/grpc/network/mmnp/natprobe"
+	"mmesh.dev/m-api-go/grpc/network/nac"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 func (c *connection) newSession() error {
-	// hiddenNode := viper.GetBool("agent.hidden")
+	// hiddenNode := viper.GetBool("hidden")
 
-	c.externalIPv4 = viper.GetString("agent.externalIPv4") // could be ""
+	// c.externalIPv4 = viper.GetString("externalIPv4") // could be ""
 
-	natp := &natprobe.NATProbe{
-		Port:         int32(viper.GetInt("agent.port")),
+	natp := &nac.NATProbe{
+		Port:         int32(viper.GetInt("port")),
 		ExternalIPv4: c.externalIPv4,
 	}
 
@@ -38,9 +38,11 @@ func (c *connection) newSession() error {
 	}
 
 	// configured externalIPv4 overrides controller's detected externalIPv4
-	if len(c.externalIPv4) == 0 {
-		c.externalIPv4 = natp.ExternalIPv4
-	}
+	// if len(c.externalIPv4) == 0 {
+	// 	c.externalIPv4 = natp.ExternalIPv4
+	// }
+
+	c.externalIPv4 = natp.ExternalIPv4
 
 	// if hiddenNode {
 	// 	c.externalIPv4 = ""
@@ -49,7 +51,7 @@ func (c *connection) newSession() error {
 	return nil
 }
 
-func (c *connection) natProbe(natp *natprobe.NATProbe) (*natprobe.NATProbe, error) {
+func (c *connection) natProbe(natp *nac.NATProbe) (*nac.NATProbe, error) {
 	var wg sync.WaitGroup
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -88,11 +90,16 @@ func probeServer(port string, wg *sync.WaitGroup, waitc chan struct{}) {
 	}
 
 	go func() {
-		server.ListenAndServe()
+		if err := server.ListenAndServe(); err != nil {
+			xlog.Debugf("[natp] probe server: %v", err)
+		}
 	}()
 
 	<-waitc
-	server.Shutdown(context.TODO())
+
+	if err := server.Shutdown(context.TODO()); err != nil {
+		xlog.Errorf("[natp] Unable to shutdown probe server: %v", err)
+	}
 
 	wg.Done()
 }

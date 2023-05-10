@@ -23,7 +23,8 @@ vars:
   PKG_REPO: 'mmesh'
   PKG_REPO_DEV: 'mmesh-dev'
   # GS_BUCKET: 'gs://mmesh-io'
-  S3_BUCKET: 'nl-ams_scaleway:mmesh'
+  # S3_BUCKET: 'nl-ams_scaleway:mmesh'
+  S3_BUCKET: 'r2_cloudflare:mmesh'
 
 env:
   PKG: '{{.DOMAIN}}/{{.PROJECT}}'
@@ -220,7 +221,13 @@ tasks:
         sh: svu current
     cmds:
       - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_amd64.deb '{{.PKG_REPO_DEV}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_i386.deb '{{.PKG_REPO_DEV}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_arm64.deb '{{.PKG_REPO_DEV}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_armhf.deb '{{.PKG_REPO_DEV}}'
       - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node-*.x86_64.rpm '{{.PKG_REPO_DEV}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node-*.i386.rpm '{{.PKG_REPO_DEV}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node-*.aarch64.rpm '{{.PKG_REPO_DEV}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node-*.armv6hl.rpm '{{.PKG_REPO_DEV}}'
       - ./build/_deps/scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.S3_BUCKET}}' 'dev'
 
   publish-binaries-stable:
@@ -231,7 +238,13 @@ tasks:
         sh: svu current
     cmds:
       - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_amd64.deb '{{.PKG_REPO}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_i386.deb '{{.PKG_REPO}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_arm64.deb '{{.PKG_REPO}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node_*_armhf.deb '{{.PKG_REPO}}'
       - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node-*.x86_64.rpm '{{.PKG_REPO}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node-*.i386.rpm '{{.PKG_REPO}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node-*.aarch64.rpm '{{.PKG_REPO}}'
+      - ./build/_deps/scripts/_local/build/pkg-upload.sh {{.DIST_DIR}}/mmesh-node-*.armv6hl.rpm '{{.PKG_REPO}}'
       - ./build/_deps/scripts/_local/build/release.sh '{{.VERSION}}' '{{.DIST_DIR}}' '{{.S3_BUCKET}}' 'stable'
 
   publish-all-dev:

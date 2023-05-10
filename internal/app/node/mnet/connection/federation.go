@@ -3,19 +3,19 @@ package connection
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
-	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/resources/controller"
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-api-go/grpc/rpc"
 	"mmesh.dev/m-lib/pkg/errors"
-	"mmesh.dev/m-lib/pkg/mmid"
 )
 
 type federationConnection struct {
-	node               *network.Node
+	node               *topology.Node
+	controllerHost     string
 	controllerEndpoint string
 	controllers        map[string]*controller.Controller // map[controllerID]*controller.Controller
 	healthy            map[string]bool                   // map[endpoint]bool
@@ -24,12 +24,11 @@ type federationConnection struct {
 
 var fc *federationConnection
 
-func newFederationConnection() *federationConnection {
-	mmID := viper.GetString("mm.id")
-
+func (c *connection) newFederationConnection() *federationConnection {
 	return &federationConnection{
-		node:               mmid.MMNodeID(mmID).Node(),
-		controllerEndpoint: viper.GetString("controller.endpoint"),
+		node:               c.node,
+		controllerHost:     strings.Split(c.defaultControllerEndpoint, ":")[0],
+		controllerEndpoint: c.defaultControllerEndpoint,
 		controllers:        make(map[string]*controller.Controller),
 		healthy:            make(map[string]bool),
 	}
@@ -42,7 +41,15 @@ func (f *federationConnection) update(nxnc rpc.NetworkAPIClient) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	fe, err := nxnc.FederationEndpoints(ctx, f.node)
+	nr := &topology.NodeReq{
+		AccountID: f.node.AccountID,
+		TenantID:  f.node.TenantID,
+		NetID:     f.node.NetID,
+		SubnetID:  f.node.SubnetID,
+		NodeID:    f.node.NodeID,
+	}
+
+	fe, err := nxnc.FederationEndpoints(ctx, nr)
 	if err != nil {
 		f.healthy[f.controllerEndpoint] = false
 		return errors.Wrapf(err, "[%v] function nxnc.FederationEndpoints()", errors.Trace())
@@ -82,13 +89,18 @@ func (f *federationConnection) endpoint() string {
 			f.healthy[e] = true
 		}
 
-		if connections == 0 || c.Status.RoutedNodes < connections {
-			connections = c.Status.RoutedNodes
+		if connections == 0 || c.Status.Connections < connections {
+			connections = c.Status.Connections
 			f.controllerEndpoint = e
+			f.controllerHost = c.Host
 		}
 	}
 
 	return f.controllerEndpoint
+}
+
+func (f *federationConnection) host() string {
+	return f.controllerHost
 }
 
 func (f *federationConnection) setUnhealthy(endpoint string) {
@@ -100,7 +112,7 @@ func (f *federationConnection) setUnhealthy(endpoint string) {
 
 func FederationUpdate(nxnc rpc.NetworkAPIClient) error {
 	if fc == nil {
-		fc = newFederationConnection()
+		return nil
 	}
 
 	return fc.update(nxnc)

@@ -6,11 +6,11 @@ import (
 	"sync"
 
 	libp2pHost "github.com/libp2p/go-libp2p-core/host"
-	"mmesh.dev/m-api-go/grpc/network/mmnp/routing"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/mnet/p2p"
 	"mmesh.dev/m-node/internal/app/node/mnet/p2p/host"
+	"mmesh.dev/m-node/internal/app/node/mnet/router/rib"
 )
 
 type Interface interface {
@@ -24,25 +24,23 @@ type Interface interface {
 	IP4AddrDel(ipv4 string) error
 	IP6AddrAdd(ipv6 string) error
 	IP6AddrDel(ipv6 string) error
-	GetLinkStatusConnections() int32
-	UpdateRoutingTable(newRT *routing.RoutingTable)
-	RtrQueue() chan struct{}
+	GetConnections() int32
+	RIB() rib.Interface
 	Disconnect()
 }
 
 type router struct {
 	p2pHost libp2pHost.Host
 
-	vrfID string
+	subnetID string
 
 	port         int
-	isRelay      bool
 	externalIPv4 string
 
 	ipv4 string
 	ipv6 string
 
-	rib     *routingTable
+	rib     rib.Interface
 	routes  *routeMap
 	dialing *dialMap
 	streams *streamMap
@@ -51,24 +49,17 @@ type router struct {
 	networkInterface *networkInterface
 	localForwarding  bool
 
-	rtrQueue chan struct{}
+	connections int32
 
-	linkStatus *routing.LinkStatus
-}
-
-type routingTable struct {
-	global *routing.RoutingTable
-	sync.RWMutex
+	evtProcessorCloseCh chan struct{}
 }
 
 type cidrIPDst string
 
 type routeMap struct {
-	local    map[cidrIPDst]bool
 	imported []string
 	exported []string
-
-	sync.RWMutex
+	// sync.RWMutex
 }
 
 type dialMap struct {
@@ -85,17 +76,13 @@ func (d cidrIPDst) string() string {
 	return string(d)
 }
 
-func New(externalIPv4, vrfID string, port int, isRelay, localForwarding bool, rtImported, rtExported []string) Interface {
+func New(externalIPv4, subnetID string, port int, localForwarding bool, rtImported, rtExported []string) Interface {
 	return &router{
-		vrfID:        vrfID,
+		subnetID:     subnetID,
 		port:         port,
-		isRelay:      isRelay,
 		externalIPv4: externalIPv4,
-		rib: &routingTable{
-			global: &routing.RoutingTable{},
-		},
+		rib:          rib.New(),
 		routes: &routeMap{
-			local:    make(map[cidrIPDst]bool),
 			imported: rtImported,
 			exported: rtExported,
 		},
@@ -109,9 +96,9 @@ func New(externalIPv4, vrfID string, port int, isRelay, localForwarding bool, rt
 			vs:      make(map[proxy64VSID]*proxy64VS),
 			closeCh: make(chan struct{}, 1),
 		},
-		localForwarding: localForwarding,
-		rtrQueue:        make(chan struct{}, 8),
-		linkStatus:      &routing.LinkStatus{},
+		localForwarding:     localForwarding,
+		connections:         0,
+		evtProcessorCloseCh: make(chan struct{}, 1),
 	}
 }
 
@@ -119,7 +106,7 @@ func (r *router) Init() error {
 	var p2pHost libp2pHost.Host
 	var err error
 
-	// if r.isRelay && len(r.externalIPv4) > 0 {
+	// if r.canRelay && len(r.externalIPv4) > 0 {
 	// 	xlog.Info("Initializing tier-1 node...")
 	// 	p2pHost, err = host.New(host.P2PHostTypeRelayHost, r.port)
 	// } else if len(r.externalIPv4) > 0 {
@@ -130,7 +117,7 @@ func (r *router) Init() error {
 	// 	p2pHost, err = host.New(host.P2PHostTypeHiddenHost, r.port)
 	// }
 
-	if r.isRelay && len(r.externalIPv4) > 0 {
+	if len(r.externalIPv4) > 0 {
 		xlog.Info("Initializing tier-1 node...")
 		p2pHost, err = host.New(host.P2PHostTypeRelayHost, r.port)
 	} else {
@@ -161,6 +148,8 @@ func (r *router) Init() error {
 
 		go r.proxy64GC()
 	}
+
+	go r.eventProcessor(r.evtProcessorCloseCh)
 
 	return nil
 }
@@ -217,12 +206,12 @@ func (r *router) IP6AddrDel(ipv6 string) error {
 	return r.networkInterface.ip6AddrDel(ipv6)
 }
 
-func (r *router) RtrQueue() chan struct{} {
-	return r.rtrQueue
+func (r *router) RIB() rib.Interface {
+	return r.rib
 }
 
-func (r *router) GetLinkStatusConnections() int32 {
-	return r.linkStatus.Connections
+func (r *router) GetConnections() int32 {
+	return r.connections
 }
 
 func (r *router) Disconnect() {
@@ -242,4 +231,8 @@ func (r *router) Disconnect() {
 		xlog.Warnf("Unable to close p2pHost handler: %v", err)
 		os.Exit(1)
 	}
+
+	r.rib.Close()
+
+	r.evtProcessorCloseCh <- struct{}{}
 }

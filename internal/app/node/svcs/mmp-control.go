@@ -3,18 +3,18 @@ package svcs
 import (
 	"context"
 	"io"
-	"time"
 
 	"github.com/spf13/viper"
-	"mmesh.dev/m-api-go/grpc/network/mmsp"
-	"mmesh.dev/m-lib/pkg/mmp"
+	mmsp_pb "mmesh.dev/m-api-go/grpc/network/mmsp"
+	"mmesh.dev/m-lib/pkg/mmp/queuing"
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-lib/pkg/xlog"
+	"mmesh.dev/m-node/internal/app/node/mmsp"
 	"mmesh.dev/m-node/internal/app/node/mnet"
 )
 
 // Control method implementation of NetworkAPI gRPC Service
-func MMPControl(w *runtime.Wrkr) {
+func NetworkControl(w *runtime.Wrkr) {
 	xlog.Infof("Started worker %s", w.Name)
 	w.Running = true
 
@@ -46,7 +46,7 @@ func MMPControl(w *runtime.Wrkr) {
 				// 	continue
 				// }
 
-				mmp.RxControlQueue <- payload
+				mmsp.Preprocessor(context.TODO(), payload)
 			}
 			if err := stream.CloseSend(); err != nil {
 				xlog.Errorf("Unable to close mmp stream: %v", err)
@@ -58,9 +58,13 @@ func MMPControl(w *runtime.Wrkr) {
 		go func() {
 			for {
 				select {
-				case payload := <-mmp.TxControlQueue:
+				case payload := <-mmsp.RxQueue:
+					xlog.Debug("[mmp] Received mmp payload on queue")
+					go mmsp.Processor(context.TODO(), payload)
+
+				case payload := <-queuing.TxControlQueue:
 					if err := stream.Send(payload); err != nil {
-						// xlog.Warnf("Unable to send mmp payload: %v", err)
+						// xlog.Warnf("[mmp] Unable to send mmp payload: %v", err)
 						mnet.LocalNode().Connection().Watcher() <- struct{}{}
 						if err := stream.CloseSend(); err != nil {
 							xlog.Errorf("Unable to close mmp stream: %v", err)
@@ -74,14 +78,17 @@ func MMPControl(w *runtime.Wrkr) {
 			}
 		}()
 
-		mmp.TxControlQueue <- &mmsp.Payload{
-			SrcID:       viper.GetString("mm.id"),
-			PayloadType: mmsp.PayloadType_NODE_INIT,
-			Node:        mnet.LocalNode().NetworkNodeWithoutEndpoints(),
+		queuing.TxControlQueue <- &mmsp_pb.Payload{
+			SrcID: viper.GetString("mm.id"),
+			Type:  mmsp_pb.PDUType_NODEMGMT,
+			NodeMgmtPDU: &mmsp_pb.NodeMgmtPDU{
+				Type:    mmsp_pb.NodeMgmtMsgType_NODE_INIT,
+				NodeReq: mnet.LocalNode().NodeReq(),
+			},
 		}
 	}()
 
-	go mmpCtl()
+	// go mmpCtl()
 
 	<-w.QuitChan
 
@@ -92,17 +99,25 @@ func MMPControl(w *runtime.Wrkr) {
 	xlog.Infof("Stopped worker %s", w.Name)
 }
 
+/*
 var mmpCtlRun bool
 
 func mmpCtl() {
+	mmID := viper.GetString("mm.id")
+
 	if !mmpCtlRun {
 		mmpCtlRun = true
 		for {
-			mmp.TxControlQueue <- &mmsp.Payload{
-				SrcID:       viper.GetString("mm.id"),
-				PayloadType: mmsp.PayloadType_NODE_KEEPALIVE,
+			queuing.TxControlQueue <- &mmsp_pb.Payload{
+				SrcID: mmID,
+				Type:  mmsp_pb.PDUType_SESSION,
+				SessionPDU: &mmsp_pb.SessionPDU{
+					Type:      mmsp_pb.SessionMsgType_SESSION_KEEPALIVE,
+					SessionID: mmID,
+				},
 			}
-			time.Sleep(60 * time.Second)
+			time.Sleep(20 * time.Second)
 		}
 	}
 }
+*/

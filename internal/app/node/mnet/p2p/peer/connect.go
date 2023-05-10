@@ -6,6 +6,7 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
+
 	// swarm "github.com/libp2p/go-libp2p-swarm"
 	"github.com/libp2p/go-libp2p/p2p/net/swarm"
 	"mmesh.dev/m-lib/pkg/errors"
@@ -15,7 +16,26 @@ import (
 func Connect(p2pHost host.Host, hop *NetHop) (*peer.AddrInfo, error) {
 	pm := newPeerMapFromNetHop(hop)
 
-	for _, peerInfo := range pm.peer {
+	peerInfo := connectPeerGroup(p2pHost, pm.peer)
+	if peerInfo != nil {
+		return peerInfo, nil
+	}
+
+	peerInfo = connectPeerGroup(p2pHost, pm.relay)
+	if peerInfo != nil {
+		return peerInfo, nil
+	}
+
+	peerInfo = connectPeerGroup(p2pHost, pm.router)
+	if peerInfo != nil {
+		return peerInfo, nil
+	}
+
+	return nil, fmt.Errorf("unable to connect to peer")
+}
+
+func connectPeerGroup(p2pHost host.Host, peers map[peer.ID]*peer.AddrInfo) *peer.AddrInfo {
+	for _, peerInfo := range peers {
 		if peerInfo.ID == p2pHost.ID() {
 			continue
 		}
@@ -28,11 +48,11 @@ func Connect(p2pHost host.Host, hop *NetHop) (*peer.AddrInfo, error) {
 			continue
 		} else {
 			// xlog.Debugf("CONNECTED to peer %s", peerID)
-			return peerInfo, nil
+			return peerInfo
 		}
 	}
 
-	return nil, fmt.Errorf("unable to connect to peer")
+	return nil
 }
 
 func connect(p2pHost host.Host, peerInfo *peer.AddrInfo) error {

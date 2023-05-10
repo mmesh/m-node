@@ -49,12 +49,35 @@ builds:
       - linux
       - darwin
       - windows
+      # - freebsd
     goarch:
       - amd64
+      - 386
       - arm64
       - arm
     goamd64:
       - v1
+      # - v2
+      # - v3
+      # - v4
+    goarm:
+      - 6
+      # - 7
+    ignore:
+      # - goos: linux
+      #   goarch: 386
+      - goos: darwin
+        goarch: 386
+      - goos: darwin
+        goarch: arm
+      - goos: windows
+        goarch: 386
+      - goos: windows
+        goarch: arm64
+      - goos: windows
+        goarch: arm
+
+
     # lang: go
 
 snapshot:
@@ -167,14 +190,16 @@ nfpms:
     vendor: mmesh.io
     homepage: https://mmesh.io
     maintainer: mmeshbot <mmeshbot@mmesh.io>
-    description: mmesh-node agent
+    description: mmesh-node
     license: "Apache License 2.0"
     formats:
       - deb
       - rpm
-      - apk
+      # - apk
+      # - archlinux
     bindir: /usr/bin
     dependencies:
+      - kmod
       # - iproute2
     section: misc
     priority: optional

@@ -4,41 +4,42 @@ import (
 	"context"
 
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
-	"mmesh.dev/m-api-go/grpc/resources/ops/workflow"
-	"mmesh.dev/m-lib/pkg/mmp"
+	"mmesh.dev/m-api-go/grpc/resources/ops"
+	"mmesh.dev/m-lib/pkg/mmp/queuing"
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 // WorkflowExpedite executes a workflow.
 // This function usually will be executed on target nodes.
-func WorkflowExpedite(ctx context.Context, payload *mmsp.Payload) error {
-	wf := payload.Workflow
+func WorkflowExpedite(ctx context.Context, pdu *mmsp.WorkflowPDU) error {
+	wf := pdu.Workflow
 
 	if disabledOps {
-		xlog.Alertf("Ops disabled on this node. Unauthorized workflow: %s", wf.WorkflowID)
+		xlog.Alertf("[ops] Ops disabled on this node. Unauthorized workflow: %s", wf.WorkflowID)
 		return nil
 	}
 
-	var ops []*workflow.Operation
+	var taskLogs []*ops.TaskLog
 
 	if !wf.Enabled {
-		xlog.Warnf("Workflow %s not enabled", wf.WorkflowID)
+		xlog.Warnf("[ops] Workflow %s not enabled", wf.WorkflowID)
 		return nil
 	}
 
-	for _, j := range wf.Jobs {
-		for _, t := range j.Tasks {
-			for _, a := range t.Actions {
-				op := runWorkflowAction(wf, j.Name, t.Name, a)
-				ops = append(ops, op)
-			}
-		}
+	if len(wf.Tasks) == 0 {
+		xlog.Warnf("[ops] Task not found in workflow %s", wf.WorkflowID)
+		return nil
 	}
 
-	wf.Operations = ops
+	for _, t := range wf.Tasks {
+		taskLog := runWorkflowTask(wf, t)
+		taskLogs = append(taskLogs, taskLog)
+	}
 
-	p := newWorkflowResponse(payload)
-	mmp.TxControlQueue <- p
+	wf.TaskLogs = taskLogs
+
+	p := newWorkflowResponse(pdu)
+	queuing.TxControlQueue <- p
 
 	return nil
 }

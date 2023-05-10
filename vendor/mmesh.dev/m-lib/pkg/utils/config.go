@@ -13,7 +13,7 @@ func FileParser(filePath string, dst interface{}) error {
 
 	f := viper.New()
 
-	//f.SetConfigType("yaml")
+	// f.SetConfigType("yaml")
 	f.SetConfigFile(filePath)
 
 	if err := f.ReadInConfig(); err != nil {

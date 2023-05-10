@@ -1,7 +1,6 @@
 package svcs
 
 import (
-	"context"
 	"fmt"
 	"net"
 	"strconv"
@@ -10,8 +9,6 @@ import (
 	"time"
 
 	"github.com/miekg/dns"
-	"github.com/spf13/viper"
-	dns_pb "mmesh.dev/m-api-go/grpc/network/dns"
 	"mmesh.dev/m-api-go/grpc/rpc"
 	"mmesh.dev/m-lib/pkg/ipnet"
 	"mmesh.dev/m-lib/pkg/runtime"
@@ -44,7 +41,7 @@ func DNSAgent(w *runtime.Wrkr) {
 	xlog.Infof("Started worker %s", w.Name)
 	w.Running = true
 
-	dnsPort := viper.GetInt("agent.dns.port")
+	dnsPort := mnet.LocalNode().DNSPort()
 
 	srv := &dns.Server{
 		Addr: ":" + strconv.Itoa(dnsPort),
@@ -88,31 +85,29 @@ func (h *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		return
 	}
 
+	var ipv4, ipv6 string
+
+	// resolver for mmesh endpoints:
+	//    endpointName.mmesh.local.
+	//    endpointName.mm.*
+
+	xlog.Debugf("[dns] Received DNS query: %s", name)
+
+	s := strings.Split(name, ".")
+
+	if (len(s) == 4 && s[1] == "mmesh" && s[2] == "local") || s[1] == "mm" || s[1] == "mmesh" {
+		dnsName := s[0]
+		ipv4, ipv6 = mnet.LocalNode().Router().RIB().DNSQuery(dnsName)
+
+		xlog.Debugf("[dns] Name: %s | IPv4: %s | IPv6: %s", name, ipv4, ipv6)
+	}
+
 	switch r.Question[0].Qtype {
 	case dns.TypeA:
-		var addrs []string
+		addrs := make([]string, 0)
 
-		s := strings.Split(name, ".")
-
-		// resolver for mmesh endpoints:
-		//    endpointName.mmesh.local.
-		//    endpointName.mm.*
-
-		if (len(s) == 4 && s[1] == "mmesh" && s[2] == "local") || s[1] == "mm" || s[1] == "mmesh" {
-			qHost := &dns_pb.Host{
-				Node: mnet.LocalNode().NetworkNodeWithoutEndpoints(),
-				Name: s[0],
-			}
-			ipv4, err := h.nxnc.DNS(context.Background(), qHost)
-			if err != nil {
-				ipv4 = &dns_pb.IPv4{}
-				xlog.Errorf("Unable to connect to mmesh DNS controller: %v", err)
-				mnet.LocalNode().Connection().Watcher() <- struct{}{}
-			}
-
-			if len(ipv4.IPv4) > 0 {
-				addrs = append(addrs, ipv4.IPv4)
-			}
+		if len(ipv4) > 0 {
+			addrs = append(addrs, ipv4)
 		}
 
 		if len(addrs) == 0 {
@@ -135,7 +130,15 @@ func (h *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 			go updateDNSCache(rr)
 		}
 	case dns.TypeAAAA:
-		addrs := mmesh64Resolver(name)
+		addrs := make([]string, 0)
+
+		if len(ipv6) > 0 {
+			addrs = append(addrs, ipv6)
+		}
+
+		if len(addrs) == 0 {
+			addrs = mmesh64Resolver(name)
+		}
 
 		for _, addr := range addrs {
 			rr := &dns.AAAA{

@@ -65,31 +65,24 @@ func newRPCClient(serverEndpoint string, authKey *auth.AuthKey, authSecret strin
 	return conn, nil
 }
 
-func NewNetworkAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.NetworkAPIClient, *grpc.ClientConn, error) {
+// manager
+
+func NewManagerAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.ManagerAPIClient, *grpc.ClientConn, error) {
 	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
 	if err != nil {
 		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
 	}
 
-	return rpc.NewNetworkAPIClient(conn), conn, nil
+	return rpc.NewManagerAPIClient(conn), conn, nil
 }
 
-func NewProviderAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.ProviderAPIClient, *grpc.ClientConn, error) {
+func NewAccountAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.AccountAPIClient, *grpc.ClientConn, error) {
 	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
 	if err != nil {
 		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
 	}
 
-	return rpc.NewProviderAPIClient(conn), conn, nil
-}
-
-func NewCoreAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.CoreAPIClient, *grpc.ClientConn, error) {
-	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
-	if err != nil {
-		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
-	}
-
-	return rpc.NewCoreAPIClient(conn), conn, nil
+	return rpc.NewAccountAPIClient(conn), conn, nil
 }
 
 func NewServicesAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.ServicesAPIClient, *grpc.ClientConn, error) {
@@ -108,4 +101,69 @@ func NewBillingAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecre
 	}
 
 	return rpc.NewBillingAPIClient(conn), conn, nil
+}
+
+// controller
+
+func NewControllerAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.ControllerAPIClient, *grpc.ClientConn, error) {
+	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
+	if err != nil {
+		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
+	}
+
+	return rpc.NewControllerAPIClient(conn), conn, nil
+}
+
+func NewNetworkAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.NetworkAPIClient, *grpc.ClientConn, error) {
+	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
+	if err != nil {
+		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
+	}
+
+	return rpc.NewNetworkAPIClient(conn), conn, nil
+}
+
+func NewIAMAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.IAMAPIClient, *grpc.ClientConn, error) {
+	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
+	if err != nil {
+		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
+	}
+
+	return rpc.NewIAMAPIClient(conn), conn, nil
+}
+
+func NewTenantAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.TenantAPIClient, *grpc.ClientConn, error) {
+	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
+	if err != nil {
+		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
+	}
+
+	return rpc.NewTenantAPIClient(conn), conn, nil
+}
+
+func NewTopologyAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.TopologyAPIClient, *grpc.ClientConn, error) {
+	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
+	if err != nil {
+		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
+	}
+
+	return rpc.NewTopologyAPIClient(conn), conn, nil
+}
+
+func NewMonitoringAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.MonitoringAPIClient, *grpc.ClientConn, error) {
+	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
+	if err != nil {
+		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
+	}
+
+	return rpc.NewMonitoringAPIClient(conn), conn, nil
+}
+
+func NewOpsAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.OpsAPIClient, *grpc.ClientConn, error) {
+	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
+	if err != nil {
+		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
+	}
+
+	return rpc.NewOpsAPIClient(conn), conn, nil
 }

@@ -1,10 +1,5 @@
 package resources
 
-import (
-	"fmt"
-	"time"
-)
-
 const (
 	RatingA string = "A"
 	RatingB string = "B"
@@ -13,6 +8,7 @@ const (
 	RatingE string = "E"
 )
 
+/*
 func NetworkHistoryHourlyIndex(hour int) string {
 	return fmt.Sprintf("%02d:00-%02d:00", hour, hour+1)
 }
@@ -24,3 +20,4 @@ func NetworkHistoryDailyIndex(day int) string {
 func NetworkHistoryMonthlyIndex(year int, month time.Month) string {
 	return fmt.Sprintf("%d-%v", year, month)
 }
+*/

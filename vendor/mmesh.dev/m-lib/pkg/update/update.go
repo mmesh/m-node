@@ -22,7 +22,8 @@ import (
 )
 
 // const binURL string = "https://storage.googleapis.com/mmesh-io/binaries"
-const binURL string = "https://mmesh.s3.nl-ams.scw.cloud/binaries"
+// const binURL string = "https://mmesh.s3.nl-ams.scw.cloud/binaries"
+const binURL string = "https://pub-93343f8c56164dc1900ad8d753df6ae8.r2.dev/binaries"
 const binVersion string = "latest"
 const branchStable string = "stable"
 
@@ -132,10 +133,6 @@ func Update(app string) error {
 func getURL(file string) string {
 	goos := runtime.GOOS
 	goarch := runtime.GOARCH
-
-	if goarch == "arm" {
-		goarch = "arm_6"
-	}
 
 	binBranch := viper.GetString("version.branch")
 	if len(binBranch) == 0 {

@@ -85,14 +85,14 @@ func request_BillingAPI_GetCustomerPortal_0(ctx context.Context, marshaler runti
 		_   = err
 	)
 
-	val, ok = pathParams["customerID"]
+	val, ok = pathParams["accountID"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "customerID")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
 	}
 
-	protoReq.CustomerID, err = runtime.String(val)
+	protoReq.AccountID, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "customerID", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
 	}
 
 	msg, err := client.GetCustomerPortal(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -119,14 +119,14 @@ func local_request_BillingAPI_GetCustomerPortal_0(ctx context.Context, marshaler
 		_   = err
 	)
 
-	val, ok = pathParams["customerID"]
+	val, ok = pathParams["accountID"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "customerID")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
 	}
 
-	protoReq.CustomerID, err = runtime.String(val)
+	protoReq.AccountID, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "customerID", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
 	}
 
 	msg, err := server.GetCustomerPortal(ctx, &protoReq)
@@ -651,7 +651,7 @@ func RegisterBillingAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/GetCustomerPortal", runtime.WithHTTPPathPattern("/api/v1/customers/{customerID}:portal"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.BillingAPI/GetCustomerPortal", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/billing:portal"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -887,7 +887,7 @@ func RegisterBillingAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/GetCustomerPortal", runtime.WithHTTPPathPattern("/api/v1/customers/{customerID}:portal"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.BillingAPI/GetCustomerPortal", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/billing:portal"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1041,7 +1041,7 @@ func RegisterBillingAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux,
 var (
 	pattern_BillingAPI_SearchCustomer_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"api", "v1", "customers"}, "search"))
 
-	pattern_BillingAPI_GetCustomerPortal_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "customers", "customerID"}, "portal"))
+	pattern_BillingAPI_GetCustomerPortal_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "accounts", "accountID", "billing"}, "portal"))
 
 	pattern_BillingAPI_ListInvoices_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5}, []string{"api", "v1", "accounts", "accountID", "billing", "invoices"}, ""))
 

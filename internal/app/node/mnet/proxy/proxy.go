@@ -169,7 +169,7 @@ func (pxsm *proxyServiceMap) runningPort(namespace, svcName, portName string) bo
 }
 
 func (pxsm *proxyServiceMap) fwdSvc(namespace, svcName string) {
-	agentPort := int32(viper.GetInt("agent.port"))
+	agentPort := int32(viper.GetInt("port"))
 
 	pxsm.Lock()
 	defer pxsm.Unlock()

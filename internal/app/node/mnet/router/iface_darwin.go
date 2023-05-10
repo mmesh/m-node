@@ -15,7 +15,7 @@ import (
 )
 
 func (r *router) ifUp() error {
-	ifcName := viper.GetString("agent.iface")
+	ifcName := viper.GetString("iface")
 
 	if !strings.HasPrefix(ifcName, "utun") {
 		ifcName = "utun5"
@@ -45,7 +45,7 @@ func (r *router) ifDown() error {
 	var ifaceName string
 
 	if r.networkInterface == nil {
-		ifaceName = viper.GetString("agent.iface")
+		ifaceName = viper.GetString("iface")
 	} else {
 		ifaceName = r.networkInterface.devName()
 	}

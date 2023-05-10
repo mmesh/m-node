@@ -26,7 +26,7 @@ func (r *router) handleStream(s network.Stream) {
 	go r.readStream(rw)
 
 	// stream 's' will stay open until you close it (or the other side closes it).
-	r.linkStatus.Connections++
+	r.connections++
 }
 
 func (r *router) readStream(rw *bufio.ReadWriter) {
@@ -43,7 +43,7 @@ func (r *router) readStream(rw *bufio.ReadWriter) {
 			continue
 		}
 	}
-	r.linkStatus.Connections--
+	r.connections--
 
 	// if pc != nil {
 	// 	if !pc.DirectConnection {
@@ -126,7 +126,7 @@ func (r *router) readInterface() {
 						return
 					}
 					rw := r.getTunnel(ipPkt.dstAddr)
-					r.linkStatus.Connections++
+					r.connections++
 
 					r.writeStream(ipPkt, rw)
 				}(*ipPkt)

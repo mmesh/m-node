@@ -16,7 +16,7 @@ type crontabMap struct {
 	sync.RWMutex
 }
 
-var cronCommandQueue = make(chan *mmsp.Payload, 128)
+var cronCommandQueue = make(chan *mmsp.WorkflowPDU, 128)
 
 func Cron(w *runtime.Wrkr) {
 	xlog.Infof("Started worker %s", w.Name)
@@ -29,21 +29,21 @@ func Cron(w *runtime.Wrkr) {
 
 	for {
 		select {
-		case payload := <-cronCommandQueue:
-			xlog.Infof("Received workflow on cronCommandQueue from %s", payload.SrcID)
+		case pdu := <-cronCommandQueue:
+			xlog.Info("Received workflow on cronCommandQueue")
 
-			wf := payload.Workflow
+			wf := pdu.Workflow
 
 			if wf.Enabled {
 				eID := crontab.getEntry(wf.WorkflowID)
 				if eID != cron.EntryID(-1) {
 					xlog.Infof("Updating existing workflow %s in crontab", wf.WorkflowID)
 					mmCron.Remove(eID)
-					crontab.deleteEntry(payload.Workflow.WorkflowID)
+					crontab.deleteEntry(wf.WorkflowID)
 				}
 
 				eID, err := mmCron.AddFunc(wf.Triggers.Schedule.Crontab, func() {
-					if err := WorkflowExpedite(context.TODO(), payload); err != nil {
+					if err := WorkflowExpedite(context.TODO(), pdu); err != nil {
 						xlog.Errorf("Workflow %s finished abnormally: %v", wf.WorkflowID, err)
 					}
 				})
@@ -59,7 +59,7 @@ func Cron(w *runtime.Wrkr) {
 					continue
 				}
 				mmCron.Remove(eID)
-				crontab.deleteEntry(payload.Workflow.WorkflowID)
+				crontab.deleteEntry(wf.WorkflowID)
 			}
 
 		case <-w.QuitChan:

@@ -15,6 +15,7 @@ const (
 	WrkrOptStartFunc
 	WrkrOptExtFunc
 	WrkrOptNxNetworkClient
+	WrkrOptNxManagerClient
 )
 
 type WrkrOpt struct {
@@ -33,6 +34,7 @@ type Wrkr struct {
 	startFunc func(*Wrkr)
 	extFunc   func()
 	NxNC      rpc.NetworkAPIClient
+	NxMC      rpc.ManagerAPIClient
 }
 
 type nxWrkr interface {
@@ -70,6 +72,8 @@ func (w *Wrkr) setWrkrOptions(wOpts ...*WrkrOpt) {
 			w.extFunc = wOpt.Value.(func())
 		case WrkrOptNxNetworkClient:
 			w.NxNC = wOpt.Value.(rpc.NetworkAPIClient)
+		case WrkrOptNxManagerClient:
+			w.NxMC = wOpt.Value.(rpc.ManagerAPIClient)
 		}
 	}
 }
@@ -125,6 +129,18 @@ func NetworkWrkrReconnect(newNxNC rpc.NetworkAPIClient) {
 		if w.NxNC != nil {
 			w.stop()
 			w.NxNC = newNxNC
+			wwg.Add(1)
+			w.WG = &wwg
+			w.start()
+		}
+	}
+}
+
+func ManagerWrkrReconnect(newNxMC rpc.ManagerAPIClient) {
+	for _, w := range wrkrs {
+		if w.NxMC != nil {
+			w.stop()
+			w.NxMC = newNxMC
 			wwg.Add(1)
 			w.WG = &wwg
 			w.start()

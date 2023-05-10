@@ -1,0 +1,118 @@
+package svcs
+
+import (
+	"context"
+	"io"
+	"os"
+	"time"
+
+	"mmesh.dev/m-lib/pkg/runtime"
+	"mmesh.dev/m-lib/pkg/xlog"
+	"mmesh.dev/m-node/internal/app/node/mnet"
+)
+
+var serviceEnabled bool = true
+
+// RoutingAgent runs routing engine
+func RoutingAgent(w *runtime.Wrkr) {
+	xlog.Infof("Started worker %s", w.Name)
+	w.Running = true
+
+	endCh := make(chan struct{}, 2)
+
+	go func() {
+		stream, err := w.NxNC.Routing(context.Background())
+		if err != nil {
+			xlog.Errorf("Unable to get routing stream from controller: %v", err)
+			mnet.LocalNode().Connection().Watcher() <- struct{}{}
+			return
+		}
+
+		go func() {
+			disabledRetries := 0
+
+			for {
+				s, err := stream.Recv()
+				if err == io.EOF {
+					// xlog.Warnf("Ended (io.EOF) routing stream: %v", err)
+					mnet.LocalNode().Connection().Watcher() <- struct{}{}
+					break
+				}
+				if err != nil {
+					// xlog.Warnf("Unable to receive rtResponse: %v", err)
+					mnet.LocalNode().Connection().Watcher() <- struct{}{}
+					break
+				}
+
+				if s.Disabled {
+					xlog.Alert("Service is DISABLED.")
+					xlog.Alert("Please contact mmesh customer service urgently.")
+
+				} else if s.OverLimit {
+					xlog.Alert("Account over tier limits. Service is DISABLED.")
+					xlog.Alert("If you are on the Free Plan, make sure you")
+					xlog.Alert("are not exceeding its limits. If not, please")
+					xlog.Alert("contact mmesh customer service urgently.")
+				}
+
+				if s.Disabled || s.OverLimit {
+					serviceEnabled = false
+
+					disabledRetries++
+					if disabledRetries > 10 {
+						os.Exit(1)
+					}
+					continue
+				} else {
+					serviceEnabled = true
+					disabledRetries = 0
+				}
+			}
+			if err := stream.CloseSend(); err != nil {
+				xlog.Errorf("Unable to close routing stream: %v", err)
+			}
+			endCh <- struct{}{}
+			// xlog.Warn("Closing rtResponse recv stream")
+		}()
+
+		go func() {
+			ticker := time.NewTicker(20 * time.Second)
+			defer ticker.Stop()
+
+			for {
+				select {
+				case <-ticker.C:
+					if !serviceEnabled {
+						time.Sleep(20 * time.Minute)
+					}
+
+					xlog.Debug("Sending node-LSA")
+
+					lsa := mnet.LocalNode().GetNodeLSA()
+					if lsa == nil {
+						continue
+					}
+					if err := stream.Send(lsa); err != nil {
+						// xlog.Warnf("Unable to send rtRequest: %v", err)
+						mnet.LocalNode().Connection().Watcher() <- struct{}{}
+						if err := stream.CloseSend(); err != nil {
+							xlog.Errorf("Unable to close routing stream: %v", err)
+						}
+						return
+					}
+				case <-endCh:
+					// xlog.Warn("Closing rtRequest send stream")
+					return
+				}
+			}
+		}()
+	}()
+
+	<-w.QuitChan
+
+	endCh <- struct{}{}
+
+	w.WG.Done()
+	w.Running = false
+	xlog.Infof("Stopped worker %s", w.Name)
+}

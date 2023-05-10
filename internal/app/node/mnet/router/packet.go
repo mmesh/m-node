@@ -3,12 +3,12 @@ package router
 import (
 	"fmt"
 	"net"
-	"strings"
 
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"golang.org/x/net/ipv4"
 	"golang.org/x/net/ipv6"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-lib/pkg/ipnet"
 	"mmesh.dev/m-lib/pkg/xlog"
 )
@@ -52,25 +52,17 @@ func (r *router) packetFilter(packet []byte) (*ipPacket, bool) {
 		return ipPkt, true // drop the pkt
 	}
 
-	// analysing decoded ip packet
+	// check decoded ip packet
 
-	r.rib.RLock()
-	defer r.rib.RUnlock()
-
-	// get route
-	ipDst := r.getIPDstFromRIB(ipPkt.dstAddr)
-	if len(ipDst) == 0 {
+	// check ipDst rib entry
+	if err := r.RIB().CheckIPDst(ipPkt.dstAddr); err != nil {
 		return ipPkt, true // drop the pkt
 	}
 
-	p, ok := r.rib.global.Policy[r.vrfID]
-	if !ok {
+	p := r.RIB().GetPolicy(r.subnetID)
+	if p == nil {
 		return ipPkt, true // no policy, drop the pkt
 	}
-
-	// if p == nil {
-	// 	return ipPkt, true // drop the pkt
-	// }
 
 	for _, f := range p.NetworkFilters {
 		var matchSrcIP, matchDstIP, matchProto, matchPort bool
@@ -91,27 +83,27 @@ func (r *router) packetFilter(packet []byte) (*ipPacket, bool) {
 			matchDstIP = true
 		}
 
-		if strings.ToUpper(f.Proto) == "ANY" || ipnet.IPProtocol(f.Proto) == ipPkt.proto {
+		if f.Proto == topology.Protocol_ANY || ipnet.IPProtocol(f.Proto.String()) == ipPkt.proto {
 			matchProto = true
 		}
-		if f.DstPort == 0 || f.DstPort == int32(ipPkt.dstPort) {
+		if f.DstPort == 0 || f.DstPort == uint32(ipPkt.dstPort) {
 			matchPort = true
 		}
 
 		if matchSrcIP && matchDstIP && matchProto && matchPort {
-			switch strings.ToUpper(f.Policy) {
-			case ipnet.Policy_ACCEPT:
+			switch f.Policy {
+			case topology.SecurityPolicy_ACCEPT:
 				return ipPkt, false // accept the pkt
-			case ipnet.Policy_DROP:
+			case topology.SecurityPolicy_DROP:
 				return ipPkt, true // drop the pkt
 			}
 		}
 	}
 
-	switch strings.ToUpper(p.DefaultPolicy) {
-	case ipnet.Policy_ACCEPT:
+	switch p.DefaultPolicy {
+	case topology.SecurityPolicy_ACCEPT:
 		return ipPkt, false // accept the pkt
-	case ipnet.Policy_DROP:
+	case topology.SecurityPolicy_DROP:
 		return ipPkt, true // drop the pkt
 	}
 

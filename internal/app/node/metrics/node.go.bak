@@ -1,0 +1,39 @@
+package metrics
+
+import (
+	"time"
+
+	"mmesh.dev/m-api-go/grpc/resources/metrics"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
+)
+
+func GetNodeDataPoint(n *topology.Node) *metrics.DataPoint {
+	if hm == nil {
+		hm = &metrics.HostMetrics{}
+		return nil
+	}
+
+	if networkMetrics == nil {
+		networkMetrics = newNetworkMetricsMap()
+		return nil
+	}
+
+	return &metrics.DataPoint{
+		Timestamp:   time.Now().Unix(),
+		Measurement: metrics.Measurement_NODE,
+		AccountID:   n.AccountID,
+		// TenantID:    n.TenantID,
+		// NetID:       n.NetID,
+		// SubnetID:    n.SubnetID,
+		NodeID: n.NodeID,
+
+		NetRxBytes:     networkMetrics.networkMetrics.RxTotalBytes,
+		NetTxBytes:     networkMetrics.networkMetrics.TxTotalBytes,
+		NetDroppedPkts: networkMetrics.networkMetrics.DroppedPkts,
+
+		HostLoadAvg:   hm.LoadAvg,
+		HostCpuUsage:  hm.CpuUsage,
+		HostMemUsage:  hm.MemoryUsage,
+		HostDiskUsage: hm.DiskUsage,
+	}
+}

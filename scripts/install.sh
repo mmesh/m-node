@@ -474,14 +474,13 @@ set_config() {
   mkdir -p /etc/mmesh
 
   if [ -s /etc/mmesh/mmesh-node.yml ]; then
-    echo "Using existing mmesh-node configuration..."
-    mmeshNodeConfigFile="/etc/mmesh/mmesh-node.yml_new"
-  else
-    echo "Creating mmesh-node configuration..."
-    mmeshNodeConfigFile="/etc/mmesh/mmesh-node.yml"
+    echo "Saving existing mmesh-node configuration..."
+    cp /etc/mmesh/mmesh-node.yml /etc/mmesh/mmesh-node.yml_old
   fi
 
-  cat << EOF > "${mmeshNodeConfigFile}"
+  echo "Creating mmesh-node configuration..."
+
+  cat << EOF > /etc/mmesh/mmesh-node.yml
 # mmesh-node configuration
 
 token: "${TOKEN}"

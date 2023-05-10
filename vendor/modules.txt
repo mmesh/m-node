@@ -14,6 +14,9 @@ github.com/benbjohnson/clock
 # github.com/beorn7/perks v1.0.1
 ## explicit; go 1.11
 github.com/beorn7/perks/quantile
+# github.com/cespare/xxhash v1.1.0
+## explicit
+github.com/cespare/xxhash
 # github.com/cespare/xxhash/v2 v2.1.2
 ## explicit; go 1.11
 github.com/cespare/xxhash/v2
@@ -49,9 +52,31 @@ github.com/dchest/blake2b
 ## explicit; go 1.17
 github.com/decred/dcrd/dcrec/secp256k1/v4
 github.com/decred/dcrd/dcrec/secp256k1/v4/ecdsa
+# github.com/dgraph-io/badger/v4 v4.0.1
+## explicit; go 1.19
+github.com/dgraph-io/badger/v4
+github.com/dgraph-io/badger/v4/fb
+github.com/dgraph-io/badger/v4/options
+github.com/dgraph-io/badger/v4/pb
+github.com/dgraph-io/badger/v4/skl
+github.com/dgraph-io/badger/v4/table
+github.com/dgraph-io/badger/v4/trie
+github.com/dgraph-io/badger/v4/y
+# github.com/dgraph-io/ristretto v0.1.1
+## explicit; go 1.12
+github.com/dgraph-io/ristretto
+github.com/dgraph-io/ristretto/z
+github.com/dgraph-io/ristretto/z/simd
 # github.com/docker/go-units v0.4.0
 ## explicit
 github.com/docker/go-units
+# github.com/dustin/go-humanize v1.0.0
+## explicit
+github.com/dustin/go-humanize
+# github.com/eclipse/paho.mqtt.golang v1.4.2
+## explicit; go 1.14
+github.com/eclipse/paho.mqtt.golang
+github.com/eclipse/paho.mqtt.golang/packets
 # github.com/elastic/gosigar v0.14.2
 ## explicit; go 1.14
 github.com/elastic/gosigar
@@ -69,50 +94,6 @@ github.com/francoispqt/gojay
 # github.com/fsnotify/fsnotify v1.5.4
 ## explicit; go 1.16
 github.com/fsnotify/fsnotify
-# github.com/gdamore/encoding v1.0.0
-## explicit; go 1.9
-github.com/gdamore/encoding
-# github.com/gdamore/tcell/v2 v2.4.1-0.20210905002822-f057f0a857a1
-## explicit; go 1.12
-github.com/gdamore/tcell/v2
-github.com/gdamore/tcell/v2/terminfo
-github.com/gdamore/tcell/v2/terminfo/a/aixterm
-github.com/gdamore/tcell/v2/terminfo/a/alacritty
-github.com/gdamore/tcell/v2/terminfo/a/ansi
-github.com/gdamore/tcell/v2/terminfo/b/beterm
-github.com/gdamore/tcell/v2/terminfo/base
-github.com/gdamore/tcell/v2/terminfo/c/cygwin
-github.com/gdamore/tcell/v2/terminfo/d/dtterm
-github.com/gdamore/tcell/v2/terminfo/dynamic
-github.com/gdamore/tcell/v2/terminfo/e/emacs
-github.com/gdamore/tcell/v2/terminfo/extended
-github.com/gdamore/tcell/v2/terminfo/f/foot
-github.com/gdamore/tcell/v2/terminfo/g/gnome
-github.com/gdamore/tcell/v2/terminfo/h/hpterm
-github.com/gdamore/tcell/v2/terminfo/k/konsole
-github.com/gdamore/tcell/v2/terminfo/k/kterm
-github.com/gdamore/tcell/v2/terminfo/l/linux
-github.com/gdamore/tcell/v2/terminfo/p/pcansi
-github.com/gdamore/tcell/v2/terminfo/r/rxvt
-github.com/gdamore/tcell/v2/terminfo/s/screen
-github.com/gdamore/tcell/v2/terminfo/s/simpleterm
-github.com/gdamore/tcell/v2/terminfo/s/sun
-github.com/gdamore/tcell/v2/terminfo/t/termite
-github.com/gdamore/tcell/v2/terminfo/t/tmux
-github.com/gdamore/tcell/v2/terminfo/v/vt100
-github.com/gdamore/tcell/v2/terminfo/v/vt102
-github.com/gdamore/tcell/v2/terminfo/v/vt220
-github.com/gdamore/tcell/v2/terminfo/v/vt320
-github.com/gdamore/tcell/v2/terminfo/v/vt400
-github.com/gdamore/tcell/v2/terminfo/v/vt420
-github.com/gdamore/tcell/v2/terminfo/v/vt52
-github.com/gdamore/tcell/v2/terminfo/w/wy50
-github.com/gdamore/tcell/v2/terminfo/w/wy60
-github.com/gdamore/tcell/v2/terminfo/w/wy99_ansi
-github.com/gdamore/tcell/v2/terminfo/x/xfce
-github.com/gdamore/tcell/v2/terminfo/x/xterm
-github.com/gdamore/tcell/v2/terminfo/x/xterm_kitty
-github.com/gdamore/tcell/v2/terminfo/x/xterm_termite
 # github.com/go-logr/logr v1.2.3
 ## explicit; go 1.16
 github.com/go-logr/logr
@@ -141,6 +122,12 @@ github.com/gogo/protobuf/gogoproto
 github.com/gogo/protobuf/proto
 github.com/gogo/protobuf/protoc-gen-gogo/descriptor
 github.com/gogo/protobuf/sortkeys
+# github.com/golang/glog v0.0.0-20210429001901-424d2337a529
+## explicit
+github.com/golang/glog
+# github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da
+## explicit
+github.com/golang/groupcache/lru
 # github.com/golang/protobuf v1.5.2
 ## explicit; go 1.9
 github.com/golang/protobuf/jsonpb
@@ -149,6 +136,12 @@ github.com/golang/protobuf/ptypes
 github.com/golang/protobuf/ptypes/any
 github.com/golang/protobuf/ptypes/duration
 github.com/golang/protobuf/ptypes/timestamp
+# github.com/golang/snappy v0.0.3
+## explicit
+github.com/golang/snappy
+# github.com/google/flatbuffers v1.12.1
+## explicit
+github.com/google/flatbuffers/go
 # github.com/google/gnostic v0.5.7-v3refs
 ## explicit; go 1.12
 github.com/google/gnostic/compiler
@@ -171,6 +164,9 @@ github.com/google/gofuzz
 github.com/google/gopacket
 github.com/google/gopacket/layers
 github.com/google/gopacket/routing
+# github.com/google/uuid v1.3.0
+## explicit
+github.com/google/uuid
 # github.com/gorilla/websocket v1.5.0
 ## explicit; go 1.12
 github.com/gorilla/websocket
@@ -371,9 +367,6 @@ github.com/lucas-clemente/quic-go/internal/wire
 github.com/lucas-clemente/quic-go/logging
 github.com/lucas-clemente/quic-go/qlog
 github.com/lucas-clemente/quic-go/quicvarint
-# github.com/lucasb-eyer/go-colorful v1.2.0
-## explicit; go 1.12
-github.com/lucasb-eyer/go-colorful
 # github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0
 ## explicit; go 1.16
 github.com/lufia/plan9stats
@@ -409,9 +402,6 @@ github.com/mattn/go-isatty
 # github.com/mattn/go-pointer v0.0.1
 ## explicit
 github.com/mattn/go-pointer
-# github.com/mattn/go-runewidth v0.0.13
-## explicit; go 1.9
-github.com/mattn/go-runewidth
 # github.com/matttproud/golang_protobuf_extensions v1.0.1
 ## explicit
 github.com/matttproud/golang_protobuf_extensions/pbutil
@@ -556,12 +546,6 @@ github.com/prometheus/procfs/internal/util
 # github.com/raulk/go-watchdog v1.3.0
 ## explicit; go 1.15
 github.com/raulk/go-watchdog
-# github.com/rivo/tview v0.0.0-20211001102648-5508f4b00266
-## explicit; go 1.12
-github.com/rivo/tview
-# github.com/rivo/uniseg v0.2.0
-## explicit; go 1.12
-github.com/rivo/uniseg
 # github.com/robfig/cron/v3 v3.0.0
 ## explicit; go 1.12
 github.com/robfig/cron/v3
@@ -637,6 +621,13 @@ github.com/vishvananda/netns
 # github.com/yusufpapurcu/wmi v1.2.2
 ## explicit; go 1.16
 github.com/yusufpapurcu/wmi
+# go.opencensus.io v0.23.0
+## explicit; go 1.13
+go.opencensus.io
+go.opencensus.io/internal
+go.opencensus.io/trace
+go.opencensus.io/trace/internal
+go.opencensus.io/trace/tracestate
 # go.uber.org/atomic v1.10.0
 ## explicit; go 1.18
 go.uber.org/atomic
@@ -690,9 +681,11 @@ golang.org/x/net/http2/hpack
 golang.org/x/net/idna
 golang.org/x/net/internal/iana
 golang.org/x/net/internal/socket
+golang.org/x/net/internal/socks
 golang.org/x/net/internal/timeseries
 golang.org/x/net/ipv4
 golang.org/x/net/ipv6
+golang.org/x/net/proxy
 golang.org/x/net/route
 golang.org/x/net/trace
 # golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
@@ -702,7 +695,8 @@ golang.org/x/oauth2/internal
 # golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
 ## explicit
 golang.org/x/sync/errgroup
-# golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab
+golang.org/x/sync/semaphore
+# golang.org/x/sys v0.0.0-20221010170243-090e33056c14
 ## explicit; go 1.17
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
@@ -719,8 +713,6 @@ golang.org/x/sys/windows/svc/mgr
 golang.org/x/term
 # golang.org/x/text v0.3.7
 ## explicit; go 1.17
-golang.org/x/text/encoding
-golang.org/x/text/encoding/internal/identifier
 golang.org/x/text/secure/bidirule
 golang.org/x/text/transform
 golang.org/x/text/unicode/bidi
@@ -1163,38 +1155,27 @@ mmesh.dev/m-api-go/grpc/common/empty
 mmesh.dev/m-api-go/grpc/common/jwt
 mmesh.dev/m-api-go/grpc/common/status
 mmesh.dev/m-api-go/grpc/common/version
-mmesh.dev/m-api-go/grpc/network/dns
-mmesh.dev/m-api-go/grpc/network/mmnp/natprobe
-mmesh.dev/m-api-go/grpc/network/mmnp/register
-mmesh.dev/m-api-go/grpc/network/mmnp/routing
 mmesh.dev/m-api-go/grpc/network/mmsp
-mmesh.dev/m-api-go/grpc/network/mmsp/alert
-mmesh.dev/m-api-go/grpc/network/mmsp/command
-mmesh.dev/m-api-go/grpc/network/mmsp/portFwd
-mmesh.dev/m-api-go/grpc/network/mmsp/transfer
+mmesh.dev/m-api-go/grpc/network/mmsp/stream
+mmesh.dev/m-api-go/grpc/network/nac
+mmesh.dev/m-api-go/grpc/network/routing
 mmesh.dev/m-api-go/grpc/resources/account
 mmesh.dev/m-api-go/grpc/resources/billing
 mmesh.dev/m-api-go/grpc/resources/controller
 mmesh.dev/m-api-go/grpc/resources/events
 mmesh.dev/m-api-go/grpc/resources/iam
 mmesh.dev/m-api-go/grpc/resources/iam/auth
-mmesh.dev/m-api-go/grpc/resources/itsm
 mmesh.dev/m-api-go/grpc/resources/location
 mmesh.dev/m-api-go/grpc/resources/messaging
 mmesh.dev/m-api-go/grpc/resources/metrics
-mmesh.dev/m-api-go/grpc/resources/network
-mmesh.dev/m-api-go/grpc/resources/ops/object
-mmesh.dev/m-api-go/grpc/resources/ops/project
-mmesh.dev/m-api-go/grpc/resources/ops/workflow
+mmesh.dev/m-api-go/grpc/resources/ops
 mmesh.dev/m-api-go/grpc/resources/resource
 mmesh.dev/m-api-go/grpc/resources/services
-mmesh.dev/m-api-go/grpc/resources/services/catalog
-mmesh.dev/m-api-go/grpc/resources/services/catalog/cloud/compute
 mmesh.dev/m-api-go/grpc/resources/services/catalog/pro
-mmesh.dev/m-api-go/grpc/resources/services/platform/cloud
-mmesh.dev/m-api-go/grpc/resources/services/platform/crm
 mmesh.dev/m-api-go/grpc/resources/services/thirdParty
 mmesh.dev/m-api-go/grpc/resources/tenant
+mmesh.dev/m-api-go/grpc/resources/topology
+mmesh.dev/m-api-go/grpc/resources/tss
 mmesh.dev/m-api-go/grpc/resources/webhook
 mmesh.dev/m-api-go/grpc/rpc
 # mmesh.dev/m-lib v0.0.0-00010101000000-000000000000 => ../m-lib
@@ -1203,14 +1184,17 @@ mmesh.dev/m-lib/pkg/errors
 mmesh.dev/m-lib/pkg/grpc/client
 mmesh.dev/m-lib/pkg/ipnet
 mmesh.dev/m-lib/pkg/logging
-mmesh.dev/m-lib/pkg/mmid
+mmesh.dev/m-lib/pkg/mm
 mmesh.dev/m-lib/pkg/mmp
-mmesh.dev/m-lib/pkg/mmp/auth
-mmesh.dev/m-lib/pkg/mmp/cli
-mmesh.dev/m-lib/pkg/mmp/protos/chat
-mmesh.dev/m-lib/pkg/mmp/streaming
-mmesh.dev/m-lib/pkg/mmp/term
-mmesh.dev/m-lib/pkg/mmp/term/pty
+mmesh.dev/m-lib/pkg/mmp/queuing
+mmesh.dev/m-lib/pkg/mmp/stream/protos/command
+mmesh.dev/m-lib/pkg/mmp/stream/protos/command/term
+mmesh.dev/m-lib/pkg/mmp/stream/protos/command/term/pty
+mmesh.dev/m-lib/pkg/mmp/stream/protos/portfwd
+mmesh.dev/m-lib/pkg/mmp/stream/protos/transfer
+mmesh.dev/m-lib/pkg/mmp/stream/utils/auth
+mmesh.dev/m-lib/pkg/mmp/stream/utils/cli
+mmesh.dev/m-lib/pkg/mmp/stream/utils/streaming
 mmesh.dev/m-lib/pkg/resources
 mmesh.dev/m-lib/pkg/runtime
 mmesh.dev/m-lib/pkg/update

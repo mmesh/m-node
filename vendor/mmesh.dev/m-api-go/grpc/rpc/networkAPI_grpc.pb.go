@@ -12,14 +12,10 @@ import (
 	codes "google.golang.org/grpc/codes"
 	status1 "google.golang.org/grpc/status"
 	status "mmesh.dev/m-api-go/grpc/common/status"
-	dns "mmesh.dev/m-api-go/grpc/network/dns"
-	natprobe "mmesh.dev/m-api-go/grpc/network/mmnp/natprobe"
-	register "mmesh.dev/m-api-go/grpc/network/mmnp/register"
-	routing "mmesh.dev/m-api-go/grpc/network/mmnp/routing"
 	mmsp "mmesh.dev/m-api-go/grpc/network/mmsp"
+	nac "mmesh.dev/m-api-go/grpc/network/nac"
 	controller "mmesh.dev/m-api-go/grpc/resources/controller"
-	metrics "mmesh.dev/m-api-go/grpc/resources/metrics"
-	network "mmesh.dev/m-api-go/grpc/resources/network"
+	topology "mmesh.dev/m-api-go/grpc/resources/topology"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -31,17 +27,16 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NetworkAPIClient interface {
-	NATProbe(ctx context.Context, in *natprobe.NATProbe, opts ...grpc.CallOption) (*natprobe.NATProbe, error)
-	RegisterEndpoint(ctx context.Context, in *register.EndpointRegRequest, opts ...grpc.CallOption) (*register.EndpointRegResponse, error)
-	RemoveEndpoint(ctx context.Context, in *register.EndpointRegRequest, opts ...grpc.CallOption) (*network.Node, error)
-	RegisterNode(ctx context.Context, in *register.NodeRegRequest, opts ...grpc.CallOption) (*register.NodeRegResponse, error)
-	DNS(ctx context.Context, in *dns.Host, opts ...grpc.CallOption) (*dns.IPv4, error)
-	Routing(ctx context.Context, opts ...grpc.CallOption) (NetworkAPI_RoutingClient, error)
+	NetworkAdmissionControl(ctx context.Context, in *nac.NetworkAdmissionRequest, opts ...grpc.CallOption) (*nac.NetworkAdmissionResponse, error)
+	NATProbe(ctx context.Context, in *nac.NATProbe, opts ...grpc.CallOption) (*nac.NATProbe, error)
+	RegisterEndpoint(ctx context.Context, in *nac.EndpointRegRequest, opts ...grpc.CallOption) (*nac.EndpointRegResponse, error)
+	RemoveEndpoint(ctx context.Context, in *nac.EndpointRegRequest, opts ...grpc.CallOption) (*topology.Node, error)
+	RegisterNode(ctx context.Context, in *nac.NodeRegRequest, opts ...grpc.CallOption) (*nac.NodeRegResponse, error)
+	// rpc Routing(stream routing.LSA) returns (stream routing.Status) {}
 	// rpc RT(routing.RTRequest) returns (routing.RTResponse) {}
 	Control(ctx context.Context, opts ...grpc.CallOption) (NetworkAPI_ControlClient, error)
-	Metrics(ctx context.Context, in *network.Node, opts ...grpc.CallOption) (*status.StatusResponse, error)
-	DataPointMetrics(ctx context.Context, in *metrics.DataPoints, opts ...grpc.CallOption) (*status.StatusResponse, error)
-	FederationEndpoints(ctx context.Context, in *network.Node, opts ...grpc.CallOption) (*controller.FederationEndpoints, error)
+	Metrics(ctx context.Context, in *topology.Node, opts ...grpc.CallOption) (*status.StatusResponse, error)
+	FederationEndpoints(ctx context.Context, in *topology.NodeReq, opts ...grpc.CallOption) (*controller.FederationEndpoints, error)
 }
 
 type networkAPIClient struct {
@@ -52,8 +47,17 @@ func NewNetworkAPIClient(cc grpc.ClientConnInterface) NetworkAPIClient {
 	return &networkAPIClient{cc}
 }
 
-func (c *networkAPIClient) NATProbe(ctx context.Context, in *natprobe.NATProbe, opts ...grpc.CallOption) (*natprobe.NATProbe, error) {
-	out := new(natprobe.NATProbe)
+func (c *networkAPIClient) NetworkAdmissionControl(ctx context.Context, in *nac.NetworkAdmissionRequest, opts ...grpc.CallOption) (*nac.NetworkAdmissionResponse, error) {
+	out := new(nac.NetworkAdmissionResponse)
+	err := c.cc.Invoke(ctx, "/network.NetworkAPI/NetworkAdmissionControl", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *networkAPIClient) NATProbe(ctx context.Context, in *nac.NATProbe, opts ...grpc.CallOption) (*nac.NATProbe, error) {
+	out := new(nac.NATProbe)
 	err := c.cc.Invoke(ctx, "/network.NetworkAPI/NATProbe", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -61,8 +65,8 @@ func (c *networkAPIClient) NATProbe(ctx context.Context, in *natprobe.NATProbe, 
 	return out, nil
 }
 
-func (c *networkAPIClient) RegisterEndpoint(ctx context.Context, in *register.EndpointRegRequest, opts ...grpc.CallOption) (*register.EndpointRegResponse, error) {
-	out := new(register.EndpointRegResponse)
+func (c *networkAPIClient) RegisterEndpoint(ctx context.Context, in *nac.EndpointRegRequest, opts ...grpc.CallOption) (*nac.EndpointRegResponse, error) {
+	out := new(nac.EndpointRegResponse)
 	err := c.cc.Invoke(ctx, "/network.NetworkAPI/RegisterEndpoint", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -70,8 +74,8 @@ func (c *networkAPIClient) RegisterEndpoint(ctx context.Context, in *register.En
 	return out, nil
 }
 
-func (c *networkAPIClient) RemoveEndpoint(ctx context.Context, in *register.EndpointRegRequest, opts ...grpc.CallOption) (*network.Node, error) {
-	out := new(network.Node)
+func (c *networkAPIClient) RemoveEndpoint(ctx context.Context, in *nac.EndpointRegRequest, opts ...grpc.CallOption) (*topology.Node, error) {
+	out := new(topology.Node)
 	err := c.cc.Invoke(ctx, "/network.NetworkAPI/RemoveEndpoint", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -79,8 +83,8 @@ func (c *networkAPIClient) RemoveEndpoint(ctx context.Context, in *register.Endp
 	return out, nil
 }
 
-func (c *networkAPIClient) RegisterNode(ctx context.Context, in *register.NodeRegRequest, opts ...grpc.CallOption) (*register.NodeRegResponse, error) {
-	out := new(register.NodeRegResponse)
+func (c *networkAPIClient) RegisterNode(ctx context.Context, in *nac.NodeRegRequest, opts ...grpc.CallOption) (*nac.NodeRegResponse, error) {
+	out := new(nac.NodeRegResponse)
 	err := c.cc.Invoke(ctx, "/network.NetworkAPI/RegisterNode", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -88,48 +92,8 @@ func (c *networkAPIClient) RegisterNode(ctx context.Context, in *register.NodeRe
 	return out, nil
 }
 
-func (c *networkAPIClient) DNS(ctx context.Context, in *dns.Host, opts ...grpc.CallOption) (*dns.IPv4, error) {
-	out := new(dns.IPv4)
-	err := c.cc.Invoke(ctx, "/network.NetworkAPI/DNS", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *networkAPIClient) Routing(ctx context.Context, opts ...grpc.CallOption) (NetworkAPI_RoutingClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NetworkAPI_ServiceDesc.Streams[0], "/network.NetworkAPI/Routing", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &networkAPIRoutingClient{stream}
-	return x, nil
-}
-
-type NetworkAPI_RoutingClient interface {
-	Send(*routing.RTRequest) error
-	Recv() (*routing.RTResponse, error)
-	grpc.ClientStream
-}
-
-type networkAPIRoutingClient struct {
-	grpc.ClientStream
-}
-
-func (x *networkAPIRoutingClient) Send(m *routing.RTRequest) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *networkAPIRoutingClient) Recv() (*routing.RTResponse, error) {
-	m := new(routing.RTResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
 func (c *networkAPIClient) Control(ctx context.Context, opts ...grpc.CallOption) (NetworkAPI_ControlClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NetworkAPI_ServiceDesc.Streams[1], "/network.NetworkAPI/Control", opts...)
+	stream, err := c.cc.NewStream(ctx, &NetworkAPI_ServiceDesc.Streams[0], "/network.NetworkAPI/Control", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +123,7 @@ func (x *networkAPIControlClient) Recv() (*mmsp.Payload, error) {
 	return m, nil
 }
 
-func (c *networkAPIClient) Metrics(ctx context.Context, in *network.Node, opts ...grpc.CallOption) (*status.StatusResponse, error) {
+func (c *networkAPIClient) Metrics(ctx context.Context, in *topology.Node, opts ...grpc.CallOption) (*status.StatusResponse, error) {
 	out := new(status.StatusResponse)
 	err := c.cc.Invoke(ctx, "/network.NetworkAPI/Metrics", in, out, opts...)
 	if err != nil {
@@ -168,16 +132,7 @@ func (c *networkAPIClient) Metrics(ctx context.Context, in *network.Node, opts .
 	return out, nil
 }
 
-func (c *networkAPIClient) DataPointMetrics(ctx context.Context, in *metrics.DataPoints, opts ...grpc.CallOption) (*status.StatusResponse, error) {
-	out := new(status.StatusResponse)
-	err := c.cc.Invoke(ctx, "/network.NetworkAPI/DataPointMetrics", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *networkAPIClient) FederationEndpoints(ctx context.Context, in *network.Node, opts ...grpc.CallOption) (*controller.FederationEndpoints, error) {
+func (c *networkAPIClient) FederationEndpoints(ctx context.Context, in *topology.NodeReq, opts ...grpc.CallOption) (*controller.FederationEndpoints, error) {
 	out := new(controller.FederationEndpoints)
 	err := c.cc.Invoke(ctx, "/network.NetworkAPI/FederationEndpoints", in, out, opts...)
 	if err != nil {
@@ -190,17 +145,16 @@ func (c *networkAPIClient) FederationEndpoints(ctx context.Context, in *network.
 // All implementations must embed UnimplementedNetworkAPIServer
 // for forward compatibility
 type NetworkAPIServer interface {
-	NATProbe(context.Context, *natprobe.NATProbe) (*natprobe.NATProbe, error)
-	RegisterEndpoint(context.Context, *register.EndpointRegRequest) (*register.EndpointRegResponse, error)
-	RemoveEndpoint(context.Context, *register.EndpointRegRequest) (*network.Node, error)
-	RegisterNode(context.Context, *register.NodeRegRequest) (*register.NodeRegResponse, error)
-	DNS(context.Context, *dns.Host) (*dns.IPv4, error)
-	Routing(NetworkAPI_RoutingServer) error
+	NetworkAdmissionControl(context.Context, *nac.NetworkAdmissionRequest) (*nac.NetworkAdmissionResponse, error)
+	NATProbe(context.Context, *nac.NATProbe) (*nac.NATProbe, error)
+	RegisterEndpoint(context.Context, *nac.EndpointRegRequest) (*nac.EndpointRegResponse, error)
+	RemoveEndpoint(context.Context, *nac.EndpointRegRequest) (*topology.Node, error)
+	RegisterNode(context.Context, *nac.NodeRegRequest) (*nac.NodeRegResponse, error)
+	// rpc Routing(stream routing.LSA) returns (stream routing.Status) {}
 	// rpc RT(routing.RTRequest) returns (routing.RTResponse) {}
 	Control(NetworkAPI_ControlServer) error
-	Metrics(context.Context, *network.Node) (*status.StatusResponse, error)
-	DataPointMetrics(context.Context, *metrics.DataPoints) (*status.StatusResponse, error)
-	FederationEndpoints(context.Context, *network.Node) (*controller.FederationEndpoints, error)
+	Metrics(context.Context, *topology.Node) (*status.StatusResponse, error)
+	FederationEndpoints(context.Context, *topology.NodeReq) (*controller.FederationEndpoints, error)
 	mustEmbedUnimplementedNetworkAPIServer()
 }
 
@@ -208,34 +162,28 @@ type NetworkAPIServer interface {
 type UnimplementedNetworkAPIServer struct {
 }
 
-func (UnimplementedNetworkAPIServer) NATProbe(context.Context, *natprobe.NATProbe) (*natprobe.NATProbe, error) {
+func (UnimplementedNetworkAPIServer) NetworkAdmissionControl(context.Context, *nac.NetworkAdmissionRequest) (*nac.NetworkAdmissionResponse, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method NetworkAdmissionControl not implemented")
+}
+func (UnimplementedNetworkAPIServer) NATProbe(context.Context, *nac.NATProbe) (*nac.NATProbe, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method NATProbe not implemented")
 }
-func (UnimplementedNetworkAPIServer) RegisterEndpoint(context.Context, *register.EndpointRegRequest) (*register.EndpointRegResponse, error) {
+func (UnimplementedNetworkAPIServer) RegisterEndpoint(context.Context, *nac.EndpointRegRequest) (*nac.EndpointRegResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method RegisterEndpoint not implemented")
 }
-func (UnimplementedNetworkAPIServer) RemoveEndpoint(context.Context, *register.EndpointRegRequest) (*network.Node, error) {
+func (UnimplementedNetworkAPIServer) RemoveEndpoint(context.Context, *nac.EndpointRegRequest) (*topology.Node, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method RemoveEndpoint not implemented")
 }
-func (UnimplementedNetworkAPIServer) RegisterNode(context.Context, *register.NodeRegRequest) (*register.NodeRegResponse, error) {
+func (UnimplementedNetworkAPIServer) RegisterNode(context.Context, *nac.NodeRegRequest) (*nac.NodeRegResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method RegisterNode not implemented")
-}
-func (UnimplementedNetworkAPIServer) DNS(context.Context, *dns.Host) (*dns.IPv4, error) {
-	return nil, status1.Errorf(codes.Unimplemented, "method DNS not implemented")
-}
-func (UnimplementedNetworkAPIServer) Routing(NetworkAPI_RoutingServer) error {
-	return status1.Errorf(codes.Unimplemented, "method Routing not implemented")
 }
 func (UnimplementedNetworkAPIServer) Control(NetworkAPI_ControlServer) error {
 	return status1.Errorf(codes.Unimplemented, "method Control not implemented")
 }
-func (UnimplementedNetworkAPIServer) Metrics(context.Context, *network.Node) (*status.StatusResponse, error) {
+func (UnimplementedNetworkAPIServer) Metrics(context.Context, *topology.Node) (*status.StatusResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method Metrics not implemented")
 }
-func (UnimplementedNetworkAPIServer) DataPointMetrics(context.Context, *metrics.DataPoints) (*status.StatusResponse, error) {
-	return nil, status1.Errorf(codes.Unimplemented, "method DataPointMetrics not implemented")
-}
-func (UnimplementedNetworkAPIServer) FederationEndpoints(context.Context, *network.Node) (*controller.FederationEndpoints, error) {
+func (UnimplementedNetworkAPIServer) FederationEndpoints(context.Context, *topology.NodeReq) (*controller.FederationEndpoints, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method FederationEndpoints not implemented")
 }
 func (UnimplementedNetworkAPIServer) mustEmbedUnimplementedNetworkAPIServer() {}
@@ -251,8 +199,26 @@ func RegisterNetworkAPIServer(s grpc.ServiceRegistrar, srv NetworkAPIServer) {
 	s.RegisterService(&NetworkAPI_ServiceDesc, srv)
 }
 
+func _NetworkAPI_NetworkAdmissionControl_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(nac.NetworkAdmissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NetworkAPIServer).NetworkAdmissionControl(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/network.NetworkAPI/NetworkAdmissionControl",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NetworkAPIServer).NetworkAdmissionControl(ctx, req.(*nac.NetworkAdmissionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _NetworkAPI_NATProbe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(natprobe.NATProbe)
+	in := new(nac.NATProbe)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -264,13 +230,13 @@ func _NetworkAPI_NATProbe_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/network.NetworkAPI/NATProbe",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NetworkAPIServer).NATProbe(ctx, req.(*natprobe.NATProbe))
+		return srv.(NetworkAPIServer).NATProbe(ctx, req.(*nac.NATProbe))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _NetworkAPI_RegisterEndpoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(register.EndpointRegRequest)
+	in := new(nac.EndpointRegRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -282,13 +248,13 @@ func _NetworkAPI_RegisterEndpoint_Handler(srv interface{}, ctx context.Context, 
 		FullMethod: "/network.NetworkAPI/RegisterEndpoint",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NetworkAPIServer).RegisterEndpoint(ctx, req.(*register.EndpointRegRequest))
+		return srv.(NetworkAPIServer).RegisterEndpoint(ctx, req.(*nac.EndpointRegRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _NetworkAPI_RemoveEndpoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(register.EndpointRegRequest)
+	in := new(nac.EndpointRegRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -300,13 +266,13 @@ func _NetworkAPI_RemoveEndpoint_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: "/network.NetworkAPI/RemoveEndpoint",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NetworkAPIServer).RemoveEndpoint(ctx, req.(*register.EndpointRegRequest))
+		return srv.(NetworkAPIServer).RemoveEndpoint(ctx, req.(*nac.EndpointRegRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _NetworkAPI_RegisterNode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(register.NodeRegRequest)
+	in := new(nac.NodeRegRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -318,53 +284,9 @@ func _NetworkAPI_RegisterNode_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: "/network.NetworkAPI/RegisterNode",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NetworkAPIServer).RegisterNode(ctx, req.(*register.NodeRegRequest))
+		return srv.(NetworkAPIServer).RegisterNode(ctx, req.(*nac.NodeRegRequest))
 	}
 	return interceptor(ctx, in, info, handler)
-}
-
-func _NetworkAPI_DNS_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(dns.Host)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NetworkAPIServer).DNS(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/network.NetworkAPI/DNS",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NetworkAPIServer).DNS(ctx, req.(*dns.Host))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _NetworkAPI_Routing_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(NetworkAPIServer).Routing(&networkAPIRoutingServer{stream})
-}
-
-type NetworkAPI_RoutingServer interface {
-	Send(*routing.RTResponse) error
-	Recv() (*routing.RTRequest, error)
-	grpc.ServerStream
-}
-
-type networkAPIRoutingServer struct {
-	grpc.ServerStream
-}
-
-func (x *networkAPIRoutingServer) Send(m *routing.RTResponse) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *networkAPIRoutingServer) Recv() (*routing.RTRequest, error) {
-	m := new(routing.RTRequest)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
 }
 
 func _NetworkAPI_Control_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -394,7 +316,7 @@ func (x *networkAPIControlServer) Recv() (*mmsp.Payload, error) {
 }
 
 func _NetworkAPI_Metrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(network.Node)
+	in := new(topology.Node)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -406,31 +328,13 @@ func _NetworkAPI_Metrics_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/network.NetworkAPI/Metrics",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NetworkAPIServer).Metrics(ctx, req.(*network.Node))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _NetworkAPI_DataPointMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(metrics.DataPoints)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NetworkAPIServer).DataPointMetrics(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/network.NetworkAPI/DataPointMetrics",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NetworkAPIServer).DataPointMetrics(ctx, req.(*metrics.DataPoints))
+		return srv.(NetworkAPIServer).Metrics(ctx, req.(*topology.Node))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _NetworkAPI_FederationEndpoints_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(network.Node)
+	in := new(topology.NodeReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -442,7 +346,7 @@ func _NetworkAPI_FederationEndpoints_Handler(srv interface{}, ctx context.Contex
 		FullMethod: "/network.NetworkAPI/FederationEndpoints",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NetworkAPIServer).FederationEndpoints(ctx, req.(*network.Node))
+		return srv.(NetworkAPIServer).FederationEndpoints(ctx, req.(*topology.NodeReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -454,6 +358,10 @@ var NetworkAPI_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "network.NetworkAPI",
 	HandlerType: (*NetworkAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "NetworkAdmissionControl",
+			Handler:    _NetworkAPI_NetworkAdmissionControl_Handler,
+		},
 		{
 			MethodName: "NATProbe",
 			Handler:    _NetworkAPI_NATProbe_Handler,
@@ -471,16 +379,8 @@ var NetworkAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _NetworkAPI_RegisterNode_Handler,
 		},
 		{
-			MethodName: "DNS",
-			Handler:    _NetworkAPI_DNS_Handler,
-		},
-		{
 			MethodName: "Metrics",
 			Handler:    _NetworkAPI_Metrics_Handler,
-		},
-		{
-			MethodName: "DataPointMetrics",
-			Handler:    _NetworkAPI_DataPointMetrics_Handler,
 		},
 		{
 			MethodName: "FederationEndpoints",
@@ -488,12 +388,6 @@ var NetworkAPI_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "Routing",
-			Handler:       _NetworkAPI_Routing_Handler,
-			ServerStreams: true,
-			ClientStreams: true,
-		},
 		{
 			StreamName:    "Control",
 			Handler:       _NetworkAPI_Control_Handler,

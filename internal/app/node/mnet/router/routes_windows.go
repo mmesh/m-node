@@ -11,21 +11,6 @@ import (
 	"mmesh.dev/m-node/internal/app/node/utils"
 )
 
-func (r *router) updateLocalRoutes() error {
-	if !r.localForwarding {
-		return nil
-	}
-
-	if r.networkInterface == nil {
-		xlog.Alert("Unable to update interface routes: nil pointer")
-		return nil
-	}
-
-	// TODO
-
-	return nil
-}
-
 func (ni *networkInterface) routeAdd(ipDst cidrIPDst) error {
 	r := ipDst.string()
 
@@ -77,3 +62,20 @@ func (ni *networkInterface) routeDel(ipDst cidrIPDst) error {
 
 	return nil
 }
+
+/*
+func (r *router) updateLocalRoutes() error {
+	if !r.localForwarding {
+		return nil
+	}
+
+	if r.networkInterface == nil {
+		xlog.Alert("Unable to update interface routes: nil pointer")
+		return nil
+	}
+
+	// TODO
+
+	return nil
+}
+*/

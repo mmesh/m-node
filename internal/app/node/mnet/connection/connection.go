@@ -3,31 +3,38 @@ package connection
 import (
 	"time"
 
-	"github.com/spf13/viper"
-	"mmesh.dev/m-api-go/grpc/resources/iam/auth"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/grpc/client"
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
-func newConnection() *connection {
-	c := &connection{}
-	var err error
-
-	authKey := &auth.AuthKey{
-		Key: viper.GetString("node.authKey"),
+func (c *connection) new() {
+	for {
+		if err := c.networkAdmissionRequest(); err != nil {
+			xlog.Errorf("Unable to connect to network controller: %v", errors.Cause(err))
+			xlog.Info("Retrying in 5s...")
+			time.Sleep(5 * time.Second)
+			continue
+		}
+		break
 	}
-	authSecret := viper.GetString("node.authSecret")
 
 	if fc == nil {
-		fc = newFederationConnection()
+		fc = c.newFederationConnection()
+	} else {
+		fc.node = c.node
+		fc.controllerEndpoint = c.defaultControllerEndpoint
 	}
+
 	endpoint := fc.endpoint()
 	connectionFailed := false
 	conns := 0
+	c.nxnc = nil
+
+	var err error
 
 	for c.nxnc == nil || err != nil {
-		c.nxnc, c.grpcClientConn, err = client.NewNetworkAPIClient(endpoint, authKey, authSecret)
+		c.nxnc, c.grpcClientConn, err = client.NewNetworkAPIClient(endpoint, c.authKey, c.authSecret)
 		if err != nil {
 			xlog.Errorf("Unable to connect to controller %s: %v", endpoint, errors.Cause(err))
 
@@ -62,14 +69,22 @@ func newConnection() *connection {
 			}
 		}
 
-		if err = c.newSession(); err != nil {
-			xlog.Errorf("Unable to create a network session: %v", errors.Cause(err))
-			time.Sleep(5 * time.Second)
+		if !c.initialized {
+			if err = c.newSession(); err != nil {
+				xlog.Errorf("Unable to create a network session: %v", errors.Cause(err))
+				time.Sleep(5 * time.Second)
+				continue
+			}
+		}
+
+		if err = c.newRoutingClient(fc.host()); err != nil {
+			xlog.Errorf("Unable to create a routing session: %v", errors.Cause(err))
+			time.Sleep(1 * time.Second)
 			continue
 		}
 	}
 
-	xlog.Info("Node CONNECTED :-)")
+	c.initialized = true
 
-	return c
+	xlog.Info("Node CONNECTED :-)")
 }

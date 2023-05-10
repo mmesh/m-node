@@ -5,9 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/spf13/viper"
-	"mmesh.dev/m-api-go/grpc/network/mmnp/register"
-	"mmesh.dev/m-api-go/grpc/resources/network"
+	"mmesh.dev/m-api-go/grpc/network/nac"
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/ipnet"
 	"mmesh.dev/m-lib/pkg/resources"
@@ -15,16 +14,16 @@ import (
 )
 
 func (ln *localNode) AddNetworkEndpoint(endpointID, dnsName, reqIPv4 string) (string, error) {
-	e := &network.NetworkEndpoint{
+	e := &topology.Endpoint{
 		EndpointID: endpointID,
 		DNSName:    dnsName,
 		ReqIPv4:    reqIPv4,
 	}
 
-	erReq := &register.EndpointRegRequest{
-		Node:     ln.NetworkNodeWithoutEndpoints(),
+	erReq := &nac.EndpointRegRequest{
+		NodeReq:  ln.NodeReq(),
 		Endpoint: e,
-		Priority: int32(viper.GetInt("agent.priority")),
+		Priority: ln.node.Cfg.Priority,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -88,11 +87,10 @@ func (ln *localNode) RemoveNetworkEndpoint(endpointID string) error {
 		return nil
 	}
 
-	n := ln.NetworkNodeWithoutEndpoints()
-	erReq := &register.EndpointRegRequest{
-		Node:     n,
+	erReq := &nac.EndpointRegRequest{
+		NodeReq:  ln.NodeReq(),
 		Endpoint: e,
-		Priority: int32(viper.GetInt("agent.priority")),
+		Priority: ln.node.Cfg.Priority,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
