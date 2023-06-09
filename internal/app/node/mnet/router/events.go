@@ -12,11 +12,11 @@ func (r *router) eventProcessor(closeCh <-chan struct{}) {
 		select {
 		case nh := <-r.RIB().RelayConnQueue():
 			if err := r.rconnect(nh); err != nil {
-				xlog.Errorf("Unable to connect to relay: %v", errors.Cause(err))
+				xlog.Warnf("Unable to connect to relay peer: %v", errors.Cause(err))
 			}
 		case nh := <-r.RIB().RouterConnQueue():
 			if err := r.rconnect(nh); err != nil {
-				xlog.Errorf("Unable to connect to router: %v", errors.Cause(err))
+				xlog.Warnf("Unable to connect to router: %v", errors.Cause(err))
 			}
 		case evt := <-r.RIB().RouteEventQueue():
 			switch evt.Type {

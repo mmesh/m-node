@@ -72,6 +72,7 @@ func (r *router) packetFilter(packet []byte) (*ipPacket, bool) {
 			return ipPkt, true // drop the pkt
 		}
 		if srcIPNet.Contains(ipPkt.srcIP) {
+			// fmt.Println("*** MATCHED SrcIP")
 			matchSrcIP = true
 		}
 
@@ -80,13 +81,16 @@ func (r *router) packetFilter(packet []byte) (*ipPacket, bool) {
 			return ipPkt, true // drop the pkt
 		}
 		if dstIPNet.Contains(ipPkt.dstIP) {
+			// fmt.Println("*** MATCHED DstIP")
 			matchDstIP = true
 		}
 
 		if f.Proto == topology.Protocol_ANY || ipnet.IPProtocol(f.Proto.String()) == ipPkt.proto {
+			// fmt.Println("*** MATCHED Proto")
 			matchProto = true
 		}
 		if f.DstPort == 0 || f.DstPort == uint32(ipPkt.dstPort) {
+			// fmt.Println("*** MATCHED DstPort")
 			matchPort = true
 		}
 
@@ -121,6 +125,7 @@ func decodeIPPacket(pkt []byte) (*ipPacket, error) {
 
 	switch ipnet.AddressFamily(header.Version) {
 	case ipnet.AddressFamilyIPv4:
+		// fmt.Println("::::: IPv4 Packet HEADER")
 		// fmt.Println(header.String())
 
 		return &ipPacket{
@@ -138,6 +143,7 @@ func decodeIPPacket(pkt []byte) (*ipPacket, error) {
 			return nil, err
 		}
 
+		// fmt.Println("::::: IPv6 Packet HEADER")
 		// fmt.Println(header.String())
 
 		dstAddr, err := ipnet.GetIPv6Endpoint(header.Dst.String())

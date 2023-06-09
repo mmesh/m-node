@@ -13,14 +13,17 @@ func GetTransport(maddr string) transport.Protocol {
 		return transport.Invalid
 	}
 
-	proto := transport.Protocol(strings.ToUpper(s[3]))
+	proto := transport.Protocol(strings.ToLower(s[3]))
 
 	switch proto {
 	case transport.ProtocolTCP:
 		return transport.ProtocolTCP
 	case transport.ProtocolUDP:
-		if transport.Protocol(strings.ToUpper(s[5])) == transport.ProtocolQUIC {
+		switch transport.Protocol(strings.ToLower(s[5])) {
+		case transport.ProtocolQUIC:
 			return transport.ProtocolQUIC
+		case transport.ProtocolQUICv1:
+			return transport.ProtocolQUICv1
 		}
 	}
 

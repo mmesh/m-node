@@ -2,24 +2,16 @@ package router
 
 import (
 	"bufio"
-	"context"
 
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"mmesh.dev/m-node/internal/app/node/mnet/p2p"
 	"mmesh.dev/m-node/internal/app/node/mnet/p2p/peer"
 )
 
 func (r *router) connectTunnel(peerHop *peer.NetHop) (*bufio.ReadWriter, error) {
-	peerInfo, err := peer.Connect(r.p2pHost, peerHop)
+	s, err := peer.NewStream(r.p2pHost, peerHop)
 	if err != nil {
-		return nil, errors.Wrapf(err, "[%v] function peer.ConnectHop()", errors.Trace())
-	}
-
-	s, err := r.p2pHost.NewStream(context.TODO(), peerInfo.ID, p2p.ProtocolID)
-	if err != nil {
-		xlog.Errorf("Unable to create a stream with peer %s: %v", peerInfo.ID.Pretty(), err)
-		return nil, errors.Wrapf(err, "[%v] function r.p2pHost.NewStream()", errors.Trace())
+		return nil, errors.Wrapf(err, "[%v] function peer.NewStream()", errors.Trace())
 	}
 
 	// create a buffered stream so that read and writes are non blocking
@@ -54,15 +46,6 @@ func (r *router) newTunnel(ipPkt *ipPacket) (bool, error) {
 	if !r.setTunnel(ipPkt.dstAddr, rw) {
 		return true, nil
 	}
-
-	// xlog.Infof("Tunnel connected to %s via %s [DIRECT]", ipPkt.dstAddr, nextHop)
-
-	// if pc.DirectConnection {
-	// 	xlog.Infof("%s tunnel connected to %s [DIRECT]", pc.Proto.String(), ipPkt.dstAddr)
-	// } else {
-	// 	xlog.Infof("%s tunnel connected to %s [INDIRECT]", pc.Proto.String(), ipPkt.dstAddr)
-	// 	go metrics.IncrRelayConns(pc.PeerInfo.ID.Pretty())
-	// }
 
 	xlog.Infof("Tunnel connected to %s", ipPkt.dstAddr)
 

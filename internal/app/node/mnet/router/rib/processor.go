@@ -7,6 +7,7 @@ import (
 	"mmesh.dev/m-api-go/grpc/network/routing"
 	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-lib/pkg/ipnet"
+	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 func (r *ribData) processor(d *routing.RIBData) {
@@ -79,7 +80,7 @@ func (r *ribData) setRelay(relay *routing.NetHop) {
 	r.Lock()
 	defer r.Unlock()
 
-	r.rib.Routers[relay.P2PHostID] = relay
+	r.rib.Relays[relay.P2PHostID] = relay
 
 	if relay.SubnetID == r.rib.RoutingDomain.SubnetID || r.rib.RoutingDomain.Scope == nac.RoutingScope_NETWORK {
 		evtRelay(relay)
@@ -103,6 +104,7 @@ func (r *ribData) setPolicy(npm map[string]*topology.Policy) {
 	defer r.Unlock()
 
 	for subnetID, p := range npm {
+		xlog.Infof("Updated network policy for %s", subnetID)
 		r.rib.Policy[subnetID] = p
 	}
 }

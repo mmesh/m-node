@@ -3,23 +3,22 @@ package host
 import (
 	"crypto/rand"
 	"fmt"
+	"time"
 
 	// mrand "math/rand"
 
 	"github.com/libp2p/go-libp2p"
 
 	// connmgr "github.com/libp2p/go-libp2p-connmgr"
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p/core/crypto"
+	"github.com/libp2p/go-libp2p/core/host"
 
 	// circuit "github.com/libp2p/go-libp2p-circuit"
-	relayv1 "github.com/libp2p/go-libp2p/p2p/protocol/circuitv1/relay"
-	// relayv2 "github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/relay"
+	// relayv1 "github.com/libp2p/go-libp2p/p2p/protocol/circuitv1/relay"
+	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/relay"
 	// "github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
 
-	// quic "github.com/libp2p/go-libp2p-quic-transport"
 	quic "github.com/libp2p/go-libp2p/p2p/transport/quic"
-	// tcp "github.com/libp2p/go-tcp-transport"
 	tcp "github.com/libp2p/go-libp2p/p2p/transport/tcp"
 
 	// secio "github.com/libp2p/go-libp2p-secio"
@@ -74,15 +73,18 @@ func New(hostType P2PHostType, port int) (host.Host, error) {
 		// libp2p.ConnectionManager(cm),
 		// Attempt to open ports using uPNP for NATed hosts.
 		libp2p.NATPortMap(),
-		// Let this host use relays and advertise itself on relays if
-		// it finds it is behind NAT. Use libp2p.Relay(options...) to
-		// enable active relays and more.
-		// libp2p.EnableAutoRelay(),
+		// Experimental EnableHolePunching enables NAT traversal
+		// by enabling NATT'd peers to both initiate and respond
+		// to hole punching attempts to create direct/NAT-traversed
+		// connections with other peers. (default: disabled)
+		libp2p.EnableHolePunching(),
+		// DisableMetrics configures libp2p to disable prometheus metrics
+		libp2p.DisableMetrics(),
 	}
 
 	maddrs := []string{
-		fmt.Sprintf("/ip4/0.0.0.0/udp/%d/quic", port), // UDP endpoint for the QUIC transport
-		fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", port),      // regular TCP connections
+		fmt.Sprintf("/ip4/0.0.0.0/udp/%d/quic-v1", port), // UDP endpoint for the QUIC transport
+		fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", port),         // regular TCP connections
 	}
 
 	switch hostType {
@@ -99,7 +101,27 @@ func New(hostType P2PHostType, port int) (host.Host, error) {
 	case P2PHostTypeRelayHost:
 		opts = append(opts,
 			libp2p.ListenAddrStrings(maddrs...),
-			// libp2p.EnableRelayService(), // circuitv2
+			libp2p.EnableRelayService(
+				relay.WithResources(relay.Resources{
+					Limit: &relay.RelayLimit{
+						Duration: 4 * time.Hour, // default: 2 * time.Minute
+						// Duration: 1 * time.Minute, // default: 2 * time.Minute
+						Data: 1 << 30, // 1GB  // default: 1 << 17, // 128K
+					},
+
+					ReservationTTL: time.Hour,
+
+					MaxReservations: 128, // default: 128
+					MaxCircuits:     16,
+					BufferSize:      2048,
+
+					MaxReservationsPerPeer: 4,
+					MaxReservationsPerIP:   8,
+					MaxReservationsPerASN:  32,
+				}),
+				// relay.WithResources(relay.DefaultResources()),
+				// relay.WithInfiniteLimits(),
+			), // circuitv2
 			libp2p.ForceReachabilityPublic(),
 		)
 	}
@@ -109,21 +131,15 @@ func New(hostType P2PHostType, port int) (host.Host, error) {
 		return nil, errors.Wrapf(err, "[%v] function libp2p.New()", errors.Trace())
 	}
 
-	if hostType == P2PHostTypeRelayHost {
-		if _, err := relayv1.NewRelay(
-			h,
-			// relayv1.WithResources(relayv1.DefaultResources()),
-		); err != nil {
-			return nil, errors.Wrapf(err, "[%v] function relayv1.NewRelay()", errors.Trace())
-		}
-
-		// if _, err := relayv2.New(
-		// 	host,
-		// 	relayv2.WithResources(relayv2.DefaultResources()),
-		// ); err != nil {
-		// 	return nil, errors.Wrapf(err, "[%v] function relayv2.New()", errors.Trace())
-		// }
-	}
+	// if hostType == P2PHostTypeRelayHost {
+	// 	if _, err := relay.New(
+	// 		h,
+	// 		relay.WithResources(relay.DefaultResources()),
+	// 		relay.WithInfiniteLimits(),
+	// 	); err != nil {
+	// 		return nil, errors.Wrapf(err, "[%v] function relay.New()", errors.Trace())
+	// 	}
+	// }
 
 	return h, nil
 }

@@ -3,10 +3,11 @@ package router
 import (
 	"bufio"
 
-	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p/core/network"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/metrics"
+	"mmesh.dev/m-node/internal/app/node/mnet/p2p/conn"
 )
 
 // https://github.com/lucas-clemente/quic-go/wiki/UDP-Receive-Buffer-Size
@@ -17,7 +18,8 @@ import (
 const BUFFER_SIZE = 1 << 16
 
 func (r *router) handleStream(s network.Stream) {
-	xlog.Info("[+] New stream connected")
+	// xlog.Info("[+] New stream connected")
+	conn.Log(s.Conn())
 
 	// Create a buffer stream for non blocking read and write.
 	rw := bufio.NewReadWriter(bufio.NewReader(s), bufio.NewWriter(s))

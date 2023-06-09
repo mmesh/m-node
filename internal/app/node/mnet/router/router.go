@@ -5,7 +5,7 @@ import (
 	"os"
 	"sync"
 
-	libp2pHost "github.com/libp2p/go-libp2p-core/host"
+	libp2pHost "github.com/libp2p/go-libp2p/core/host"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/mnet/p2p"

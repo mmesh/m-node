@@ -3,9 +3,10 @@ package transport
 type Protocol string
 
 const (
-	ProtocolUDP  Protocol = "UDP"
-	ProtocolTCP  Protocol = "TCP"
-	ProtocolQUIC Protocol = "QUIC"
+	ProtocolUDP    Protocol = "udp"
+	ProtocolTCP    Protocol = "tcp"
+	ProtocolQUIC   Protocol = "quic"
+	ProtocolQUICv1 Protocol = "quic-v1"
 
 	Invalid Protocol = "-"
 )

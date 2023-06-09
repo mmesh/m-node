@@ -17,25 +17,9 @@ func (r *router) rconnect(nh *routing.NetHop) error {
 		RouterMAddrs: nil,
 	}
 
-	// circuitv1 relays
-	if _, err := peer.Connect(r.p2pHost, peerHop); err != nil {
-		return errors.Wrapf(err, "[%v] function peer.Connect()", errors.Trace())
+	if err := peer.RConnect(r.p2pHost, peerHop); err != nil {
+		return errors.Wrapf(err, "[%v] function peer.RConnect()", errors.Trace())
 	}
-
-	/*
-		// circuitv2 requires slot reservations in relays
-		if err := relayReservation(peerInfo); err != nil {
-			xlog.Errorf("Unable to get reservation at relay: %v", err)
-			return
-		}
-
-		if err := peer.Connect(r.p2pHost, peerInfo); err != nil {
-			xlog.Errorf("Unable to connect to relay: %v", err)
-			return
-		}
-		xlog.Debugf("Connection ESTABLISHED with relay %s", peerInfo.ID.Pretty())
-
-	*/
 
 	return nil
 }

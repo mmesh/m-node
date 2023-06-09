@@ -4,34 +4,54 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/peer"
-
-	// swarm "github.com/libp2p/go-libp2p-swarm"
+	"github.com/libp2p/go-libp2p/core/host"
+	"github.com/libp2p/go-libp2p/core/network"
+	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/p2p/net/swarm"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/xlog"
+	"mmesh.dev/m-node/internal/app/node/mnet/p2p"
+	"mmesh.dev/m-node/internal/app/node/mnet/p2p/conn"
 )
 
-func Connect(p2pHost host.Host, hop *NetHop) (*peer.AddrInfo, error) {
-	pm := newPeerMapFromNetHop(hop)
+func NewStream(p2pHost host.Host, hop *NetHop) (network.Stream, error) {
+	pm := newPeerAddrInfoMapFromNetHop(hop)
 
+	// fmt.Println("----- pm - start -----")
+	// pm.show()
+	// fmt.Println("----- pm - end -----")
+
+	// try direct/relayed connection
 	peerInfo := connectPeerGroup(p2pHost, pm.peer)
-	if peerInfo != nil {
-		return peerInfo, nil
+	if peerInfo == nil {
+		return nil, fmt.Errorf("unable to connect to peer")
 	}
 
-	peerInfo = connectPeerGroup(p2pHost, pm.relay)
-	if peerInfo != nil {
-		return peerInfo, nil
+	conns := p2pHost.Network().ConnsToPeer(peerInfo.ID)
+
+	xlog.Infof("Peer %s CONNECTED (%d conns)",
+		peerInfo.ID.ShortString(), len(conns))
+
+	transientConnection := false
+
+	for _, c := range conns {
+		if c.Stat().Transient {
+			transientConnection = true
+		}
+		conn.Log(c)
 	}
 
-	peerInfo = connectPeerGroup(p2pHost, pm.router)
-	if peerInfo != nil {
-		return peerInfo, nil
+	ctx := context.TODO() // context for direct connection
+	if transientConnection {
+		ctx = network.WithUseTransient(ctx, "mmesh") // context for relayed connection
 	}
 
-	return nil, fmt.Errorf("unable to connect to peer")
+	s, err := p2pHost.NewStream(ctx, peerInfo.ID, p2p.ProtocolID)
+	if err != nil {
+		return nil, errors.Wrapf(err, "[%v] function p2pHost.NewStream()", errors.Trace())
+	}
+
+	return s, nil
 }
 
 func connectPeerGroup(p2pHost host.Host, peers map[peer.ID]*peer.AddrInfo) *peer.AddrInfo {
@@ -40,16 +60,11 @@ func connectPeerGroup(p2pHost host.Host, peers map[peer.ID]*peer.AddrInfo) *peer
 			continue
 		}
 
-		// peerID := peerInfo.ID.Pretty()[:maxIDChars]
-
-		// xlog.Debugf("Trying connection to peer %s", peerID)
 		if err := connect(p2pHost, peerInfo); err != nil {
-			// xlog.Warnf("Unable to connect peer %s: %v", peerID, err)
 			continue
-		} else {
-			// xlog.Debugf("CONNECTED to peer %s", peerID)
-			return peerInfo
 		}
+
+		return peerInfo
 	}
 
 	return nil
@@ -58,7 +73,7 @@ func connectPeerGroup(p2pHost host.Host, peers map[peer.ID]*peer.AddrInfo) *peer
 func connect(p2pHost host.Host, peerInfo *peer.AddrInfo) error {
 	p2pHost.Network().(*swarm.Swarm).Backoff().Clear(peerInfo.ID)
 	if err := p2pHost.Connect(context.TODO(), *peerInfo); err != nil {
-		xlog.Trace(err)
+		xlog.Warnf("Unable to connect to peer %s: %v", peerInfo.ID.ShortString(), err)
 		return errors.Wrapf(err, "[%v] function p2pHost.Connect()", errors.Trace())
 	}
 	p2pHost.Network().(*swarm.Swarm).Backoff().Clear(peerInfo.ID)
