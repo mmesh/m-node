@@ -22,7 +22,7 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.13.0
 	github.com/vishvananda/netlink v1.1.0
-	golang.org/x/net v0.10.0
+	golang.org/x/net v0.12.0
 	golang.zx2c4.com/wireguard v0.0.0-20211116201604-ffb742d43d92
 	google.golang.org/grpc v1.55.0
 	k8s.io/api v0.27.2
@@ -156,16 +156,16 @@ require (
 	go.uber.org/fx v1.19.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
-	golang.org/x/crypto v0.9.0 // indirect
+	golang.org/x/crypto v0.11.0 // indirect
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
 	golang.org/x/exp/typeparams v0.0.0-20220317015231-48e79f11773a // indirect
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/oauth2 v0.6.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.8.0 // indirect
-	golang.org/x/term v0.8.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/sys v0.10.0 // indirect
+	golang.org/x/term v0.10.0 // indirect
+	golang.org/x/text v0.11.0 // indirect
 	golang.org/x/time v0.0.0-20220210224613-90d013bbcef8 // indirect
 	golang.org/x/tools v0.7.0 // indirect
 	golang.zx2c4.com/wintun v0.0.0-20211104114900-415007cec224 // indirect
