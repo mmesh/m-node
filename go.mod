@@ -14,7 +14,7 @@ require (
 	github.com/kardianos/service v1.2.1
 	github.com/libp2p/go-libp2p v0.27.5
 	github.com/lorenzosaino/go-sysctl v0.3.0
-	github.com/miekg/dns v1.1.54
+	github.com/miekg/dns v1.1.55
 	github.com/multiformats/go-multiaddr v0.9.0
 	github.com/robfig/cron/v3 v3.0.0
 	github.com/shirou/gopsutil/v3 v3.23.5
