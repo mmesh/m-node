@@ -2,6 +2,7 @@ package peer
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/peer"
@@ -13,15 +14,7 @@ import (
 func RConnect(p2pHost host.Host, hop *NetHop) error {
 	pm := newPeerAddrInfoMapFromNetHop(hop)
 
-	if err := rconnect(p2pHost, pm.peer); err != nil {
-		return errors.Wrapf(err, "[%v] function rconnect()", errors.Trace())
-	}
-
-	return nil
-}
-
-func rconnect(p2pHost host.Host, peers map[peer.ID]*peer.AddrInfo) error {
-	for _, peerInfo := range peers {
+	for _, peerInfo := range pm.peer {
 		if peerInfo.ID == p2pHost.ID() {
 			continue
 		}
@@ -37,12 +30,12 @@ func rconnect(p2pHost host.Host, peers map[peer.ID]*peer.AddrInfo) error {
 		return nil
 	}
 
-	return nil
+	return fmt.Errorf("unable to reserve a slot in relay")
 }
 
 func getRelayReservation(p2pHost host.Host, relayPeerInfo *peer.AddrInfo) error {
 	if _, err := client.Reserve(context.TODO(), p2pHost, *relayPeerInfo); err != nil {
-		xlog.Warnf("Unable to get reservation from relay peer %s: %v",
+		xlog.Tracef("Unable to get reservation from relay peer %s: %v",
 			relayPeerInfo.ID.ShortString(), err)
 		return errors.Wrapf(err, "[%v] function client.Reserve()", errors.Trace())
 	}

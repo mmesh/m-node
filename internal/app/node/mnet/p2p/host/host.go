@@ -12,13 +12,13 @@ import (
 	// connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/host"
-
-	// circuit "github.com/libp2p/go-libp2p-circuit"
-	// relayv1 "github.com/libp2p/go-libp2p/p2p/protocol/circuitv1/relay"
+	"github.com/libp2p/go-libp2p/p2p/net/swarm"
 	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/relay"
+
 	// "github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
 
-	quic "github.com/libp2p/go-libp2p/p2p/transport/quic"
+	// quic "github.com/libp2p/go-libp2p/p2p/transport/quic"
+	// "github.com/libp2p/go-libp2p/p2p/transport/quicreuse"
 	tcp "github.com/libp2p/go-libp2p/p2p/transport/tcp"
 
 	// secio "github.com/libp2p/go-libp2p-secio"
@@ -57,7 +57,7 @@ func New(hostType P2PHostType, port int) (host.Host, error) {
 		libp2p.Identity(prvKey),
 		// libp2p.DefaultTransports,
 		libp2p.ChainOptions(
-			libp2p.Transport(quic.NewTransport),
+			// libp2p.Transport(quic.NewTransport),
 			libp2p.Transport(tcp.NewTCPTransport),
 		),
 		libp2p.DefaultMuxers,
@@ -80,12 +80,20 @@ func New(hostType P2PHostType, port int) (host.Host, error) {
 		libp2p.EnableHolePunching(),
 		// DisableMetrics configures libp2p to disable prometheus metrics
 		libp2p.DisableMetrics(),
+		// Enable smart dialing
+		libp2p.DialRanker(swarm.DefaultDialRanker),
+		// libp2p.QUICReuse(quicreuse.NewConnManager),
 	}
 
 	maddrs := []string{
 		fmt.Sprintf("/ip4/0.0.0.0/udp/%d/quic-v1", port), // UDP endpoint for the QUIC transport
 		fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", port),         // regular TCP connections
 	}
+
+	// maddrs := []multiaddr.Multiaddr{
+	// 	multiaddr.StringCast(fmt.Sprintf("/ip4/0.0.0.0/udp/%d/quic-v1", port)), // UDP endpoint for the QUIC transport
+	// 	multiaddr.StringCast(fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", port)),         // regular TCP connections
+	// }
 
 	switch hostType {
 	case P2PHostTypeHiddenHost:

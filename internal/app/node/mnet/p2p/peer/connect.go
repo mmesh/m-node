@@ -73,7 +73,7 @@ func connectPeerGroup(p2pHost host.Host, peers map[peer.ID]*peer.AddrInfo) *peer
 func connect(p2pHost host.Host, peerInfo *peer.AddrInfo) error {
 	p2pHost.Network().(*swarm.Swarm).Backoff().Clear(peerInfo.ID)
 	if err := p2pHost.Connect(context.TODO(), *peerInfo); err != nil {
-		xlog.Warnf("Unable to connect to peer %s: %v", peerInfo.ID.ShortString(), err)
+		xlog.Tracef("Unable to connect to peer %s: %v", peerInfo.ID.ShortString(), err)
 		return errors.Wrapf(err, "[%v] function p2pHost.Connect()", errors.Trace())
 	}
 	p2pHost.Network().(*swarm.Swarm).Backoff().Clear(peerInfo.ID)

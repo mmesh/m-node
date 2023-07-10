@@ -9,7 +9,7 @@ import (
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
-const MTU int = 1400 // TUN interface, so only plain IP packet, no ethernet header + mtu is set to 1300
+const MTU int = 65535 // TUN interface, so only plain IP packet, no ethernet header
 
 type networkInterface struct {
 	ifc     *water.Interface

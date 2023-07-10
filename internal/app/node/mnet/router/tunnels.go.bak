@@ -15,22 +15,18 @@ func (r *router) connectTunnel(peerHop *peer.NetHop) (*bufio.ReadWriter, error) 
 	}
 
 	// create a buffered stream so that read and writes are non blocking
-	return bufio.NewReadWriter(
-		bufio.NewReaderSize(s, BUFFER_SIZE),
-		bufio.NewWriterSize(s, BUFFER_SIZE),
-	), nil
-	// return bufio.NewReadWriter(bufio.NewReader(s), bufio.NewWriter(s)), nil
+	return bufio.NewReadWriter(bufio.NewReader(s), bufio.NewWriter(s)), nil
 }
 
-func (r *router) newTunnel(ipHdr *ipHeader) (bool, error) {
-	// xlog.Infof("Requested new tunnel to %s", ipHdr.dstAddr)
+func (r *router) newTunnel(ipPkt *ipPacket) (bool, error) {
+	// xlog.Infof("Requested new tunnel to %s", ipPkt.dstAddr)
 
-	if !r.setDial(ipHdr.dstAddr) {
+	if !r.setDial(ipPkt.dstAddr) {
 		return false, nil
 	}
-	defer r.unsetDial(ipHdr.dstAddr)
+	defer r.unsetDial(ipPkt.dstAddr)
 
-	nh, err := r.RIB().GetNetHop(ipHdr.dstAddr)
+	nh, err := r.RIB().GetNetHop(ipPkt.dstAddr)
 	if err != nil {
 		return false, errors.Wrapf(err, "[%v] function r.RIB().GetNetHop()", errors.Trace())
 	}
@@ -43,15 +39,15 @@ func (r *router) newTunnel(ipHdr *ipHeader) (bool, error) {
 
 	rw, err := r.connectTunnel(peerHop)
 	if err != nil {
-		// r.RIB().SetNetHopUnhealthy(ipHdr.dstAddr, nh.P2PHostID)
+		// r.RIB().SetNetHopUnhealthy(ipPkt.dstAddr, nh.P2PHostID)
 		return false, errors.Wrapf(err, "[%v] function r.connectTunnel()", errors.Trace())
 	}
 
-	if !r.setTunnel(ipHdr.dstAddr, rw) {
+	if !r.setTunnel(ipPkt.dstAddr, rw) {
 		return true, nil
 	}
 
-	xlog.Infof("Tunnel connected to %s", ipHdr.dstAddr)
+	xlog.Infof("Tunnel connected to %s", ipPkt.dstAddr)
 
 	// create a thread to read data from new buffered stream
 	go r.readStream(rw)

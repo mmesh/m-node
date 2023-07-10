@@ -9,7 +9,7 @@ import (
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
-const MTU int = 1400 // TUN interface, so only plain IP packet, no ethernet header + mtu is set to 1300
+const MTU int = 65535 // TUN interface, so only plain IP packet, no ethernet header
 
 const tunOffset int = 0 // extra bytes for packet header (IFF_NO_PI)
 

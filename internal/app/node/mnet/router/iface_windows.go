@@ -24,7 +24,13 @@ func (r *router) ifUp() error {
 	xlog.Infof("Setting up interface %s", ni.devName())
 
 	// set interface parameters
+	// ipv4
 	args := fmt.Sprintf("interface ipv4 set subinterface \"%s\" mtu=%d store=active", ni.devName(), MTU)
+	if err := utils.Netsh(args); err != nil {
+		return errors.Wrapf(err, "[%v] function utils.Netsh()", errors.Trace())
+	}
+	// ipv6
+	args = fmt.Sprintf("interface ipv6 set subinterface \"%s\" mtu=%d store=active", ni.devName(), MTU)
 	if err := utils.Netsh(args); err != nil {
 		return errors.Wrapf(err, "[%v] function utils.Netsh()", errors.Trace())
 	}

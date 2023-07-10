@@ -111,45 +111,46 @@ func (r *router) setProxy64(vip6, ipv4 string, proto layers.IPProtocol, port uin
 	time.Sleep(500 * time.Millisecond)
 }
 
-func (r *router) proxy64Forward(ipPkt *ipPacket) bool {
-	if ipPkt.af == ipnet.AddressFamilyIPv4 {
-		return false
-	}
+func (r *router) proxy64Forward(ipHdr *ipHeader, pkt []byte) bool {
+	// if ipHdr.af == ipnet.AddressFamilyIPv4 {
+	// 	return false
+	// }
 
 	// ipv6 traffic
-	dstIPv4, err := ipnet.GetIPv4Encap(ipPkt.dstIP.String())
+	dstIPv4, err := ipnet.GetIPv4Encap(ipHdr.dstIP.String())
 	if err != nil {
 		// ipv6 addr does not encapsulate an ipv4 addr
 		return false
 	}
 
-	if err := ipPkt.decodeIPLayers(); err != nil {
-		// unable to decode packet, so proxy64 not possible
-		return false
-	}
+	// if err := ipHdr.parseProtocol(pkt); err != nil {
+	// 	// unable to decode packet, so proxy64 not possible
+	// 	xlog.Warnf("Unable to parse IP protocol: %v", errors.Cause(err))
+	// 	return false
+	// }
 
-	if ipPkt.proto != layers.IPProtocolTCP {
+	if ipHdr.proto != layers.IPProtocolTCP {
 		// for the moment, only tcp is supported
 		return false
 	}
 
-	if ipPkt.dstAddr != r.ipv6 {
+	if ipHdr.dstAddr != r.ipv6 {
 		// packet is not for this node
 		return false
 	}
 
 	// forward to local proxy64
-	r.setProxy64(ipPkt.dstIP.String(), dstIPv4, ipPkt.proto, ipPkt.dstPort)
+	r.setProxy64(ipHdr.dstIP.String(), dstIPv4, ipHdr.proto, ipHdr.dstPort)
 
 	// write to TUN interface
 	if r.networkInterface != nil {
-		if _, err = r.networkInterface.write(ipPkt.data[:ipPkt.plen]); err != nil {
-			xlog.Warnf("Unable to write packet to interface: %v", err)
+		if _, err = r.networkInterface.write(pkt); err != nil {
+			xlog.Warnf("Unable to write packet to network interface: %v", err)
 			return true
 		}
 
 		// update metrics
-		go metrics.UpdateNetworkMetric(ipPkt.srcIP.String(), 0, uint64(ipPkt.plen), false)
+		go metrics.UpdateNetworkMetric(ipHdr.srcIP.String(), 0, uint64(len(pkt)), false)
 	}
 
 	return true

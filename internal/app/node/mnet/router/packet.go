@@ -9,11 +9,12 @@ import (
 	"golang.org/x/net/ipv4"
 	"golang.org/x/net/ipv6"
 	"mmesh.dev/m-api-go/grpc/resources/topology"
+	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/ipnet"
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
-type ipPacket struct {
+type ipHeader struct {
 	af        ipnet.AddressFamily
 	srcIP     net.IP
 	dstIP     net.IP
@@ -23,104 +24,12 @@ type ipPacket struct {
 	dstPort   uint16
 	icmp4Type layers.ICMPv4TypeCode
 	icmp6Type layers.ICMPv6TypeCode
-	data      []byte
-	plen      int
 }
 
-func (r *router) packetFilter(packet []byte) (*ipPacket, bool) {
-	// decode packet
-	ipPkt, err := decodeIPPacket(packet)
-	if err != nil {
-		return nil, true // drop the pkt
-	}
-
-	// drop non-unicast
-	if !net.ParseIP(ipPkt.dstAddr).IsGlobalUnicast() {
-		return nil, true // drop the pkt
-	}
-	if !ipPkt.srcIP.IsGlobalUnicast() {
-		return nil, true // drop the pkt
-	}
-
-	// drop icmpv6 redirects
-	if ipPkt.dstAddr == r.ipv6 {
-		return nil, true // drop the pkt
-	}
-
-	// decode protocol layers
-	if err := ipPkt.decodeIPLayers(); err != nil {
-		return ipPkt, true // drop the pkt
-	}
-
-	// check decoded ip packet
-
-	// check ipDst rib entry
-	if err := r.RIB().CheckIPDst(ipPkt.dstAddr); err != nil {
-		return ipPkt, true // drop the pkt
-	}
-
-	p := r.RIB().GetPolicy(r.subnetID)
-	if p == nil {
-		return ipPkt, true // no policy, drop the pkt
-	}
-
-	for _, f := range p.NetworkFilters {
-		var matchSrcIP, matchDstIP, matchProto, matchPort bool
-
-		_, srcIPNet, err := net.ParseCIDR(f.SrcIPNet)
-		if err != nil {
-			return ipPkt, true // drop the pkt
-		}
-		if srcIPNet.Contains(ipPkt.srcIP) {
-			// fmt.Println("*** MATCHED SrcIP")
-			matchSrcIP = true
-		}
-
-		_, dstIPNet, err := net.ParseCIDR(f.DstIPNet)
-		if err != nil {
-			return ipPkt, true // drop the pkt
-		}
-		if dstIPNet.Contains(ipPkt.dstIP) {
-			// fmt.Println("*** MATCHED DstIP")
-			matchDstIP = true
-		}
-
-		if f.Proto == topology.Protocol_ANY || ipnet.IPProtocol(f.Proto.String()) == ipPkt.proto {
-			// fmt.Println("*** MATCHED Proto")
-			matchProto = true
-		}
-		if f.DstPort == 0 || f.DstPort == uint32(ipPkt.dstPort) {
-			// fmt.Println("*** MATCHED DstPort")
-			matchPort = true
-		}
-
-		if matchSrcIP && matchDstIP && matchProto && matchPort {
-			switch f.Policy {
-			case topology.SecurityPolicy_ACCEPT:
-				return ipPkt, false // accept the pkt
-			case topology.SecurityPolicy_DROP:
-				return ipPkt, true // drop the pkt
-			}
-		}
-	}
-
-	switch p.DefaultPolicy {
-	case topology.SecurityPolicy_ACCEPT:
-		return ipPkt, false // accept the pkt
-	case topology.SecurityPolicy_DROP:
-		return ipPkt, true // drop the pkt
-	}
-
-	xlog.Warnf("Discarding packet from srcIP %s to dstIP %s\n", ipPkt.srcIP.String(), ipPkt.dstIP.String())
-
-	return ipPkt, true // drop the pkt
-}
-
-func decodeIPPacket(pkt []byte) (*ipPacket, error) {
+func parseHeader(pkt []byte) (*ipHeader, error) {
 	header, err := ipv4.ParseHeader(pkt)
 	if err != nil {
-		xlog.Warnf("Unable to parse ip header: %v", err)
-		return nil, err
+		return nil, errors.Wrapf(err, "[%v] function ipv4.ParseHeader()", errors.Trace())
 	}
 
 	switch ipnet.AddressFamily(header.Version) {
@@ -128,19 +37,16 @@ func decodeIPPacket(pkt []byte) (*ipPacket, error) {
 		// fmt.Println("::::: IPv4 Packet HEADER")
 		// fmt.Println(header.String())
 
-		return &ipPacket{
+		return &ipHeader{
 			af:      ipnet.AddressFamilyIPv4,
 			srcIP:   header.Src,
 			dstIP:   header.Dst,
 			dstAddr: header.Dst.String(),
-			data:    pkt,
-			plen:    len(pkt),
 		}, nil
 	case ipnet.AddressFamilyIPv6:
 		header, err := ipv6.ParseHeader(pkt)
 		if err != nil {
-			xlog.Warnf("Unable to parse ipv6 header: %v", err)
-			return nil, err
+			return nil, errors.Wrapf(err, "[%v] function ipv6.ParseHeader()", errors.Trace())
 		}
 
 		// fmt.Println("::::: IPv6 Packet HEADER")
@@ -153,60 +59,167 @@ func decodeIPPacket(pkt []byte) (*ipPacket, error) {
 			// return nil, err
 		}
 
-		return &ipPacket{
+		return &ipHeader{
 			af:      ipnet.AddressFamilyIPv6,
 			srcIP:   header.Src,
 			dstIP:   header.Dst,
 			dstAddr: dstAddr,
-			data:    pkt,
-			plen:    len(pkt),
 		}, nil
 	}
 
-	return nil, fmt.Errorf("unable to parse packet")
+	return nil, fmt.Errorf("unknown IP address family")
 }
 
-func (ipPkt *ipPacket) decodeIPLayers() error {
+func (ipHdr *ipHeader) parseProtocol(pkt []byte) error {
 	var p gopacket.Packet
 
-	switch ipPkt.af {
+	switch ipHdr.af {
 	case ipnet.AddressFamilyIPv4:
-		p = gopacket.NewPacket(ipPkt.data, layers.LayerTypeIPv4, gopacket.Default)
+		p = gopacket.NewPacket(pkt, layers.LayerTypeIPv4, gopacket.Default)
 	case ipnet.AddressFamilyIPv6:
-		p = gopacket.NewPacket(ipPkt.data, layers.LayerTypeIPv6, gopacket.Default)
+		p = gopacket.NewPacket(pkt, layers.LayerTypeIPv6, gopacket.Default)
 	default:
-		return fmt.Errorf("unable to parse packet")
+		return fmt.Errorf("unknown IP address family")
 	}
 
 	// Get the TCP layer from this packet
 	if tcpLayer := p.Layer(layers.LayerTypeTCP); tcpLayer != nil {
 		tcp, _ := tcpLayer.(*layers.TCP)
-		ipPkt.proto = layers.IPProtocolTCP
-		ipPkt.srcPort = uint16(tcp.SrcPort)
-		ipPkt.dstPort = uint16(tcp.DstPort)
+		ipHdr.proto = layers.IPProtocolTCP
+		ipHdr.srcPort = uint16(tcp.SrcPort)
+		ipHdr.dstPort = uint16(tcp.DstPort)
 	}
 
 	// Get the UDP layer from this packet
 	if udpLayer := p.Layer(layers.LayerTypeUDP); udpLayer != nil {
 		udp, _ := udpLayer.(*layers.UDP)
-		ipPkt.proto = layers.IPProtocolUDP
-		ipPkt.srcPort = uint16(udp.SrcPort)
-		ipPkt.dstPort = uint16(udp.DstPort)
+		ipHdr.proto = layers.IPProtocolUDP
+		ipHdr.srcPort = uint16(udp.SrcPort)
+		ipHdr.dstPort = uint16(udp.DstPort)
 	}
 
 	// Get the ICMPv4 layer from this packet
 	if icmp4Layer := p.Layer(layers.LayerTypeICMPv4); icmp4Layer != nil {
 		icmp4, _ := icmp4Layer.(*layers.ICMPv4)
-		ipPkt.proto = layers.IPProtocolICMPv4
-		ipPkt.icmp4Type = icmp4.TypeCode
+		ipHdr.proto = layers.IPProtocolICMPv4
+		ipHdr.icmp4Type = icmp4.TypeCode
 	}
 
 	// Get the ICMPv6 layer from this packet
 	if icmp6Layer := p.Layer(layers.LayerTypeICMPv6); icmp6Layer != nil {
 		icmp6, _ := icmp6Layer.(*layers.ICMPv6)
-		ipPkt.proto = layers.IPProtocolICMPv6
-		ipPkt.icmp6Type = icmp6.TypeCode
+		ipHdr.proto = layers.IPProtocolICMPv6
+		ipHdr.icmp6Type = icmp6.TypeCode
 	}
 
 	return nil
+}
+
+func (ipHdr *ipHeader) isValidPacket(localIPv6 string) bool {
+	// drop non-unicast
+	if !net.ParseIP(ipHdr.dstAddr).IsGlobalUnicast() {
+		return false // drop the pkt
+	}
+	if !ipHdr.srcIP.IsGlobalUnicast() {
+		return false // drop the pkt
+	}
+
+	// drop icmpv6 redirects
+	if ipHdr.dstAddr == localIPv6 {
+		return false // drop the pkt
+	}
+
+	return true
+}
+
+func (r *router) packetFilter(ipHdr *ipHeader, pkt []byte) bool {
+	// // parse ip header
+	// ipHdr, err := parseHeader(pkt)
+	// if err != nil {
+	// 	xlog.Warnf("Unable to parse IP header: %v", errors.Cause(err))
+	// 	return nil, true // drop the pkt
+	// }
+
+	// // drop non-unicast
+	// if !net.ParseIP(ipHdr.dstAddr).IsGlobalUnicast() {
+	// 	return nil, true // drop the pkt
+	// }
+	// if !ipHdr.srcIP.IsGlobalUnicast() {
+	// 	return nil, true // drop the pkt
+	// }
+
+	// // drop icmpv6 redirects
+	// if ipHdr.dstAddr == r.ipv6 {
+	// 	return nil, true // drop the pkt
+	// }
+
+	// // parse ip protocol
+	// if err := ipHdr.parseProtocol(pkt); err != nil {
+	// 	xlog.Warnf("Unable to parse IP protocol: %v", errors.Cause(err))
+	// 	return true // drop the pkt
+	// }
+
+	// check decoded ip packet
+
+	// check ipDst rib entry
+	if err := r.RIB().CheckIPDst(ipHdr.dstAddr); err != nil {
+		xlog.Warnf("Unable to check IP dstAddr: %v", err)
+		return true // drop the pkt
+	}
+
+	p := r.RIB().GetPolicy(r.subnetID)
+	if p == nil {
+		return true // no policy, drop the pkt
+	}
+
+	for _, f := range p.NetworkFilters {
+		var matchSrcIP, matchDstIP, matchProto, matchPort bool
+
+		_, srcIPNet, err := net.ParseCIDR(f.SrcIPNet)
+		if err != nil {
+			return true // drop the pkt
+		}
+		if srcIPNet.Contains(ipHdr.srcIP) {
+			// fmt.Println("*** MATCHED SrcIP")
+			matchSrcIP = true
+		}
+
+		_, dstIPNet, err := net.ParseCIDR(f.DstIPNet)
+		if err != nil {
+			return true // drop the pkt
+		}
+		if dstIPNet.Contains(ipHdr.dstIP) {
+			// fmt.Println("*** MATCHED DstIP")
+			matchDstIP = true
+		}
+
+		if f.Proto == topology.Protocol_ANY || ipnet.IPProtocol(f.Proto.String()) == ipHdr.proto {
+			// fmt.Println("*** MATCHED Proto")
+			matchProto = true
+		}
+		if f.DstPort == 0 || f.DstPort == uint32(ipHdr.dstPort) {
+			// fmt.Println("*** MATCHED DstPort")
+			matchPort = true
+		}
+
+		if matchSrcIP && matchDstIP && matchProto && matchPort {
+			switch f.Policy {
+			case topology.SecurityPolicy_ACCEPT:
+				return false // accept the pkt
+			case topology.SecurityPolicy_DROP:
+				return true // drop the pkt
+			}
+		}
+	}
+
+	switch p.DefaultPolicy {
+	case topology.SecurityPolicy_ACCEPT:
+		return false // accept the pkt
+	case topology.SecurityPolicy_DROP:
+		return true // drop the pkt
+	}
+
+	xlog.Warnf("Discarding packet from srcIP %s to dstIP %s\n", ipHdr.srcIP.String(), ipHdr.dstIP.String())
+
+	return true // drop the pkt
 }
