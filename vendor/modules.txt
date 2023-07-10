@@ -392,7 +392,7 @@ github.com/multiformats/go-base32
 # github.com/multiformats/go-base36 v0.2.0
 ## explicit; go 1.18
 github.com/multiformats/go-base36
-# github.com/multiformats/go-multiaddr v0.10.0
+# github.com/multiformats/go-multiaddr v0.10.1
 ## explicit; go 1.19
 github.com/multiformats/go-multiaddr
 github.com/multiformats/go-multiaddr/net
