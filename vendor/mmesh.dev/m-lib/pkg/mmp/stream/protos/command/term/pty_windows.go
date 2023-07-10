@@ -9,6 +9,7 @@ import (
 
 	"mmesh.dev/m-lib/pkg/mmp/stream/protos/command/term/pty"
 	// "github.com/creack/pty"
+	// "github.com/photostorm/pty"
 )
 
 func PTYRun(c *exec.Cmd, inrp *io.PipeReader, outwp *io.PipeWriter) error {

@@ -892,7 +892,7 @@ func local_request_IAMAPI_ListSecurityGroups_0(ctx context.Context, marshaler ru
 }
 
 var (
-	filter_IAMAPI_GetSecurityGroup_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "securityGroupID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_IAMAPI_GetSecurityGroup_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "securityGroupID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_IAMAPI_GetSecurityGroup_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1070,7 +1070,7 @@ func local_request_IAMAPI_SetSecurityGroup_0(ctx context.Context, marshaler runt
 }
 
 var (
-	filter_IAMAPI_DeleteSecurityGroup_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "securityGroupID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_IAMAPI_DeleteSecurityGroup_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "securityGroupID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_IAMAPI_DeleteSecurityGroup_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1228,7 +1228,7 @@ func local_request_IAMAPI_ListRoles_0(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_IAMAPI_GetRole_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "roleID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_IAMAPI_GetRole_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "roleID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_IAMAPI_GetRole_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1406,7 +1406,7 @@ func local_request_IAMAPI_SetRole_0(ctx context.Context, marshaler runtime.Marsh
 }
 
 var (
-	filter_IAMAPI_DeleteRole_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "roleID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_IAMAPI_DeleteRole_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "roleID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_IAMAPI_DeleteRole_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1564,7 +1564,7 @@ func local_request_IAMAPI_ListACLs_0(ctx context.Context, marshaler runtime.Mars
 }
 
 var (
-	filter_IAMAPI_GetACL_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "ACLID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_IAMAPI_GetACL_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "ACLID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_IAMAPI_GetACL_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1742,7 +1742,7 @@ func local_request_IAMAPI_SetACL_0(ctx context.Context, marshaler runtime.Marsha
 }
 
 var (
-	filter_IAMAPI_DeleteACL_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "ACLID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_IAMAPI_DeleteACL_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "ACLID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_IAMAPI_DeleteACL_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -2418,7 +2418,7 @@ func RegisterIAMAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, ser
 // RegisterIAMAPIHandlerFromEndpoint is same as RegisterIAMAPIHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterIAMAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
 	}

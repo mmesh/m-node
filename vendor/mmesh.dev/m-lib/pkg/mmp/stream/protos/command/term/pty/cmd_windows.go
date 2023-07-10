@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"syscall"
+	"time"
 
 	_ "unsafe" // for go:linkname
 )
@@ -100,6 +101,62 @@ type cmd struct {
 	// ProcessState contains information about an exited process,
 	// available after a call to Wait or Run.
 	ProcessState *os.ProcessState
+
+	Err error // LookPath error, if any.
+
+	// If Cancel is non-nil, the command must have been created with
+	// CommandContext and Cancel will be called when the command's
+	// Context is done. By default, CommandContext sets Cancel to
+	// call the Kill method on the command's Process.
+	//
+	// Typically a custom Cancel will send a signal to the command's
+	// Process, but it may instead take other actions to initiate cancellation,
+	// such as closing a stdin or stdout pipe or sending a shutdown request on a
+	// network socket.
+	//
+	// If the command exits with a success status after Cancel is
+	// called, and Cancel does not return an error equivalent to
+	// os.ErrProcessDone, then Wait and similar methods will return a non-nil
+	// error: either an error wrapping the one returned by Cancel,
+	// or the error from the Context.
+	// (If the command exits with a non-success status, or Cancel
+	// returns an error that wraps os.ErrProcessDone, Wait and similar methods
+	// continue to return the command's usual exit status.)
+	//
+	// If Cancel is set to nil, nothing will happen immediately when the command's
+	// Context is done, but a nonzero WaitDelay will still take effect. That may
+	// be useful, for example, to work around deadlocks in commands that do not
+	// support shutdown signals but are expected to always finish quickly.
+	//
+	// Cancel will not be called if Start returns a non-nil error.
+	Cancel func() error
+
+	// If WaitDelay is non-zero, it bounds the time spent waiting on two sources
+	// of unexpected delay in Wait: a child process that fails to exit after the
+	// associated Context is canceled, and a child process that exits but leaves
+	// its I/O pipes unclosed.
+	//
+	// The WaitDelay timer starts when either the associated Context is done or a
+	// call to Wait observes that the child process has exited, whichever occurs
+	// first. When the delay has elapsed, the command shuts down the child process
+	// and/or its I/O pipes.
+	//
+	// If the child process has failed to exit — perhaps because it ignored or
+	// failed to receive a shutdown signal from a Cancel function, or because no
+	// Cancel function was set — then it will be terminated using os.Process.Kill.
+	//
+	// Then, if the I/O pipes communicating with the child process are still open,
+	// those pipes are closed in order to unblock any goroutines currently blocked
+	// on Read or Write calls.
+	//
+	// If pipes are closed due to WaitDelay, no Cancel call has occurred,
+	// and the command has otherwise exited with a successful status, Wait and
+	// similar methods will return ErrWaitDelay instead of nil.
+	//
+	// If WaitDelay is zero (the default), I/O pipes will be read until EOF,
+	// which might not occur until orphaned subprocesses of the command have
+	// also closed their descriptors for the pipes.
+	WaitDelay time.Duration
 
 	ctx             context.Context // nil means none
 	lookPathErr     error           // LookPath error, if any.

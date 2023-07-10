@@ -1769,7 +1769,7 @@ func local_request_TopologyAPI_UpdateNetworkFilter_0(ctx context.Context, marsha
 }
 
 var (
-	filter_TopologyAPI_DeleteNetworkFilter_0 = &utilities.DoubleArray{Encoding: map[string]int{"subnetReq": 0, "accountID": 1, "tenantID": 2, "netID": 3, "subnetID": 4, "nfID": 5}, Base: []int{1, 1, 1, 2, 3, 4, 5, 0, 0, 0, 0, 0}, Check: []int{0, 1, 2, 2, 2, 2, 1, 3, 4, 5, 6, 7}}
+	filter_TopologyAPI_DeleteNetworkFilter_0 = &utilities.DoubleArray{Encoding: map[string]int{"subnetReq": 0, "accountID": 1, "tenantID": 2, "netID": 3, "subnetID": 4, "nfID": 5}, Base: []int{1, 9, 9, 10, 11, 12, 14, 2, 0, 4, 0, 6, 0, 8, 0, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 1, 2, 8, 2, 10, 2, 12, 2, 14, 3, 4, 5, 6, 7, 7}}
 )
 
 func request_TopologyAPI_DeleteNetworkFilter_0(ctx context.Context, marshaler runtime.Marshaler, client TopologyAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -3305,7 +3305,7 @@ func RegisterTopologyAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 // RegisterTopologyAPIHandlerFromEndpoint is same as RegisterTopologyAPIHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterTopologyAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
 	}

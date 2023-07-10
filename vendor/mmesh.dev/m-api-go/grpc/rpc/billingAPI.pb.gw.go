@@ -135,7 +135,7 @@ func local_request_BillingAPI_GetCustomerPortal_0(ctx context.Context, marshaler
 }
 
 var (
-	filter_BillingAPI_ListInvoices_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_BillingAPI_ListInvoices_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
 func request_BillingAPI_ListInvoices_0(ctx context.Context, marshaler runtime.Marshaler, client BillingAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -205,7 +205,7 @@ func local_request_BillingAPI_ListInvoices_0(ctx context.Context, marshaler runt
 }
 
 var (
-	filter_BillingAPI_GetInvoice_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "invoiceID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_BillingAPI_GetInvoice_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "invoiceID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_BillingAPI_GetInvoice_0(ctx context.Context, marshaler runtime.Marshaler, client BillingAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -295,7 +295,7 @@ func local_request_BillingAPI_GetInvoice_0(ctx context.Context, marshaler runtim
 }
 
 var (
-	filter_BillingAPI_DeleteInvoice_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "invoiceID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_BillingAPI_DeleteInvoice_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "invoiceID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_BillingAPI_DeleteInvoice_0(ctx context.Context, marshaler runtime.Marshaler, client BillingAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -385,7 +385,7 @@ func local_request_BillingAPI_DeleteInvoice_0(ctx context.Context, marshaler run
 }
 
 var (
-	filter_BillingAPI_ListBilledItems_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_BillingAPI_ListBilledItems_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
 func request_BillingAPI_ListBilledItems_0(ctx context.Context, marshaler runtime.Marshaler, client BillingAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -455,7 +455,7 @@ func local_request_BillingAPI_ListBilledItems_0(ctx context.Context, marshaler r
 }
 
 var (
-	filter_BillingAPI_GetBilledItem_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "itemID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+	filter_BillingAPI_GetBilledItem_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "itemID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
 )
 
 func request_BillingAPI_GetBilledItem_0(ctx context.Context, marshaler runtime.Marshaler, client BillingAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -824,7 +824,7 @@ func RegisterBillingAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 // RegisterBillingAPIHandlerFromEndpoint is same as RegisterBillingAPIHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterBillingAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
 	}

@@ -176,7 +176,7 @@ func local_request_ManagerAPI_ListConnectivityLocations_0(ctx context.Context, m
 }
 
 var (
-	filter_ManagerAPI_SelectFederation_0 = &utilities.DoubleArray{Encoding: map[string]int{"locationID": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
+	filter_ManagerAPI_SelectFederation_0 = &utilities.DoubleArray{Encoding: map[string]int{"locationID": 0}, Base: []int{1, 2, 0, 0}, Check: []int{0, 1, 2, 2}}
 )
 
 func request_ManagerAPI_SelectFederation_0(ctx context.Context, marshaler runtime.Marshaler, client ManagerAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -988,7 +988,7 @@ func RegisterManagerAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux,
 // RegisterManagerAPIHandlerFromEndpoint is same as RegisterManagerAPIHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterManagerAPIHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
 	}
