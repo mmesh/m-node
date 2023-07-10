@@ -95,11 +95,11 @@ signs:
     env:
       # - COSIGN_EXPERIMENTAL=1
     stdin: "{{ .Env.COSIGN_PWD }}"
-    certificate: "${artifact}.pem"
+    # certificate: "${artifact}.pem"
     args:
       - "sign-blob"
       - "--key=/cosign/cosign.key"
-      - "--output-certificate=${certificate}"
+      # - "--output-certificate=${certificate}"
       - "--output-signature=${signature}"
       - "${artifact}"
       - "--yes" # needed on cosign 2.0.0+
