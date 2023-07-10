@@ -153,7 +153,7 @@ tasks:
   _goreleaser:
     deps: [_verify-mods]
     cmds:
-      - goreleaser {{.CMD}} -f build/ci/goreleaser/release.yml --rm-dist {{.OPTS}}
+      - goreleaser {{.CMD}} -f build/ci/goreleaser/release.yml --clean {{.OPTS}}
 
   test-mods:
     desc: Test vendor modules.
