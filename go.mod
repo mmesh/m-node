@@ -8,7 +8,7 @@ replace mmesh.dev/m-lib => ../m-lib
 
 require (
 	github.com/dgraph-io/badger/v4 v4.1.0
-	github.com/eclipse/paho.mqtt.golang v1.4.2
+	github.com/eclipse/paho.mqtt.golang v1.4.3
 	github.com/google/gopacket v1.1.19
 	github.com/google/uuid v1.3.0
 	github.com/kardianos/service v1.2.1
