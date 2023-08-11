@@ -7,7 +7,7 @@ replace mmesh.dev/m-api-go => ../m-api/_dist/mmesh.dev/m-api-go
 replace mmesh.dev/m-lib => ../m-lib
 
 require (
-	github.com/dgraph-io/badger/v4 v4.1.0
+	github.com/dgraph-io/badger/v4 v4.2.0
 	github.com/eclipse/paho.mqtt.golang v1.4.2
 	github.com/google/gopacket v1.1.19
 	github.com/google/uuid v1.3.0
