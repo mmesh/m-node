@@ -2,7 +2,7 @@ package start
 
 import (
 	"mmesh.dev/m-api-go/grpc/rpc"
-	"mmesh.dev/m-lib/pkg/mmp"
+	// "mmesh.dev/m-lib/pkg/mmp"
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-lib/pkg/update"
 	"mmesh.dev/m-node/internal/app/node/ops"
@@ -12,7 +12,7 @@ import (
 const (
 	errorEventsHandler = iota
 	// networkErrorEventsHandler
-	mmDispatcher
+	// mmDispatcher
 	// mmProcessor
 	dnsAgent
 	metricsAgent
@@ -38,11 +38,11 @@ func initWrkrs(nxnc rpc.NetworkAPIClient) {
 	// 	runtime.SetWrkrOpt(runtime.WrkrOptName, "mmNetworkErrorEventsHandler"),
 	// 	runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, svcs.NetworkErrorEventsHandler),
 	// )
-	runtime.RegisterWrkr(
-		mmDispatcher,
-		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmDispatcher"),
-		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, mmp.Dispatcher),
-	)
+	// runtime.RegisterWrkr(
+	// 	mmDispatcher,
+	// 	runtime.SetWrkrOpt(runtime.WrkrOptName, "mmDispatcher"),
+	// 	runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, mmp.Dispatcher),
+	// )
 	// runtime.RegisterWrkr(
 	// 	mmProcessor,
 	// 	runtime.SetWrkrOpt(runtime.WrkrOptName, "mmProcessor"),

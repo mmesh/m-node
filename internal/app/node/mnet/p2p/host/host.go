@@ -12,7 +12,8 @@ import (
 	// connmgr "github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/host"
-	"github.com/libp2p/go-libp2p/p2p/net/swarm"
+
+	// "github.com/libp2p/go-libp2p/p2p/net/swarm"
 	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/relay"
 
 	// "github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
@@ -80,8 +81,8 @@ func New(hostType P2PHostType, port int) (host.Host, error) {
 		libp2p.EnableHolePunching(),
 		// DisableMetrics configures libp2p to disable prometheus metrics
 		libp2p.DisableMetrics(),
-		// Enable smart dialing
-		libp2p.DialRanker(swarm.DefaultDialRanker),
+		// Smart dialing (enabled by default)
+		// libp2p.SwarmOpts(swarm.WithDialRanker(swarm.NoDelayDialRanker))
 		// libp2p.QUICReuse(quicreuse.NewConnManager),
 	}
 

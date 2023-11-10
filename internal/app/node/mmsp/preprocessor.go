@@ -9,10 +9,6 @@ import (
 
 func Preprocessor(ctx context.Context, p *mmsp.Payload) {
 	switch p.Type {
-	case mmsp.PDUType_SESSION:
-		if p.SessionPDU == nil {
-			return
-		}
 	case mmsp.PDUType_ROUTING:
 		if p.RoutingPDU == nil {
 			return
