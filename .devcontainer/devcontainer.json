@@ -1,0 +1,76 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/go
+{
+    "name": "Go",
+    // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+    "image": "mcr.microsoft.com/devcontainers/go:1-1.21-bullseye",
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": { },
+        // "ghcr.io/devcontainers-contrib/features/actionlint:1": { },
+        // "ghcr.io/guiyomh/features/golangci-lint:0": { },
+        "ghcr.io/marcozac/devcontainer-features/gofumpt:1": { },
+        "ghcr.io/brokeyourbike/devcontainer-features/staticcheck:0": { },
+        "ghcr.io/devcontainers-contrib/features/go-task:1": { },
+        "ghcr.io/guiyomh/features/goreleaser:0": { },
+        "ghcr.io/devcontainers-contrib/features/svu-asdf:2": { },
+        "ghcr.io/devcontainers-contrib/features/cosign:1": { },
+        "ghcr.io/devcontainers-contrib/features/syft:1": { },
+        "ghcr.io/devcontainers-contrib/features/rclone:1": { },
+        "ghcr.io/devcontainers-contrib/features/apt-get-packages:1": {
+            "packages": "pinentry-tty,clang-format"
+        }
+    },
+
+    // Features to add to the dev container. More info: https://containers.dev/features.
+    // "features": {},
+
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [],
+
+    // Use 'postCreateCommand' to run commands after the container is created.
+    // "postCreateCommand": "go version",
+
+    // Configure tool-specific properties.
+    // "customizations": {},
+
+    "customizations": {
+        // Configure properties specific to VS Code.
+        "vscode": {
+            // Set *default* container specific settings.json values on container create.
+            "settings": { },
+            "extensions": [
+                "golang.go",
+                "ms-azuretools.vscode-docker",
+                "task.vscode-task",
+                "GitHub.vscode-pull-request-github",
+                "redhat.vscode-yaml",
+                "EditorConfig.EditorConfig",
+                "mitchdenny.ecdc",
+                "MS-CST-E.vscode-devskim"
+            ]
+        }
+    },
+
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    // "remoteUser": "root"
+
+    // "containerUser": "x6a",
+
+    "containerEnv": {
+    },
+
+    "mounts": [
+        // local config
+        "source=${localEnv:HOME}/.cloud,target=/home/vscode/.cloud,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.x6a,target=/home/vscode/.x6a,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.x6a/mmesh/cosign,target=/cosign,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.config,target=/home/vscode/.config,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.environment,target=/home/vscode/.zshenv,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.bash_aliases,target=/home/vscode/.bash_aliases,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.gnupg,target=/home/vscode/.gnupg,type=bind,consistency=cached",
+        // mmesh repos
+        "source=${localWorkspaceFolder}/../m-api,target=/workspaces/m-api,type=bind,consistency=cached",
+        "source=${localWorkspaceFolder}/../m-lib,target=/workspaces/m-lib,type=bind,consistency=cached"
+    ]
+}

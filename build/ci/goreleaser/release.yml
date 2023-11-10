@@ -242,15 +242,15 @@ dockers:
       - "mmeshdev/mmesh-node:{{ .Tag }}-{{ .Env.GO_VERSION }}"
       - "mmeshdev/mmesh-node:v{{ .Major }}"
       - "mmeshdev/mmesh-node:v{{ .Major }}.{{ .Minor }}"
-      - "ghcr.io/mmesh/mmesh-node:latest"
-      - "ghcr.io/mmesh/mmesh-node:snapshot"
-      - "ghcr.io/mmesh/mmesh-node:dev"
-      - "ghcr.io/mmesh/mmesh-node:stable"
-      - "ghcr.io/mmesh/mmesh-node:{{ .Tag }}"
-      - "ghcr.io/mmesh/mmesh-node:{{ .Tag }}-{{ .Env.GO_VERSION }}"
-      - "ghcr.io/mmesh/mmesh-node:v{{ .Major }}"
-      - "ghcr.io/mmesh/mmesh-node:v{{ .Major }}.{{ .Minor }}"
-    use: docker
+      # - "ghcr.io/mmesh/mmesh-node:latest"
+      # - "ghcr.io/mmesh/mmesh-node:snapshot"
+      # - "ghcr.io/mmesh/mmesh-node:dev"
+      # - "ghcr.io/mmesh/mmesh-node:stable"
+      # - "ghcr.io/mmesh/mmesh-node:{{ .Tag }}"
+      # - "ghcr.io/mmesh/mmesh-node:{{ .Tag }}-{{ .Env.GO_VERSION }}"
+      # - "ghcr.io/mmesh/mmesh-node:v{{ .Major }}"
+      # - "ghcr.io/mmesh/mmesh-node:v{{ .Major }}.{{ .Minor }}"
+    use: buildx
     goos: linux
     goarch: amd64
     build_flag_templates:

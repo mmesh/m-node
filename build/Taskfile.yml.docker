@@ -30,8 +30,8 @@ env:
   PKG: '{{.DOMAIN}}/{{.PROJECT}}'
   VERSION_DATE:
     sh: date -u +%Y%m%d%H%M%S
-  # GO_VERSION:
-  #   sh: go version | cut -f 3 -d ' '
+  GO_VERSION:
+    sh: go version | cut -f 3 -d ' '
   # GO111MODULE: on
   # CGO_ENABLED: 0
   # GOPRIVATE: mmesh.dev/m-api-go,mmesh.dev/m-lib
@@ -44,15 +44,15 @@ env:
       fi
   DOCKER_USER:
     sh: |
-      if [[ -f $HOME/.cloud/docker/docker.x6a ]]; then
-        awk '/user/ {print $2}' $HOME/.cloud/docker/docker.x6a;
+      if [[ -f $HOME/.docker/docker.x6a ]]; then
+        awk '/user/ {print $2}' $HOME/.docker/docker.x6a;
       else
         echo "${DOCKER_USER}";
       fi
   DOCKER_PASSWORD:
     sh: |
-      if [[ -f $HOME/.cloud/docker/docker.x6a ]]; then
-        awk '/pw/ {print $2}' $HOME/.cloud/docker/docker.x6a;
+      if [[ -f $HOME/.docker/docker.x6a ]]; then
+        awk '/pw/ {print $2}' $HOME/.docker/docker.x6a;
       else
         echo "${DOCKER_PASSWORD}";
       fi
@@ -114,8 +114,35 @@ tasks:
       - git clone --depth 1 git@github.com:x6a/scripts.git ./build/_deps/scripts
       - git clone --depth 1 git@github.com:x6a/taskfiles.git ./build/_deps/taskfiles
 
-  test-mods:
-    desc: Test vendor modules.
+  _docker-builder:
+    deps: [golang:golang-builder]
+    vars:
+      LOCAL_UID:
+        sh: id -u
+      LOCAL_GID:
+        sh: id -g
+    cmds:
+      - |-
+        docker run --rm \
+          -e GITHUB_TOKEN="${GITHUB_TOKEN}" \
+          -e DOCKER_USER="${DOCKER_USER}" \
+          -e DOCKER_PASSWORD="${DOCKER_PASSWORD}" \
+          -e COSIGN_PWD="${COSIGN_PWD}" \
+          -e DISCORD_WEBHOOK_ID="${DISCORD_WEBHOOK_ID}" \
+          -e DISCORD_WEBHOOK_TOKEN="${DISCORD_WEBHOOK_TOKEN}" \
+          -e TWITTER_CONSUMER_KEY="${TWITTER_CONSUMER_KEY}" \
+          -e TWITTER_CONSUMER_SECRET="${TWITTER_CONSUMER_SECRET}" \
+          -e TWITTER_ACCESS_TOKEN="${TWITTER_ACCESS_TOKEN}" \
+          -e TWITTER_ACCESS_TOKEN_SECRET="${TWITTER_ACCESS_TOKEN_SECRET}" \
+          -v $HOME/.x6a/mmesh/cosign:/cosign:ro \
+          -v {{.PROJECT_DIR}}:/go/src/{{.PROJECT}} \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -w /go/src/{{.PROJECT}}/{{.NAME}} \
+          --cap-add=IPC_LOCK --ulimit memlock=-1:-1 \
+          x6adev/golang-builder:latest {{.TASK_CMD}}
+      - sudo chown -R {{.LOCAL_UID}}:{{.LOCAL_GID}} .
+
+  _verify-mods:
     cmds:
       - task: golang:go-verify-vendor
       - task: golang:go-generate
@@ -124,38 +151,63 @@ tasks:
       # - task: golang:golangci-lint
 
   _goreleaser:
-    deps: [test-mods]
+    deps: [_verify-mods]
     cmds:
       - goreleaser {{.CMD}} -f build/ci/goreleaser/release.yml --clean {{.OPTS}}
 
-  test-node:
-    desc: Test build the node binary.
+  test-mods:
+    desc: Test vendor modules.
+    cmds:
+      - task: _docker-builder
+        vars:
+          TASK_CMD: _verify-mods
+
+  _test-node:
     cmds:
       - task: _goreleaser
         vars:
           CMD: build
           OPTS: --snapshot
 
-  build-all:
-    desc: Build all binaries.
+  test-node:
+    desc: Test build the cli binary.
+    cmds:
+      - task: _docker-builder
+        vars:
+          TASK_CMD: _test-node
+
+  _build-all:
     cmds:
       - task: _build-node
 
-  build-node:
-    desc: Build the node binary.
+  _build-node:
     cmds:
       - task: _goreleaser
         vars:
           CMD: release
           OPTS: --snapshot
 
+  build-all:
+    desc: Build all binaries.
+    cmds:
+      - task: _docker-builder
+        vars:
+          TASK_CMD: _build-all
+
+  build-node:
+    desc: Build the node binary.
+    cmds:
+      - task: _docker-builder
+        vars:
+          TASK_CMD: _build-node
+
   docker-push-node-dev:
     desc: docker push -- mmesh-node (dev build)
     cmds:
       - task: docker:docker-login
+      - task: docker:ghcr-login
       - docker push mmeshdev/mmesh-node:snapshot
       - docker push mmeshdev/mmesh-node:dev
-      - task: docker:ghcr-login
       - docker push ghcr.io/mmesh/mmesh-node:snapshot
       - docker push ghcr.io/mmesh/mmesh-node:dev
       - task: docker:image-scan
@@ -206,8 +258,17 @@ tasks:
     cmds:
       - task: publish-binaries-stable
 
-  tag:
-    desc: Create new git tag.
+  _release:
+    cmds:
+      - task: docker:docker-login
+      - task: docker:ghcr-login
+      - task: _goreleaser
+        vars:
+          CMD: release
+          OPTS: ""
+
+  release:
+    desc: Build and release all the packages.
     vars:
       NEXT_VERSION:
         sh: svu next
@@ -216,17 +277,9 @@ tasks:
       - git tag -sa {{.NEXT_VERSION}} -m "{{.NEXT_VERSION}}"
       - echo "Running git push origin {{.NEXT_VERSION}} to push new tag to GitHub..."
       - git push origin {{.NEXT_VERSION}}
-
-  release:
-    desc: Build and release all the packages.
-    cmds:
-      - task: tag
-      - task: docker:docker-login
-      # - task: docker:ghcr-login
-      - task: _goreleaser
+      - task: _docker-builder
         vars:
-          CMD: release
-          OPTS: ""
+          TASK_CMD: _release
       - task: docker:image-scan
         vars: {IMAGE: "mmesh-node", REPO: "mmeshdev", TAG: "stable"}
       - task: publish-all-stable
