@@ -16,8 +16,17 @@ import (
 var done = make(chan struct{})
 
 func start() {
+	// go func() {
+	// 	xlog.Info("Checking software version...")
+	// 	if err := checkUpdate(); err != nil {
+	// 		xlog.Errorf("Unable to check software update: %v", err)
+	// 	}
+	//  <-update.RestartRequest
+	//  update.RestartReady <- struct{}{}
+	// }()
+
 	if err := mnet.Init(); err != nil {
-		xlog.Alertf("Unable to initialize node: %s", err)
+		xlog.Alertf("Unable to initialize node: %v", err)
 		os.Exit(1)
 	}
 	nxnc := mnet.LocalNode().Connection().NetworkClient()
@@ -70,3 +79,19 @@ func restart() {
 
 	update.RestartReady <- struct{}{}
 }
+
+/*
+func checkUpdate() error {
+	appName := viper.GetString("mm.app")
+
+	if len(appName) == 0 {
+		return fmt.Errorf("missing appName")
+	}
+
+	if err := update.Update(appName); err != nil {
+		return errors.Wrapf(err, "[%v] function update.Update()", errors.Trace())
+	}
+
+	return nil
+}
+*/
