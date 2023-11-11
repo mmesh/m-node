@@ -95,8 +95,8 @@ func (r *router) writeInterface(rw *bufio.ReadWriter, pkt []byte) error {
 		return nil
 	}
 
-	// packet filtering (firewalling)
-	if r.packetFilter(ipHdr, pkt) {
+	// packet filtering (firewalling) -- ingress
+	if r.packetFilter(ipHdr, pkt, false) {
 		// packet dropped by policy
 		go func() {
 			if ipHdr == nil {

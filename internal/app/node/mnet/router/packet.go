@@ -6,6 +6,8 @@ import (
 
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
+
+	// "github.com/sanity-io/litter"
 	"golang.org/x/net/ipv4"
 	"golang.org/x/net/ipv6"
 	"mmesh.dev/m-api-go/grpc/resources/topology"
@@ -132,7 +134,7 @@ func (ipHdr *ipHeader) isValidPacket(localIPv6 string) bool {
 	return true
 }
 
-func (r *router) packetFilter(ipHdr *ipHeader, pkt []byte) bool {
+func (r *router) packetFilter(ipHdr *ipHeader, pkt []byte, egress bool) bool {
 	// // parse ip header
 	// ipHdr, err := parseHeader(pkt)
 	// if err != nil {
@@ -175,34 +177,73 @@ func (r *router) packetFilter(ipHdr *ipHeader, pkt []byte) bool {
 	for _, f := range p.NetworkFilters {
 		var matchSrcIP, matchDstIP, matchProto, matchPort bool
 
+		// litter.Dump(f)
+		// litter.Dump(ipHdr)
+
+		// srcIP
 		_, srcIPNet, err := net.ParseCIDR(f.SrcIPNet)
 		if err != nil {
 			return true // drop the pkt
 		}
-		if srcIPNet.Contains(ipHdr.srcIP) {
-			// fmt.Println("*** MATCHED SrcIP")
-			matchSrcIP = true
+
+		if egress {
+			// outgoing pkt
+			if srcIPNet.Contains(ipHdr.srcIP) {
+				// fmt.Printf("*** MATCHED SrcIP (%s): %s\n", srcIPNet.String(), ipHdr.srcIP.String())
+				matchSrcIP = true
+			}
+		} else { // ingress
+			// response pkt
+			if srcIPNet.Contains(ipHdr.dstIP) {
+				// fmt.Printf("*** [Response] MATCHED DstIP (%s): %s\n", srcIPNet.String(), ipHdr.dstIP.String())
+				matchSrcIP = true
+			}
 		}
 
+		// dstIP
 		_, dstIPNet, err := net.ParseCIDR(f.DstIPNet)
 		if err != nil {
 			return true // drop the pkt
 		}
-		if dstIPNet.Contains(ipHdr.dstIP) {
-			// fmt.Println("*** MATCHED DstIP")
-			matchDstIP = true
+
+		if egress {
+			// outgoing pkt
+			if dstIPNet.Contains(ipHdr.dstIP) {
+				// fmt.Printf("*** MATCHED DstIP (%s): %s\n", dstIPNet.String(), ipHdr.dstIP.String())
+				matchDstIP = true
+			}
+		} else { // ingress
+			// response pkt
+			if dstIPNet.Contains(ipHdr.srcIP) {
+				// fmt.Printf("*** [Response] MATCHED SrcIP (%s): %s\n", dstIPNet.String(), ipHdr.srcIP.String())
+				matchDstIP = true
+			}
 		}
 
+		// proto
 		if f.Proto == topology.Protocol_ANY || ipnet.IPProtocol(f.Proto.String()) == ipHdr.proto {
-			// fmt.Println("*** MATCHED Proto")
+			// fmt.Printf("*** MATCHED Proto (%s): %s\n", f.Proto.String(), ipHdr.proto.String())
 			matchProto = true
 		}
-		if f.DstPort == 0 || f.DstPort == uint32(ipHdr.dstPort) {
-			// fmt.Println("*** MATCHED DstPort")
-			matchPort = true
+
+		// dstPort
+		if egress {
+			// outgoing pkt
+			if f.DstPort == 0 || f.DstPort == uint32(ipHdr.dstPort) {
+				// fmt.Printf("*** MATCHED DstPort (%d): %d\n", f.DstPort, ipHdr.dstPort)
+				matchPort = true
+			}
+		} else { // ingress
+			// response pkt
+			if f.DstPort == 0 || f.DstPort == uint32(ipHdr.srcPort) {
+				// fmt.Printf("*** [Response] MATCHED SrcPort (%d): %d\n", f.DstPort, ipHdr.srcPort)
+				matchPort = true
+			}
 		}
 
 		if matchSrcIP && matchDstIP && matchProto && matchPort {
+			// fmt.Printf("*** MATCHED Policy: %s\n", f.Policy.String())
+
 			switch f.Policy {
 			case topology.SecurityPolicy_ACCEPT:
 				return false // accept the pkt
@@ -211,6 +252,8 @@ func (r *router) packetFilter(ipHdr *ipHeader, pkt []byte) bool {
 			}
 		}
 	}
+
+	// fmt.Printf("+++ DEFAULT Policy: %s\n", p.DefaultPolicy.String())
 
 	switch p.DefaultPolicy {
 	case topology.SecurityPolicy_ACCEPT:
