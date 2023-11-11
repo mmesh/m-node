@@ -7,7 +7,7 @@ import (
 )
 
 func (r *router) rconnect(nh *routing.NetHop) error {
-	if nh.P2PHostID == r.p2pHost.ID().Pretty() {
+	if nh.P2PHostID == r.p2pHost.ID().String() {
 		return nil
 	}
 

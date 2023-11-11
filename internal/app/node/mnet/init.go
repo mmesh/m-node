@@ -73,9 +73,9 @@ func Init() error {
 			xlog.Infof(" => %s", ma)
 		}
 	}
-	xlog.Debugf("p2pHostID: %s", rtr.P2PHost().ID().Pretty())
+	xlog.Debugf("p2pHostID: %s", rtr.P2PHost().ID().String())
 
-	n.Agent.P2PHostID = rtr.P2PHost().ID().Pretty()
+	n.Agent.P2PHostID = rtr.P2PHost().ID().String()
 	n.Agent.Hostname = hostID
 	n.Agent.Port = int32(port)
 	n.Agent.DNSPort = int32(dnsPort)

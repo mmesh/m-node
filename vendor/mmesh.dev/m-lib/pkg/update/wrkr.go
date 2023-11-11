@@ -27,7 +27,7 @@ func UpdateAgent(w *runtime.Wrkr) {
 			case <-checkUpdate:
 				xlog.Debug("Checking for updates...")
 				if err := Update(appName); err != nil {
-					xlog.Errorf("Unable to check for updates: %v", err)
+					xlog.Errorf("Unable to check software update: %v", err)
 				}
 			case <-quitUpdate:
 				xlog.Debug("Closing update agent")
@@ -49,6 +49,8 @@ func UpdateAgent(w *runtime.Wrkr) {
 var updateAgentCtlRun bool
 
 func updateAgentCtl() {
+	checkUpdate <- struct{}{}
+
 	if !updateAgentCtlRun {
 		updateAgentCtlRun = true
 
