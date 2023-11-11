@@ -135,34 +135,6 @@ func (ipHdr *ipHeader) isValidPacket(localIPv6 string) bool {
 }
 
 func (r *router) packetFilter(ipHdr *ipHeader, pkt []byte, egress bool) bool {
-	// // parse ip header
-	// ipHdr, err := parseHeader(pkt)
-	// if err != nil {
-	// 	xlog.Warnf("Unable to parse IP header: %v", errors.Cause(err))
-	// 	return nil, true // drop the pkt
-	// }
-
-	// // drop non-unicast
-	// if !net.ParseIP(ipHdr.dstAddr).IsGlobalUnicast() {
-	// 	return nil, true // drop the pkt
-	// }
-	// if !ipHdr.srcIP.IsGlobalUnicast() {
-	// 	return nil, true // drop the pkt
-	// }
-
-	// // drop icmpv6 redirects
-	// if ipHdr.dstAddr == r.ipv6 {
-	// 	return nil, true // drop the pkt
-	// }
-
-	// // parse ip protocol
-	// if err := ipHdr.parseProtocol(pkt); err != nil {
-	// 	xlog.Warnf("Unable to parse IP protocol: %v", errors.Cause(err))
-	// 	return true // drop the pkt
-	// }
-
-	// check decoded ip packet
-
 	// check ipDst rib entry
 	if err := r.RIB().CheckIPDst(ipHdr.dstAddr); err != nil {
 		xlog.Warnf("Unable to check IP dstAddr: %v", err)
@@ -193,6 +165,12 @@ func (r *router) packetFilter(ipHdr *ipHeader, pkt []byte, egress bool) bool {
 				matchSrcIP = true
 			}
 		} else { // ingress
+			// incoming pkt
+			if srcIPNet.Contains(ipHdr.srcIP) {
+				// fmt.Printf("*** MATCHED SrcIP (%s): %s\n", srcIPNet.String(), ipHdr.srcIP.String())
+				matchSrcIP = true
+			}
+
 			// response pkt
 			if srcIPNet.Contains(ipHdr.dstIP) {
 				// fmt.Printf("*** [Response] MATCHED DstIP (%s): %s\n", srcIPNet.String(), ipHdr.dstIP.String())
@@ -213,6 +191,12 @@ func (r *router) packetFilter(ipHdr *ipHeader, pkt []byte, egress bool) bool {
 				matchDstIP = true
 			}
 		} else { // ingress
+			// incoming pkt
+			if dstIPNet.Contains(ipHdr.dstIP) {
+				// fmt.Printf("*** MATCHED DstIP (%s): %s\n", dstIPNet.String(), ipHdr.dstIP.String())
+				matchDstIP = true
+			}
+
 			// response pkt
 			if dstIPNet.Contains(ipHdr.srcIP) {
 				// fmt.Printf("*** [Response] MATCHED SrcIP (%s): %s\n", dstIPNet.String(), ipHdr.srcIP.String())
@@ -234,6 +218,12 @@ func (r *router) packetFilter(ipHdr *ipHeader, pkt []byte, egress bool) bool {
 				matchPort = true
 			}
 		} else { // ingress
+			// incoming pkt
+			if f.DstPort == 0 || f.DstPort == uint32(ipHdr.dstPort) {
+				// fmt.Printf("*** MATCHED DstPort (%d): %d\n", f.DstPort, ipHdr.dstPort)
+				matchPort = true
+			}
+
 			// response pkt
 			if f.DstPort == 0 || f.DstPort == uint32(ipHdr.srcPort) {
 				// fmt.Printf("*** [Response] MATCHED SrcPort (%d): %d\n", f.DstPort, ipHdr.srcPort)
