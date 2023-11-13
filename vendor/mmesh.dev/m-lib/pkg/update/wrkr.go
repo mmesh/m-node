@@ -49,8 +49,6 @@ func UpdateAgent(w *runtime.Wrkr) {
 var updateAgentCtlRun bool
 
 func updateAgentCtl() {
-	checkUpdate <- struct{}{}
-
 	if !updateAgentCtlRun {
 		updateAgentCtlRun = true
 
@@ -58,6 +56,8 @@ func updateAgentCtl() {
 			xlog.Info("Auto-update disabled")
 			return
 		}
+
+		checkUpdate <- struct{}{}
 
 		mHour := viper.GetInt("maintenance.schedule.hour")
 		mMin := viper.GetInt("maintenance.schedule.minute")
