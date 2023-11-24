@@ -44,9 +44,9 @@ func (f *federationConnection) update(nxnc rpc.NetworkAPIClient) error {
 	nr := &topology.NodeReq{
 		AccountID: f.node.AccountID,
 		TenantID:  f.node.TenantID,
-		NetID:     f.node.NetID,
-		SubnetID:  f.node.SubnetID,
-		NodeID:    f.node.NodeID,
+		// NetID:     f.node.NetID,
+		// SubnetID:  f.node.SubnetID,
+		NodeID: f.node.NodeID,
 	}
 
 	fe, err := nxnc.FederationEndpoints(ctx, nr)

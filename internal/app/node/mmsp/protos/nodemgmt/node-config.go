@@ -11,14 +11,14 @@ import (
 )
 
 func mmpNodeConfig(ctx context.Context, pdu *mmsp.NodeMgmtPDU) error {
-	if pdu.NodeCfg == nil {
-		return fmt.Errorf("null nodeCfg")
+	if pdu.NodeConfig == nil {
+		return fmt.Errorf("null nodeConfig")
 	}
-	ncfg := pdu.NodeCfg
 
 	xlog.Infof("[mmp] Received new configuration..")
-	if err := mnet.LocalNode().NewCfg(ncfg); err != nil {
-		return errors.Wrapf(err, "[%v] function mnet.LocalNode().NewCfg()", errors.Trace())
+
+	if err := mnet.NewCfg(pdu.NodeConfig); err != nil {
+		return errors.Wrapf(err, "[%v] function mnet.NewCfg()", errors.Trace())
 	}
 
 	return nil

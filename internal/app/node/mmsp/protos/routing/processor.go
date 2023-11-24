@@ -20,7 +20,6 @@ func Processor(ctx context.Context, pdu *mmsp.RoutingPDU) {
 	}
 
 	if err != nil {
-		xlog.Errorf("[mmp] Unable to process mmp routingPDU (%s): %v",
-			pdu.Type.String(), err)
+		xlog.Errorf("[mmp] Unable to process mmp routingPDU (%s): %v", pdu.Type.String(), err)
 	}
 }

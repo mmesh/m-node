@@ -80,7 +80,7 @@ func (s *session) NewRoutingSession(locationID string) error {
 
 	accountID := s.connection.node.AccountID
 	tenantID := s.connection.node.TenantID
-	netID := s.connection.node.NetID
+	netID := s.connection.node.Cfg.NetID
 
 	netRoutingTopic := fmt.Sprintf("%s/%s/%s", accountID, tenantID, netID)
 

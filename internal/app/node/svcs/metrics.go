@@ -30,6 +30,7 @@ func MetricsAgent(w *runtime.Wrkr) {
 		xlog.Alertf("[tss] Unable to open time-series store: %v", err)
 		os.Exit(1)
 	}
+	xlog.Info("[tss] Database ready")
 
 	go func() {
 		mmID := viper.GetString("mm.id")

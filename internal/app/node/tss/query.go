@@ -39,8 +39,8 @@ func (tsdb *tsDB) Query(req *tss.MetricsRequest) (*tss.NodeMetrics, error) {
 	nm := &tss.NodeMetrics{
 		AccountID: req.AccountID,
 		TenantID:  req.TenantID,
-		NetID:     req.NetID,
-		SubnetID:  req.SubnetID,
+		// NetID:     req.NetID,
+		// SubnetID:  req.SubnetID,
 		NodeID:    req.NodeID,
 		QueryID:   req.QueryID,
 		Metrics:   make(map[string]*tss.HostMetrics, 0),

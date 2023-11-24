@@ -59,7 +59,6 @@ func (c *connection) networkAdmissionRequest() error {
 		xlog.Alert("Network access NOT AUTHORIZED")
 		grpcConn.Close()
 		os.Exit(1)
-		// return fmt.Errorf("UNAUTHORIZED")
 	case nac.NetworkAdmissionResult_SERVICE_DISABLED:
 		xlog.Alert("Service is DISABLED.")
 		xlog.Alert("Please contact mmesh customer service urgently.")

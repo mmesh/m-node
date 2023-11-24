@@ -10,6 +10,10 @@ func (ln *localNode) GetNodeLSA() *routing.LSA {
 		return nil
 	}
 
+	if ln.Node().Cfg.DisableNetworking || ln.Router() == nil {
+		return nil
+	}
+
 	if !ln.initialized {
 		return nil
 	}
@@ -49,8 +53,8 @@ func (ln *localNode) GetNodeLSA() *routing.LSA {
 		NodeLSA: &routing.NodeLSA{
 			AccountID:      n.AccountID,
 			TenantID:       n.TenantID,
-			NetID:          n.NetID,
-			SubnetID:       n.SubnetID,
+			NetID:          n.Cfg.NetID,
+			SubnetID:       n.Cfg.SubnetID,
 			NodeID:         n.NodeID,
 			NetworkCIDR:    rd.NetworkCIDR,
 			SubnetCIDR:     rd.SubnetCIDR,

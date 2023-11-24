@@ -77,10 +77,20 @@ func (c *connection) new() {
 			}
 		}
 
-		if err = c.newRoutingClient(fc.host()); err != nil {
-			xlog.Errorf("Unable to create a routing session: %v", errors.Cause(err))
-			time.Sleep(1 * time.Second)
-			continue
+		// test
+		// c.node.Cfg.DisableNetworking = true // test
+		// test
+
+		if c.node.Cfg.KubernetesGw {
+			c.node.Cfg.DisableNetworking = false
+		}
+
+		if !c.node.Cfg.DisableNetworking {
+			if err = c.newRoutingClient(fc.host()); err != nil {
+				xlog.Errorf("Unable to create a routing session: %v", errors.Cause(err))
+				time.Sleep(1 * time.Second)
+				continue
+			}
 		}
 	}
 

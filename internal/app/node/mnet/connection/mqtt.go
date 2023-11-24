@@ -5,9 +5,7 @@ import (
 	"fmt"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-lib/pkg/errors"
-	"mmesh.dev/m-lib/pkg/mm"
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
@@ -36,16 +34,8 @@ func (c *connection) newRoutingClient(controllerHost string) error {
 		c.mqttClient = nil
 	}
 
-	mmID, err := mm.GetID(&topology.NodeReq{
-		AccountID: c.node.AccountID,
-		TenantID:  c.node.TenantID,
-		NetID:     c.node.NetID,
-		SubnetID:  c.node.SubnetID,
-		NodeID:    c.node.NodeID,
-	})
-	if err != nil {
-		return errors.Wrapf(err, "[%v] function mm.GetID()", errors.Trace())
-	}
+	mqttClientID := fmt.Sprintf("%s:%s:%s:%s:%s",
+		c.node.AccountID, c.node.TenantID, c.node.Cfg.NetID, c.node.Cfg.SubnetID, c.node.NodeID)
 
 	opts := mqtt.NewClientOptions()
 	// opts.AddBroker(fmt.Sprintf("tcp://%s:%d", controllerHost, mqttPort))
@@ -54,7 +44,7 @@ func (c *connection) newRoutingClient(controllerHost string) error {
 		// MinVersion: tls.VersionTLS13,
 		MinVersion: tls.VersionTLS12,
 	})
-	opts.SetClientID(mmID.String())
+	opts.SetClientID(mqttClientID)
 	opts.SetUsername(c.node.NodeID)
 	opts.SetPassword(c.authKey.Key)
 	opts.SetOrderMatters(false)

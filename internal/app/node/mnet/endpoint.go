@@ -22,6 +22,8 @@ func (ln *localNode) AddNetworkEndpoint(endpointID, dnsName, reqIPv4 string) (st
 
 	erReq := &nac.EndpointRegRequest{
 		NodeReq:  ln.NodeReq(),
+		NetID:    ln.Node().Cfg.NetID,
+		SubnetID: ln.Node().Cfg.SubnetID,
 		Endpoint: e,
 		Priority: ln.node.Cfg.Priority,
 	}

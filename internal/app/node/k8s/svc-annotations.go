@@ -25,12 +25,12 @@ func parseAnnotations(s *v1.Service) *k8sSvcAnnotationsCfg {
 	// 	}
 	// }
 
-	n := mnet.LocalNode().NodeReq()
+	n := mnet.LocalNode().Node()
 
 	cfgAccountID := n.AccountID
 	cfgTenantID := n.TenantID
-	cfgNetID := n.NetID
-	cfgSubnetID := n.SubnetID
+	cfgNetID := n.Cfg.NetID
+	cfgSubnetID := n.Cfg.SubnetID
 
 	valid := true
 

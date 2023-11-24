@@ -28,6 +28,11 @@ func RoutingAgent(w *runtime.Wrkr) {
 		for {
 			select {
 			case <-ticker.C:
+				if mnet.LocalNode().Node().Cfg.DisableNetworking ||
+					mnet.LocalNode().Router() == nil {
+					continue
+				}
+
 				if !routing.ServiceEnabled {
 					time.Sleep(20 * time.Minute)
 				}

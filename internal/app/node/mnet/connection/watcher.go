@@ -36,7 +36,7 @@ func (s *session) connWatcher() {
 					runtime.NetworkWrkrReconnect(s.NetworkClient())
 
 					// reconnect mqtt subscriptions
-					if len(s.locationID) > 0 {
+					if len(s.locationID) > 0 && !s.connection.node.Cfg.DisableNetworking {
 						if err := s.NewRoutingSession(s.locationID); err != nil {
 							xlog.Errorf("Unable to open a new MQTT routing session: %v", err)
 							s.watcherCh <- struct{}{}

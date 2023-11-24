@@ -17,7 +17,7 @@ type LocalNodeInterface interface {
 	GetNodeLSA() *routing.LSA
 	NodeReq() *topology.NodeReq
 	Node() *topology.Node
-	NewCfg(ncfg *topology.NodeCfg) error
+	// NewCfg(ncfg *topology.NodeCfg) error
 	DNSPort() int
 	IsK8sGwEnabled() bool
 	Close()
@@ -68,6 +68,10 @@ func (ln *localNode) IsK8sGwEnabled() bool {
 
 func (ln *localNode) Close() {
 	ln.Connection().Close()
+
+	if ln.Node().Cfg.DisableNetworking || ln.Router() == nil {
+		return
+	}
 
 	ln.Router().Disconnect()
 }

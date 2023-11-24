@@ -63,9 +63,9 @@ func (r *ribData) Initialize(mq <-chan []byte, n *topology.Node, rd *nac.Routing
 
 	r.rib.AccountID = n.AccountID
 	r.rib.TenantID = n.TenantID
-	r.rib.NetID = n.NetID
+	r.rib.NetID = n.Cfg.NetID
 	r.rib.RoutingDomain = rd
-	r.rib.Policy[n.SubnetID] = np
+	r.rib.Policy[n.Cfg.SubnetID] = np
 
 	r.Unlock()
 

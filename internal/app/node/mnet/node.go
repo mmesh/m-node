@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/network/nac"
 	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-lib/pkg/errors"
@@ -14,8 +13,6 @@ func (ln *localNode) NodeReq() *topology.NodeReq {
 	return &topology.NodeReq{
 		AccountID: ln.node.AccountID,
 		TenantID:  ln.node.TenantID,
-		NetID:     ln.node.NetID,
-		SubnetID:  ln.node.SubnetID,
 		NodeID:    ln.node.NodeID,
 	}
 }
@@ -24,14 +21,6 @@ func (ln *localNode) Node() *topology.Node {
 	ln.node.Endpoints = ln.endpoints.endpt
 
 	return ln.node
-}
-
-func (ln *localNode) NewCfg(ncfg *topology.NodeCfg) error {
-	ln.node.Cfg = ncfg
-
-	setCfgVars(ncfg)
-
-	return nil
 }
 
 func (ln *localNode) registerNode() error {
@@ -53,6 +42,12 @@ func (ln *localNode) registerNode() error {
 		return nil
 	}
 
+	if n.Cfg.DisableNetworking || ln.Router() == nil {
+		ln.initialized = true
+
+		return nil
+	}
+
 	// initialize rib data structure
 	mq := ln.Connection().RIBDataMsgRxQueue()
 	ln.Router().RIB().Initialize(mq, n, r.RoutingDomain, r.NetworkPolicy)
@@ -65,17 +60,4 @@ func (ln *localNode) registerNode() error {
 	ln.initialized = true
 
 	return nil
-}
-
-func setCfgVars(cfg *topology.NodeCfg) {
-	viper.Set("nodeName", cfg.NodeName)
-
-	viper.Set("management.disableExec", cfg.Management.DisableExec)
-	viper.Set("management.disableTransfer", cfg.Management.DisableTransfer)
-	viper.Set("management.disablePortForwarding", cfg.Management.DisablePortForwarding)
-	viper.Set("management.disableOps", cfg.Management.DisableOps)
-
-	viper.Set("maintenance.autoUpdate", cfg.Maintenance.AutoUpdate)
-	viper.Set("maintenance.schedule.hour", int(cfg.Maintenance.Schedule.Hour))
-	viper.Set("maintenance.schedule.minute", int(cfg.Maintenance.Schedule.Minute))
 }
