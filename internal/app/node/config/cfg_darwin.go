@@ -6,7 +6,7 @@ package config
 import "mmesh.dev/m-lib/pkg/xlog"
 
 func defaultInterfaceName() string {
-	return "utun2"
+	return "utun5"
 }
 
 func setLogger(level xlog.LogLevel, hostID string) {
