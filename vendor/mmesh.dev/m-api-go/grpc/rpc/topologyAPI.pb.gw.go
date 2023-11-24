@@ -1957,26 +1957,6 @@ func request_TopologyAPI_CreateGenericNode_0(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeRequest.tenantID", err)
 	}
 
-	val, ok = pathParams["nodeRequest.netID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeRequest.netID")
-	}
-
-	err = runtime.PopulateFieldFromPath(&protoReq, "nodeRequest.netID", val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeRequest.netID", err)
-	}
-
-	val, ok = pathParams["nodeRequest.subnetID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeRequest.subnetID")
-	}
-
-	err = runtime.PopulateFieldFromPath(&protoReq, "nodeRequest.subnetID", val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeRequest.subnetID", err)
-	}
-
 	msg, err := client.CreateGenericNode(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
@@ -2021,33 +2001,101 @@ func local_request_TopologyAPI_CreateGenericNode_0(ctx context.Context, marshale
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeRequest.tenantID", err)
 	}
 
-	val, ok = pathParams["nodeRequest.netID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeRequest.netID")
-	}
-
-	err = runtime.PopulateFieldFromPath(&protoReq, "nodeRequest.netID", val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeRequest.netID", err)
-	}
-
-	val, ok = pathParams["nodeRequest.subnetID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeRequest.subnetID")
-	}
-
-	err = runtime.PopulateFieldFromPath(&protoReq, "nodeRequest.subnetID", val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeRequest.subnetID", err)
-	}
-
 	msg, err := server.CreateGenericNode(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_TopologyAPI_ListNodes_0(ctx context.Context, marshaler runtime.Marshaler, client TopologyAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq topology.ListNodesRequest
+func request_TopologyAPI_ListNodesByTenant_0(ctx context.Context, marshaler runtime.Marshaler, client TopologyAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq topology.ListNodesByTenantRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["tenant.accountID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenant.accountID")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "tenant.accountID", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant.accountID", err)
+	}
+
+	val, ok = pathParams["tenant.tenantID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenant.tenantID")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "tenant.tenantID", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant.tenantID", err)
+	}
+
+	msg, err := client.ListNodesByTenant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_TopologyAPI_ListNodesByTenant_0(ctx context.Context, marshaler runtime.Marshaler, server TopologyAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq topology.ListNodesByTenantRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["tenant.accountID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenant.accountID")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "tenant.accountID", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant.accountID", err)
+	}
+
+	val, ok = pathParams["tenant.tenantID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenant.tenantID")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "tenant.tenantID", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenant.tenantID", err)
+	}
+
+	msg, err := server.ListNodesByTenant(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_TopologyAPI_ListNodesBySubnet_0(ctx context.Context, marshaler runtime.Marshaler, client TopologyAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq topology.ListNodesBySubnetRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -2105,13 +2153,13 @@ func request_TopologyAPI_ListNodes_0(ctx context.Context, marshaler runtime.Mars
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "subnet.subnetID", err)
 	}
 
-	msg, err := client.ListNodes(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.ListNodesBySubnet(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_TopologyAPI_ListNodes_0(ctx context.Context, marshaler runtime.Marshaler, server TopologyAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq topology.ListNodesRequest
+func local_request_TopologyAPI_ListNodesBySubnet_0(ctx context.Context, marshaler runtime.Marshaler, server TopologyAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq topology.ListNodesBySubnetRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -2169,10 +2217,14 @@ func local_request_TopologyAPI_ListNodes_0(ctx context.Context, marshaler runtim
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "subnet.subnetID", err)
 	}
 
-	msg, err := server.ListNodes(ctx, &protoReq)
+	msg, err := server.ListNodesBySubnet(ctx, &protoReq)
 	return msg, metadata, err
 
 }
+
+var (
+	filter_TopologyAPI_GetNode_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "tenantID": 1, "nodeID": 2}, Base: []int{1, 2, 4, 6, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 2, 2, 3, 3, 4, 4}}
+)
 
 func request_TopologyAPI_GetNode_0(ctx context.Context, marshaler runtime.Marshaler, client TopologyAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq topology.NodeReq
@@ -2205,26 +2257,6 @@ func request_TopologyAPI_GetNode_0(ctx context.Context, marshaler runtime.Marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenantID", err)
 	}
 
-	val, ok = pathParams["netID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "netID")
-	}
-
-	protoReq.NetID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "netID", err)
-	}
-
-	val, ok = pathParams["subnetID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "subnetID")
-	}
-
-	protoReq.SubnetID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "subnetID", err)
-	}
-
 	val, ok = pathParams["nodeID"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeID")
@@ -2233,6 +2265,13 @@ func request_TopologyAPI_GetNode_0(ctx context.Context, marshaler runtime.Marsha
 	protoReq.NodeID, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeID", err)
+	}
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_TopologyAPI_GetNode_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.GetNode(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -2271,26 +2310,6 @@ func local_request_TopologyAPI_GetNode_0(ctx context.Context, marshaler runtime.
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenantID", err)
 	}
 
-	val, ok = pathParams["netID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "netID")
-	}
-
-	protoReq.NetID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "netID", err)
-	}
-
-	val, ok = pathParams["subnetID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "subnetID")
-	}
-
-	protoReq.SubnetID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "subnetID", err)
-	}
-
 	val, ok = pathParams["nodeID"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeID")
@@ -2301,13 +2320,20 @@ func local_request_TopologyAPI_GetNode_0(ctx context.Context, marshaler runtime.
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeID", err)
 	}
 
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_TopologyAPI_GetNode_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
 	msg, err := server.GetNode(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_TopologyAPI_UpdateNode_0(ctx context.Context, marshaler runtime.Marshaler, client TopologyAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq topology.UpdateNodeRequest
+func request_TopologyAPI_UpdateNodeMetadata_0(ctx context.Context, marshaler runtime.Marshaler, client TopologyAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq topology.UpdateNodeMetadataRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -2345,26 +2371,6 @@ func request_TopologyAPI_UpdateNode_0(ctx context.Context, marshaler runtime.Mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.tenantID", err)
 	}
 
-	val, ok = pathParams["nodeReq.netID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.netID")
-	}
-
-	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.netID", val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.netID", err)
-	}
-
-	val, ok = pathParams["nodeReq.subnetID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.subnetID")
-	}
-
-	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.subnetID", val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.subnetID", err)
-	}
-
 	val, ok = pathParams["nodeReq.nodeID"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.nodeID")
@@ -2375,13 +2381,13 @@ func request_TopologyAPI_UpdateNode_0(ctx context.Context, marshaler runtime.Mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.nodeID", err)
 	}
 
-	msg, err := client.UpdateNode(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.UpdateNodeMetadata(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_TopologyAPI_UpdateNode_0(ctx context.Context, marshaler runtime.Marshaler, server TopologyAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq topology.UpdateNodeRequest
+func local_request_TopologyAPI_UpdateNodeMetadata_0(ctx context.Context, marshaler runtime.Marshaler, server TopologyAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq topology.UpdateNodeMetadataRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -2419,24 +2425,58 @@ func local_request_TopologyAPI_UpdateNode_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.tenantID", err)
 	}
 
-	val, ok = pathParams["nodeReq.netID"]
+	val, ok = pathParams["nodeReq.nodeID"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.netID")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.nodeID")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.netID", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.nodeID", val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.netID", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.nodeID", err)
 	}
 
-	val, ok = pathParams["nodeReq.subnetID"]
+	msg, err := server.UpdateNodeMetadata(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_TopologyAPI_UpdateNodeNetworking_0(ctx context.Context, marshaler runtime.Marshaler, client TopologyAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq topology.UpdateNodeNetworkingRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["nodeReq.accountID"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.subnetID")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.accountID")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.subnetID", val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.accountID", val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.subnetID", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.accountID", err)
+	}
+
+	val, ok = pathParams["nodeReq.tenantID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.tenantID")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.tenantID", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.tenantID", err)
 	}
 
 	val, ok = pathParams["nodeReq.nodeID"]
@@ -2449,10 +2489,176 @@ func local_request_TopologyAPI_UpdateNode_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.nodeID", err)
 	}
 
-	msg, err := server.UpdateNode(ctx, &protoReq)
+	msg, err := client.UpdateNodeNetworking(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
+
+func local_request_TopologyAPI_UpdateNodeNetworking_0(ctx context.Context, marshaler runtime.Marshaler, server TopologyAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq topology.UpdateNodeNetworkingRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["nodeReq.accountID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.accountID")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.accountID", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.accountID", err)
+	}
+
+	val, ok = pathParams["nodeReq.tenantID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.tenantID")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.tenantID", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.tenantID", err)
+	}
+
+	val, ok = pathParams["nodeReq.nodeID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.nodeID")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.nodeID", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.nodeID", err)
+	}
+
+	msg, err := server.UpdateNodeNetworking(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_TopologyAPI_UpdateNodeManagement_0(ctx context.Context, marshaler runtime.Marshaler, client TopologyAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq topology.UpdateNodeManagementRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["nodeReq.accountID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.accountID")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.accountID", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.accountID", err)
+	}
+
+	val, ok = pathParams["nodeReq.tenantID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.tenantID")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.tenantID", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.tenantID", err)
+	}
+
+	val, ok = pathParams["nodeReq.nodeID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.nodeID")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.nodeID", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.nodeID", err)
+	}
+
+	msg, err := client.UpdateNodeManagement(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_TopologyAPI_UpdateNodeManagement_0(ctx context.Context, marshaler runtime.Marshaler, server TopologyAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq topology.UpdateNodeManagementRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["nodeReq.accountID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.accountID")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.accountID", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.accountID", err)
+	}
+
+	val, ok = pathParams["nodeReq.tenantID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.tenantID")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.tenantID", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.tenantID", err)
+	}
+
+	val, ok = pathParams["nodeReq.nodeID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeReq.nodeID")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "nodeReq.nodeID", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeReq.nodeID", err)
+	}
+
+	msg, err := server.UpdateNodeManagement(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+var (
+	filter_TopologyAPI_DeleteNode_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "tenantID": 1, "nodeID": 2}, Base: []int{1, 2, 4, 6, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 2, 2, 3, 3, 4, 4}}
+)
 
 func request_TopologyAPI_DeleteNode_0(ctx context.Context, marshaler runtime.Marshaler, client TopologyAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq topology.NodeReq
@@ -2485,26 +2691,6 @@ func request_TopologyAPI_DeleteNode_0(ctx context.Context, marshaler runtime.Mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenantID", err)
 	}
 
-	val, ok = pathParams["netID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "netID")
-	}
-
-	protoReq.NetID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "netID", err)
-	}
-
-	val, ok = pathParams["subnetID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "subnetID")
-	}
-
-	protoReq.SubnetID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "subnetID", err)
-	}
-
 	val, ok = pathParams["nodeID"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeID")
@@ -2513,6 +2699,13 @@ func request_TopologyAPI_DeleteNode_0(ctx context.Context, marshaler runtime.Mar
 	protoReq.NodeID, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeID", err)
+	}
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_TopologyAPI_DeleteNode_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.DeleteNode(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -2551,26 +2744,6 @@ func local_request_TopologyAPI_DeleteNode_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenantID", err)
 	}
 
-	val, ok = pathParams["netID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "netID")
-	}
-
-	protoReq.NetID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "netID", err)
-	}
-
-	val, ok = pathParams["subnetID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "subnetID")
-	}
-
-	protoReq.SubnetID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "subnetID", err)
-	}
-
 	val, ok = pathParams["nodeID"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeID")
@@ -2581,10 +2754,21 @@ func local_request_TopologyAPI_DeleteNode_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeID", err)
 	}
 
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_TopologyAPI_DeleteNode_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
 	msg, err := server.DeleteNode(ctx, &protoReq)
 	return msg, metadata, err
 
 }
+
+var (
+	filter_TopologyAPI_GetNodeMetrics_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "tenantID": 1, "nodeID": 2}, Base: []int{1, 2, 4, 6, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 2, 2, 3, 3, 4, 4}}
+)
 
 func request_TopologyAPI_GetNodeMetrics_0(ctx context.Context, marshaler runtime.Marshaler, client TopologyAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq topology.NodeReq
@@ -2617,26 +2801,6 @@ func request_TopologyAPI_GetNodeMetrics_0(ctx context.Context, marshaler runtime
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenantID", err)
 	}
 
-	val, ok = pathParams["netID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "netID")
-	}
-
-	protoReq.NetID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "netID", err)
-	}
-
-	val, ok = pathParams["subnetID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "subnetID")
-	}
-
-	protoReq.SubnetID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "subnetID", err)
-	}
-
 	val, ok = pathParams["nodeID"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeID")
@@ -2645,6 +2809,13 @@ func request_TopologyAPI_GetNodeMetrics_0(ctx context.Context, marshaler runtime
 	protoReq.NodeID, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeID", err)
+	}
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_TopologyAPI_GetNodeMetrics_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.GetNodeMetrics(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -2683,26 +2854,6 @@ func local_request_TopologyAPI_GetNodeMetrics_0(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenantID", err)
 	}
 
-	val, ok = pathParams["netID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "netID")
-	}
-
-	protoReq.NetID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "netID", err)
-	}
-
-	val, ok = pathParams["subnetID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "subnetID")
-	}
-
-	protoReq.SubnetID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "subnetID", err)
-	}
-
 	val, ok = pathParams["nodeID"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeID")
@@ -2711,6 +2862,13 @@ func local_request_TopologyAPI_GetNodeMetrics_0(ctx context.Context, marshaler r
 	protoReq.NodeID, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeID", err)
+	}
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_TopologyAPI_GetNodeMetrics_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := server.GetNodeMetrics(ctx, &protoReq)
@@ -3157,7 +3315,7 @@ func RegisterTopologyAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/CreateGenericNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{nodeRequest.accountID}/tenants/{nodeRequest.tenantID}/networks/{nodeRequest.netID}/subnets/{nodeRequest.subnetID}/nodes:new"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/CreateGenericNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{nodeRequest.accountID}/tenants/{nodeRequest.tenantID}/nodes:new"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3174,7 +3332,7 @@ func RegisterTopologyAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 
 	})
 
-	mux.Handle("POST", pattern_TopologyAPI_ListNodes_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_TopologyAPI_ListNodesByTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -3182,12 +3340,12 @@ func RegisterTopologyAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/ListNodes", runtime.WithHTTPPathPattern("/api/v1/accounts/{subnet.accountID}/tenants/{subnet.tenantID}/networks/{subnet.netID}/subnets/{subnet.subnetID}/nodes"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/ListNodesByTenant", runtime.WithHTTPPathPattern("/api/v1/accounts/{tenant.accountID}/tenants/{tenant.tenantID}/nodes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_TopologyAPI_ListNodes_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_TopologyAPI_ListNodesByTenant_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -3195,7 +3353,32 @@ func RegisterTopologyAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 			return
 		}
 
-		forward_TopologyAPI_ListNodes_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_TopologyAPI_ListNodesByTenant_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_TopologyAPI_ListNodesBySubnet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/ListNodesBySubnet", runtime.WithHTTPPathPattern("/api/v1/accounts/{subnet.accountID}/tenants/{subnet.tenantID}/networks/{subnet.netID}/subnets/{subnet.subnetID}/nodes"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_TopologyAPI_ListNodesBySubnet_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_TopologyAPI_ListNodesBySubnet_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -3207,7 +3390,7 @@ func RegisterTopologyAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/GetNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{subnetID}/nodes/{nodeID}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/GetNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/nodes/{nodeID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3224,7 +3407,7 @@ func RegisterTopologyAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 
 	})
 
-	mux.Handle("PATCH", pattern_TopologyAPI_UpdateNode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_TopologyAPI_UpdateNodeMetadata_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -3232,12 +3415,12 @@ func RegisterTopologyAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/UpdateNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{nodeReq.accountID}/tenants/{nodeReq.tenantID}/networks/{nodeReq.netID}/subnets/{nodeReq.subnetID}/nodes/{nodeReq.nodeID}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/UpdateNodeMetadata", runtime.WithHTTPPathPattern("/api/v1/accounts/{nodeReq.accountID}/tenants/{nodeReq.tenantID}/nodes/{nodeReq.nodeID}:metadata"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_TopologyAPI_UpdateNode_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_TopologyAPI_UpdateNodeMetadata_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -3245,7 +3428,57 @@ func RegisterTopologyAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 			return
 		}
 
-		forward_TopologyAPI_UpdateNode_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_TopologyAPI_UpdateNodeMetadata_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("PATCH", pattern_TopologyAPI_UpdateNodeNetworking_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/UpdateNodeNetworking", runtime.WithHTTPPathPattern("/api/v1/accounts/{nodeReq.accountID}/tenants/{nodeReq.tenantID}/nodes/{nodeReq.nodeID}:networking"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_TopologyAPI_UpdateNodeNetworking_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_TopologyAPI_UpdateNodeNetworking_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("PATCH", pattern_TopologyAPI_UpdateNodeManagement_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/UpdateNodeManagement", runtime.WithHTTPPathPattern("/api/v1/accounts/{nodeReq.accountID}/tenants/{nodeReq.tenantID}/nodes/{nodeReq.nodeID}:management"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_TopologyAPI_UpdateNodeManagement_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_TopologyAPI_UpdateNodeManagement_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -3257,7 +3490,7 @@ func RegisterTopologyAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/DeleteNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{subnetID}/nodes/{nodeID}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/DeleteNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/nodes/{nodeID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3282,7 +3515,7 @@ func RegisterTopologyAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/GetNodeMetrics", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{subnetID}/nodes/{nodeID}:metrics"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/GetNodeMetrics", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/nodes/{nodeID}:metrics"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3720,7 +3953,7 @@ func RegisterTopologyAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/CreateGenericNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{nodeRequest.accountID}/tenants/{nodeRequest.tenantID}/networks/{nodeRequest.netID}/subnets/{nodeRequest.subnetID}/nodes:new"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/CreateGenericNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{nodeRequest.accountID}/tenants/{nodeRequest.tenantID}/nodes:new"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3736,25 +3969,47 @@ func RegisterTopologyAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 
 	})
 
-	mux.Handle("POST", pattern_TopologyAPI_ListNodes_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_TopologyAPI_ListNodesByTenant_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/ListNodes", runtime.WithHTTPPathPattern("/api/v1/accounts/{subnet.accountID}/tenants/{subnet.tenantID}/networks/{subnet.netID}/subnets/{subnet.subnetID}/nodes"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/ListNodesByTenant", runtime.WithHTTPPathPattern("/api/v1/accounts/{tenant.accountID}/tenants/{tenant.tenantID}/nodes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_TopologyAPI_ListNodes_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_TopologyAPI_ListNodesByTenant_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_TopologyAPI_ListNodes_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_TopologyAPI_ListNodesByTenant_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_TopologyAPI_ListNodesBySubnet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/ListNodesBySubnet", runtime.WithHTTPPathPattern("/api/v1/accounts/{subnet.accountID}/tenants/{subnet.tenantID}/networks/{subnet.netID}/subnets/{subnet.subnetID}/nodes"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_TopologyAPI_ListNodesBySubnet_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_TopologyAPI_ListNodesBySubnet_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -3764,7 +4019,7 @@ func RegisterTopologyAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/GetNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{subnetID}/nodes/{nodeID}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/GetNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/nodes/{nodeID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3780,25 +4035,69 @@ func RegisterTopologyAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 
 	})
 
-	mux.Handle("PATCH", pattern_TopologyAPI_UpdateNode_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_TopologyAPI_UpdateNodeMetadata_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/UpdateNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{nodeReq.accountID}/tenants/{nodeReq.tenantID}/networks/{nodeReq.netID}/subnets/{nodeReq.subnetID}/nodes/{nodeReq.nodeID}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/UpdateNodeMetadata", runtime.WithHTTPPathPattern("/api/v1/accounts/{nodeReq.accountID}/tenants/{nodeReq.tenantID}/nodes/{nodeReq.nodeID}:metadata"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_TopologyAPI_UpdateNode_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_TopologyAPI_UpdateNodeMetadata_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_TopologyAPI_UpdateNode_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_TopologyAPI_UpdateNodeMetadata_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("PATCH", pattern_TopologyAPI_UpdateNodeNetworking_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/UpdateNodeNetworking", runtime.WithHTTPPathPattern("/api/v1/accounts/{nodeReq.accountID}/tenants/{nodeReq.tenantID}/nodes/{nodeReq.nodeID}:networking"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_TopologyAPI_UpdateNodeNetworking_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_TopologyAPI_UpdateNodeNetworking_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("PATCH", pattern_TopologyAPI_UpdateNodeManagement_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/UpdateNodeManagement", runtime.WithHTTPPathPattern("/api/v1/accounts/{nodeReq.accountID}/tenants/{nodeReq.tenantID}/nodes/{nodeReq.nodeID}:management"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_TopologyAPI_UpdateNodeManagement_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_TopologyAPI_UpdateNodeManagement_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -3808,7 +4107,7 @@ func RegisterTopologyAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/DeleteNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{subnetID}/nodes/{nodeID}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/DeleteNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/nodes/{nodeID}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3830,7 +4129,7 @@ func RegisterTopologyAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/GetNodeMetrics", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/networks/{netID}/subnets/{subnetID}/nodes/{nodeID}:metrics"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/GetNodeMetrics", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/nodes/{nodeID}:metrics"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3884,17 +4183,23 @@ var (
 
 	pattern_TopologyAPI_DeleteNetworkFilter_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 1, 0, 4, 1, 5, 9, 2, 10, 1, 0, 4, 1, 5, 11}, []string{"api", "v1", "accounts", "subnetReq.accountID", "tenants", "subnetReq.tenantID", "networks", "subnetReq.netID", "subnets", "subnetReq.subnetID", "policy", "nfID"}, ""))
 
-	pattern_TopologyAPI_CreateGenericNode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 1, 0, 4, 1, 5, 9, 2, 10}, []string{"api", "v1", "accounts", "nodeRequest.accountID", "tenants", "nodeRequest.tenantID", "networks", "nodeRequest.netID", "subnets", "nodeRequest.subnetID", "nodes"}, "new"))
+	pattern_TopologyAPI_CreateGenericNode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"api", "v1", "accounts", "nodeRequest.accountID", "tenants", "nodeRequest.tenantID", "nodes"}, "new"))
 
-	pattern_TopologyAPI_ListNodes_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 1, 0, 4, 1, 5, 9, 2, 10}, []string{"api", "v1", "accounts", "subnet.accountID", "tenants", "subnet.tenantID", "networks", "subnet.netID", "subnets", "subnet.subnetID", "nodes"}, ""))
+	pattern_TopologyAPI_ListNodesByTenant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"api", "v1", "accounts", "tenant.accountID", "tenants", "tenant.tenantID", "nodes"}, ""))
 
-	pattern_TopologyAPI_GetNode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 1, 0, 4, 1, 5, 9, 2, 10, 1, 0, 4, 1, 5, 11}, []string{"api", "v1", "accounts", "accountID", "tenants", "tenantID", "networks", "netID", "subnets", "subnetID", "nodes", "nodeID"}, ""))
+	pattern_TopologyAPI_ListNodesBySubnet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 1, 0, 4, 1, 5, 9, 2, 10}, []string{"api", "v1", "accounts", "subnet.accountID", "tenants", "subnet.tenantID", "networks", "subnet.netID", "subnets", "subnet.subnetID", "nodes"}, ""))
 
-	pattern_TopologyAPI_UpdateNode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 1, 0, 4, 1, 5, 9, 2, 10, 1, 0, 4, 1, 5, 11}, []string{"api", "v1", "accounts", "nodeReq.accountID", "tenants", "nodeReq.tenantID", "networks", "nodeReq.netID", "subnets", "nodeReq.subnetID", "nodes", "nodeReq.nodeID"}, ""))
+	pattern_TopologyAPI_GetNode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"api", "v1", "accounts", "accountID", "tenants", "tenantID", "nodes", "nodeID"}, ""))
 
-	pattern_TopologyAPI_DeleteNode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 1, 0, 4, 1, 5, 9, 2, 10, 1, 0, 4, 1, 5, 11}, []string{"api", "v1", "accounts", "accountID", "tenants", "tenantID", "networks", "netID", "subnets", "subnetID", "nodes", "nodeID"}, ""))
+	pattern_TopologyAPI_UpdateNodeMetadata_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"api", "v1", "accounts", "nodeReq.accountID", "tenants", "nodeReq.tenantID", "nodes", "nodeReq.nodeID"}, "metadata"))
 
-	pattern_TopologyAPI_GetNodeMetrics_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 1, 0, 4, 1, 5, 9, 2, 10, 1, 0, 4, 1, 5, 11}, []string{"api", "v1", "accounts", "accountID", "tenants", "tenantID", "networks", "netID", "subnets", "subnetID", "nodes", "nodeID"}, "metrics"))
+	pattern_TopologyAPI_UpdateNodeNetworking_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"api", "v1", "accounts", "nodeReq.accountID", "tenants", "nodeReq.tenantID", "nodes", "nodeReq.nodeID"}, "networking"))
+
+	pattern_TopologyAPI_UpdateNodeManagement_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"api", "v1", "accounts", "nodeReq.accountID", "tenants", "nodeReq.tenantID", "nodes", "nodeReq.nodeID"}, "management"))
+
+	pattern_TopologyAPI_DeleteNode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"api", "v1", "accounts", "accountID", "tenants", "tenantID", "nodes", "nodeID"}, ""))
+
+	pattern_TopologyAPI_GetNodeMetrics_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7}, []string{"api", "v1", "accounts", "accountID", "tenants", "tenantID", "nodes", "nodeID"}, "metrics"))
 )
 
 var (
@@ -3934,11 +4239,17 @@ var (
 
 	forward_TopologyAPI_CreateGenericNode_0 = runtime.ForwardResponseMessage
 
-	forward_TopologyAPI_ListNodes_0 = runtime.ForwardResponseMessage
+	forward_TopologyAPI_ListNodesByTenant_0 = runtime.ForwardResponseMessage
+
+	forward_TopologyAPI_ListNodesBySubnet_0 = runtime.ForwardResponseMessage
 
 	forward_TopologyAPI_GetNode_0 = runtime.ForwardResponseMessage
 
-	forward_TopologyAPI_UpdateNode_0 = runtime.ForwardResponseMessage
+	forward_TopologyAPI_UpdateNodeMetadata_0 = runtime.ForwardResponseMessage
+
+	forward_TopologyAPI_UpdateNodeNetworking_0 = runtime.ForwardResponseMessage
+
+	forward_TopologyAPI_UpdateNodeManagement_0 = runtime.ForwardResponseMessage
 
 	forward_TopologyAPI_DeleteNode_0 = runtime.ForwardResponseMessage
 

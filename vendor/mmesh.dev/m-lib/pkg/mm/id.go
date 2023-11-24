@@ -34,20 +34,21 @@ func GetID(nr *topology.NodeReq) (ID, error) {
 		return nil, fmt.Errorf("missing tenantID")
 	}
 
-	if len(nr.NetID) == 0 {
-		return nil, fmt.Errorf("missing netID")
-	}
+	// if len(nr.NetID) == 0 {
+	// 	return nil, fmt.Errorf("missing netID")
+	// }
 
-	if len(nr.SubnetID) == 0 {
-		return nil, fmt.Errorf("missing subnetID")
-	}
+	// if len(nr.SubnetID) == 0 {
+	// 	return nil, fmt.Errorf("missing subnetID")
+	// }
 
 	if len(nr.NodeID) == 0 {
 		return nil, fmt.Errorf("missing nodeID")
 	}
 
-	return mmid(fmt.Sprintf("%s:%s:%s:%s:%s",
-		nr.AccountID, nr.TenantID, nr.NetID, nr.SubnetID, nr.NodeID)), nil
+	// return mmid(fmt.Sprintf("%s:%s:%s:%s:%s",
+	// 	nr.AccountID, nr.TenantID, nr.NetID, nr.SubnetID, nr.NodeID)), nil
+	return mmid(fmt.Sprintf("%s:%s:%s",	nr.AccountID, nr.TenantID, nr.NodeID)), nil
 }
 
 func ParseID(id string) (ID, error) {
@@ -78,8 +79,8 @@ func (id mmid) Node() (*topology.NodeReq, error) {
 	return &topology.NodeReq{
 		AccountID: id.AccountID(),
 		TenantID:  id.TenantID(),
-		NetID:     id.NetID(),
-		SubnetID:  id.SubnetID(),
+		// NetID:     id.NetID(),
+		// SubnetID:  id.SubnetID(),
 		NodeID:    id.NodeID(),
 	}, nil
 }

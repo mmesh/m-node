@@ -43,9 +43,12 @@ const (
 	TopologyAPI_CreateGenericNode_FullMethodName       = "/api.TopologyAPI/CreateGenericNode"
 	TopologyAPI_CreateKubernetesGateway_FullMethodName = "/api.TopologyAPI/CreateKubernetesGateway"
 	TopologyAPI_CreateKubernetesPod_FullMethodName     = "/api.TopologyAPI/CreateKubernetesPod"
-	TopologyAPI_ListNodes_FullMethodName               = "/api.TopologyAPI/ListNodes"
+	TopologyAPI_ListNodesByTenant_FullMethodName       = "/api.TopologyAPI/ListNodesByTenant"
+	TopologyAPI_ListNodesBySubnet_FullMethodName       = "/api.TopologyAPI/ListNodesBySubnet"
 	TopologyAPI_GetNode_FullMethodName                 = "/api.TopologyAPI/GetNode"
-	TopologyAPI_UpdateNode_FullMethodName              = "/api.TopologyAPI/UpdateNode"
+	TopologyAPI_UpdateNodeMetadata_FullMethodName      = "/api.TopologyAPI/UpdateNodeMetadata"
+	TopologyAPI_UpdateNodeNetworking_FullMethodName    = "/api.TopologyAPI/UpdateNodeNetworking"
+	TopologyAPI_UpdateNodeManagement_FullMethodName    = "/api.TopologyAPI/UpdateNodeManagement"
 	TopologyAPI_DeleteNode_FullMethodName              = "/api.TopologyAPI/DeleteNode"
 	TopologyAPI_DeleteNetworkEndpoint_FullMethodName   = "/api.TopologyAPI/DeleteNetworkEndpoint"
 	TopologyAPI_GetNodeMetrics_FullMethodName          = "/api.TopologyAPI/GetNodeMetrics"
@@ -82,9 +85,12 @@ type TopologyAPIClient interface {
 	CreateGenericNode(ctx context.Context, in *topology.NewGenericNodeRequest, opts ...grpc.CallOption) (*topology.NodeInstance, error)
 	CreateKubernetesGateway(ctx context.Context, in *topology.NewK8SGatewayRequest, opts ...grpc.CallOption) (*topology.NodeInstance, error)
 	CreateKubernetesPod(ctx context.Context, in *topology.NewK8SPodRequest, opts ...grpc.CallOption) (*topology.NodeInstance, error)
-	ListNodes(ctx context.Context, in *topology.ListNodesRequest, opts ...grpc.CallOption) (*topology.Nodes, error)
+	ListNodesByTenant(ctx context.Context, in *topology.ListNodesByTenantRequest, opts ...grpc.CallOption) (*topology.Nodes, error)
+	ListNodesBySubnet(ctx context.Context, in *topology.ListNodesBySubnetRequest, opts ...grpc.CallOption) (*topology.Nodes, error)
 	GetNode(ctx context.Context, in *topology.NodeReq, opts ...grpc.CallOption) (*topology.Node, error)
-	UpdateNode(ctx context.Context, in *topology.UpdateNodeRequest, opts ...grpc.CallOption) (*topology.Node, error)
+	UpdateNodeMetadata(ctx context.Context, in *topology.UpdateNodeMetadataRequest, opts ...grpc.CallOption) (*topology.Node, error)
+	UpdateNodeNetworking(ctx context.Context, in *topology.UpdateNodeNetworkingRequest, opts ...grpc.CallOption) (*topology.Node, error)
+	UpdateNodeManagement(ctx context.Context, in *topology.UpdateNodeManagementRequest, opts ...grpc.CallOption) (*topology.Node, error)
 	//	rpc UpdateNodeCfg (topology.UpdateNodeCfgRequest) returns (topology.Node) {
 	//	  option (google.api.http) = {
 	//	    patch: "/api/v1/accounts/{nodeReq.accountID}/tenants/{nodeReq.tenantID}/networks/{nodeReq.netID}/subnets/{nodeReq.subnetID}/nodes/{nodeReq.nodeID}:cfg"
@@ -294,9 +300,18 @@ func (c *topologyAPIClient) CreateKubernetesPod(ctx context.Context, in *topolog
 	return out, nil
 }
 
-func (c *topologyAPIClient) ListNodes(ctx context.Context, in *topology.ListNodesRequest, opts ...grpc.CallOption) (*topology.Nodes, error) {
+func (c *topologyAPIClient) ListNodesByTenant(ctx context.Context, in *topology.ListNodesByTenantRequest, opts ...grpc.CallOption) (*topology.Nodes, error) {
 	out := new(topology.Nodes)
-	err := c.cc.Invoke(ctx, TopologyAPI_ListNodes_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, TopologyAPI_ListNodesByTenant_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *topologyAPIClient) ListNodesBySubnet(ctx context.Context, in *topology.ListNodesBySubnetRequest, opts ...grpc.CallOption) (*topology.Nodes, error) {
+	out := new(topology.Nodes)
+	err := c.cc.Invoke(ctx, TopologyAPI_ListNodesBySubnet_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -312,9 +327,27 @@ func (c *topologyAPIClient) GetNode(ctx context.Context, in *topology.NodeReq, o
 	return out, nil
 }
 
-func (c *topologyAPIClient) UpdateNode(ctx context.Context, in *topology.UpdateNodeRequest, opts ...grpc.CallOption) (*topology.Node, error) {
+func (c *topologyAPIClient) UpdateNodeMetadata(ctx context.Context, in *topology.UpdateNodeMetadataRequest, opts ...grpc.CallOption) (*topology.Node, error) {
 	out := new(topology.Node)
-	err := c.cc.Invoke(ctx, TopologyAPI_UpdateNode_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, TopologyAPI_UpdateNodeMetadata_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *topologyAPIClient) UpdateNodeNetworking(ctx context.Context, in *topology.UpdateNodeNetworkingRequest, opts ...grpc.CallOption) (*topology.Node, error) {
+	out := new(topology.Node)
+	err := c.cc.Invoke(ctx, TopologyAPI_UpdateNodeNetworking_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *topologyAPIClient) UpdateNodeManagement(ctx context.Context, in *topology.UpdateNodeManagementRequest, opts ...grpc.CallOption) (*topology.Node, error) {
+	out := new(topology.Node)
+	err := c.cc.Invoke(ctx, TopologyAPI_UpdateNodeManagement_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -379,9 +412,12 @@ type TopologyAPIServer interface {
 	CreateGenericNode(context.Context, *topology.NewGenericNodeRequest) (*topology.NodeInstance, error)
 	CreateKubernetesGateway(context.Context, *topology.NewK8SGatewayRequest) (*topology.NodeInstance, error)
 	CreateKubernetesPod(context.Context, *topology.NewK8SPodRequest) (*topology.NodeInstance, error)
-	ListNodes(context.Context, *topology.ListNodesRequest) (*topology.Nodes, error)
+	ListNodesByTenant(context.Context, *topology.ListNodesByTenantRequest) (*topology.Nodes, error)
+	ListNodesBySubnet(context.Context, *topology.ListNodesBySubnetRequest) (*topology.Nodes, error)
 	GetNode(context.Context, *topology.NodeReq) (*topology.Node, error)
-	UpdateNode(context.Context, *topology.UpdateNodeRequest) (*topology.Node, error)
+	UpdateNodeMetadata(context.Context, *topology.UpdateNodeMetadataRequest) (*topology.Node, error)
+	UpdateNodeNetworking(context.Context, *topology.UpdateNodeNetworkingRequest) (*topology.Node, error)
+	UpdateNodeManagement(context.Context, *topology.UpdateNodeManagementRequest) (*topology.Node, error)
 	//	rpc UpdateNodeCfg (topology.UpdateNodeCfgRequest) returns (topology.Node) {
 	//	  option (google.api.http) = {
 	//	    patch: "/api/v1/accounts/{nodeReq.accountID}/tenants/{nodeReq.tenantID}/networks/{nodeReq.netID}/subnets/{nodeReq.subnetID}/nodes/{nodeReq.nodeID}:cfg"
@@ -462,14 +498,23 @@ func (UnimplementedTopologyAPIServer) CreateKubernetesGateway(context.Context, *
 func (UnimplementedTopologyAPIServer) CreateKubernetesPod(context.Context, *topology.NewK8SPodRequest) (*topology.NodeInstance, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method CreateKubernetesPod not implemented")
 }
-func (UnimplementedTopologyAPIServer) ListNodes(context.Context, *topology.ListNodesRequest) (*topology.Nodes, error) {
-	return nil, status1.Errorf(codes.Unimplemented, "method ListNodes not implemented")
+func (UnimplementedTopologyAPIServer) ListNodesByTenant(context.Context, *topology.ListNodesByTenantRequest) (*topology.Nodes, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ListNodesByTenant not implemented")
+}
+func (UnimplementedTopologyAPIServer) ListNodesBySubnet(context.Context, *topology.ListNodesBySubnetRequest) (*topology.Nodes, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method ListNodesBySubnet not implemented")
 }
 func (UnimplementedTopologyAPIServer) GetNode(context.Context, *topology.NodeReq) (*topology.Node, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method GetNode not implemented")
 }
-func (UnimplementedTopologyAPIServer) UpdateNode(context.Context, *topology.UpdateNodeRequest) (*topology.Node, error) {
-	return nil, status1.Errorf(codes.Unimplemented, "method UpdateNode not implemented")
+func (UnimplementedTopologyAPIServer) UpdateNodeMetadata(context.Context, *topology.UpdateNodeMetadataRequest) (*topology.Node, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method UpdateNodeMetadata not implemented")
+}
+func (UnimplementedTopologyAPIServer) UpdateNodeNetworking(context.Context, *topology.UpdateNodeNetworkingRequest) (*topology.Node, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method UpdateNodeNetworking not implemented")
+}
+func (UnimplementedTopologyAPIServer) UpdateNodeManagement(context.Context, *topology.UpdateNodeManagementRequest) (*topology.Node, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method UpdateNodeManagement not implemented")
 }
 func (UnimplementedTopologyAPIServer) DeleteNode(context.Context, *topology.NodeReq) (*status.StatusResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method DeleteNode not implemented")
@@ -871,20 +916,38 @@ func _TopologyAPI_CreateKubernetesPod_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TopologyAPI_ListNodes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(topology.ListNodesRequest)
+func _TopologyAPI_ListNodesByTenant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(topology.ListNodesByTenantRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TopologyAPIServer).ListNodes(ctx, in)
+		return srv.(TopologyAPIServer).ListNodesByTenant(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: TopologyAPI_ListNodes_FullMethodName,
+		FullMethod: TopologyAPI_ListNodesByTenant_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TopologyAPIServer).ListNodes(ctx, req.(*topology.ListNodesRequest))
+		return srv.(TopologyAPIServer).ListNodesByTenant(ctx, req.(*topology.ListNodesByTenantRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TopologyAPI_ListNodesBySubnet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(topology.ListNodesBySubnetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TopologyAPIServer).ListNodesBySubnet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TopologyAPI_ListNodesBySubnet_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TopologyAPIServer).ListNodesBySubnet(ctx, req.(*topology.ListNodesBySubnetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -907,20 +970,56 @@ func _TopologyAPI_GetNode_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TopologyAPI_UpdateNode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(topology.UpdateNodeRequest)
+func _TopologyAPI_UpdateNodeMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(topology.UpdateNodeMetadataRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TopologyAPIServer).UpdateNode(ctx, in)
+		return srv.(TopologyAPIServer).UpdateNodeMetadata(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: TopologyAPI_UpdateNode_FullMethodName,
+		FullMethod: TopologyAPI_UpdateNodeMetadata_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TopologyAPIServer).UpdateNode(ctx, req.(*topology.UpdateNodeRequest))
+		return srv.(TopologyAPIServer).UpdateNodeMetadata(ctx, req.(*topology.UpdateNodeMetadataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TopologyAPI_UpdateNodeNetworking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(topology.UpdateNodeNetworkingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TopologyAPIServer).UpdateNodeNetworking(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TopologyAPI_UpdateNodeNetworking_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TopologyAPIServer).UpdateNodeNetworking(ctx, req.(*topology.UpdateNodeNetworkingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TopologyAPI_UpdateNodeManagement_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(topology.UpdateNodeManagementRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TopologyAPIServer).UpdateNodeManagement(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TopologyAPI_UpdateNodeManagement_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TopologyAPIServer).UpdateNodeManagement(ctx, req.(*topology.UpdateNodeManagementRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1071,16 +1170,28 @@ var TopologyAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _TopologyAPI_CreateKubernetesPod_Handler,
 		},
 		{
-			MethodName: "ListNodes",
-			Handler:    _TopologyAPI_ListNodes_Handler,
+			MethodName: "ListNodesByTenant",
+			Handler:    _TopologyAPI_ListNodesByTenant_Handler,
+		},
+		{
+			MethodName: "ListNodesBySubnet",
+			Handler:    _TopologyAPI_ListNodesBySubnet_Handler,
 		},
 		{
 			MethodName: "GetNode",
 			Handler:    _TopologyAPI_GetNode_Handler,
 		},
 		{
-			MethodName: "UpdateNode",
-			Handler:    _TopologyAPI_UpdateNode_Handler,
+			MethodName: "UpdateNodeMetadata",
+			Handler:    _TopologyAPI_UpdateNodeMetadata_Handler,
+		},
+		{
+			MethodName: "UpdateNodeNetworking",
+			Handler:    _TopologyAPI_UpdateNodeNetworking_Handler,
+		},
+		{
+			MethodName: "UpdateNodeManagement",
+			Handler:    _TopologyAPI_UpdateNodeManagement_Handler,
 		},
 		{
 			MethodName: "DeleteNode",
