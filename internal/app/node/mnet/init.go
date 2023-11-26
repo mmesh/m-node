@@ -34,6 +34,8 @@ func NewCfg(nodeConfig *mmsp.NodeMgmtConfig) error {
 
 		viper.Set("nodeName", nodeConfig.Cfg.NodeName)
 	case mmsp.NodeMgmtConfigActionType_CFG_NETWORKING:
+		xlog.Info("Reconfiguring networking...")
+
 		LocalNode().Close()
 
 		conn := connection.New()
@@ -47,6 +49,8 @@ func NewCfg(nodeConfig *mmsp.NodeMgmtConfig) error {
 		if nodeConfig.Cfg.Management == nil {
 			return fmt.Errorf("invalid management config")
 		}
+
+		xlog.Info("Applying new configuration...")
 
 		viper.Set("management.disableOps", nodeConfig.Cfg.Management.DisableOps)
 		viper.Set("management.disableExec", nodeConfig.Cfg.Management.DisableExec)
@@ -118,6 +122,7 @@ func cfgInit(conn connection.Interface) error {
 
 		n.Agent.P2PHostID = rtr.P2PHost().ID().String()
 		n.Agent.MAddrs = maddrs
+		n.Agent.Port = int32(port)
 		n.Agent.Routes = &topology.Routes{
 			Export: rtExported,
 			Import: rtImported,
@@ -125,7 +130,6 @@ func cfgInit(conn connection.Interface) error {
 	}
 
 	n.Agent.Hostname = hostID
-	n.Agent.Port = int32(port)
 	n.Agent.DNSPort = int32(dnsPort)
 	n.Agent.Metrics = &topology.AgentMetrics{}
 	n.Agent.Version = version.GetVersion()

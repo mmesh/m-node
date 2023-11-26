@@ -17,7 +17,6 @@ type LocalNodeInterface interface {
 	GetNodeLSA() *routing.LSA
 	NodeReq() *topology.NodeReq
 	Node() *topology.Node
-	// NewCfg(ncfg *topology.NodeCfg) error
 	DNSPort() int
 	IsK8sGwEnabled() bool
 	Close()

@@ -89,16 +89,18 @@ func (ln *localNode) RemoveNetworkEndpoint(endpointID string) error {
 		return nil
 	}
 
-	erReq := &nac.EndpointRegRequest{
-		NodeReq:  ln.NodeReq(),
-		Endpoint: e,
-		Priority: ln.node.Cfg.Priority,
+	er := &topology.EndpointRequest{
+		NodeReq:    ln.NodeReq(),
+		NetID:      ln.node.Cfg.NetID,
+		SubnetID:   ln.node.Cfg.SubnetID,
+		EndpointID: e.EndpointID,
+		IPv4:       e.IPv4,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	_, err := ln.Connection().NetworkClient().RemoveEndpoint(ctx, erReq)
+	_, err := ln.Connection().NetworkClient().RemoveEndpoint(ctx, er)
 	if err != nil {
 		return errors.Wrapf(err, "[%v] function ln.Connection().NetworkClient().RemoveEndpoint()", errors.Trace())
 	}

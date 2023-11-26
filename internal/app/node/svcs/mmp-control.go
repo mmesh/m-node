@@ -3,6 +3,7 @@ package svcs
 import (
 	"context"
 	"io"
+	"time"
 
 	"github.com/spf13/viper"
 	mmsp_pb "mmesh.dev/m-api-go/grpc/network/mmsp"
@@ -88,7 +89,7 @@ func NetworkControl(w *runtime.Wrkr) {
 		}
 	}()
 
-	// go mmpCtl()
+	go mmpCtl()
 
 	<-w.QuitChan
 
@@ -99,11 +100,14 @@ func NetworkControl(w *runtime.Wrkr) {
 	xlog.Infof("Stopped worker %s", w.Name)
 }
 
-/*
 var mmpCtlRun bool
 
 func mmpCtl() {
 	mmID := viper.GetString("mm.id")
+
+	if !mnet.LocalNode().Node().Cfg.DisableNetworking || mnet.LocalNode().Router() != nil {
+		return
+	}
 
 	if !mmpCtlRun {
 		mmpCtlRun = true
@@ -116,8 +120,7 @@ func mmpCtl() {
 					SessionID: mmID,
 				},
 			}
-			time.Sleep(20 * time.Second)
+			time.Sleep(30 * time.Second)
 		}
 	}
 }
-*/
