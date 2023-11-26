@@ -41,7 +41,7 @@ type NetworkAPIClient interface {
 	NetworkAdmissionControl(ctx context.Context, in *nac.NetworkAdmissionRequest, opts ...grpc.CallOption) (*nac.NetworkAdmissionResponse, error)
 	NATProbe(ctx context.Context, in *nac.NATProbe, opts ...grpc.CallOption) (*nac.NATProbe, error)
 	RegisterEndpoint(ctx context.Context, in *nac.EndpointRegRequest, opts ...grpc.CallOption) (*nac.EndpointRegResponse, error)
-	RemoveEndpoint(ctx context.Context, in *nac.EndpointRegRequest, opts ...grpc.CallOption) (*topology.Node, error)
+	RemoveEndpoint(ctx context.Context, in *topology.EndpointRequest, opts ...grpc.CallOption) (*topology.Node, error)
 	RegisterNode(ctx context.Context, in *nac.NodeRegRequest, opts ...grpc.CallOption) (*nac.NodeRegResponse, error)
 	// rpc Routing(stream routing.LSA) returns (stream routing.Status) {}
 	// rpc RT(routing.RTRequest) returns (routing.RTResponse) {}
@@ -85,7 +85,7 @@ func (c *networkAPIClient) RegisterEndpoint(ctx context.Context, in *nac.Endpoin
 	return out, nil
 }
 
-func (c *networkAPIClient) RemoveEndpoint(ctx context.Context, in *nac.EndpointRegRequest, opts ...grpc.CallOption) (*topology.Node, error) {
+func (c *networkAPIClient) RemoveEndpoint(ctx context.Context, in *topology.EndpointRequest, opts ...grpc.CallOption) (*topology.Node, error) {
 	out := new(topology.Node)
 	err := c.cc.Invoke(ctx, NetworkAPI_RemoveEndpoint_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -159,7 +159,7 @@ type NetworkAPIServer interface {
 	NetworkAdmissionControl(context.Context, *nac.NetworkAdmissionRequest) (*nac.NetworkAdmissionResponse, error)
 	NATProbe(context.Context, *nac.NATProbe) (*nac.NATProbe, error)
 	RegisterEndpoint(context.Context, *nac.EndpointRegRequest) (*nac.EndpointRegResponse, error)
-	RemoveEndpoint(context.Context, *nac.EndpointRegRequest) (*topology.Node, error)
+	RemoveEndpoint(context.Context, *topology.EndpointRequest) (*topology.Node, error)
 	RegisterNode(context.Context, *nac.NodeRegRequest) (*nac.NodeRegResponse, error)
 	// rpc Routing(stream routing.LSA) returns (stream routing.Status) {}
 	// rpc RT(routing.RTRequest) returns (routing.RTResponse) {}
@@ -182,7 +182,7 @@ func (UnimplementedNetworkAPIServer) NATProbe(context.Context, *nac.NATProbe) (*
 func (UnimplementedNetworkAPIServer) RegisterEndpoint(context.Context, *nac.EndpointRegRequest) (*nac.EndpointRegResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method RegisterEndpoint not implemented")
 }
-func (UnimplementedNetworkAPIServer) RemoveEndpoint(context.Context, *nac.EndpointRegRequest) (*topology.Node, error) {
+func (UnimplementedNetworkAPIServer) RemoveEndpoint(context.Context, *topology.EndpointRequest) (*topology.Node, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method RemoveEndpoint not implemented")
 }
 func (UnimplementedNetworkAPIServer) RegisterNode(context.Context, *nac.NodeRegRequest) (*nac.NodeRegResponse, error) {
@@ -265,7 +265,7 @@ func _NetworkAPI_RegisterEndpoint_Handler(srv interface{}, ctx context.Context, 
 }
 
 func _NetworkAPI_RemoveEndpoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(nac.EndpointRegRequest)
+	in := new(topology.EndpointRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -277,7 +277,7 @@ func _NetworkAPI_RemoveEndpoint_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: NetworkAPI_RemoveEndpoint_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NetworkAPIServer).RemoveEndpoint(ctx, req.(*nac.EndpointRegRequest))
+		return srv.(NetworkAPIServer).RemoveEndpoint(ctx, req.(*topology.EndpointRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
