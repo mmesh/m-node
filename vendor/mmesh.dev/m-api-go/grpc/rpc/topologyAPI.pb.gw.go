@@ -1919,7 +1919,7 @@ func local_request_TopologyAPI_DeleteNetworkFilter_0(ctx context.Context, marsha
 }
 
 func request_TopologyAPI_CreateGenericNode_0(ctx context.Context, marshaler runtime.Marshaler, client TopologyAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq topology.NewGenericNodeRequest
+	var protoReq topology.NewNodeRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -1937,24 +1937,24 @@ func request_TopologyAPI_CreateGenericNode_0(ctx context.Context, marshaler runt
 		_   = err
 	)
 
-	val, ok = pathParams["nodeRequest.accountID"]
+	val, ok = pathParams["accountID"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeRequest.accountID")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "nodeRequest.accountID", val)
+	protoReq.AccountID, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeRequest.accountID", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
 	}
 
-	val, ok = pathParams["nodeRequest.tenantID"]
+	val, ok = pathParams["tenantID"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeRequest.tenantID")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenantID")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "nodeRequest.tenantID", val)
+	protoReq.TenantID, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeRequest.tenantID", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenantID", err)
 	}
 
 	msg, err := client.CreateGenericNode(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -1963,7 +1963,7 @@ func request_TopologyAPI_CreateGenericNode_0(ctx context.Context, marshaler runt
 }
 
 func local_request_TopologyAPI_CreateGenericNode_0(ctx context.Context, marshaler runtime.Marshaler, server TopologyAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq topology.NewGenericNodeRequest
+	var protoReq topology.NewNodeRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -1981,24 +1981,24 @@ func local_request_TopologyAPI_CreateGenericNode_0(ctx context.Context, marshale
 		_   = err
 	)
 
-	val, ok = pathParams["nodeRequest.accountID"]
+	val, ok = pathParams["accountID"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeRequest.accountID")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "nodeRequest.accountID", val)
+	protoReq.AccountID, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeRequest.accountID", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
 	}
 
-	val, ok = pathParams["nodeRequest.tenantID"]
+	val, ok = pathParams["tenantID"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nodeRequest.tenantID")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenantID")
 	}
 
-	err = runtime.PopulateFieldFromPath(&protoReq, "nodeRequest.tenantID", val)
+	protoReq.TenantID, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nodeRequest.tenantID", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenantID", err)
 	}
 
 	msg, err := server.CreateGenericNode(ctx, &protoReq)
@@ -3261,7 +3261,7 @@ func RegisterTopologyAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/CreateGenericNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{nodeRequest.accountID}/tenants/{nodeRequest.tenantID}/nodes:new"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TopologyAPI/CreateGenericNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/nodes:new"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -3899,7 +3899,7 @@ func RegisterTopologyAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/CreateGenericNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{nodeRequest.accountID}/tenants/{nodeRequest.tenantID}/nodes:new"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TopologyAPI/CreateGenericNode", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}/nodes:new"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -4129,7 +4129,7 @@ var (
 
 	pattern_TopologyAPI_DeleteNetworkFilter_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 2, 8, 1, 0, 4, 1, 5, 9, 2, 10, 1, 0, 4, 1, 5, 11}, []string{"api", "v1", "accounts", "subnetReq.accountID", "tenants", "subnetReq.tenantID", "networks", "subnetReq.netID", "subnets", "subnetReq.subnetID", "policy", "nfID"}, ""))
 
-	pattern_TopologyAPI_CreateGenericNode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"api", "v1", "accounts", "nodeRequest.accountID", "tenants", "nodeRequest.tenantID", "nodes"}, "new"))
+	pattern_TopologyAPI_CreateGenericNode_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"api", "v1", "accounts", "accountID", "tenants", "tenantID", "nodes"}, "new"))
 
 	pattern_TopologyAPI_ListNodesByTenant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"api", "v1", "accounts", "tenant.accountID", "tenants", "tenant.tenantID", "nodes"}, ""))
 

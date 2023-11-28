@@ -43,6 +43,8 @@ const (
 	TopologyAPI_CreateGenericNode_FullMethodName       = "/api.TopologyAPI/CreateGenericNode"
 	TopologyAPI_CreateKubernetesGateway_FullMethodName = "/api.TopologyAPI/CreateKubernetesGateway"
 	TopologyAPI_CreateKubernetesPod_FullMethodName     = "/api.TopologyAPI/CreateKubernetesPod"
+	TopologyAPI_GetNodeInstance_FullMethodName         = "/api.TopologyAPI/GetNodeInstance"
+	TopologyAPI_GetNodeGroupInstance_FullMethodName    = "/api.TopologyAPI/GetNodeGroupInstance"
 	TopologyAPI_ListNodesByTenant_FullMethodName       = "/api.TopologyAPI/ListNodesByTenant"
 	TopologyAPI_ListNodesBySubnet_FullMethodName       = "/api.TopologyAPI/ListNodesBySubnet"
 	TopologyAPI_GetNode_FullMethodName                 = "/api.TopologyAPI/GetNode"
@@ -82,9 +84,11 @@ type TopologyAPIClient interface {
 	UpdateNetworkFilter(ctx context.Context, in *topology.UpdateNetworkFilterRequest, opts ...grpc.CallOption) (*topology.Policy, error)
 	DeleteNetworkFilter(ctx context.Context, in *topology.DeleteNetworkFilterRequest, opts ...grpc.CallOption) (*topology.Policy, error)
 	// nodes
-	CreateGenericNode(ctx context.Context, in *topology.NewGenericNodeRequest, opts ...grpc.CallOption) (*topology.NodeInstance, error)
-	CreateKubernetesGateway(ctx context.Context, in *topology.NewK8SGatewayRequest, opts ...grpc.CallOption) (*topology.NodeInstance, error)
-	CreateKubernetesPod(ctx context.Context, in *topology.NewK8SPodRequest, opts ...grpc.CallOption) (*topology.NodeInstance, error)
+	CreateGenericNode(ctx context.Context, in *topology.NewNodeRequest, opts ...grpc.CallOption) (*topology.NodeInstance, error)
+	CreateKubernetesGateway(ctx context.Context, in *topology.NewNodeRequest, opts ...grpc.CallOption) (*topology.NodeInstance, error)
+	CreateKubernetesPod(ctx context.Context, in *topology.NewNodeRequest, opts ...grpc.CallOption) (*topology.NodeInstance, error)
+	GetNodeInstance(ctx context.Context, in *topology.NodeReq, opts ...grpc.CallOption) (*topology.NodeInstance, error)
+	GetNodeGroupInstance(ctx context.Context, in *topology.NodeGroupReq, opts ...grpc.CallOption) (*topology.NodeInstance, error)
 	ListNodesByTenant(ctx context.Context, in *topology.ListNodesByTenantRequest, opts ...grpc.CallOption) (*topology.Nodes, error)
 	ListNodesBySubnet(ctx context.Context, in *topology.ListNodesBySubnetRequest, opts ...grpc.CallOption) (*topology.Nodes, error)
 	GetNode(ctx context.Context, in *topology.NodeReq, opts ...grpc.CallOption) (*topology.Node, error)
@@ -273,7 +277,7 @@ func (c *topologyAPIClient) DeleteNetworkFilter(ctx context.Context, in *topolog
 	return out, nil
 }
 
-func (c *topologyAPIClient) CreateGenericNode(ctx context.Context, in *topology.NewGenericNodeRequest, opts ...grpc.CallOption) (*topology.NodeInstance, error) {
+func (c *topologyAPIClient) CreateGenericNode(ctx context.Context, in *topology.NewNodeRequest, opts ...grpc.CallOption) (*topology.NodeInstance, error) {
 	out := new(topology.NodeInstance)
 	err := c.cc.Invoke(ctx, TopologyAPI_CreateGenericNode_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -282,7 +286,7 @@ func (c *topologyAPIClient) CreateGenericNode(ctx context.Context, in *topology.
 	return out, nil
 }
 
-func (c *topologyAPIClient) CreateKubernetesGateway(ctx context.Context, in *topology.NewK8SGatewayRequest, opts ...grpc.CallOption) (*topology.NodeInstance, error) {
+func (c *topologyAPIClient) CreateKubernetesGateway(ctx context.Context, in *topology.NewNodeRequest, opts ...grpc.CallOption) (*topology.NodeInstance, error) {
 	out := new(topology.NodeInstance)
 	err := c.cc.Invoke(ctx, TopologyAPI_CreateKubernetesGateway_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -291,9 +295,27 @@ func (c *topologyAPIClient) CreateKubernetesGateway(ctx context.Context, in *top
 	return out, nil
 }
 
-func (c *topologyAPIClient) CreateKubernetesPod(ctx context.Context, in *topology.NewK8SPodRequest, opts ...grpc.CallOption) (*topology.NodeInstance, error) {
+func (c *topologyAPIClient) CreateKubernetesPod(ctx context.Context, in *topology.NewNodeRequest, opts ...grpc.CallOption) (*topology.NodeInstance, error) {
 	out := new(topology.NodeInstance)
 	err := c.cc.Invoke(ctx, TopologyAPI_CreateKubernetesPod_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *topologyAPIClient) GetNodeInstance(ctx context.Context, in *topology.NodeReq, opts ...grpc.CallOption) (*topology.NodeInstance, error) {
+	out := new(topology.NodeInstance)
+	err := c.cc.Invoke(ctx, TopologyAPI_GetNodeInstance_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *topologyAPIClient) GetNodeGroupInstance(ctx context.Context, in *topology.NodeGroupReq, opts ...grpc.CallOption) (*topology.NodeInstance, error) {
+	out := new(topology.NodeInstance)
+	err := c.cc.Invoke(ctx, TopologyAPI_GetNodeGroupInstance_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -409,9 +431,11 @@ type TopologyAPIServer interface {
 	UpdateNetworkFilter(context.Context, *topology.UpdateNetworkFilterRequest) (*topology.Policy, error)
 	DeleteNetworkFilter(context.Context, *topology.DeleteNetworkFilterRequest) (*topology.Policy, error)
 	// nodes
-	CreateGenericNode(context.Context, *topology.NewGenericNodeRequest) (*topology.NodeInstance, error)
-	CreateKubernetesGateway(context.Context, *topology.NewK8SGatewayRequest) (*topology.NodeInstance, error)
-	CreateKubernetesPod(context.Context, *topology.NewK8SPodRequest) (*topology.NodeInstance, error)
+	CreateGenericNode(context.Context, *topology.NewNodeRequest) (*topology.NodeInstance, error)
+	CreateKubernetesGateway(context.Context, *topology.NewNodeRequest) (*topology.NodeInstance, error)
+	CreateKubernetesPod(context.Context, *topology.NewNodeRequest) (*topology.NodeInstance, error)
+	GetNodeInstance(context.Context, *topology.NodeReq) (*topology.NodeInstance, error)
+	GetNodeGroupInstance(context.Context, *topology.NodeGroupReq) (*topology.NodeInstance, error)
 	ListNodesByTenant(context.Context, *topology.ListNodesByTenantRequest) (*topology.Nodes, error)
 	ListNodesBySubnet(context.Context, *topology.ListNodesBySubnetRequest) (*topology.Nodes, error)
 	GetNode(context.Context, *topology.NodeReq) (*topology.Node, error)
@@ -489,14 +513,20 @@ func (UnimplementedTopologyAPIServer) UpdateNetworkFilter(context.Context, *topo
 func (UnimplementedTopologyAPIServer) DeleteNetworkFilter(context.Context, *topology.DeleteNetworkFilterRequest) (*topology.Policy, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method DeleteNetworkFilter not implemented")
 }
-func (UnimplementedTopologyAPIServer) CreateGenericNode(context.Context, *topology.NewGenericNodeRequest) (*topology.NodeInstance, error) {
+func (UnimplementedTopologyAPIServer) CreateGenericNode(context.Context, *topology.NewNodeRequest) (*topology.NodeInstance, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method CreateGenericNode not implemented")
 }
-func (UnimplementedTopologyAPIServer) CreateKubernetesGateway(context.Context, *topology.NewK8SGatewayRequest) (*topology.NodeInstance, error) {
+func (UnimplementedTopologyAPIServer) CreateKubernetesGateway(context.Context, *topology.NewNodeRequest) (*topology.NodeInstance, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method CreateKubernetesGateway not implemented")
 }
-func (UnimplementedTopologyAPIServer) CreateKubernetesPod(context.Context, *topology.NewK8SPodRequest) (*topology.NodeInstance, error) {
+func (UnimplementedTopologyAPIServer) CreateKubernetesPod(context.Context, *topology.NewNodeRequest) (*topology.NodeInstance, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method CreateKubernetesPod not implemented")
+}
+func (UnimplementedTopologyAPIServer) GetNodeInstance(context.Context, *topology.NodeReq) (*topology.NodeInstance, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method GetNodeInstance not implemented")
+}
+func (UnimplementedTopologyAPIServer) GetNodeGroupInstance(context.Context, *topology.NodeGroupReq) (*topology.NodeInstance, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method GetNodeGroupInstance not implemented")
 }
 func (UnimplementedTopologyAPIServer) ListNodesByTenant(context.Context, *topology.ListNodesByTenantRequest) (*topology.Nodes, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method ListNodesByTenant not implemented")
@@ -863,7 +893,7 @@ func _TopologyAPI_DeleteNetworkFilter_Handler(srv interface{}, ctx context.Conte
 }
 
 func _TopologyAPI_CreateGenericNode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(topology.NewGenericNodeRequest)
+	in := new(topology.NewNodeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -875,13 +905,13 @@ func _TopologyAPI_CreateGenericNode_Handler(srv interface{}, ctx context.Context
 		FullMethod: TopologyAPI_CreateGenericNode_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TopologyAPIServer).CreateGenericNode(ctx, req.(*topology.NewGenericNodeRequest))
+		return srv.(TopologyAPIServer).CreateGenericNode(ctx, req.(*topology.NewNodeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _TopologyAPI_CreateKubernetesGateway_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(topology.NewK8SGatewayRequest)
+	in := new(topology.NewNodeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -893,13 +923,13 @@ func _TopologyAPI_CreateKubernetesGateway_Handler(srv interface{}, ctx context.C
 		FullMethod: TopologyAPI_CreateKubernetesGateway_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TopologyAPIServer).CreateKubernetesGateway(ctx, req.(*topology.NewK8SGatewayRequest))
+		return srv.(TopologyAPIServer).CreateKubernetesGateway(ctx, req.(*topology.NewNodeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _TopologyAPI_CreateKubernetesPod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(topology.NewK8SPodRequest)
+	in := new(topology.NewNodeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -911,7 +941,43 @@ func _TopologyAPI_CreateKubernetesPod_Handler(srv interface{}, ctx context.Conte
 		FullMethod: TopologyAPI_CreateKubernetesPod_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TopologyAPIServer).CreateKubernetesPod(ctx, req.(*topology.NewK8SPodRequest))
+		return srv.(TopologyAPIServer).CreateKubernetesPod(ctx, req.(*topology.NewNodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TopologyAPI_GetNodeInstance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(topology.NodeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TopologyAPIServer).GetNodeInstance(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TopologyAPI_GetNodeInstance_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TopologyAPIServer).GetNodeInstance(ctx, req.(*topology.NodeReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TopologyAPI_GetNodeGroupInstance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(topology.NodeGroupReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TopologyAPIServer).GetNodeGroupInstance(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TopologyAPI_GetNodeGroupInstance_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TopologyAPIServer).GetNodeGroupInstance(ctx, req.(*topology.NodeGroupReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1168,6 +1234,14 @@ var TopologyAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateKubernetesPod",
 			Handler:    _TopologyAPI_CreateKubernetesPod_Handler,
+		},
+		{
+			MethodName: "GetNodeInstance",
+			Handler:    _TopologyAPI_GetNodeInstance_Handler,
+		},
+		{
+			MethodName: "GetNodeGroupInstance",
+			Handler:    _TopologyAPI_GetNodeGroupInstance_Handler,
 		},
 		{
 			MethodName: "ListNodesByTenant",
