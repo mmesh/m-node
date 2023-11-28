@@ -62,7 +62,7 @@ func (ln *localNode) DNSPort() int {
 }
 
 func (ln *localNode) IsK8sGwEnabled() bool {
-	return ln.node.Cfg.KubernetesGw
+	return ln.node.Type == topology.NodeType_K8S_GATEWAY
 }
 
 func (ln *localNode) Close() {

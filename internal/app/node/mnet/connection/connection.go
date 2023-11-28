@@ -3,6 +3,7 @@ package connection
 import (
 	"time"
 
+	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/grpc/client"
 	"mmesh.dev/m-lib/pkg/xlog"
@@ -77,11 +78,7 @@ func (c *connection) new() {
 			}
 		}
 
-		// test
-		// c.node.Cfg.DisableNetworking = true // test
-		// test
-
-		if c.node.Cfg.KubernetesGw {
+		if c.node.Type == topology.NodeType_K8S_GATEWAY {
 			c.node.Cfg.DisableNetworking = false
 		}
 

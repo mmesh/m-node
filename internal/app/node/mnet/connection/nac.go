@@ -41,7 +41,8 @@ func (c *connection) networkAdmissionRequest() error {
 	defer grpcConn.Close()
 
 	naReq := &nac.NetworkAdmissionRequest{
-		NodeToken: token,
+		NodeToken:  token,
+		NodeHostID: viper.GetString("host.id"),
 	}
 
 	r, err := nc.NetworkAdmissionControl(context.TODO(), naReq)

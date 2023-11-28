@@ -93,7 +93,7 @@ func cfgInit(conn connection.Interface) error {
 	n.Agent.ExternalIPv4 = conn.GetExternalIPv4()
 	n.Agent.CanRelay = len(n.Agent.ExternalIPv4) > 0
 
-	if n.Cfg.KubernetesGw {
+	if n.Type == topology.NodeType_K8S_GATEWAY {
 		n.Cfg.DisableNetworking = false
 	}
 
