@@ -33,7 +33,8 @@ func (c *controller) manageSvcEvent(s *v1.Service, evt eventType) error {
 		k8sSvcCfg = parseAnnotations(s)
 	}
 
-	dnsName := k8sSvcCfg.dnsName
+	// dnsName := k8sSvcCfg.dnsName
+	dnsName := fmt.Sprintf("%s.%s", k8sSvcCfg.dnsName, ns)
 	reqIPv4 := k8sSvcCfg.reqIPv4
 
 	var vIP string
@@ -42,7 +43,6 @@ func (c *controller) manageSvcEvent(s *v1.Service, evt eventType) error {
 	switch evt {
 	case eventAdd:
 		if k8sSvcCfg.valid {
-			// vIP, err = netp2p.AddNetworkEndpoint(endpointID, dnsName, reqIPv4)
 			vIP, err = mnet.LocalNode().AddNetworkEndpoint(endpointID, dnsName, reqIPv4)
 			if err != nil {
 				xlog.Errorf("Unable to add k8s network endpoint: %v", err)
@@ -50,14 +50,12 @@ func (c *controller) manageSvcEvent(s *v1.Service, evt eventType) error {
 			}
 		}
 	case eventUpdate:
-		// if err = netp2p.RemoveNetworkEndpoint(endpointID); err != nil {
 		if err = mnet.LocalNode().RemoveNetworkEndpoint(endpointID); err != nil {
 			xlog.Errorf("Unable to remove k8s network endpoint: %v", err)
 			return errors.Wrapf(err, "[%v] function netp2p.RemoveNetworkEndpoint()", errors.Trace())
 		}
 
 		if k8sSvcCfg.valid {
-			// vIP, err = netp2p.AddNetworkEndpoint(endpointID, dnsName, reqIPv4)
 			vIP, err = mnet.LocalNode().AddNetworkEndpoint(endpointID, dnsName, reqIPv4)
 			if err != nil {
 				xlog.Errorf("Unable to add k8s network endpoint: %v", err)
@@ -65,7 +63,6 @@ func (c *controller) manageSvcEvent(s *v1.Service, evt eventType) error {
 			}
 		}
 	case eventDelete:
-		// if err = netp2p.RemoveNetworkEndpoint(endpointID); err != nil {
 		if err = mnet.LocalNode().RemoveNetworkEndpoint(endpointID); err != nil {
 			xlog.Errorf("Unable to remove k8s network endpoint: %v", err)
 			return errors.Wrapf(err, "[%v] function netp2p.RemoveNetworkEndpoint()", errors.Trace())

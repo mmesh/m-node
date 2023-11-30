@@ -150,8 +150,13 @@ func cfgInit(conn connection.Interface) error {
 			return errors.Wrapf(err, "[%v] function localnode.registerNode()", errors.Trace())
 		}
 	} else {
-		endpointID := nodeName
 		dnsName := nodeName
+		if n.KubernetesAttrs != nil {
+			if len(n.KubernetesAttrs.Namespace) > 0 {
+				dnsName = fmt.Sprintf("%s.%s", nodeName, n.KubernetesAttrs.Namespace)
+			}
+		}
+		endpointID := dnsName
 		if _, err := localnode.AddNetworkEndpoint(endpointID, dnsName, reqIPv4); err != nil {
 			return errors.Wrapf(err, "[%v] function localnode.AddNetworkEndpoint()", errors.Trace())
 		}
