@@ -52,6 +52,7 @@ const (
 	TopologyAPI_UpdateNodeNetworking_FullMethodName    = "/api.TopologyAPI/UpdateNodeNetworking"
 	TopologyAPI_UpdateNodeManagement_FullMethodName    = "/api.TopologyAPI/UpdateNodeManagement"
 	TopologyAPI_DeleteNode_FullMethodName              = "/api.TopologyAPI/DeleteNode"
+	TopologyAPI_DeleteNodeGroup_FullMethodName         = "/api.TopologyAPI/DeleteNodeGroup"
 	TopologyAPI_DeleteNetworkEndpoint_FullMethodName   = "/api.TopologyAPI/DeleteNetworkEndpoint"
 	TopologyAPI_GetNodeMetrics_FullMethodName          = "/api.TopologyAPI/GetNodeMetrics"
 )
@@ -102,6 +103,7 @@ type TopologyAPIClient interface {
 	//	  };
 	//	}
 	DeleteNode(ctx context.Context, in *topology.NodeReq, opts ...grpc.CallOption) (*status.StatusResponse, error)
+	DeleteNodeGroup(ctx context.Context, in *topology.NodeGroupReq, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	DeleteNetworkEndpoint(ctx context.Context, in *topology.EndpointRequest, opts ...grpc.CallOption) (*status.StatusResponse, error)
 	// nodeMetrics
 	GetNodeMetrics(ctx context.Context, in *topology.NodeReq, opts ...grpc.CallOption) (*tss.NodeMetrics, error)
@@ -385,6 +387,15 @@ func (c *topologyAPIClient) DeleteNode(ctx context.Context, in *topology.NodeReq
 	return out, nil
 }
 
+func (c *topologyAPIClient) DeleteNodeGroup(ctx context.Context, in *topology.NodeGroupReq, opts ...grpc.CallOption) (*status.StatusResponse, error) {
+	out := new(status.StatusResponse)
+	err := c.cc.Invoke(ctx, TopologyAPI_DeleteNodeGroup_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *topologyAPIClient) DeleteNetworkEndpoint(ctx context.Context, in *topology.EndpointRequest, opts ...grpc.CallOption) (*status.StatusResponse, error) {
 	out := new(status.StatusResponse)
 	err := c.cc.Invoke(ctx, TopologyAPI_DeleteNetworkEndpoint_FullMethodName, in, out, opts...)
@@ -449,6 +460,7 @@ type TopologyAPIServer interface {
 	//	  };
 	//	}
 	DeleteNode(context.Context, *topology.NodeReq) (*status.StatusResponse, error)
+	DeleteNodeGroup(context.Context, *topology.NodeGroupReq) (*status.StatusResponse, error)
 	DeleteNetworkEndpoint(context.Context, *topology.EndpointRequest) (*status.StatusResponse, error)
 	// nodeMetrics
 	GetNodeMetrics(context.Context, *topology.NodeReq) (*tss.NodeMetrics, error)
@@ -548,6 +560,9 @@ func (UnimplementedTopologyAPIServer) UpdateNodeManagement(context.Context, *top
 }
 func (UnimplementedTopologyAPIServer) DeleteNode(context.Context, *topology.NodeReq) (*status.StatusResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method DeleteNode not implemented")
+}
+func (UnimplementedTopologyAPIServer) DeleteNodeGroup(context.Context, *topology.NodeGroupReq) (*status.StatusResponse, error) {
+	return nil, status1.Errorf(codes.Unimplemented, "method DeleteNodeGroup not implemented")
 }
 func (UnimplementedTopologyAPIServer) DeleteNetworkEndpoint(context.Context, *topology.EndpointRequest) (*status.StatusResponse, error) {
 	return nil, status1.Errorf(codes.Unimplemented, "method DeleteNetworkEndpoint not implemented")
@@ -1108,6 +1123,24 @@ func _TopologyAPI_DeleteNode_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TopologyAPI_DeleteNodeGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(topology.NodeGroupReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TopologyAPIServer).DeleteNodeGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TopologyAPI_DeleteNodeGroup_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TopologyAPIServer).DeleteNodeGroup(ctx, req.(*topology.NodeGroupReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _TopologyAPI_DeleteNetworkEndpoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(topology.EndpointRequest)
 	if err := dec(in); err != nil {
@@ -1270,6 +1303,10 @@ var TopologyAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteNode",
 			Handler:    _TopologyAPI_DeleteNode_Handler,
+		},
+		{
+			MethodName: "DeleteNodeGroup",
+			Handler:    _TopologyAPI_DeleteNodeGroup_Handler,
 		},
 		{
 			MethodName: "DeleteNetworkEndpoint",
