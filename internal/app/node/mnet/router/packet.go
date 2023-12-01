@@ -152,30 +152,18 @@ func (r *router) packetFilter(ipHdr *ipHeader, pkt []byte, egress bool) bool {
 		// litter.Dump(f)
 		// litter.Dump(ipHdr)
 
+		// proto
+		if f.Proto == topology.Protocol_ANY || ipnet.IPProtocol(f.Proto.String()) == ipHdr.proto {
+			// fmt.Printf("*** MATCHED Proto (%s): %s\n", f.Proto.String(), ipHdr.proto.String())
+			matchProto = true
+		} else {
+			continue
+		}
+
 		// srcIP
 		_, srcIPNet, err := net.ParseCIDR(f.SrcIPNet)
 		if err != nil {
 			return true // drop the pkt
-		}
-
-		if egress {
-			// outgoing pkt
-			if srcIPNet.Contains(ipHdr.srcIP) {
-				// fmt.Printf("*** MATCHED SrcIP (%s): %s\n", srcIPNet.String(), ipHdr.srcIP.String())
-				matchSrcIP = true
-			}
-		} else { // ingress
-			// incoming pkt
-			if srcIPNet.Contains(ipHdr.srcIP) {
-				// fmt.Printf("*** MATCHED SrcIP (%s): %s\n", srcIPNet.String(), ipHdr.srcIP.String())
-				matchSrcIP = true
-			}
-
-			// response pkt
-			if srcIPNet.Contains(ipHdr.dstIP) {
-				// fmt.Printf("*** [Response] MATCHED DstIP (%s): %s\n", srcIPNet.String(), ipHdr.dstIP.String())
-				matchSrcIP = true
-			}
 		}
 
 		// dstIP
@@ -186,54 +174,44 @@ func (r *router) packetFilter(ipHdr *ipHeader, pkt []byte, egress bool) bool {
 
 		if egress {
 			// outgoing pkt
-			if dstIPNet.Contains(ipHdr.dstIP) {
+			if srcIPNet.Contains(ipHdr.srcIP) &&
+				dstIPNet.Contains(ipHdr.dstIP) &&
+				f.DstPort == 0 || f.DstPort == uint32(ipHdr.dstPort) {
+				// fmt.Printf("*** MATCHED SrcIP (%s): %s\n", srcIPNet.String(), ipHdr.srcIP.String())
 				// fmt.Printf("*** MATCHED DstIP (%s): %s\n", dstIPNet.String(), ipHdr.dstIP.String())
+				// fmt.Printf("*** MATCHED DstPort (%d): %d\n", f.DstPort, ipHdr.dstPort)
+				matchSrcIP = true
+				matchDstIP = true
 				matchDstIP = true
 			}
-		} else { // ingress
+		} else {
 			// incoming pkt
-			if dstIPNet.Contains(ipHdr.dstIP) {
+			if srcIPNet.Contains(ipHdr.srcIP) &&
+				dstIPNet.Contains(ipHdr.dstIP) &&
+				f.DstPort == 0 || f.DstPort == uint32(ipHdr.dstPort) {
+				// fmt.Printf("*** MATCHED SrcIP (%s): %s\n", srcIPNet.String(), ipHdr.srcIP.String())
 				// fmt.Printf("*** MATCHED DstIP (%s): %s\n", dstIPNet.String(), ipHdr.dstIP.String())
-				matchDstIP = true
-			}
-
-			// response pkt
-			if dstIPNet.Contains(ipHdr.srcIP) {
-				// fmt.Printf("*** [Response] MATCHED SrcIP (%s): %s\n", dstIPNet.String(), ipHdr.srcIP.String())
-				matchDstIP = true
-			}
-		}
-
-		// proto
-		if f.Proto == topology.Protocol_ANY || ipnet.IPProtocol(f.Proto.String()) == ipHdr.proto {
-			// fmt.Printf("*** MATCHED Proto (%s): %s\n", f.Proto.String(), ipHdr.proto.String())
-			matchProto = true
-		}
-
-		// dstPort
-		if egress {
-			// outgoing pkt
-			if f.DstPort == 0 || f.DstPort == uint32(ipHdr.dstPort) {
 				// fmt.Printf("*** MATCHED DstPort (%d): %d\n", f.DstPort, ipHdr.dstPort)
+				matchSrcIP = true
+				matchDstIP = true
 				matchPort = true
-			}
-		} else { // ingress
-			// incoming pkt
-			if f.DstPort == 0 || f.DstPort == uint32(ipHdr.dstPort) {
-				// fmt.Printf("*** MATCHED DstPort (%d): %d\n", f.DstPort, ipHdr.dstPort)
-				matchPort = true
-			}
-
-			// response pkt
-			if f.DstPort == 0 || f.DstPort == uint32(ipHdr.srcPort) {
-				// fmt.Printf("*** [Response] MATCHED SrcPort (%d): %d\n", f.DstPort, ipHdr.srcPort)
-				matchPort = true
+			} else {
+				// response pkt
+				if srcIPNet.Contains(ipHdr.dstIP) &&
+					dstIPNet.Contains(ipHdr.srcIP) &&
+					f.DstPort == 0 || f.DstPort == uint32(ipHdr.srcPort) {
+					// fmt.Printf("*** [Response] MATCHED DstIP (%s): %s\n", srcIPNet.String(), ipHdr.dstIP.String())
+					// fmt.Printf("*** [Response] MATCHED SrcIP (%s): %s\n", dstIPNet.String(), ipHdr.srcIP.String())
+					// fmt.Printf("*** [Response] MATCHED SrcPort (%d): %d\n", f.DstPort, ipHdr.srcPort)
+					matchSrcIP = true
+					matchDstIP = true
+					matchPort = true
+				}
 			}
 		}
 
 		if matchSrcIP && matchDstIP && matchProto && matchPort {
 			// fmt.Printf("*** MATCHED Policy: %s\n", f.Policy.String())
-
 			switch f.Policy {
 			case topology.SecurityPolicy_ACCEPT:
 				return false // accept the pkt
