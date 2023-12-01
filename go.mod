@@ -19,7 +19,7 @@ require (
 	github.com/miekg/dns v1.1.57
 	github.com/multiformats/go-multiaddr v0.12.0
 	github.com/robfig/cron/v3 v3.0.0
-	github.com/shirou/gopsutil/v3 v3.23.10
+	github.com/shirou/gopsutil/v3 v3.23.11
 	github.com/songgao/water v0.0.0-20200317203138-2b4b6d7c09d8
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.13.0
