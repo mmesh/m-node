@@ -55,7 +55,9 @@ function Download {
     )
 
     try {
+        $ProgressPreference = 'SilentlyContinue'
         Invoke-WebRequest -Uri $Uri -OutFile "$OutFile"
+        $ProgressPreference = 'Continue'
     } catch {
         # Get the status code...
         $StatusCode = [int]$_.Exception.Response.StatusCode
