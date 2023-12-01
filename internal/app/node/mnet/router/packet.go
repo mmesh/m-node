@@ -176,7 +176,7 @@ func (r *router) packetFilter(ipHdr *ipHeader, pkt []byte, egress bool) bool {
 			// outgoing pkt
 			if srcIPNet.Contains(ipHdr.srcIP) &&
 				dstIPNet.Contains(ipHdr.dstIP) &&
-				f.DstPort == 0 || f.DstPort == uint32(ipHdr.dstPort) {
+				(f.DstPort == 0 || f.DstPort == uint32(ipHdr.dstPort)) {
 				// fmt.Printf("*** MATCHED SrcIP (%s): %s\n", srcIPNet.String(), ipHdr.srcIP.String())
 				// fmt.Printf("*** MATCHED DstIP (%s): %s\n", dstIPNet.String(), ipHdr.dstIP.String())
 				// fmt.Printf("*** MATCHED DstPort (%d): %d\n", f.DstPort, ipHdr.dstPort)
@@ -188,7 +188,7 @@ func (r *router) packetFilter(ipHdr *ipHeader, pkt []byte, egress bool) bool {
 			// incoming pkt
 			if srcIPNet.Contains(ipHdr.srcIP) &&
 				dstIPNet.Contains(ipHdr.dstIP) &&
-				f.DstPort == 0 || f.DstPort == uint32(ipHdr.dstPort) {
+				(f.DstPort == 0 || f.DstPort == uint32(ipHdr.dstPort)) {
 				// fmt.Printf("*** MATCHED SrcIP (%s): %s\n", srcIPNet.String(), ipHdr.srcIP.String())
 				// fmt.Printf("*** MATCHED DstIP (%s): %s\n", dstIPNet.String(), ipHdr.dstIP.String())
 				// fmt.Printf("*** MATCHED DstPort (%d): %d\n", f.DstPort, ipHdr.dstPort)
@@ -199,7 +199,7 @@ func (r *router) packetFilter(ipHdr *ipHeader, pkt []byte, egress bool) bool {
 				// response pkt
 				if srcIPNet.Contains(ipHdr.dstIP) &&
 					dstIPNet.Contains(ipHdr.srcIP) &&
-					f.DstPort == 0 || f.DstPort == uint32(ipHdr.srcPort) {
+					(f.DstPort == 0 || f.DstPort == uint32(ipHdr.srcPort)) {
 					// fmt.Printf("*** [Response] MATCHED DstIP (%s): %s\n", srcIPNet.String(), ipHdr.dstIP.String())
 					// fmt.Printf("*** [Response] MATCHED SrcIP (%s): %s\n", dstIPNet.String(), ipHdr.srcIP.String())
 					// fmt.Printf("*** [Response] MATCHED SrcPort (%d): %d\n", f.DstPort, ipHdr.srcPort)
