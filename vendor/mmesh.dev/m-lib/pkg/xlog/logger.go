@@ -138,14 +138,6 @@ func (l *LoggerSpec) SetLogFile(logfile string) *LoggerSpec {
 	return l
 }
 
-/*
-func (l *LoggerSpec) Close() {
-	if l.sumologicLogger != nil {
-		l.sumologicLogger.endCh <- struct{}{}
-	}
-}
-*/
-
 func (l *LoggerSpec) logLevelPrefix(level LogLevel) string {
 	prefix := "[" + logPrefixes[level] + "]"
 
@@ -182,9 +174,9 @@ func (l *LoggerSpec) log(level LogLevel, args ...interface{}) {
 		if l.stdLog != nil {
 			l.stdLog[level].Println(args...)
 		} else {
-			all := append([]interface{}{l.logPrefix(level, timestamp)}, args...)
+			// all := append([]interface{}{l.logPrefix(level, timestamp)}, args...)
 			// fmt.Println(all...)
-			l.writeLog(level, all...)
+			l.writeLog(level, timestamp, args...)
 		}
 
 		if l.stdLogFileLogger != nil {
@@ -219,7 +211,8 @@ func (l *LoggerSpec) logf(level LogLevel, format string, args ...interface{}) {
 			l.stdLog[level].Println(fmt.Sprintf(format, args...))
 		} else {
 			// fmt.Println(l.logPrefix(level, timestamp), fmt.Sprintf(format, args...))
-			l.writeLog(level, l.logPrefix(level, timestamp), fmt.Sprintf(format, args...))
+			// l.writeLog(level, l.logPrefix(level, timestamp), fmt.Sprintf(format, args...))
+			l.writeLog(level, timestamp, fmt.Sprintf(format, args...))
 		}
 
 		if l.stdLogFileLogger != nil {
