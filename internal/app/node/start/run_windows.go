@@ -80,7 +80,6 @@ func runAsWindowsService(action windowsAction) {
 }
 
 func Main() {
-	xlog.Logger().SetStdLogger().SetANSIColor(true)
 	xlog.Infof("%s starting on %s :-)", version.NODE_NAME, viper.GetString("host.id"))
 	defer xlog.Logger().Close()
 	runAsWindowsService(windowsActionConsoleRun)
@@ -100,14 +99,12 @@ func ServiceStart() {
 }
 
 func ServiceInstall() {
-	xlog.Logger().SetStdLogger().SetANSIColor(true)
 	xlog.Infof("Installing %s as Windows Service", version.NODE_NAME)
 	runAsWindowsService(windowsActionServiceInstall)
 	os.Exit(0)
 }
 
 func ServiceUninstall() {
-	xlog.Logger().SetStdLogger().SetANSIColor(true)
 	xlog.Infof("Uninstalling %s Windows Service", version.NODE_NAME)
 	runAsWindowsService(windowsActionServiceUninstall)
 	os.Exit(0)

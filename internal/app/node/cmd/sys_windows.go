@@ -30,3 +30,13 @@ func defaultConfigFile() string {
 
 	return fmt.Sprintf(`%s\mmesh\mmesh-node.yml`, programFiles)
 }
+
+func logFile() string {
+	programFiles := os.Getenv("ProgramFiles")
+
+	if len(programFiles) == 0 {
+		programFiles = `C:\Program Files`
+	}
+
+	return fmt.Sprintf(`%s\mmesh\mmesh-node.log`, programFiles)
+}

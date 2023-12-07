@@ -41,7 +41,7 @@ func Init() {
 
 	logLevel := logging.LogLevel
 
-	setLogger(logLevel, hostID)
+	xlog.Logger().SetLogLevel(logLevel).SetHostID(hostID).SetANSIColor(true)
 
 	fmt.Print("[settings loaded]\n\n")
 }

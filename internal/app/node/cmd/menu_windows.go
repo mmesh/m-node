@@ -7,6 +7,9 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
+	"mmesh.dev/m-lib/pkg/logging"
+	"mmesh.dev/m-lib/pkg/version"
+	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/start"
 )
 
@@ -16,6 +19,13 @@ var serviceStartCmd = &cobra.Command{
 	Short: "Start Windows service",
 	Long:  `Start Windows service.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		xlog.Logger().SetANSIColor(false)
+		xlog.Logger().SetLogFile(logFile())
+		xlog.Logger().SetWindowsLogger(&xlog.EventLogOptions{
+			Level:  logging.LogLevel,
+			Source: version.NODE_NAME,
+		})
+
 		start.ServiceStart()
 	},
 }
@@ -30,6 +40,8 @@ var serviceInstallCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
+		xlog.Logger().SetStdLogger()
+
 		start.ServiceInstall()
 	},
 }
@@ -43,6 +55,8 @@ var serviceUninstallCmd = &cobra.Command{
 		if err := ConsoleInit(); err != nil {
 			log.Fatal(err)
 		}
+
+		xlog.Logger().SetStdLogger()
 
 		start.ServiceUninstall()
 	},
