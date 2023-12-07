@@ -90,13 +90,26 @@ func (h *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	// resolver for mmesh endpoints:
 	//    endpointName.mmesh.local.
 	//    endpointName.mm.*
+	//    endpointName.namespace.mmesh.local.
+	//    endpointName.namespace.mm.*
 
 	xlog.Debugf("[dns] Received DNS query: %s", name)
 
 	s := strings.Split(name, ".")
 
-	if (len(s) == 4 && s[1] == "mmesh" && s[2] == "local") || s[1] == "mm" || s[1] == "mmesh" {
-		dnsName := s[0]
+	var dnsName string
+
+	if (len(s) == 4 && s[1] == "mmesh" && s[2] == "local") ||
+		s[1] == "mm" || s[1] == "mmesh" {
+		dnsName = s[0]
+	}
+
+	if (len(s) == 5 && s[2] == "mmesh" && s[3] == "local") ||
+		s[2] == "mm" || s[2] == "mmesh" {
+		dnsName = fmt.Sprintf("%s.%s", s[0], s[1])
+	}
+
+	if len(dnsName) > 0 {
 		ipv4, ipv6 = mnet.LocalNode().Router().RIB().DNSQuery(dnsName)
 
 		xlog.Debugf("[dns] Name: %s | IPv4: %s | IPv6: %s", name, ipv4, ipv6)
