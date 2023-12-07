@@ -18,7 +18,7 @@
         "ghcr.io/devcontainers-contrib/features/syft:1": { },
         "ghcr.io/devcontainers-contrib/features/rclone:1": { },
         "ghcr.io/devcontainers-contrib/features/apt-get-packages:1": {
-            "packages": "pinentry-tty,clang-format"
+            "packages": "pinentry-tty,clang-format,most"
         }
     },
 
