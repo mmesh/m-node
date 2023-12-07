@@ -57,6 +57,7 @@ func finish() {
 	wg.Wait()
 
 	xlog.Debug("Closing agent connection handlers...")
+
 	mnet.LocalNode().Close()
 
 	time.Sleep(time.Second)

@@ -4,8 +4,10 @@
 package config
 
 import (
+	"fmt"
 	"os"
 
+	"mmesh.dev/m-lib/pkg/version"
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
@@ -13,13 +15,23 @@ func defaultInterfaceName() string {
 	return "mmesh"
 }
 
-func setLogger(level xlog.LogLevel, hostID string) {
-	if len(os.Args) == 2 {
-		if os.Args[1] == "service-start" {
-			xlog.Logger().SetLogLevel(level).SetHostID(hostID).SetStdLogger()
-			return
-		}
+func logFile() string {
+	programFiles := os.Getenv("ProgramFiles")
+
+	if len(programFiles) == 0 {
+		programFiles = `C:\Program Files`
 	}
 
-	xlog.Logger().SetLogLevel(level).SetHostID(hostID).SetANSIColor(true)
+	return fmt.Sprintf(`%s\mmesh\mmesh-node.log`, programFiles)
+}
+
+func setLogger(level xlog.LogLevel, hostID string) {
+	xlog.Logger().SetLogLevel(level).SetHostID(hostID).SetANSIColor(false)
+
+	xlog.Logger().SetLogFile(logFile())
+
+	xlog.Logger().SetWindowsLogger(&xlog.EventLogOptions{
+		Level:  level,
+		Source: version.NODE_NAME,
+	})
 }

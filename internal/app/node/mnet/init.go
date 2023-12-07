@@ -175,7 +175,11 @@ func setCfgVars(cfg *topology.NodeCfg) {
 	viper.Set("management.disableTransfer", cfg.Management.DisableTransfer)
 	viper.Set("management.disablePortForwarding", cfg.Management.DisablePortForwarding)
 
-	viper.Set("maintenance.autoUpdate", cfg.Maintenance.AutoUpdate)
+	if viper.GetBool("maintenance.disableAutoUpdate") {
+		viper.Set("maintenance.autoUpdate", false)
+	} else {
+		viper.Set("maintenance.autoUpdate", cfg.Maintenance.AutoUpdate)
+	}
 	viper.Set("maintenance.schedule.hour", int(cfg.Maintenance.Schedule.Hour))
 	viper.Set("maintenance.schedule.minute", int(cfg.Maintenance.Schedule.Minute))
 }

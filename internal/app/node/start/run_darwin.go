@@ -84,16 +84,20 @@ func runAsService(action serviceAction) {
 
 func Main() {
 	xlog.Infof("%s starting on %s :-)", version.NODE_NAME, viper.GetString("host.id"))
+	defer xlog.Logger().Close()
 	runAsService(actionConsoleRun)
 	<-done
 
 	xlog.Infof("%s stopped on %s", version.NODE_NAME, viper.GetString("host.id"))
+
 	os.Exit(0)
 }
 
 func ServiceStart() {
 	xlog.Infof("Starting %s Service", version.NODE_NAME)
+	defer xlog.Logger().Close()
 	runAsService(actionServiceStart)
+
 	os.Exit(0)
 }
 

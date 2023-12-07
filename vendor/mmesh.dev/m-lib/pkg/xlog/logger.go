@@ -63,6 +63,7 @@ var logPriorities = map[LogLevel]Priority{
 	ALERT: HIGH,
 }
 
+/*
 type LoggerSpec struct {
 	logLevel LogLevel
 	hostID   string
@@ -73,7 +74,9 @@ type LoggerSpec struct {
 	stdLogFile      map[LogLevel]*log.Logger
 	sumologicLogger *sumologicLogger
 	slackLogger     *slackLogger
+	windowsLogger   *windowsLogger
 }
+*/
 
 var l = &LoggerSpec{
 	logLevel: INFO,
@@ -111,13 +114,19 @@ func (l *LoggerSpec) SetStdLogger() *LoggerSpec {
 }
 
 func (l *LoggerSpec) SetLogFile(logfile string) *LoggerSpec {
+	if err := os.RemoveAll(logfile); err != nil {
+		fmt.Println("Unable to remove log file:", err)
+		os.Exit(1)
+	}
+
 	f, err := os.OpenFile(logfile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0664)
 	if err != nil {
 		fmt.Println("Unable to open log file:", err)
 		os.Exit(1)
 	}
 
-	l.stdLogFile = map[LogLevel]*log.Logger{
+	l.stdLogFile = f
+	l.stdLogFileLogger = map[LogLevel]*log.Logger{
 		TRACE: log.New(f, "["+logPrefixes[TRACE]+"]\t", log.Ldate|log.Ltime),
 		DEBUG: log.New(f, "["+logPrefixes[DEBUG]+"]\t", log.Ldate|log.Ltime),
 		INFO:  log.New(f, "["+logPrefixes[INFO]+"]\t", log.Ldate|log.Ltime),
@@ -129,11 +138,13 @@ func (l *LoggerSpec) SetLogFile(logfile string) *LoggerSpec {
 	return l
 }
 
+/*
 func (l *LoggerSpec) Close() {
 	if l.sumologicLogger != nil {
 		l.sumologicLogger.endCh <- struct{}{}
 	}
 }
+*/
 
 func (l *LoggerSpec) logLevelPrefix(level LogLevel) string {
 	prefix := "[" + logPrefixes[level] + "]"
@@ -168,13 +179,16 @@ func (l *LoggerSpec) log(level LogLevel, args ...interface{}) {
 	if level >= l.logLevel {
 		timestamp := time.Now()
 
-		if l.stdLogFile != nil {
-			l.stdLogFile[level].Println(args...)
-		} else if l.stdLog != nil {
+		if l.stdLog != nil {
 			l.stdLog[level].Println(args...)
 		} else {
 			all := append([]interface{}{l.logPrefix(level, timestamp)}, args...)
-			fmt.Println(all...)
+			// fmt.Println(all...)
+			l.writeLog(level, all...)
+		}
+
+		if l.stdLogFileLogger != nil {
+			l.stdLogFileLogger[level].Println(args...)
 		}
 
 		if l.sumologicLogger != nil {
@@ -201,12 +215,15 @@ func (l *LoggerSpec) logf(level LogLevel, format string, args ...interface{}) {
 	if level >= l.logLevel {
 		timestamp := time.Now()
 
-		if l.stdLogFile != nil {
-			l.stdLogFile[level].Println(fmt.Sprintf(format, args...))
-		} else if l.stdLog != nil {
+		if l.stdLog != nil {
 			l.stdLog[level].Println(fmt.Sprintf(format, args...))
 		} else {
-			fmt.Println(l.logPrefix(level, timestamp), fmt.Sprintf(format, args...))
+			// fmt.Println(l.logPrefix(level, timestamp), fmt.Sprintf(format, args...))
+			l.writeLog(level, l.logPrefix(level, timestamp), fmt.Sprintf(format, args...))
+		}
+
+		if l.stdLogFileLogger != nil {
+			l.stdLogFileLogger[level].Println(fmt.Sprintf(format, args...))
 		}
 
 		if l.sumologicLogger != nil {

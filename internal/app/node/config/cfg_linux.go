@@ -3,7 +3,9 @@
 
 package config
 
-import "mmesh.dev/m-lib/pkg/xlog"
+import (
+	"mmesh.dev/m-lib/pkg/xlog"
+)
 
 func defaultInterfaceName() string {
 	return "mmesh0"
