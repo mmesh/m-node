@@ -5,12 +5,14 @@ import (
 	"encoding/binary"
 	"io"
 
+	"github.com/google/gopacket/layers"
 	"github.com/libp2p/go-libp2p/core/network"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/ipnet"
 	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/metrics"
 	"mmesh.dev/m-node/internal/app/node/mnet/p2p/conn"
+	"mmesh.dev/m-node/internal/app/node/mnet/router/conntrack"
 )
 
 // const protocolV1 byte = 1
@@ -82,38 +84,64 @@ func (r *router) readStream(rw *bufio.ReadWriter) {
 }
 
 func (r *router) writeInterface(rw *bufio.ReadWriter, pkt []byte) error {
-	// parse ip header
-	ipHdr, err := parseHeader(pkt)
+	// parse ip connection
+	conn, err := conntrack.ParseHeader(pkt)
 	if err != nil {
 		xlog.Warnf("Unable to parse IP header: %v", errors.Cause(err))
 		return nil
 	}
 
 	// parse ip protocol
-	if err := ipHdr.parseProtocol(pkt); err != nil {
+	if err := conn.ParseProtocol(pkt); err != nil {
 		xlog.Warnf("Unable to parse IP protocol: %v", errors.Cause(err))
 		return nil
 	}
 
 	// packet filtering (firewalling) -- ingress
-	if r.packetFilter(ipHdr, pkt, false) {
+	if r.packetFilter(conn, len(pkt), false) {
 		// packet dropped by policy
-		go func() {
-			if ipHdr == nil {
-				return
-			}
 
-			// udpate metrics with a new drop
-			go metrics.UpdateNetworkMetric(ipHdr.srcIP.String(), 0, 0, true)
-		}()
-		return nil
+		dropPkt := false
+
+		// check conntrack table
+		if !conntrack.Ctrl().IsValidConnection(conn, len(pkt)) {
+			xlog.Warnf("[conntrack] Dropping %s connection from %s:%d to %s:%d",
+				conn.Proto.String(),
+				conn.SrcIP.String(),
+				conn.SrcPort,
+				conn.DstAddr.String(),
+				conn.DstPort,
+			)
+			// packet dropped because it's not present in conntrack table
+			dropPkt = true
+		}
+
+		// filter specific proto packet types
+		switch conn.Proto {
+		case layers.IPProtocolICMPv4:
+			if conn.ICMPv4TypeCode.Type() != layers.ICMPv4TypeEchoReply {
+				dropPkt = true // only icmp echo request is permitted, drop the pkt
+			}
+		case layers.IPProtocolICMPv6:
+			if conn.ICMPv6TypeCode.Type() != layers.ICMPv6TypeEchoReply {
+				dropPkt = true // only icmp echo request is permitted, drop the pkt
+			}
+		}
+
+		if dropPkt {
+			go func() {
+				// udpate metrics with a new drop
+				go metrics.UpdateNetworkMetric(conn.SrcIP.String(), 0, 0, true)
+			}()
+			return nil
+		}
 	}
 
-	r.setTunnel(ipHdr.srcIP.String(), rw)
+	r.setTunnel(conn.SrcIP, rw)
 
 	// proxy64 forwarding
-	if ipHdr.af == ipnet.AddressFamilyIPv6 {
-		if r.proxy64Forward(ipHdr, pkt) {
+	if conn.AF == ipnet.AddressFamilyIPv6 {
+		if r.proxy64Forward(conn, pkt) {
 			return nil
 		}
 	}
@@ -125,7 +153,7 @@ func (r *router) writeInterface(rw *bufio.ReadWriter, pkt []byte) error {
 		}
 
 		// update metrics
-		go metrics.UpdateNetworkMetric(ipHdr.srcIP.String(), 0, uint64(len(pkt)), false)
+		go metrics.UpdateNetworkMetric(conn.SrcIP.String(), 0, uint64(len(pkt)), false)
 	}
 
 	return nil
@@ -143,47 +171,50 @@ func (r *router) readInterface() {
 				break
 			}
 
-			ipHdr, err := parseHeader(pkt[:plen])
+			conn, err := conntrack.ParseHeader(pkt[:plen])
 			if err != nil {
 				xlog.Warnf("Unable to parse IP header: %v", errors.Cause(err))
 				continue
 			}
 
-			if !ipHdr.isValidPacket(r.ipv6) {
+			if !conn.IsValid(r.ipv6) {
 				continue
 			}
 
-			// proxy64 forwarding
-			if ipHdr.af == ipnet.AddressFamilyIPv6 {
-				if err := ipHdr.parseProtocol(pkt); err != nil {
-					xlog.Warnf("Unable to parse IP protocol: %v", errors.Cause(err))
-					continue
-				}
+			// parse ip protocol
+			if err := conn.ParseProtocol(pkt); err != nil {
+				xlog.Warnf("Unable to parse IP protocol: %v", errors.Cause(err))
+				continue
+			}
 
-				if r.proxy64Forward(ipHdr, pkt[:plen]) {
+			conntrack.Ctrl().OutboundConnection(conn, plen)
+
+			// proxy64 forwarding
+			if conn.AF == ipnet.AddressFamilyIPv6 {
+				if r.proxy64Forward(conn, pkt[:plen]) {
 					continue
 				}
 			}
 
-			rw := r.getTunnel(ipHdr.dstAddr)
+			rw := r.getTunnel(conn.DstAddr)
 			if rw == nil {
-				go func(ipHdr ipHeader) {
-					ok, err := r.newTunnel(&ipHdr)
+				go func(conn conntrack.Connection) {
+					ok, err := r.newTunnel(&conn)
 					if err != nil {
 						xlog.Warnf("Unable to get tunnel to %s: %v",
-							ipHdr.dstIP.String(), errors.Cause(err))
+							conn.DstIP.String(), errors.Cause(err))
 						return
 					}
 					if !ok {
 						return
 					}
-					rw := r.getTunnel(ipHdr.dstAddr)
+					rw := r.getTunnel(conn.DstAddr)
 					r.connections++
 
-					r.writeStream(rw, pkt[:plen], ipHdr)
-				}(*ipHdr)
+					r.writeStream(rw, pkt[:plen], conn)
+				}(*conn)
 			} else {
-				r.writeStream(rw, pkt[:plen], *ipHdr)
+				r.writeStream(rw, pkt[:plen], *conn)
 			}
 		}
 	}()
@@ -191,7 +222,7 @@ func (r *router) readInterface() {
 	<-r.networkInterface.closeCh
 }
 
-func (r *router) writeStream(rw *bufio.ReadWriter, pkt []byte, ipHdr ipHeader) {
+func (r *router) writeStream(rw *bufio.ReadWriter, pkt []byte, conn conntrack.Connection) {
 	// real send
 
 	// protocol version
@@ -209,23 +240,23 @@ func (r *router) writeStream(rw *bufio.ReadWriter, pkt []byte, ipHdr ipHeader) {
 
 	if _, err := rw.Write(hdr); err != nil {
 		// xlog.Errorf("rw.Write(): %v", err)
-		r.deleteTunnel(ipHdr.dstAddr)
+		r.deleteTunnel(conn.DstAddr)
 		return
 	}
 
 	// packet
 	if _, err := rw.Write(pkt); err != nil {
 		// xlog.Errorf("rw.Write(): %v", err)
-		r.deleteTunnel(ipHdr.dstAddr)
+		r.deleteTunnel(conn.DstAddr)
 		return
 	}
 
 	if err := rw.Flush(); err != nil {
 		// xlog.Errorf("rw.Flush(): %v", err)
-		r.deleteTunnel(ipHdr.dstAddr)
+		r.deleteTunnel(conn.DstAddr)
 		return
 	}
 
 	// udpate metrics
-	go metrics.UpdateNetworkMetric(ipHdr.dstIP.String(), uint64(4+len(pkt)), 0, false)
+	go metrics.UpdateNetworkMetric(conn.DstIP.String(), uint64(4+len(pkt)), 0, false)
 }

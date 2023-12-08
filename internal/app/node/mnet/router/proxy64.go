@@ -11,6 +11,7 @@ import (
 	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/metrics"
 	"mmesh.dev/m-node/internal/app/node/mnet/proxy"
+	"mmesh.dev/m-node/internal/app/node/mnet/router/conntrack"
 )
 
 type proxy64VSID string // string(vip)
@@ -111,36 +112,30 @@ func (r *router) setProxy64(vip6, ipv4 string, proto layers.IPProtocol, port uin
 	time.Sleep(500 * time.Millisecond)
 }
 
-func (r *router) proxy64Forward(ipHdr *ipHeader, pkt []byte) bool {
+func (r *router) proxy64Forward(conn *conntrack.Connection, pkt []byte) bool {
 	// if ipHdr.af == ipnet.AddressFamilyIPv4 {
 	// 	return false
 	// }
 
 	// ipv6 traffic
-	dstIPv4, err := ipnet.GetIPv4Encap(ipHdr.dstIP.String())
+	dstIPv4, err := ipnet.GetIPv4Encap(conn.DstIP.String())
 	if err != nil {
 		// ipv6 addr does not encapsulate an ipv4 addr
 		return false
 	}
 
-	// if err := ipHdr.parseProtocol(pkt); err != nil {
-	// 	// unable to decode packet, so proxy64 not possible
-	// 	xlog.Warnf("Unable to parse IP protocol: %v", errors.Cause(err))
-	// 	return false
-	// }
-
-	if ipHdr.proto != layers.IPProtocolTCP {
+	if conn.Proto != layers.IPProtocolTCP {
 		// for the moment, only tcp is supported
 		return false
 	}
 
-	if ipHdr.dstAddr != r.ipv6 {
+	if conn.DstAddr.String() != r.ipv6 {
 		// packet is not for this node
 		return false
 	}
 
 	// forward to local proxy64
-	r.setProxy64(ipHdr.dstIP.String(), dstIPv4, ipHdr.proto, ipHdr.dstPort)
+	r.setProxy64(conn.DstIP.String(), dstIPv4, conn.Proto, conn.DstPort)
 
 	// write to TUN interface
 	if r.networkInterface != nil {
@@ -150,7 +145,7 @@ func (r *router) proxy64Forward(ipHdr *ipHeader, pkt []byte) bool {
 		}
 
 		// update metrics
-		go metrics.UpdateNetworkMetric(ipHdr.srcIP.String(), 0, uint64(len(pkt)), false)
+		go metrics.UpdateNetworkMetric(conn.SrcIP.String(), 0, uint64(len(pkt)), false)
 	}
 
 	return true

@@ -1,6 +1,8 @@
 package router
 
-func (r *router) setDial(dstAddr string) bool {
+import "net/netip"
+
+func (r *router) setDial(dstAddr netip.Addr) bool {
 	r.dialing.Lock()
 	defer r.dialing.Unlock()
 
@@ -13,7 +15,7 @@ func (r *router) setDial(dstAddr string) bool {
 	return true
 }
 
-func (r *router) unsetDial(dstAddr string) {
+func (r *router) unsetDial(dstAddr netip.Addr) {
 	r.dialing.Lock()
 	defer r.dialing.Unlock()
 

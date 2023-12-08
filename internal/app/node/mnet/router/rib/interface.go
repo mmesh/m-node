@@ -1,6 +1,7 @@
 package rib
 
 import (
+	"net/netip"
 	"sync"
 
 	"mmesh.dev/m-api-go/grpc/network/nac"
@@ -17,8 +18,8 @@ type Interface interface {
 	RoutingDomain() *nac.RoutingDomain
 	GetPolicy(subnetID string) *topology.Policy
 	DNSQuery(dnsName string) (ipv4, ipv6 string)
-	CheckIPDst(addr string) error
-	GetNetHop(addr string) (*routing.NetHop, error)
+	CheckIPDst(addr *netip.Addr) error
+	GetNetHop(addr *netip.Addr) (*routing.NetHop, error)
 	GetRelayMAddrs(nh *routing.NetHop) []string
 	GetRouterMAddrs(nh *routing.NetHop) []string
 

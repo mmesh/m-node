@@ -2,14 +2,14 @@ package rib
 
 import (
 	"fmt"
-	"net"
+	"net/netip"
 
 	"mmesh.dev/m-api-go/grpc/network/nac"
 	"mmesh.dev/m-api-go/grpc/network/routing"
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
-func (r *ribData) CheckIPDst(addr string) error {
+func (r *ribData) CheckIPDst(addr *netip.Addr) error {
 	r.RLock()
 	defer r.RUnlock()
 
@@ -22,7 +22,7 @@ func (r *ribData) CheckIPDst(addr string) error {
 	return nil
 }
 
-func (r *ribData) GetNetHop(addr string) (*routing.NetHop, error) {
+func (r *ribData) GetNetHop(addr *netip.Addr) (*routing.NetHop, error) {
 	r.RLock()
 	defer r.RUnlock()
 
@@ -54,15 +54,15 @@ func (r *ribData) GetNetHop(addr string) (*routing.NetHop, error) {
 	return netHop, nil
 }
 
-func getIPDstFromRIB(addr string, r *routing.RIB) string {
+func getIPDstFromRIB(addr *netip.Addr, r *routing.RIB) string {
 	// try first internal routes
-	ipv4Dst := addr + "/32"
+	ipv4Dst := addr.String() + "/32"
 	if re, ok := r.RoutingTable[ipv4Dst]; ok {
 		if re.SubnetID == r.RoutingDomain.SubnetID || r.RoutingDomain.Scope == nac.RoutingScope_NETWORK {
 			return ipv4Dst
 		}
 	}
-	ipv6Dst := addr + "/128"
+	ipv6Dst := addr.String() + "/128"
 	if re, ok := r.RoutingTable[ipv6Dst]; ok {
 		if re.SubnetID == r.RoutingDomain.SubnetID || r.RoutingDomain.Scope == nac.RoutingScope_NETWORK {
 			return ipv6Dst
@@ -71,13 +71,13 @@ func getIPDstFromRIB(addr string, r *routing.RIB) string {
 
 	// then static routes
 	for ipDst, re := range r.RoutingTable {
-		_, netCIDR, err := net.ParseCIDR(ipDst)
+		netCIDR, err := netip.ParsePrefix(ipDst)
 		if err != nil {
 			xlog.Alertf("Detected invalid route %s (please check your configs): %v", ipDst, err)
 			continue
 		}
 
-		if netCIDR.Contains(net.ParseIP(addr)) {
+		if netCIDR.Contains(*addr) {
 			if re.SubnetID == r.RoutingDomain.SubnetID || r.RoutingDomain.Scope == nac.RoutingScope_NETWORK {
 				return ipDst
 			}

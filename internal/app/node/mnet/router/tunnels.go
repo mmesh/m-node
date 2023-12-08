@@ -2,10 +2,12 @@ package router
 
 import (
 	"bufio"
+	"net/netip"
 
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/mnet/p2p/peer"
+	"mmesh.dev/m-node/internal/app/node/mnet/router/conntrack"
 )
 
 func (r *router) connectTunnel(peerHop *peer.NetHop) (*bufio.ReadWriter, error) {
@@ -22,15 +24,15 @@ func (r *router) connectTunnel(peerHop *peer.NetHop) (*bufio.ReadWriter, error) 
 	// return bufio.NewReadWriter(bufio.NewReader(s), bufio.NewWriter(s)), nil
 }
 
-func (r *router) newTunnel(ipHdr *ipHeader) (bool, error) {
+func (r *router) newTunnel(conn *conntrack.Connection) (bool, error) {
 	// xlog.Infof("Requested new tunnel to %s", ipHdr.dstAddr)
 
-	if !r.setDial(ipHdr.dstAddr) {
+	if !r.setDial(conn.DstAddr) {
 		return false, nil
 	}
-	defer r.unsetDial(ipHdr.dstAddr)
+	defer r.unsetDial(conn.DstAddr)
 
-	nh, err := r.RIB().GetNetHop(ipHdr.dstAddr)
+	nh, err := r.RIB().GetNetHop(&conn.DstAddr)
 	if err != nil {
 		return false, errors.Wrapf(err, "[%v] function r.RIB().GetNetHop()", errors.Trace())
 	}
@@ -47,11 +49,11 @@ func (r *router) newTunnel(ipHdr *ipHeader) (bool, error) {
 		return false, errors.Wrapf(err, "[%v] function r.connectTunnel()", errors.Trace())
 	}
 
-	if !r.setTunnel(ipHdr.dstAddr, rw) {
+	if !r.setTunnel(conn.DstAddr, rw) {
 		return true, nil
 	}
 
-	xlog.Infof("Tunnel connected to %s", ipHdr.dstAddr)
+	xlog.Infof("Tunnel connected to %s", conn.DstAddr.String())
 
 	// create a thread to read data from new buffered stream
 	go r.readStream(rw)
@@ -59,7 +61,7 @@ func (r *router) newTunnel(ipHdr *ipHeader) (bool, error) {
 	return true, nil
 }
 
-func (r *router) setTunnel(dstAddr string, rw *bufio.ReadWriter) bool {
+func (r *router) setTunnel(dstAddr netip.Addr, rw *bufio.ReadWriter) bool {
 	r.streams.Lock()
 	defer r.streams.Unlock()
 
@@ -72,7 +74,7 @@ func (r *router) setTunnel(dstAddr string, rw *bufio.ReadWriter) bool {
 	return true
 }
 
-func (r *router) getTunnel(dstAddr string) *bufio.ReadWriter {
+func (r *router) getTunnel(dstAddr netip.Addr) *bufio.ReadWriter {
 	r.streams.RLock()
 	defer r.streams.RUnlock()
 
@@ -83,7 +85,7 @@ func (r *router) getTunnel(dstAddr string) *bufio.ReadWriter {
 	return nil
 }
 
-func (r *router) deleteTunnel(dstAddr string) {
+func (r *router) deleteTunnel(dstAddr netip.Addr) {
 	r.streams.Lock()
 	defer r.streams.Unlock()
 

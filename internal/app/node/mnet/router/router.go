@@ -2,6 +2,7 @@ package router
 
 import (
 	"bufio"
+	"net/netip"
 	"os"
 	"sync"
 
@@ -10,6 +11,7 @@ import (
 	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/mnet/p2p"
 	"mmesh.dev/m-node/internal/app/node/mnet/p2p/host"
+	"mmesh.dev/m-node/internal/app/node/mnet/router/conntrack"
 	"mmesh.dev/m-node/internal/app/node/mnet/router/rib"
 )
 
@@ -63,12 +65,12 @@ type routeMap struct {
 }
 
 type dialMap struct {
-	addr map[string]struct{}
+	addr map[netip.Addr]struct{}
 	sync.RWMutex
 }
 
 type streamMap struct {
-	tunnel map[string]*bufio.ReadWriter
+	tunnel map[netip.Addr]*bufio.ReadWriter
 	sync.RWMutex
 }
 
@@ -87,10 +89,10 @@ func New(externalIPv4, subnetID string, port int, localForwarding bool, rtImport
 			exported: rtExported,
 		},
 		dialing: &dialMap{
-			addr: make(map[string]struct{}),
+			addr: make(map[netip.Addr]struct{}),
 		},
 		streams: &streamMap{
-			tunnel: make(map[string]*bufio.ReadWriter),
+			tunnel: make(map[netip.Addr]*bufio.ReadWriter),
 		},
 		proxy64: &proxy64Map{
 			vs:      make(map[proxy64VSID]*proxy64VS),
@@ -225,6 +227,8 @@ func (r *router) Disconnect() {
 		}
 
 		r.proxy64.closeCh <- struct{}{}
+
+		conntrack.Ctrl().Close()
 	}
 
 	if err := r.p2pHost.Close(); err != nil {
