@@ -5,7 +5,6 @@ import (
 	"encoding/binary"
 	"io"
 
-	"github.com/google/gopacket/layers"
 	"github.com/libp2p/go-libp2p/core/network"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/ipnet"
@@ -98,43 +97,13 @@ func (r *router) writeInterface(rw *bufio.ReadWriter, pkt []byte) error {
 	}
 
 	// packet filtering (firewalling) -- ingress
-	if r.packetFilter(conn, len(pkt), false) {
+	if r.packetFilter(conn, len(pkt)) {
 		// packet dropped by policy
-
-		dropPkt := false
-
-		// check conntrack table
-		if !conntrack.Ctrl().IsValidConnection(conn, len(pkt)) {
-			xlog.Warnf("[conntrack] Dropping %s connection from %s:%d to %s:%d",
-				conn.Proto.String(),
-				conn.SrcIP.String(),
-				conn.SrcPort,
-				conn.DstAddr.String(),
-				conn.DstPort,
-			)
-			// packet dropped because it's not present in conntrack table
-			dropPkt = true
-		}
-
-		// filter specific proto packet types
-		switch conn.Proto {
-		case layers.IPProtocolICMPv4:
-			if conn.ICMPv4TypeCode.Type() != layers.ICMPv4TypeEchoReply {
-				dropPkt = true // only icmp echo request is permitted, drop the pkt
-			}
-		case layers.IPProtocolICMPv6:
-			if conn.ICMPv6TypeCode.Type() != layers.ICMPv6TypeEchoReply {
-				dropPkt = true // only icmp echo request is permitted, drop the pkt
-			}
-		}
-
-		if dropPkt {
-			go func() {
-				// udpate metrics with a new drop
-				go metrics.UpdateNetworkMetric(conn.SrcIP.String(), 0, 0, true)
-			}()
-			return nil
-		}
+		go func() {
+			// udpate metrics with a new drop
+			go metrics.UpdateNetworkMetric(conn.SrcIP.String(), 0, 0, true)
+		}()
+		return nil
 	}
 
 	r.setTunnel(conn.SrcIP, rw)

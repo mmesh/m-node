@@ -3,6 +3,8 @@ package conntrack
 import (
 	"sync"
 	"time"
+
+	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 type ctMap struct {
@@ -47,7 +49,7 @@ func (ctm *ctMap) outboundConnection(c *Connection, bytes uint64) {
 	s.originCounter.bytes += bytes
 }
 
-func (ctm *ctMap) isValidConnection(c *Connection, bytes uint64) bool {
+func (ctm *ctMap) isActiveConnection(c *Connection, bytes uint64) bool {
 	if c == nil {
 		return false
 	}
@@ -77,6 +79,13 @@ func (ctm *ctMap) cleanup() {
 	for c, s := range ctm.table {
 		if time.Since(s.timeout) > ctTimeout {
 			delete(ctm.table, c)
+			xlog.Infof("[conntrack] Removed expired %s connection from %s:%d to %s:%d",
+				c.Proto.String(),
+				c.SrcIP.String(),
+				c.SrcPort,
+				c.DstAddr.String(),
+				c.DstPort,
+			)
 		}
 	}
 }
