@@ -10,7 +10,16 @@ import (
 
 // Filter specific proto packet types
 func (conn *Connection) ProtoFilter() bool {
-	if conn.Proto == layers.IPProtocolICMPv4 || conn.Proto == layers.IPProtocolICMPv6 {
+	switch conn.Proto {
+	case layers.IPProtocolTCP:
+		if conn.invalidTCPConn() {
+			return true // only tcp syn packets are permitted, drop the pkt
+		}
+	case layers.IPProtocolICMPv4:
+		if conn.invalidICMPTypeRequest() {
+			return true // only icmp echo request is permitted, drop the pkt
+		}
+	case layers.IPProtocolICMPv6:
 		if conn.invalidICMPTypeRequest() {
 			return true // only icmp echo request is permitted, drop the pkt
 		}
@@ -37,6 +46,9 @@ func (conn *Connection) ParseProtocol(pkt []byte) error {
 		conn.Proto = layers.IPProtocolTCP
 		conn.SrcPort = uint16(tcp.SrcPort)
 		conn.DstPort = uint16(tcp.DstPort)
+		conn.protoInfo = &protoInfo{
+			tcp: tcp,
+		}
 		return nil
 	}
 
@@ -46,6 +58,9 @@ func (conn *Connection) ParseProtocol(pkt []byte) error {
 		conn.Proto = layers.IPProtocolUDP
 		conn.SrcPort = uint16(udp.SrcPort)
 		conn.DstPort = uint16(udp.DstPort)
+		conn.protoInfo = &protoInfo{
+			udp: udp,
+		}
 		return nil
 	}
 
@@ -53,7 +68,9 @@ func (conn *Connection) ParseProtocol(pkt []byte) error {
 	if icmp4Layer := p.Layer(layers.LayerTypeICMPv4); icmp4Layer != nil {
 		icmp4, _ := icmp4Layer.(*layers.ICMPv4)
 		conn.Proto = layers.IPProtocolICMPv4
-		conn.ICMPv4TypeCode = icmp4.TypeCode
+		conn.protoInfo = &protoInfo{
+			icmp4: icmp4,
+		}
 		return nil
 	}
 
@@ -61,7 +78,9 @@ func (conn *Connection) ParseProtocol(pkt []byte) error {
 	if icmp6Layer := p.Layer(layers.LayerTypeICMPv6); icmp6Layer != nil {
 		icmp6, _ := icmp6Layer.(*layers.ICMPv6)
 		conn.Proto = layers.IPProtocolICMPv6
-		conn.ICMPv6TypeCode = icmp6.TypeCode
+		conn.protoInfo = &protoInfo{
+			icmp6: icmp6,
+		}
 		return nil
 	}
 
@@ -69,7 +88,21 @@ func (conn *Connection) ParseProtocol(pkt []byte) error {
 	if greLayer := p.Layer(layers.LayerTypeGRE); greLayer != nil {
 		gre, _ := greLayer.(*layers.GRE)
 		conn.Proto = layers.IPProtocolGRE
-		conn.GREKey = gre.Key
+		conn.protoInfo = &protoInfo{
+			gre: gre,
+		}
+		return nil
+	}
+
+	// Get the SCTP layer from this packet
+	if sctpLayer := p.Layer(layers.LayerTypeSCTP); sctpLayer != nil {
+		sctp, _ := sctpLayer.(*layers.SCTP)
+		conn.Proto = layers.IPProtocolSCTP
+		conn.SrcPort = uint16(sctp.SrcPort)
+		conn.DstPort = uint16(sctp.DstPort)
+		conn.protoInfo = &protoInfo{
+			sctp: sctp,
+		}
 		return nil
 	}
 

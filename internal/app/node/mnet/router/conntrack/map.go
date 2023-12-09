@@ -7,6 +7,27 @@ import (
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
+type ctStatus uint8
+
+const (
+	ctStatusNew ctStatus = iota
+	ctStatusActive
+)
+
+const ctTimeout = 120
+
+type ctState struct {
+	status        ctStatus
+	timeout       time.Time
+	originCounter *ctCounter
+	replyCounter  *ctCounter
+}
+
+type ctCounter struct {
+	packets uint64
+	bytes   uint64
+}
+
 type ctMap struct {
 	table   map[Connection]*ctState
 	closeCh chan struct{}
@@ -37,7 +58,7 @@ func (ctm *ctMap) outboundConnection(c *Connection, bytes uint64) {
 	s, ok := ctm.table[conn]
 	if !ok {
 		s = &ctState{
-			status:        ctStatusExpected,
+			status:        ctStatusNew,
 			originCounter: &ctCounter{},
 			replyCounter:  &ctCounter{},
 		}
@@ -64,7 +85,7 @@ func (ctm *ctMap) isActiveConnection(c *Connection, bytes uint64) bool {
 		return false
 	}
 
-	s.status = ctStatusSeenReply
+	s.status = ctStatusActive
 	s.timeout = time.Now().Add(ctTimeout * time.Second)
 	s.replyCounter.packets++
 	s.replyCounter.bytes += bytes

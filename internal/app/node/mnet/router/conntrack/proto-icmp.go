@@ -6,12 +6,20 @@ import "github.com/google/gopacket/layers"
 func (conn *Connection) invalidICMPTypeRequest() bool {
 	switch conn.Proto {
 	case layers.IPProtocolICMPv4:
-		if conn.ICMPv4TypeCode.Type() != layers.ICMPv4TypeEchoRequest {
-			return true // only icmp echo request is permitted, drop the pkt
+		if conn.protoInfo != nil && conn.protoInfo.icmp4 != nil {
+			if conn.protoInfo.icmp4.TypeCode.Type() != layers.ICMPv4TypeEchoRequest {
+				return true // only icmp echo request is permitted, drop the pkt
+			}
+		} else {
+			return true // missing protoInfo, drop the pkt
 		}
 	case layers.IPProtocolICMPv6:
-		if conn.ICMPv6TypeCode.Type() != layers.ICMPv6TypeEchoRequest {
-			return true // only icmp echo request is permitted, drop the pkt
+		if conn.protoInfo != nil && conn.protoInfo.icmp6 != nil {
+			if conn.protoInfo.icmp6.TypeCode.Type() != layers.ICMPv6TypeEchoRequest {
+				return true // only icmp echo request is permitted, drop the pkt
+			}
+		} else {
+			return true // missing protoInfo, drop the pkt
 		}
 	}
 
@@ -22,12 +30,20 @@ func (conn *Connection) invalidICMPTypeRequest() bool {
 func (conn *Connection) invalidICMPTypeReply() bool {
 	switch conn.Proto {
 	case layers.IPProtocolICMPv4:
-		if conn.ICMPv4TypeCode.Type() != layers.ICMPv4TypeEchoReply {
-			return true // only icmp echo reply is permitted, drop the pkt
+		if conn.protoInfo != nil && conn.protoInfo.icmp4 != nil {
+			if conn.protoInfo.icmp4.TypeCode.Type() != layers.ICMPv4TypeEchoReply {
+				return true // only icmp echo reply is permitted, drop the pkt
+			}
+		} else {
+			return true // missing protoInfo, drop the pkt
 		}
 	case layers.IPProtocolICMPv6:
-		if conn.ICMPv6TypeCode.Type() != layers.ICMPv6TypeEchoReply {
-			return true // only icmp echo reply is permitted, drop the pkt
+		if conn.protoInfo != nil && conn.protoInfo.icmp6 != nil {
+			if conn.protoInfo.icmp6.TypeCode.Type() != layers.ICMPv6TypeEchoReply {
+				return true // only icmp echo reply is permitted, drop the pkt
+			}
+		} else {
+			return true // missing protoInfo, drop the pkt
 		}
 	}
 

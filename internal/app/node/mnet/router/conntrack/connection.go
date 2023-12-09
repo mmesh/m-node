@@ -12,18 +12,23 @@ import (
 )
 
 type Connection struct {
-	AF      ipnet.AddressFamily
-	SrcIP   netip.Addr
-	DstIP   netip.Addr
-	DstAddr netip.Addr
-	Proto   layers.IPProtocol
-	SrcPort uint16
-	DstPort uint16
-	// ICMPv4ID       uint16
-	ICMPv4TypeCode layers.ICMPv4TypeCode
-	// ICMPv6ID       uint16
-	ICMPv6TypeCode layers.ICMPv6TypeCode
-	GREKey         uint32
+	AF        ipnet.AddressFamily
+	SrcIP     netip.Addr
+	DstIP     netip.Addr
+	DstAddr   netip.Addr
+	Proto     layers.IPProtocol
+	SrcPort   uint16
+	DstPort   uint16
+	protoInfo *protoInfo
+}
+
+type protoInfo struct {
+	tcp   *layers.TCP
+	udp   *layers.UDP
+	icmp4 *layers.ICMPv4
+	icmp6 *layers.ICMPv6
+	gre   *layers.GRE
+	sctp  *layers.SCTP
 }
 
 func ParseHeader(pkt []byte) (*Connection, error) {
@@ -133,11 +138,6 @@ func (conn *Connection) outbound() Connection {
 		Proto:   conn.Proto,
 		SrcPort: conn.SrcPort,
 		DstPort: conn.DstPort,
-		// ICMPv4ID:       conn.ICMPv4ID,
-		// ICMPv4TypeCode: conn.ICMPv4TypeCode,
-		// ICMPv6ID:       conn.ICMPv6ID,
-		// ICMPv6TypeCode: conn.ICMPv6TypeCode,
-		GREKey: conn.GREKey,
 	}
 }
 
@@ -150,10 +150,5 @@ func (conn *Connection) reverse() Connection {
 		Proto:   conn.Proto,
 		SrcPort: conn.DstPort,
 		DstPort: conn.SrcPort,
-		// ICMPv4ID:       conn.ICMPv4ID,
-		// ICMPv4TypeCode: conn.ICMPv4TypeCode,
-		// ICMPv6ID:       conn.ICMPv6ID,
-		// ICMPv6TypeCode: conn.ICMPv6TypeCode,
-		GREKey: conn.GREKey,
 	}
 }
