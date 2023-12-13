@@ -12,7 +12,7 @@ require (
 	github.com/dgraph-io/badger/v4 v4.1.0
 	github.com/eclipse/paho.mqtt.golang v1.4.2
 	github.com/google/gopacket v1.1.19
-	github.com/google/uuid v1.4.0
+	github.com/google/uuid v1.5.0
 	github.com/kardianos/service v1.2.1
 	github.com/libp2p/go-libp2p v0.32.1
 	github.com/lorenzosaino/go-sysctl v0.3.0
