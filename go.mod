@@ -22,7 +22,7 @@ require (
 	github.com/shirou/gopsutil/v3 v3.23.11
 	github.com/songgao/water v0.0.0-20200317203138-2b4b6d7c09d8
 	github.com/spf13/cobra v1.8.0
-	github.com/spf13/viper v1.18.0
+	github.com/spf13/viper v1.18.2
 	github.com/vishvananda/netlink v1.1.0
 	golang.org/x/net v0.19.0
 	golang.zx2c4.com/wireguard v0.0.0-20211116201604-ffb742d43d92
