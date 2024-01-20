@@ -21,15 +21,16 @@ func mmpRoutingStatus(ctx context.Context, pdu *mmsp.RoutingPDU) error {
 	if s.Disabled {
 		xlog.Alert("Service is DISABLED.")
 		xlog.Alert("Please contact mmesh customer service urgently.")
-
-	} else if s.OverLimit {
-		xlog.Alert("Account over tier limits. Service is DISABLED.")
-		xlog.Alert("If you are on the Free Plan, make sure you")
-		xlog.Alert("are not exceeding its limits. If not, please")
-		xlog.Alert("contact mmesh customer service urgently.")
 	}
+	// } else if s.OverLimit {
+	// 	xlog.Alert("Account over tier limits. Service is DISABLED.")
+	// 	xlog.Alert("If you are on the Free Plan, make sure you")
+	// 	xlog.Alert("are not exceeding its limits. If not, please")
+	// 	xlog.Alert("contact mmesh customer service urgently.")
+	// }
 
-	if s.Disabled || s.OverLimit {
+	// if s.Disabled || s.OverLimit {
+	if s.Disabled {
 		ServiceEnabled = false
 
 		disabledRetries++
