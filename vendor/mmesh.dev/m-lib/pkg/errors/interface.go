@@ -18,6 +18,10 @@ func Wrapf(err error, format string, args ...interface{}) error {
 	return errors.Wrapf(err, format, args...)
 }
 
+func Is(err, targetErr error) bool {
+	return errors.Is(err, targetErr)
+}
+
 func Cause(err error) error {
 	return errors.Cause(err)
 }

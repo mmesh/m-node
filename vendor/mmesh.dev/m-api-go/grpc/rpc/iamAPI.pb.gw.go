@@ -86,7 +86,7 @@ func local_request_IAMAPI_GetRBAC_0(ctx context.Context, marshaler runtime.Marsh
 }
 
 func request_IAMAPI_ListIAMPermissions_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq empty.Empty
+	var protoReq empty.Request
 	var metadata runtime.ServerMetadata
 
 	msg, err := client.ListIAMPermissions(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -95,7 +95,7 @@ func request_IAMAPI_ListIAMPermissions_0(ctx context.Context, marshaler runtime.
 }
 
 func local_request_IAMAPI_ListIAMPermissions_0(ctx context.Context, marshaler runtime.Marshaler, server IAMAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq empty.Empty
+	var protoReq empty.Request
 	var metadata runtime.ServerMetadata
 
 	msg, err := server.ListIAMPermissions(ctx, &protoReq)
@@ -107,11 +107,7 @@ func request_IAMAPI_CreateUser_0(ctx context.Context, marshaler runtime.Marshale
 	var protoReq iam.NewUserRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -141,11 +137,7 @@ func local_request_IAMAPI_CreateUser_0(ctx context.Context, marshaler runtime.Ma
 	var protoReq iam.NewUserRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -175,11 +167,7 @@ func request_IAMAPI_ListUsers_0(ctx context.Context, marshaler runtime.Marshaler
 	var protoReq iam.ListUsersRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -209,11 +197,7 @@ func local_request_IAMAPI_ListUsers_0(ctx context.Context, marshaler runtime.Mar
 	var protoReq iam.ListUsersRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -387,11 +371,7 @@ func request_IAMAPI_EnableUser_0(ctx context.Context, marshaler runtime.Marshale
 	var protoReq iam.UserReq
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -431,11 +411,7 @@ func local_request_IAMAPI_EnableUser_0(ctx context.Context, marshaler runtime.Ma
 	var protoReq iam.UserReq
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -475,11 +451,7 @@ func request_IAMAPI_DisableUser_0(ctx context.Context, marshaler runtime.Marshal
 	var protoReq iam.UserReq
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -519,11 +491,7 @@ func local_request_IAMAPI_DisableUser_0(ctx context.Context, marshaler runtime.M
 	var protoReq iam.UserReq
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -563,11 +531,7 @@ func request_IAMAPI_NewUserToken_0(ctx context.Context, marshaler runtime.Marsha
 	var protoReq iam.UserReq
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -607,11 +571,7 @@ func local_request_IAMAPI_NewUserToken_0(ctx context.Context, marshaler runtime.
 	var protoReq iam.UserReq
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -651,11 +611,7 @@ func request_IAMAPI_SetUserPermissions_0(ctx context.Context, marshaler runtime.
 	var protoReq iam.SetUserPermissionsRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -695,11 +651,7 @@ func local_request_IAMAPI_SetUserPermissions_0(ctx context.Context, marshaler ru
 	var protoReq iam.SetUserPermissionsRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -739,11 +691,7 @@ func request_IAMAPI_ListSecurityGroups_0(ctx context.Context, marshaler runtime.
 	var protoReq iam.ListSecurityGroupsRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -773,11 +721,7 @@ func local_request_IAMAPI_ListSecurityGroups_0(ctx context.Context, marshaler ru
 	var protoReq iam.ListSecurityGroupsRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -804,7 +748,7 @@ func local_request_IAMAPI_ListSecurityGroups_0(ctx context.Context, marshaler ru
 }
 
 var (
-	filter_IAMAPI_GetSecurityGroup_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "securityGroupID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
+	filter_IAMAPI_GetSecurityGroup_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "securityGroupID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
 func request_IAMAPI_GetSecurityGroup_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -897,11 +841,7 @@ func request_IAMAPI_SetSecurityGroup_0(ctx context.Context, marshaler runtime.Ma
 	var protoReq iam.SecurityGroup
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -941,11 +881,7 @@ func local_request_IAMAPI_SetSecurityGroup_0(ctx context.Context, marshaler runt
 	var protoReq iam.SecurityGroup
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -982,7 +918,7 @@ func local_request_IAMAPI_SetSecurityGroup_0(ctx context.Context, marshaler runt
 }
 
 var (
-	filter_IAMAPI_DeleteSecurityGroup_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "securityGroupID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
+	filter_IAMAPI_DeleteSecurityGroup_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "securityGroupID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
 func request_IAMAPI_DeleteSecurityGroup_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1075,11 +1011,7 @@ func request_IAMAPI_ListRoles_0(ctx context.Context, marshaler runtime.Marshaler
 	var protoReq iam.ListRolesRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1109,11 +1041,7 @@ func local_request_IAMAPI_ListRoles_0(ctx context.Context, marshaler runtime.Mar
 	var protoReq iam.ListRolesRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1140,7 +1068,7 @@ func local_request_IAMAPI_ListRoles_0(ctx context.Context, marshaler runtime.Mar
 }
 
 var (
-	filter_IAMAPI_GetRole_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "roleID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
+	filter_IAMAPI_GetRole_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "roleID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
 func request_IAMAPI_GetRole_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1233,11 +1161,7 @@ func request_IAMAPI_SetRole_0(ctx context.Context, marshaler runtime.Marshaler, 
 	var protoReq iam.Role
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1277,11 +1201,7 @@ func local_request_IAMAPI_SetRole_0(ctx context.Context, marshaler runtime.Marsh
 	var protoReq iam.Role
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1318,7 +1238,7 @@ func local_request_IAMAPI_SetRole_0(ctx context.Context, marshaler runtime.Marsh
 }
 
 var (
-	filter_IAMAPI_DeleteRole_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "roleID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
+	filter_IAMAPI_DeleteRole_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "roleID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
 func request_IAMAPI_DeleteRole_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1411,11 +1331,7 @@ func request_IAMAPI_ListACLs_0(ctx context.Context, marshaler runtime.Marshaler,
 	var protoReq iam.ListACLsRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1445,11 +1361,7 @@ func local_request_IAMAPI_ListACLs_0(ctx context.Context, marshaler runtime.Mars
 	var protoReq iam.ListACLsRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1476,7 +1388,7 @@ func local_request_IAMAPI_ListACLs_0(ctx context.Context, marshaler runtime.Mars
 }
 
 var (
-	filter_IAMAPI_GetACL_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "ACLID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
+	filter_IAMAPI_GetACL_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "ACLID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
 func request_IAMAPI_GetACL_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -1569,11 +1481,7 @@ func request_IAMAPI_SetACL_0(ctx context.Context, marshaler runtime.Marshaler, c
 	var protoReq iam.ACL
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1613,11 +1521,7 @@ func local_request_IAMAPI_SetACL_0(ctx context.Context, marshaler runtime.Marsha
 	var protoReq iam.ACL
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -1654,7 +1558,7 @@ func local_request_IAMAPI_SetACL_0(ctx context.Context, marshaler runtime.Marsha
 }
 
 var (
-	filter_IAMAPI_DeleteACL_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "ACLID": 1}, Base: []int{1, 2, 4, 0, 0, 0, 0}, Check: []int{0, 1, 1, 2, 2, 3, 3}}
+	filter_IAMAPI_DeleteACL_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "ACLID": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
 func request_IAMAPI_DeleteACL_0(ctx context.Context, marshaler runtime.Marshaler, client IAMAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {

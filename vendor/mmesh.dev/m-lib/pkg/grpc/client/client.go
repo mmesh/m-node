@@ -150,6 +150,15 @@ func NewTopologyAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecr
 	return rpc.NewTopologyAPIClient(conn), conn, nil
 }
 
+func NewNStoreAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.NStoreAPIClient, *grpc.ClientConn, error) {
+	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
+	if err != nil {
+		return nil, nil, errors.Wrapf(err, "[%v] unable to connect to gRPC server", errors.Trace())
+	}
+
+	return rpc.NewNStoreAPIClient(conn), conn, nil
+}
+
 func NewMonitoringAPIClient(serverEndpoint string, authKey *auth.AuthKey, authSecret string) (rpc.MonitoringAPIClient, *grpc.ClientConn, error) {
 	conn, err := newRPCClient(serverEndpoint, authKey, authSecret)
 	if err != nil {

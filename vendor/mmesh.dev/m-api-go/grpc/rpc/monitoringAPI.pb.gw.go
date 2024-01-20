@@ -108,11 +108,7 @@ func request_MonitoringAPI_ListAlerts_0(ctx context.Context, marshaler runtime.M
 	var protoReq events.ListAlertsRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -152,11 +148,7 @@ func local_request_MonitoringAPI_ListAlerts_0(ctx context.Context, marshaler run
 	var protoReq events.ListAlertsRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -193,7 +185,7 @@ func local_request_MonitoringAPI_ListAlerts_0(ctx context.Context, marshaler run
 }
 
 var (
-	filter_MonitoringAPI_GetAlert_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "tenantID": 1, "alertID": 2}, Base: []int{1, 2, 4, 6, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 2, 2, 3, 3, 4, 4}}
+	filter_MonitoringAPI_GetAlert_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "tenantID": 1, "alertID": 2}, Base: []int{1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 1, 2, 3, 4}}
 )
 
 func request_MonitoringAPI_GetAlert_0(ctx context.Context, marshaler runtime.Marshaler, client MonitoringAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -306,11 +298,7 @@ func request_MonitoringAPI_NewAlertComment_0(ctx context.Context, marshaler runt
 	var protoReq events.AlertNewCommentRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -360,11 +348,7 @@ func local_request_MonitoringAPI_NewAlertComment_0(ctx context.Context, marshale
 	var protoReq events.AlertNewCommentRequest
 	var metadata runtime.ServerMetadata
 
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -411,7 +395,7 @@ func local_request_MonitoringAPI_NewAlertComment_0(ctx context.Context, marshale
 }
 
 var (
-	filter_MonitoringAPI_DeleteAlert_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "tenantID": 1, "alertID": 2}, Base: []int{1, 2, 4, 6, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 2, 2, 3, 3, 4, 4}}
+	filter_MonitoringAPI_DeleteAlert_0 = &utilities.DoubleArray{Encoding: map[string]int{"accountID": 0, "tenantID": 1, "alertID": 2}, Base: []int{1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 1, 2, 3, 4}}
 )
 
 func request_MonitoringAPI_DeleteAlert_0(ctx context.Context, marshaler runtime.Marshaler, client MonitoringAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {

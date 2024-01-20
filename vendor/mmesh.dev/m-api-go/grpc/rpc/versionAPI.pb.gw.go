@@ -33,7 +33,7 @@ var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
 func request_VersionAPI_Version_0(ctx context.Context, marshaler runtime.Marshaler, client VersionAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq empty.Empty
+	var protoReq empty.Request
 	var metadata runtime.ServerMetadata
 
 	msg, err := client.Version(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -42,7 +42,7 @@ func request_VersionAPI_Version_0(ctx context.Context, marshaler runtime.Marshal
 }
 
 func local_request_VersionAPI_Version_0(ctx context.Context, marshaler runtime.Marshaler, server VersionAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq empty.Empty
+	var protoReq empty.Request
 	var metadata runtime.ServerMetadata
 
 	msg, err := server.Version(ctx, &protoReq)
