@@ -11,6 +11,7 @@ import (
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-lib/pkg/version"
 	"mmesh.dev/m-lib/pkg/xlog"
+	"mmesh.dev/m-node/internal/app/node/hstat"
 	"mmesh.dev/m-node/internal/app/node/mnet/connection"
 	"mmesh.dev/m-node/internal/app/node/mnet/maddr"
 	"mmesh.dev/m-node/internal/app/node/mnet/router"
@@ -143,6 +144,11 @@ func cfgInit(conn connection.Interface) error {
 		},
 		connection: conn,
 		router:     rtr,
+		stats: hstat.Init(&topology.NodeReq{
+			AccountID: n.AccountID,
+			TenantID:  n.TenantID,
+			NodeID:    n.NodeID,
+		}),
 	}
 
 	if n.Cfg.DisableNetworking {

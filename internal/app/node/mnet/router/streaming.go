@@ -4,12 +4,15 @@ import (
 	"bufio"
 	"encoding/binary"
 	"io"
+	"time"
 
 	"github.com/libp2p/go-libp2p/core/network"
+	"mmesh.dev/m-api-go/grpc/resources/nstore/netdb"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/ipnet"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"mmesh.dev/m-node/internal/app/node/metrics"
+	"mmesh.dev/m-node/internal/app/node/hstat"
+	"mmesh.dev/m-node/internal/app/node/kvstore/db/ctlogdb"
 	"mmesh.dev/m-node/internal/app/node/mnet/p2p/conn"
 	"mmesh.dev/m-node/internal/app/node/mnet/router/conntrack"
 )
@@ -100,8 +103,15 @@ func (r *router) writeInterface(rw *bufio.ReadWriter, pkt []byte) error {
 	if r.packetFilter(conn, len(pkt)) {
 		// packet dropped by policy
 		go func() {
-			// udpate metrics with a new drop
-			go metrics.UpdateNetworkMetric(conn.SrcIP.String(), 0, 0, true)
+			// udpate netTraffic stats with a new drop
+			go hstat.NewTrafficData(conn.SrcIP, 0, 0, true)
+
+			// add new drop entry to conntrack log
+			ctlogdb.InputQueue <- &netdb.ConntrackLogEntry{
+				Timestamp:  time.Now().UnixMilli(),
+				Connection: conn.GetNetConnection(),
+				Status:     netdb.ConnectionStatus_DROPPED,
+			}
 		}()
 		return nil
 	}
@@ -121,8 +131,8 @@ func (r *router) writeInterface(rw *bufio.ReadWriter, pkt []byte) error {
 			return err
 		}
 
-		// update metrics
-		go metrics.UpdateNetworkMetric(conn.SrcIP.String(), 0, uint64(len(pkt)), false)
+		// update netTraffic stats
+		go hstat.NewTrafficData(conn.SrcIP, 0, uint64(len(pkt)), false)
 	}
 
 	return nil
@@ -226,6 +236,6 @@ func (r *router) writeStream(rw *bufio.ReadWriter, pkt []byte, conn conntrack.Co
 		return
 	}
 
-	// udpate metrics
-	go metrics.UpdateNetworkMetric(conn.DstIP.String(), uint64(4+len(pkt)), 0, false)
+	// udpate netTraffic stats
+	go hstat.NewTrafficData(conn.DstIP, uint64(4+len(pkt)), 0, false)
 }

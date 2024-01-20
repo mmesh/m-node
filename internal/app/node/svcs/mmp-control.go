@@ -66,7 +66,9 @@ func NetworkControl(w *runtime.Wrkr) {
 				case payload := <-queuing.TxControlQueue:
 					if err := stream.Send(payload); err != nil {
 						// xlog.Warnf("[mmp] Unable to send mmp payload: %v", err)
+
 						mnet.LocalNode().Connection().Watcher() <- struct{}{}
+
 						if err := stream.CloseSend(); err != nil {
 							xlog.Errorf("Unable to close mmp stream: %v", err)
 						}

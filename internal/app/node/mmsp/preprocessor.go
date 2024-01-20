@@ -28,7 +28,19 @@ func Preprocessor(ctx context.Context, p *mmsp.Payload) {
 		case mmsp.NodeMgmtMsgType_NODE_CONFIG:
 			RxQueue <- p
 			return
-		case mmsp.NodeMgmtMsgType_NODE_METRICS_REQUEST:
+		case mmsp.NodeMgmtMsgType_NODE_HOST_METRICS_REQUEST:
+			RxQueue <- p
+			return
+		case mmsp.NodeMgmtMsgType_NODE_NET_CONNTRACK_STATE_REQUEST:
+			RxQueue <- p
+			return
+		case mmsp.NodeMgmtMsgType_NODE_NET_CONNTRACK_LOG_REQUEST:
+			RxQueue <- p
+			return
+		case mmsp.NodeMgmtMsgType_NODE_NET_TRAFFIC_METRICS_REQUEST:
+			RxQueue <- p
+			return
+		case mmsp.NodeMgmtMsgType_NODE_HOST_SECURITY_REQUEST:
 			RxQueue <- p
 			return
 		}

@@ -5,6 +5,7 @@ import (
 
 	"mmesh.dev/m-api-go/grpc/network/routing"
 	"mmesh.dev/m-api-go/grpc/resources/topology"
+	"mmesh.dev/m-node/internal/app/node/hstat"
 	"mmesh.dev/m-node/internal/app/node/mnet/connection"
 	"mmesh.dev/m-node/internal/app/node/mnet/router"
 )
@@ -12,6 +13,7 @@ import (
 type LocalNodeInterface interface {
 	Connection() connection.Interface
 	Router() router.Interface
+	Stats() hstat.Interface
 	AddNetworkEndpoint(endpointID, dnsName, reqIPv4 string) (string, error)
 	RemoveNetworkEndpoint(endpointID string) error
 	GetNodeLSA() *routing.LSA
@@ -27,6 +29,7 @@ type localNode struct {
 	endpoints   *endpointsMap
 	connection  connection.Interface
 	router      router.Interface
+	stats       hstat.Interface
 	initialized bool
 }
 
@@ -57,6 +60,14 @@ func (ln *localNode) Router() router.Interface {
 	return ln.router
 }
 
+func (ln *localNode) Stats() hstat.Interface {
+	if ln == nil {
+		return nil
+	}
+
+	return ln.stats
+}
+
 func (ln *localNode) DNSPort() int {
 	return int(ln.node.Agent.DNSPort)
 }
@@ -73,4 +84,6 @@ func (ln *localNode) Close() {
 	}
 
 	ln.Router().Disconnect()
+
+	ln.Stats().Close()
 }

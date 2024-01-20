@@ -7,6 +7,7 @@ import (
 	"github.com/google/gopacket/layers"
 	"golang.org/x/net/ipv4"
 	"golang.org/x/net/ipv6"
+	"mmesh.dev/m-api-go/grpc/resources/nstore/netdb"
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/ipnet"
 )
@@ -126,10 +127,16 @@ func (conn *Connection) IsActive(pktlen int) bool {
 		}
 	}
 
+	// store netflow
+	if nfMap == nil {
+		newNetflowMap()
+	}
+	nfMap.inboundConnection(conn, uint64(pktlen))
+
 	return true
 }
 
-func (conn *Connection) outbound() Connection {
+func (conn *Connection) direct() Connection {
 	return Connection{
 		AF:      conn.AF,
 		SrcIP:   conn.SrcIP,
@@ -150,5 +157,54 @@ func (conn *Connection) reverse() Connection {
 		Proto:   conn.Proto,
 		SrcPort: conn.DstPort,
 		DstPort: conn.SrcPort,
+	}
+}
+
+func (conn *Connection) outbound() Connection {
+	return conn.direct()
+}
+
+func (conn *Connection) flow() Connection {
+	return conn.direct()
+}
+
+func (conn *Connection) GetAddressFamily() netdb.AddressFamily {
+	switch conn.AF {
+	case ipnet.AddressFamilyIPv4:
+		return netdb.AddressFamily_IP4
+	case ipnet.AddressFamilyIPv6:
+		return netdb.AddressFamily_IP6
+	}
+
+	return netdb.AddressFamily_UNKNOWN_AF
+}
+
+func (conn *Connection) GetProtocol() netdb.Protocol {
+	switch conn.Proto {
+	case layers.IPProtocolTCP:
+		return netdb.Protocol_TCP
+	case layers.IPProtocolUDP:
+		return netdb.Protocol_UDP
+	case layers.IPProtocolICMPv4:
+		return netdb.Protocol_ICMP4
+	case layers.IPProtocolICMPv6:
+		return netdb.Protocol_ICMP6
+	case layers.IPProtocolGRE:
+		return netdb.Protocol_GRE
+	case layers.IPProtocolSCTP:
+		return netdb.Protocol_SCTP
+	}
+
+	return netdb.Protocol_UNKNOWN_PROTO
+}
+
+func (conn *Connection) GetNetConnection() *netdb.Connection {
+	return &netdb.Connection{
+		AF:      conn.GetAddressFamily(),
+		SrcIP:   conn.SrcIP.String(),
+		DstIP:   conn.DstAddr.String(),
+		Proto:   conn.GetProtocol(),
+		SrcPort: uint32(conn.SrcPort),
+		DstPort: uint32(conn.DstPort),
 	}
 }

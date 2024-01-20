@@ -9,7 +9,7 @@ import (
 	"mmesh.dev/m-lib/pkg/errors"
 	"mmesh.dev/m-lib/pkg/ipnet"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"mmesh.dev/m-node/internal/app/node/metrics"
+	"mmesh.dev/m-node/internal/app/node/hstat"
 	"mmesh.dev/m-node/internal/app/node/mnet/proxy"
 	"mmesh.dev/m-node/internal/app/node/mnet/router/conntrack"
 )
@@ -144,8 +144,8 @@ func (r *router) proxy64Forward(conn *conntrack.Connection, pkt []byte) bool {
 			return true
 		}
 
-		// update metrics
-		go metrics.UpdateNetworkMetric(conn.SrcIP.String(), 0, uint64(len(pkt)), false)
+		// update netTraffic stats
+		go hstat.NewTrafficData(conn.SrcIP, 0, uint64(len(pkt)), false)
 	}
 
 	return true

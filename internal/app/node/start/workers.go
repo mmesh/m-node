@@ -5,6 +5,7 @@ import (
 	// "mmesh.dev/m-lib/pkg/mmp"
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-lib/pkg/update"
+	"mmesh.dev/m-node/internal/app/node/hsec"
 	"mmesh.dev/m-node/internal/app/node/ops"
 	"mmesh.dev/m-node/internal/app/node/svcs"
 )
@@ -23,6 +24,7 @@ const (
 	k8sConnector
 	// proxy64gc
 	federationMonitor
+	securityScanner
 	updateAgent
 	// bgpAgent
 )
@@ -98,6 +100,11 @@ func initWrkrs(nxnc rpc.NetworkAPIClient) {
 		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmFederationMonitor"),
 		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, svcs.FederationMonitor),
 		runtime.SetWrkrOpt(runtime.WrkrOptNxNetworkClient, nxnc),
+	)
+	runtime.RegisterWrkr(
+		securityScanner,
+		runtime.SetWrkrOpt(runtime.WrkrOptName, "mmSecurityScanner"),
+		runtime.SetWrkrOpt(runtime.WrkrOptStartFunc, hsec.Scanner),
 	)
 	runtime.RegisterWrkr(
 		updateAgent,

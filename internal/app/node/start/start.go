@@ -25,6 +25,11 @@ func start() {
 	//  update.RestartReady <- struct{}{}
 	// }()
 
+	// if err := sec.Scan(); err != nil {
+	// 	xlog.Alertf("Unable to run trivy rootfs scan: %v", err)
+	// 	os.Exit(1)
+	// }
+
 	if err := mnet.Init(); err != nil {
 		xlog.Alertf("Unable to initialize node: %v", err)
 		os.Exit(1)

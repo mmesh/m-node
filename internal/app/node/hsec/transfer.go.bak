@@ -1,0 +1,77 @@
+package hsec
+
+import (
+	"encoding/json"
+	"time"
+
+	"mmesh.dev/m-api-go/grpc/common/blob"
+	"mmesh.dev/m-api-go/grpc/network/mmsp"
+	"mmesh.dev/m-api-go/grpc/resources/nstore/hsecdb"
+	"mmesh.dev/m-lib/pkg/errors"
+	"mmesh.dev/m-lib/pkg/mmp/queuing"
+	"mmesh.dev/m-lib/pkg/utils"
+)
+
+const chunkSize int = 1048576 // 1 MB
+// const chunkSize int = 64 * 1024 // 64 KiB
+
+func transferDataTx(r *hsecdb.HostSecurityReportRequest, mmID string) error {
+	hsr, err := readReportFile()
+	if err != nil {
+		return errors.Wrapf(err, "[%v] function readReportFile()", errors.Trace())
+	}
+
+	hsecReportData, err := json.Marshal(hsr)
+	if err != nil {
+		return errors.Wrapf(err, "[%v] function json.Marshal()", errors.Trace())
+	}
+
+	payloadChecksum, err := utils.ChecksumBlake3(hsecReportData)
+	if err != nil {
+		return errors.Wrapf(err, "[%v] function utils.ChecksumBlake3()", errors.Trace())
+	}
+
+	payloadSize := len(hsecReportData)
+
+	for b := 0; b < payloadSize; b += chunkSize {
+		hsrr := &hsecdb.HostSecurityReportResponse{
+			AccountID: r.Request.AccountID,
+			TenantID:  r.Request.TenantID,
+			NodeID:    r.Request.NodeID,
+			QueryID:   r.Request.QueryID,
+			Report:    nil, // hsr
+			ReportChunk: &blob.Chunk{
+				IsLastChunk:     false,
+				PayloadChecksum: payloadChecksum,
+			},
+			Timestamp: time.Now().UnixMilli(),
+		}
+
+		if (b + chunkSize) > payloadSize {
+			hsrr.ReportChunk.Data = hsecReportData[b:payloadSize]
+			hsrr.ReportChunk.IsLastChunk = true
+		} else {
+			hsrr.ReportChunk.Data = hsecReportData[b : b+chunkSize]
+		}
+
+		chunkChecksum, err := utils.ChecksumBlake3(hsrr.ReportChunk.Data)
+		if err != nil {
+			return errors.Wrapf(err, "[%v] function utils.ChecksumBlake3()", errors.Trace())
+		}
+
+		hsrr.ReportChunk.ChunkChecksum = chunkChecksum
+		hsrr.ReportChunk.ChunkSize = int64(len(hsrr.ReportChunk.Data))
+
+		queuing.TxControlQueue <- &mmsp.Payload{
+			SrcID:           mmID,
+			DstControllerID: r.Request.ControllerID,
+			Type:            mmsp.PDUType_NODEMGMT,
+			NodeMgmtPDU: &mmsp.NodeMgmtPDU{
+				Type:               mmsp.NodeMgmtMsgType_NODE_HOST_SECURITY_RESPONSE,
+				HsecReportResponse: hsrr,
+			},
+		}
+	}
+
+	return nil
+}
