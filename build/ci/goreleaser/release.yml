@@ -52,9 +52,9 @@ builds:
       ### - freebsd
     goarch:
       - amd64
-      - 386
+      # - 386
       - arm64
-      - arm
+      # - arm
     goamd64:
       - v1
       ## - v2
@@ -66,16 +66,16 @@ builds:
     ignore:
       # - goos: linux
       #   goarch: 386
-      - goos: darwin
-        goarch: 386
-      - goos: darwin
-        goarch: arm
-      - goos: windows
-        goarch: 386
-      - goos: windows
-        goarch: arm64
-      - goos: windows
-        goarch: arm
+      # - goos: darwin
+      #   goarch: 386
+      # - goos: darwin
+      #   goarch: arm
+      # - goos: windows
+      #   goarch: 386
+      # - goos: windows
+      #   goarch: arm64
+      # - goos: windows
+      #   goarch: arm
 
     # lang: go
 
