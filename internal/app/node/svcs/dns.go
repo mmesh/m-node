@@ -99,14 +99,20 @@ func (h *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 
 	var dnsName string
 
-	if (len(s) == 4 && s[1] == "mmesh" && s[2] == "local") ||
-		s[1] == "mm" || s[1] == "mmesh" {
-		dnsName = s[0]
+	if len(s) == 4 {
+		if (s[1] == "mmesh" && s[2] == "local") ||
+			s[1] == "mm" ||
+			s[1] == "mmesh" {
+			dnsName = s[0]
+		}
 	}
 
-	if (len(s) == 5 && s[2] == "mmesh" && s[3] == "local") ||
-		s[2] == "mm" || s[2] == "mmesh" {
-		dnsName = fmt.Sprintf("%s.%s", s[0], s[1])
+	if len(s) == 5 {
+		if (s[2] == "mmesh" && s[3] == "local") ||
+			s[2] == "mm" ||
+			s[2] == "mmesh" {
+			dnsName = fmt.Sprintf("%s.%s", s[0], s[1])
+		}
 	}
 
 	if len(dnsName) > 0 {
