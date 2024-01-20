@@ -32,7 +32,7 @@ require (
 	golang.zx2c4.com/wireguard v0.0.0-20211116201604-ffb742d43d92
 	google.golang.org/grpc v1.60.1
 	k8s.io/api v0.28.4
-	k8s.io/apimachinery v0.28.4
+	k8s.io/apimachinery v0.29.1
 	k8s.io/client-go v0.28.4
 	mmesh.dev/m-api-go v0.0.0-00010101000000-000000000000
 	mmesh.dev/m-lib v0.0.0-00010101000000-000000000000
@@ -411,7 +411,7 @@ require (
 	golang.org/x/term v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
-	golang.org/x/tools v0.14.0 // indirect
+	golang.org/x/tools v0.16.1 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	golang.zx2c4.com/wintun v0.0.0-20211104114900-415007cec224 // indirect
 	google.golang.org/api v0.153.0 // indirect
