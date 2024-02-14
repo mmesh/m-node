@@ -30,7 +30,7 @@ require (
 	github.com/vishvananda/netlink v1.2.1-beta.2
 	golang.org/x/net v0.20.0
 	golang.zx2c4.com/wireguard v0.0.0-20211116201604-ffb742d43d92
-	google.golang.org/grpc v1.60.1
+	google.golang.org/grpc v1.61.1
 	k8s.io/api v0.28.4
 	k8s.io/apimachinery v0.28.4
 	k8s.io/client-go v0.28.4
