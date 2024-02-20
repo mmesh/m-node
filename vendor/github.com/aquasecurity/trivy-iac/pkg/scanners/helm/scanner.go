@@ -14,9 +14,9 @@ import (
 	"github.com/aquasecurity/defsec/pkg/types"
 	"github.com/liamg/memoryfs"
 
+	"github.com/aquasecurity/defsec/pkg/rego"
 	"github.com/aquasecurity/defsec/pkg/scanners/options"
 	"github.com/aquasecurity/trivy-iac/pkg/detection"
-	"github.com/aquasecurity/trivy-iac/pkg/rego"
 	"github.com/aquasecurity/trivy-iac/pkg/scanners"
 	"github.com/aquasecurity/trivy-iac/pkg/scanners/helm/parser"
 	kparser "github.com/aquasecurity/trivy-iac/pkg/scanners/kubernetes/parser"
@@ -170,6 +170,7 @@ func (s *Scanner) getScanResults(path string, ctx context.Context, target fs.FS)
 
 	chartFiles, err := helmParser.RenderedChartFiles()
 	if err != nil { // not valid helm, maybe some other yaml etc., abort
+		s.debug.Log("Failed to render Chart files: %s", err)
 		return nil, nil
 	}
 
@@ -182,6 +183,7 @@ func (s *Scanner) getScanResults(path string, ctx context.Context, target fs.FS)
 		return nil, fmt.Errorf("policies load: %w", err)
 	}
 	for _, file := range chartFiles {
+		file := file
 		s.debug.Log("Processing rendered chart file: %s", file.TemplateFilePath)
 
 		manifests, err := kparser.New().Parse(strings.NewReader(file.ManifestContent), file.TemplateFilePath)
