@@ -165,6 +165,7 @@ func getReportResultPackages(r types.Result) []*hsec.Package {
 		pkgs = append(pkgs, &hsec.Package{
 			ID:              p.ID,
 			Name:            p.Name,
+			Identifier:      getPackageIdentifier(p.Identifier),
 			Version:         p.Version,
 			Release:         p.Release,
 			Epoch:           int32(p.Epoch),
@@ -178,9 +179,9 @@ func getReportResultPackages(r types.Result) []*hsec.Package {
 			Maintainer:      p.Maintainer,
 			ModularityLabel: p.Modularitylabel,
 			BuildInfo:       getPackageBuildInfo(p.BuildInfo),
-			Ref:             p.Ref,
-			Indirect:        p.Indirect,
-			DependsOn:       p.DependsOn,
+			// Ref:             p.Ref,
+			Indirect:  p.Indirect,
+			DependsOn: p.DependsOn,
 			Layer: &hsec.Layer{
 				Digest:    p.Layer.Digest,
 				DiffID:    p.Layer.DiffID,
@@ -194,6 +195,39 @@ func getReportResultPackages(r types.Result) []*hsec.Package {
 	}
 
 	return pkgs
+}
+
+func getPackageIdentifier(pkgIdentifier ftypes.PkgIdentifier) *hsec.PkgIdentifier {
+	// if pkgIdentifier == nil {
+	// 	return nil
+	// }
+
+	pkgURL := &hsec.PackageURL{}
+
+	if pkgIdentifier.PURL != nil {
+		pkgURL = &hsec.PackageURL{
+			Type:       pkgIdentifier.PURL.Type,
+			Namespace:  pkgIdentifier.PURL.Namespace,
+			Name:       pkgIdentifier.PURL.Name,
+			Version:    pkgIdentifier.PURL.Version,
+			Qualifiers: make([]*hsec.Qualifier, 0),
+			Subpath:    pkgIdentifier.PURL.Subpath,
+		}
+
+		for _, q := range pkgIdentifier.PURL.Qualifiers {
+			pkgURL.Qualifiers = append(pkgURL.Qualifiers, &hsec.Qualifier{
+				Key:   q.Key,
+				Value: q.Value,
+			})
+		}
+	}
+
+	pkgID := &hsec.PkgIdentifier{
+		PURL:   pkgURL,
+		BOMRef: pkgIdentifier.BOMRef,
+	}
+
+	return pkgID
 }
 
 func getPackageBuildInfo(buildInfo *ftypes.BuildInfo) *hsec.BuildInfo {
@@ -233,6 +267,7 @@ func getReportResultVulnerabilities(r types.Result) []*hsec.DetectedVulnerabilit
 			PkgID:            v.PkgID,
 			PkgName:          v.PkgName,
 			PkgPath:          v.PkgPath,
+			PkgIdentifier:    getPackageIdentifier(v.PkgIdentifier),
 			InstalledVersion: v.InstalledVersion,
 			FixedVersion:     v.FixedVersion,
 			Status:           getVulnerabilityStatus(v.Status),
@@ -243,8 +278,8 @@ func getReportResultVulnerabilities(r types.Result) []*hsec.DetectedVulnerabilit
 			},
 			SeveritySource: string(v.SeveritySource),
 			PrimaryURL:     v.PrimaryURL,
-			PkgRef:         v.PkgRef,
-			DataSource:     getVulnerabilityDataSource(v.DataSource),
+			// PkgRef:         v.PkgRef,
+			DataSource: getVulnerabilityDataSource(v.DataSource),
 			Vulnerability: &hsec.Vulnerability{
 				Title:            v.Title,
 				Description:      v.Description,

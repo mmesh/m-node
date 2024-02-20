@@ -203,9 +203,7 @@ func newOptions(cfg *optsConfig) flag.Options {
 				},
 			},
 		},
-		SBOMOptions: flag.SBOMOptions{
-			VEXPath: "",
-		},
+		SBOMOptions: flag.SBOMOptions{},
 		ScanOptions: flag.ScanOptions{
 			Target:      cfg.scanTarget,
 			SkipDirs:    cfg.scanSkipDirs,
@@ -233,6 +231,7 @@ func newOptions(cfg *optsConfig) flag.Options {
 				types.VulnTypeLibrary,
 			},
 			IgnoreStatuses: nil,
+			VEXPath:        "",
 		},
 		AppVersion:        "dev",
 		DisabledAnalyzers: nil,

@@ -12,7 +12,13 @@ func rootTargetDir() string {
 }
 
 func skipDirs() []string {
-	return []string{"/srv/", "/mnt/", "/var/lib/docker/"}
+	return []string{
+		"/proc/",
+		"/run/",
+		"/srv/",
+		"/mnt/",
+		"/var/lib/docker/",
+	}
 }
 
 /*
