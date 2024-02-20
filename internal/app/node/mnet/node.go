@@ -57,6 +57,10 @@ func (ln *localNode) registerNode() error {
 		return errors.Wrapf(err, "[%v] function ln.Connection().NewRoutingSession()", errors.Trace())
 	}
 
+	for _, as := range r.AppSvcs {
+		ln.Router().RIB().AddNodeAppSvc(as)
+	}
+
 	ln.initialized = true
 
 	return nil

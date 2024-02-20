@@ -17,6 +17,8 @@ func Processor(ctx context.Context, pdu *mmsp.RoutingPDU) {
 	switch pdu.Type {
 	case mmsp.RoutingMsgType_ROUTING_STATUS:
 		err = mmpRoutingStatus(ctx, pdu)
+	case mmsp.RoutingMsgType_ROUTING_APPSVC:
+		err = mmpRoutingAppSvcConfig(ctx, pdu)
 	}
 
 	if err != nil {

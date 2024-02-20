@@ -18,9 +18,11 @@ type RouteEvent struct {
 var routeEventQueue = make(chan *RouteEvent, 32)
 var relayConnQueue = make(chan *routing.NetHop, 16)
 var routerConnQueue = make(chan *routing.NetHop, 16)
+var proxyConnQueue = make(chan *routing.NetHop, 16)
 
 func evtAddRoute(addr string, routeType routing.RouteType) {
-	if routeType == routing.RouteType_DYNAMIC {
+	if routeType == routing.RouteType_DYNAMIC ||
+		routeType == routing.RouteType_PROXY {
 		// only STATIC or CONNECTED routes are processed
 		return
 	}
@@ -33,7 +35,8 @@ func evtAddRoute(addr string, routeType routing.RouteType) {
 }
 
 func evtDeleteRoute(addr string, routeType routing.RouteType) {
-	if routeType == routing.RouteType_DYNAMIC {
+	if routeType == routing.RouteType_DYNAMIC ||
+		routeType == routing.RouteType_PROXY {
 		// only STATIC or CONNECTED routes are processed
 		return
 	}
@@ -51,4 +54,8 @@ func evtRelay(nh *routing.NetHop) {
 
 func evtRouter(nh *routing.NetHop) {
 	routerConnQueue <- nh
+}
+
+func evtProxy(nh *routing.NetHop) {
+	proxyConnQueue <- nh
 }

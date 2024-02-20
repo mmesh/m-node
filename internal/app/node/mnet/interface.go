@@ -16,6 +16,7 @@ type LocalNodeInterface interface {
 	Stats() hstat.Interface
 	AddNetworkEndpoint(endpointID, dnsName, reqIPv4 string) (string, error)
 	RemoveNetworkEndpoint(endpointID string) error
+	SendAppSvcLSAs(mmID string)
 	GetNodeLSA() *routing.LSA
 	NodeReq() *topology.NodeReq
 	Node() *topology.Node

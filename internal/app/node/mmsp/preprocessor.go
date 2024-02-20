@@ -18,6 +18,9 @@ func Preprocessor(ctx context.Context, p *mmsp.Payload) {
 		case mmsp.RoutingMsgType_ROUTING_STATUS:
 			RxQueue <- p
 			return
+		case mmsp.RoutingMsgType_ROUTING_APPSVC:
+			RxQueue <- p
+			return
 		}
 	case mmsp.PDUType_NODEMGMT:
 		if p.NodeMgmtPDU == nil {

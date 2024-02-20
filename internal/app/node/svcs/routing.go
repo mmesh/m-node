@@ -34,10 +34,10 @@ func RoutingAgent(w *runtime.Wrkr) {
 				}
 
 				if !routing.ServiceEnabled {
-					time.Sleep(20 * time.Minute)
+					continue
 				}
 
-				xlog.Debug("Sending node-LSA")
+				xlog.Debug("Sending routing LSAs")
 
 				lsa := mnet.LocalNode().GetNodeLSA()
 				if lsa == nil {
@@ -52,6 +52,8 @@ func RoutingAgent(w *runtime.Wrkr) {
 						LSA:  lsa,
 					},
 				}
+
+				mnet.LocalNode().SendAppSvcLSAs(mmID)
 			case <-endCh:
 				// xlog.Warn("Closing rtRequest send stream")
 				return

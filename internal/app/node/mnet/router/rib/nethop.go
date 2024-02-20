@@ -64,6 +64,10 @@ func getIPDstFromRIB(addr *netip.Addr, r *routing.RIB) string {
 	}
 	ipv6Dst := addr.String() + "/128"
 	if re, ok := r.RoutingTable[ipv6Dst]; ok {
+		if len(re.SubnetID) == 0 && re.Type == routing.RouteType_PROXY {
+			return ipv6Dst
+		}
+
 		if re.SubnetID == r.RoutingDomain.SubnetID || r.RoutingDomain.Scope == nac.RoutingScope_NETWORK {
 			return ipv6Dst
 		}

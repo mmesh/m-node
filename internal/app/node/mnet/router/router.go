@@ -18,10 +18,13 @@ import (
 type Interface interface {
 	Init() error
 	P2PHost() libp2pHost.Host
+	// NetworkInterfaceName() string
 	IPv4() string
 	SetIPv4(ipv4 string)
 	IPv6() string
+	GlobalIPv6() string
 	SetIPv6(ipv6 string)
+	SetGlobalIPv6(ipv6 string)
 	IP4AddrAdd(ipv4 string) error
 	IP4AddrDel(ipv4 string) error
 	IP6AddrAdd(ipv6 string) error
@@ -39,8 +42,9 @@ type router struct {
 	port         int
 	externalIPv4 string
 
-	ipv4 string
-	ipv6 string
+	ipv4       string
+	ipv6       string
+	globalIPv6 string
 
 	rib     rib.Interface
 	routes  *routeMap
@@ -127,7 +131,7 @@ func (r *router) Init() error {
 		p2pHost, err = host.New(host.P2PHostTypeBasicHost, r.port)
 	}
 	if err != nil {
-		return errors.Wrapf(err, "[%v] function libp2p.NewHost()", errors.Trace())
+		return errors.Wrapf(err, "[%v] function host.New()", errors.Trace())
 	}
 
 	r.p2pHost = p2pHost
@@ -160,6 +164,12 @@ func (r *router) P2PHost() libp2pHost.Host {
 	return r.p2pHost
 }
 
+/*
+func (r *router) NetworkInterfaceName() string {
+	return r.networkInterface.devName()
+}
+*/
+
 func (r *router) IPv4() string {
 	return r.ipv4
 }
@@ -172,8 +182,16 @@ func (r *router) IPv6() string {
 	return r.ipv6
 }
 
+func (r *router) GlobalIPv6() string {
+	return r.globalIPv6
+}
+
 func (r *router) SetIPv6(ipv6 string) {
 	r.ipv6 = ipv6
+}
+
+func (r *router) SetGlobalIPv6(ipv6 string) {
+	r.globalIPv6 = ipv6
 }
 
 func (r *router) IP4AddrAdd(ipv4 string) error {

@@ -56,6 +56,20 @@ func (ln *localNode) AddNetworkEndpoint(endpointID, dnsName, reqIPv4 string) (st
 		}
 
 		ln.Router().SetIPv6(ipv6)
+
+		// set mmesh unicast addr
+		addrv6, err := ipnet.GetIPv6ByMac(ipv6)
+		if err != nil {
+			xlog.Alertf("Unable to get mmesh unicast IPv6 addr: %s", errors.Cause(err))
+			os.Exit(1)
+		}
+
+		ln.Router().SetGlobalIPv6(addrv6.String())
+
+		if err := ln.Router().IP6AddrAdd(addrv6.String()); err != nil {
+			xlog.Alertf("Unable to add mmesh unicast IPv6 addr: %s", errors.Cause(err))
+			os.Exit(1)
+		}
 	}
 
 	if err := ln.Router().IP4AddrAdd(e.IPv4); err != nil {
@@ -63,7 +77,7 @@ func (ln *localNode) AddNetworkEndpoint(endpointID, dnsName, reqIPv4 string) (st
 		os.Exit(1)
 	}
 	if err := ln.Router().IP6AddrAdd(e.IPv6); err != nil {
-		xlog.Alertf("Unable to add address %s to interface: %s", e.IPv4, errors.Cause(err))
+		xlog.Alertf("Unable to add address %s to interface: %s", e.IPv6, errors.Cause(err))
 		os.Exit(1)
 	}
 

@@ -120,8 +120,10 @@ func (r *router) writeInterface(rw *bufio.ReadWriter, pkt []byte) error {
 
 	// proxy64 forwarding
 	if conn.AF == ipnet.AddressFamilyIPv6 {
-		if r.proxy64Forward(conn, pkt) {
-			return nil
+		if !ipnet.IsIAPIPv6Addr(conn.SrcIP.String()) {
+			if r.proxy64Forward(conn, pkt) {
+				return nil
+			}
 		}
 	}
 
@@ -170,8 +172,10 @@ func (r *router) readInterface() {
 
 			// proxy64 forwarding
 			if conn.AF == ipnet.AddressFamilyIPv6 {
-				if r.proxy64Forward(conn, pkt[:plen]) {
-					continue
+				if !ipnet.IsIAPIPv6Addr(conn.DstIP.String()) {
+					if r.proxy64Forward(conn, pkt[:plen]) {
+						continue
+					}
 				}
 			}
 

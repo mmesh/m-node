@@ -55,7 +55,7 @@ func (r *ribData) setRoutingScope(scope nac.RoutingScope) {
 		evtAddRoute(rd.NetworkCIDR, routing.RouteType_CONNECTED)
 	}
 
-	ipnetv6 := fmt.Sprintf("%s:/32", ipnet.MMesh64Prefix)
+	ipnetv6 := fmt.Sprintf("%s:/32", ipnet.IPv6Prefix())
 	if _, ok := r.rib.RoutingTable[ipnetv6]; !ok {
 		r.rib.RoutingTable[ipnetv6] = newRoutingEntry()
 		r.rib.RoutingTable[ipnetv6].SubnetID = rd.SubnetID
@@ -95,7 +95,14 @@ func (r *ribData) setRoutingTable(rt map[string]*routing.RoutingEntry) {
 		if _, ok := r.rib.RoutingTable[addr]; !ok {
 			evtAddRoute(addr, re.Type)
 		}
+
 		r.rib.RoutingTable[addr] = re
+
+		if re.Type == routing.RouteType_PROXY && len(r.appSvcs) > 0 {
+			for _, nh := range re.Gw {
+				evtProxy(nh)
+			}
+		}
 	}
 }
 

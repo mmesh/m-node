@@ -29,16 +29,24 @@ func NewStream(p2pHost host.Host, hop *NetHop) (network.Stream, error) {
 
 	conns := p2pHost.Network().ConnsToPeer(peerInfo.ID)
 
-	xlog.Infof("Peer %s CONNECTED (%d conns)",
-		peerInfo.ID.ShortString(), len(conns))
+	xlog.Infof("Peer %s CONNECTED (%d conns)", peerInfo.ID.ShortString(), len(conns))
+
+	streams := make([]network.Stream, 0)
 
 	transientConnection := false
 
 	for _, c := range conns {
+		streams = append(streams, c.GetStreams()...)
+
 		if c.Stat().Transient {
 			transientConnection = true
 		}
+
 		conn.Log(c)
+	}
+
+	if len(streams) > 0 {
+		return streams[0], nil
 	}
 
 	ctx := context.TODO() // context for direct connection

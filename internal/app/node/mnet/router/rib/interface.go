@@ -15,6 +15,7 @@ type Interface interface {
 	RouteEventQueue() <-chan *RouteEvent
 	RelayConnQueue() <-chan *routing.NetHop
 	RouterConnQueue() <-chan *routing.NetHop
+	ProxyConnQueue() <-chan *routing.NetHop
 	RoutingDomain() *nac.RoutingDomain
 	GetPolicy(subnetID string) *topology.Policy
 	DNSQuery(dnsName string) (ipv4, ipv6 string)
@@ -22,6 +23,9 @@ type Interface interface {
 	GetNetHop(addr *netip.Addr) (*routing.NetHop, error)
 	GetRelayMAddrs(nh *routing.NetHop) []string
 	GetRouterMAddrs(nh *routing.NetHop) []string
+	AddNodeAppSvc(as *topology.AppSvc)
+	RemoveNodeAppSvc(appSvcID string)
+	GetNodeAppSvcs() []*topology.AppSvc
 
 	wrkr(msgQueue <-chan []byte)
 	cleanup()
@@ -39,8 +43,11 @@ type ribData struct {
 	rxQueue chan *routing.RIBData
 	closeCh chan struct{}
 	rib     *routing.RIB
+	appSvcs map[nodeAppSvcID]*topology.AppSvc
 	sync.RWMutex
 }
+
+type nodeAppSvcID string
 
 func New() Interface {
 	return &ribData{
@@ -56,6 +63,7 @@ func New() Interface {
 			RoutingTable:  make(map[string]*routing.RoutingEntry, 0),
 			Policy:        make(map[string]*topology.Policy, 0),
 		},
+		appSvcs: make(map[nodeAppSvcID]*topology.AppSvc, 0),
 	}
 }
 
@@ -89,6 +97,10 @@ func (r *ribData) RelayConnQueue() <-chan *routing.NetHop {
 
 func (r *ribData) RouterConnQueue() <-chan *routing.NetHop {
 	return routerConnQueue
+}
+
+func (r *ribData) ProxyConnQueue() <-chan *routing.NetHop {
+	return proxyConnQueue
 }
 
 func (r *ribData) RoutingDomain() *nac.RoutingDomain {
