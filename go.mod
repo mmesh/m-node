@@ -36,7 +36,7 @@ require (
 	k8s.io/client-go v0.29.2
 	mmesh.dev/m-api-go v0.0.0-00010101000000-000000000000
 	mmesh.dev/m-lib v0.0.0-00010101000000-000000000000
-	modernc.org/sqlite v1.29.1
+	modernc.org/sqlite v1.29.4
 )
 
 require (
