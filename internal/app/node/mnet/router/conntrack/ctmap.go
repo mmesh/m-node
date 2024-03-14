@@ -8,7 +8,7 @@ import (
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
-const ctTimeout = 120
+const ctTimeout = 1200
 
 type ctMap struct {
 	table   map[Connection]*netdb.ConnectionState

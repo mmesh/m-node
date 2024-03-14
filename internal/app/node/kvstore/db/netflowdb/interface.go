@@ -10,6 +10,7 @@ import (
 )
 
 const netflowPrefix string = "netflow"
+const maxEntries = 30
 
 var InputQueue = make(chan []*netdb.NetFlowEntry, 128)
 var RequestQueue = make(chan *netdb.TrafficMetricsRequest, 128)

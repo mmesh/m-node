@@ -270,7 +270,8 @@ func getReportResultVulnerabilities(r types.Result) []*hsec.DetectedVulnerabilit
 			PkgIdentifier:    getPackageIdentifier(v.PkgIdentifier),
 			InstalledVersion: v.InstalledVersion,
 			FixedVersion:     v.FixedVersion,
-			Status:           getVulnerabilityStatus(v.Status),
+			// Status:           getVulnerabilityStatus(v.Status),
+			Status: v.Status.String(),
 			Layer: &hsec.Layer{
 				Digest:    v.Layer.Digest,
 				DiffID:    v.Layer.DiffID,
@@ -297,6 +298,7 @@ func getReportResultVulnerabilities(r types.Result) []*hsec.DetectedVulnerabilit
 	return vulns
 }
 
+/*
 func getVulnerabilityStatus(status dbTypes.Status) hsec.VulnerabilityStatus {
 	switch status {
 	case dbTypes.StatusUnknown:
@@ -319,6 +321,7 @@ func getVulnerabilityStatus(status dbTypes.Status) hsec.VulnerabilityStatus {
 
 	return hsec.VulnerabilityStatus_STATUS_UNKNOWN
 }
+*/
 
 func getVulnerabilityDataSource(ds *dbTypes.DataSource) *hsec.DataSource {
 	if ds == nil {

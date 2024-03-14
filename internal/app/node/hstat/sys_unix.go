@@ -5,6 +5,7 @@ package hstat
 
 import (
 	"fmt"
+	"runtime"
 
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/disk"
@@ -45,6 +46,9 @@ func (hs *hstats) updateSys(nr *topology.NodeReq) {
 	}
 
 	hs.host.OS = hostInfo.OS
+	// hs.host.OS = runtime.GOOS
+	hs.host.OSType = getOSType()
+	hs.host.Arch = runtime.GOARCH
 
 	if hostInfo.Uptime > 0 {
 		hs.host.Uptime = uptimeStr(hostInfo.Uptime)

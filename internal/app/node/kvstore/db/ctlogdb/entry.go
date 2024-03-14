@@ -36,9 +36,9 @@ func (e *conntrackLogEntry) encodeKey() []byte {
 		e.Timestamp,
 		int(e.Connection.AF),
 		int(e.Connection.Proto),
-		e.Connection.SrcIP,
+		utils.EncodeIPAddr(e.Connection.SrcIP),
 		e.Connection.SrcPort,
-		e.Connection.DstIP,
+		utils.EncodeIPAddr(e.Connection.DstIP),
 		e.Connection.DstPort,
 	))
 }
@@ -95,8 +95,8 @@ func decodeKey(k []byte) (*netdb.ConntrackLogEntry, error) {
 		Timestamp: tm,
 		Connection: &netdb.Connection{
 			AF:      af,
-			SrcIP:   s[4],
-			DstIP:   s[6],
+			SrcIP:   utils.DecodeIPAddr(s[4]),
+			DstIP:   utils.DecodeIPAddr(s[6]),
 			Proto:   proto,
 			SrcPort: uint32(srcPort),
 			DstPort: uint32(dstPort),

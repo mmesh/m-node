@@ -7,7 +7,6 @@ import (
 
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/network/mmsp"
-	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-lib/pkg/mmp/queuing"
 	"mmesh.dev/m-lib/pkg/runtime"
 	"mmesh.dev/m-lib/pkg/xlog"
@@ -36,7 +35,7 @@ func MetricsAgent(w *runtime.Wrkr) {
 	go func() {
 		mmID := viper.GetString("mm.id")
 
-		ticker := time.NewTicker(900 * time.Second) // 15 minutes
+		ticker := time.NewTicker(90 * time.Second) // 15 minutes
 		defer ticker.Stop()
 
 		for {
@@ -108,7 +107,7 @@ func MetricsAgent(w *runtime.Wrkr) {
 					continue
 				}
 			case r := <-metricsdb.RequestQueue:
-				hmr, err := kvs.HostMetrics().QueryAll(r)
+				hmr, err := kvs.HostMetrics().Query(r)
 				if err != nil {
 					xlog.Errorf("[kvstore] Unable to get host metrics: %v", err)
 					continue
@@ -128,11 +127,7 @@ func MetricsAgent(w *runtime.Wrkr) {
 				if routing.ServiceEnabled {
 					n := mnet.LocalNode().Node()
 
-					if n.Agent.Metrics == nil {
-						n.Agent.Metrics = &topology.AgentMetrics{}
-					}
-
-					n.Agent.Metrics.HostMetrics = mnet.LocalNode().Stats().GetHostMetrics()
+					n.Agent.Metrics = mnet.LocalNode().Metrics(kvs)
 
 					if _, err := w.NxNC.Metrics(context.TODO(), n); err != nil {
 						xlog.Errorf("Unable to send metrics to controller: %v", err)

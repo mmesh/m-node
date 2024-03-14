@@ -1,0 +1,75 @@
+package netflowdb
+
+import (
+	"sort"
+
+	"mmesh.dev/m-api-go/grpc/resources/nstore/netdb"
+)
+
+const maxEntries = 30
+
+func aggregateTrafficData(data map[string]*netdb.TrafficData) map[string]*netdb.TrafficData {
+	for _, td := range data {
+		if len(td.Values) <= maxEntries {
+			continue
+		}
+
+		td.Values = aggregateTrafficValues(td.Values)
+
+		sort.Slice(td.Values, func(i, j int) bool {
+			return td.Values[i].Timestamp < td.Values[j].Timestamp
+		})
+
+	}
+
+	return data
+}
+
+func aggregateTrafficValues(tvl []*netdb.TrafficValue) []*netdb.TrafficValue {
+	if len(tvl) <= maxEntries {
+		return tvl
+	}
+
+	tmStart := tvl[0].Timestamp
+	tmEnd := tvl[len(tvl)-1].Timestamp
+
+	aggInterval := (tmEnd - tmStart) / maxEntries
+
+	tvm := make(map[int64]*netdb.TrafficValue, 0)
+
+	for i := 0; i < maxEntries; i++ {
+		tm := tmStart + (int64(i) * aggInterval)
+
+		tvm[tm] = &netdb.TrafficValue{
+			Timestamp: tm + (aggInterval / 2),
+			Traffic:   &netdb.TrafficCounter{},
+		}
+	}
+
+	for tm, aggTV := range tvm {
+		for _, tv := range tvl {
+			if tv.Timestamp < tm {
+				continue
+			}
+
+			if tv.Timestamp > (tm + aggInterval) {
+				continue
+			}
+
+			aggTV.Traffic.Bytes += tv.Traffic.Bytes
+			aggTV.Traffic.Packets += tv.Traffic.Packets
+		}
+	}
+
+	ntvl := make([]*netdb.TrafficValue, 0)
+
+	for _, aggTV := range tvm {
+		if aggTV.Traffic.Bytes == 0 {
+			continue
+		}
+
+		ntvl = append(ntvl, aggTV)
+	}
+
+	return ntvl
+}

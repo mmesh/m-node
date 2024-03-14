@@ -9,7 +9,6 @@ import (
 	"mmesh.dev/m-lib/pkg/utils/msg"
 	"mmesh.dev/m-lib/pkg/version"
 	"mmesh.dev/m-lib/pkg/xlog"
-	"mmesh.dev/m-node/internal/app/node/utils"
 )
 
 func Init() {
@@ -60,10 +59,5 @@ func setDefaults() {
 	dnsPort := viper.GetInt("dnsPort")
 	if dnsPort == 0 {
 		viper.Set("dnsPort", int(53535))
-	}
-
-	reqIPv4 := viper.GetString("ipv4")
-	if !utils.IPv4IsValid(reqIPv4) {
-		viper.Set("ipv4", "auto")
 	}
 }

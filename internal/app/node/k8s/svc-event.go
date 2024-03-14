@@ -35,7 +35,6 @@ func (c *controller) manageSvcEvent(s *v1.Service, evt eventType) error {
 
 	// dnsName := k8sSvcCfg.dnsName
 	dnsName := fmt.Sprintf("%s.%s", k8sSvcCfg.dnsName, ns)
-	reqIPv4 := k8sSvcCfg.reqIPv4
 
 	var vIP string
 	var err error
@@ -43,7 +42,7 @@ func (c *controller) manageSvcEvent(s *v1.Service, evt eventType) error {
 	switch evt {
 	case eventAdd:
 		if k8sSvcCfg.valid {
-			vIP, err = mnet.LocalNode().AddNetworkEndpoint(endpointID, dnsName, reqIPv4)
+			vIP, err = mnet.LocalNode().AddNetworkEndpoint(endpointID, dnsName)
 			if err != nil {
 				xlog.Errorf("Unable to add k8s network endpoint: %v", err)
 				return errors.Wrapf(err, "[%v] function netp2p.AddNetworkEndpoint()", errors.Trace())
@@ -56,7 +55,7 @@ func (c *controller) manageSvcEvent(s *v1.Service, evt eventType) error {
 		}
 
 		if k8sSvcCfg.valid {
-			vIP, err = mnet.LocalNode().AddNetworkEndpoint(endpointID, dnsName, reqIPv4)
+			vIP, err = mnet.LocalNode().AddNetworkEndpoint(endpointID, dnsName)
 			if err != nil {
 				xlog.Errorf("Unable to add k8s network endpoint: %v", err)
 				return errors.Wrapf(err, "[%v] function netp2p.AddNetworkEndpoint()", errors.Trace())

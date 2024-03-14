@@ -13,11 +13,10 @@ import (
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
-func (ln *localNode) AddNetworkEndpoint(endpointID, dnsName, reqIPv4 string) (string, error) {
+func (ln *localNode) AddNetworkEndpoint(endpointID, dnsName string) (string, error) {
 	e := &topology.Endpoint{
 		EndpointID: endpointID,
 		DNSName:    dnsName,
-		ReqIPv4:    reqIPv4,
 	}
 
 	erReq := &nac.EndpointRegRequest{
@@ -37,7 +36,7 @@ func (ln *localNode) AddNetworkEndpoint(endpointID, dnsName, reqIPv4 string) (st
 	}
 
 	if erResp.IPv4 == resources.IPAMRequestedIPv4Unavailable {
-		xlog.Alertf("Unable to allocate endpoint requested IPv4 %s: subnet is full, no IPv4 address available", e.ReqIPv4)
+		xlog.Alert("Unable to allocate endpoint IPv4: subnet is full, no IPv4 address available")
 		os.Exit(1)
 	}
 

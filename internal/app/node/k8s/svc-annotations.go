@@ -3,13 +3,11 @@ package k8s
 import (
 	v1 "k8s.io/api/core/v1"
 	"mmesh.dev/m-node/internal/app/node/mnet"
-	"mmesh.dev/m-node/internal/app/node/utils"
 )
 
 type k8sSvcAnnotationsCfg struct {
 	// enabled bool
 	dnsName string
-	reqIPv4 string
 	valid   bool
 }
 
@@ -71,19 +69,9 @@ func parseAnnotations(s *v1.Service) *k8sSvcAnnotationsCfg {
 		dnsName = s.ObjectMeta.Name
 	}
 
-	reqIPv4, ok := s.ObjectMeta.Annotations["mmesh.io/ipv4"]
-	if ok {
-		if !utils.IPv4IsValid(reqIPv4) {
-			reqIPv4 = "auto"
-		}
-	} else {
-		reqIPv4 = "auto"
-	}
-
 	return &k8sSvcAnnotationsCfg{
 		// enabled: svcEnabled,
 		dnsName: dnsName,
-		reqIPv4: reqIPv4,
 		valid:   valid,
 	}
 }

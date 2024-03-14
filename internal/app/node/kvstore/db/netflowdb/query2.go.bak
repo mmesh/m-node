@@ -10,16 +10,15 @@ import (
 
 func (nfdb *netflowDB) Query(r *netdb.TrafficMetricsRequest) (*netdb.TrafficMetricsResponse, error) {
 	tmr := &netdb.TrafficMetricsResponse{
-		AccountID:       r.Request.AccountID,
-		TenantID:        r.Request.TenantID,
-		NodeID:          r.Request.NodeID,
-		QueryID:         r.Request.QueryID,
-		ByProtocol:      nil,
-		ByL5Port:        nil,
-		ByDirection:     nil,
-		ByAddressFamily: nil,
-		TopTalkers:      nil,
-		Timestamp:       time.Now().UnixMilli(),
+		AccountID:   r.Request.AccountID,
+		TenantID:    r.Request.TenantID,
+		NodeID:      r.Request.NodeID,
+		QueryID:     r.Request.QueryID,
+		ByProtocol:  nil,
+		ByL5Port:    nil,
+		ByDirection: nil,
+		TopTalkers:  nil,
+		Timestamp:   time.Now().UnixMilli(),
 	}
 
 	nfl, err := nfdb.Scan()
@@ -34,8 +33,6 @@ func (nfdb *netflowDB) Query(r *netdb.TrafficMetricsRequest) (*netdb.TrafficMetr
 		tmr.ByL5Port = getTrafficByL5Port(nfl)
 	case netdb.TrafficQueryType_TRAFFIC_BY_DIRECTION:
 		tmr.ByDirection = getTrafficByDirection(nfl)
-	case netdb.TrafficQueryType_TRAFFIC_BY_ADDRESS_FAMILY:
-		tmr.ByAddressFamily = getTrafficByAddressFamily(nfl)
 	case netdb.TrafficQueryType_TRAFFIC_TOP_TALKERS:
 		tmr.TopTalkers = getTrafficTopTalkers(nfl)
 	}
@@ -43,128 +40,112 @@ func (nfdb *netflowDB) Query(r *netdb.TrafficMetricsRequest) (*netdb.TrafficMetr
 	return tmr, nil
 }
 
-func getTrafficByProtocol(nfl []*netdb.NetFlowEntry) []*netdb.TrafficByProtocol {
-	tbp := make([]*netdb.TrafficByProtocol, 0)
+func getTrafficByProtocol(nfl []*netdb.NetFlowEntry) *netdb.TrafficByProtocol {
+	tbp := &netdb.TrafficByProtocol{
+		Data: make(map[string]*netdb.TrafficData, 0),
+	}
+
+	// tbp := make([]*netdb.TrafficByProtcol, 0)
 
 	for _, nfe := range nfl {
 		if nfe.Flow == nil || nfe.Flow.Connection == nil {
 			continue
 		}
 
-		e := &netdb.TrafficByProtocol{
-			Timestamp: nfe.Timestamp,
-			Traffic:   make(map[string]*netdb.TrafficCounter, 0),
+		if _, ok := tbp.Data[nfe.Flow.Connection.Proto.String()]; !ok {
+			tbp.Data[nfe.Flow.Connection.Proto.String()] = &netdb.TrafficData{
+				Values: make([]*netdb.TrafficValue, 0),
+			}
 		}
 
-		for _, proto := range protocols() {
-			e.Traffic[proto.String()] = &netdb.TrafficCounter{}
-		}
+		tbp.Data[nfe.Flow.Connection.Proto.String()].Values =
+			append(tbp.Data[nfe.Flow.Connection.Proto.String()].Values, &netdb.TrafficValue{
+				Timestamp: nfe.Timestamp,
+				Traffic:   nfe.Traffic,
+			})
 
-		e.Traffic[nfe.Flow.Connection.Proto.String()] = nfe.Traffic
-
-		tbp = append(tbp, e)
+		// tbp = append(tbp, &netdb.TrafficByProtocol{
+		// 	Timestamp: nfe.Timestamp,
+		// 	Traffic:   nfe.Traffic,
+		// 	Protocol:  nfe.Flow.Connection.Proto,
+		// })
 	}
 
-	tbp = aggregateByProtocol(tbp)
-
-	sort.Slice(tbp, func(i, j int) bool {
-		return tbp[i].Timestamp < tbp[j].Timestamp
-	})
+	tbp.Data = aggregateTrafficData(tbp.Data)
 
 	return tbp
 }
 
-func getTrafficByL5Port(nfl []*netdb.NetFlowEntry) []*netdb.TrafficByL5Port {
-	tbl5p := make([]*netdb.TrafficByL5Port, 0)
+func getTrafficByL5Port(nfl []*netdb.NetFlowEntry) *netdb.TrafficByL5Port {
+	tbl5p := &netdb.TrafficByL5Port{
+		Data: make(map[string]*netdb.TrafficData, 0),
+	}
+
+	// tbl5p := make([]*netdb.TrafficByL5Port, 0)
 
 	for _, nfe := range nfl {
 		if nfe.Flow == nil || nfe.Flow.Connection == nil {
 			continue
 		}
 
-		e := &netdb.TrafficByL5Port{
-			Timestamp: nfe.Timestamp,
-			Traffic:   make(map[string]*netdb.TrafficCounter, 0),
+		if _, ok := tbl5p.Data[getL5Port(nfe.Flow.Connection).String()]; !ok {
+			tbl5p.Data[getL5Port(nfe.Flow.Connection).String()] = &netdb.TrafficData{
+				Values: make([]*netdb.TrafficValue, 0),
+			}
 		}
 
-		for _, l5port := range l5ports() {
-			e.Traffic[l5port.String()] = &netdb.TrafficCounter{}
-		}
+		tbl5p.Data[getL5Port(nfe.Flow.Connection).String()].Values =
+			append(tbl5p.Data[getL5Port(nfe.Flow.Connection).String()].Values, &netdb.TrafficValue{
+				Timestamp: nfe.Timestamp,
+				Traffic:   nfe.Traffic,
+			})
 
-		e.Traffic[getL5Port(nfe.Flow.Connection).String()] = nfe.Traffic
-
-		tbl5p = append(tbl5p, e)
+		// tbl5p = append(tbl5p, &netdb.TrafficByL5Port{
+		// 	Timestamp: nfe.Timestamp,
+		// 	Traffic:   nfe.Traffic,
+		// 	L5Port:    getL5Port(nfe.Flow.Connection),
+		// })
 	}
 
-	tbl5p = aggregateByL5Port(tbl5p)
-
-	sort.Slice(tbl5p, func(i, j int) bool {
-		return tbl5p[i].Timestamp < tbl5p[j].Timestamp
-	})
+	tbl5p.Data = aggregateTrafficData(tbl5p.Data)
 
 	return tbl5p
 }
 
-func getTrafficByDirection(nfl []*netdb.NetFlowEntry) []*netdb.TrafficByDirection {
-	tbd := make([]*netdb.TrafficByDirection, 0)
+func getTrafficByDirection(nfl []*netdb.NetFlowEntry) *netdb.TrafficByDirection {
+	tbd := &netdb.TrafficByDirection{
+		Data: make(map[string]*netdb.TrafficData, 0),
+	}
+
+	// tbd := make([]*netdb.TrafficByDirection, 0)
 
 	for _, nfe := range nfl {
 		if nfe.Flow == nil || nfe.Flow.Connection == nil {
 			continue
 		}
 
-		e := &netdb.TrafficByDirection{
-			Timestamp: nfe.Timestamp,
-			Traffic:   make(map[string]*netdb.TrafficCounter, 0),
+		if _, ok := tbd.Data[nfe.Flow.Direction.String()]; !ok {
+			tbd.Data[nfe.Flow.Direction.String()] = &netdb.TrafficData{
+				Values: make([]*netdb.TrafficValue, 0),
+			}
 		}
 
-		for _, dir := range directions() {
-			e.Traffic[dir.String()] = &netdb.TrafficCounter{}
-		}
+		tbd.Data[nfe.Flow.Direction.String()].Values =
+			append(tbd.Data[nfe.Flow.Direction.String()].Values, &netdb.TrafficValue{
+				Timestamp: nfe.Timestamp,
+				Traffic:   nfe.Traffic,
+			})
 
-		e.Traffic[nfe.Flow.Direction.String()] = nfe.Traffic
-
-		tbd = append(tbd, e)
+		// tbd = append(tbd, &netdb.TrafficByDirection{
+		// 	Timestamp: nfe.Timestamp,
+		// 	Traffic:   nfe.Traffic,
+		// 	Direction: nfe.Flow.Direction,
+		// })
 	}
 
-	tbd = aggregateByDirection(tbd)
-
-	sort.Slice(tbd, func(i, j int) bool {
-		return tbd[i].Timestamp < tbd[j].Timestamp
-	})
+	tbd.Data = aggregateTrafficData(tbd.Data)
 
 	return tbd
-}
-
-func getTrafficByAddressFamily(nfl []*netdb.NetFlowEntry) []*netdb.TrafficByAddressFamily {
-	tbaf := make([]*netdb.TrafficByAddressFamily, 0)
-
-	for _, nfe := range nfl {
-		if nfe.Flow == nil || nfe.Flow.Connection == nil {
-			continue
-		}
-
-		e := &netdb.TrafficByAddressFamily{
-			Timestamp: nfe.Timestamp,
-			Traffic:   make(map[string]*netdb.TrafficCounter, 0),
-		}
-
-		for _, af := range addressFamilies() {
-			e.Traffic[af.String()] = &netdb.TrafficCounter{}
-		}
-
-		e.Traffic[nfe.Flow.Connection.AF.String()] = nfe.Traffic
-
-		tbaf = append(tbaf, e)
-	}
-
-	tbaf = aggregateByAddressFamily(tbaf)
-
-	sort.Slice(tbaf, func(i, j int) bool {
-		return tbaf[i].Timestamp < tbaf[j].Timestamp
-	})
-
-	return tbaf
 }
 
 func getTrafficTopTalkers(nfl []*netdb.NetFlowEntry) *netdb.TopTalkers {

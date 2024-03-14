@@ -66,7 +66,6 @@ func cfgInit(conn connection.Interface) error {
 	hostID := viper.GetString("host.id")
 	port := viper.GetInt("port")
 	dnsPort := viper.GetInt("dnsPort")
-	reqIPv4 := viper.GetString("ipv4")
 	rtExported := viper.GetStringSlice("routes.export")
 	rtImported := viper.GetStringSlice("routes.import")
 
@@ -103,6 +102,8 @@ func cfgInit(conn connection.Interface) error {
 	if n.Cfg.DisableNetworking {
 		xlog.Info("Networking disabled")
 		rtr = nil
+		n.State = topology.NodeDeploymentState_STUBBY_MODE
+		n.NodeDeploymentState = topology.NodeDeploymentState_STUBBY_MODE.String()
 	} else {
 		localForwarding := true
 
@@ -128,6 +129,8 @@ func cfgInit(conn connection.Interface) error {
 			Export: rtExported,
 			Import: rtImported,
 		}
+		n.State = topology.NodeDeploymentState_CONNECTED
+		n.NodeDeploymentState = topology.NodeDeploymentState_CONNECTED.String()
 	}
 
 	n.Agent.Hostname = hostID
@@ -136,6 +139,9 @@ func cfgInit(conn connection.Interface) error {
 	n.Agent.Version = version.GetVersion()
 	// n.Agent.DevMode =
 	n.Endpoints = make(map[string]*topology.Endpoint)
+
+	n.Class = topology.NodeClass_COMPUTE_NODE
+	n.NodeClass = topology.NodeClass_COMPUTE_NODE.String()
 
 	localnode = &localNode{
 		node: n,
@@ -163,7 +169,7 @@ func cfgInit(conn connection.Interface) error {
 			}
 		}
 		endpointID := dnsName
-		if _, err := localnode.AddNetworkEndpoint(endpointID, dnsName, reqIPv4); err != nil {
+		if _, err := localnode.AddNetworkEndpoint(endpointID, dnsName); err != nil {
 			return errors.Wrapf(err, "[%v] function localnode.AddNetworkEndpoint()", errors.Trace())
 		}
 	}

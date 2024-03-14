@@ -36,9 +36,9 @@ func (e *netflowEntry) encodeKey() []byte {
 		e.Timestamp,
 		int(e.Flow.Connection.AF),
 		int(e.Flow.Connection.Proto),
-		e.Flow.Connection.SrcIP,
+		utils.EncodeIPAddr(e.Flow.Connection.SrcIP),
 		e.Flow.Connection.SrcPort,
-		e.Flow.Connection.DstIP,
+		utils.EncodeIPAddr(e.Flow.Connection.DstIP),
 		e.Flow.Connection.DstPort,
 		int(e.Flow.Direction),
 	))
@@ -103,8 +103,8 @@ func decodeKey(k []byte) (*netdb.NetFlowEntry, error) {
 		Flow: &netdb.Flow{
 			Connection: &netdb.Connection{
 				AF:      af,
-				SrcIP:   s[4],
-				DstIP:   s[6],
+				SrcIP:   utils.DecodeIPAddr(s[4]),
+				DstIP:   utils.DecodeIPAddr(s[6]),
 				Proto:   proto,
 				SrcPort: uint32(srcPort),
 				DstPort: uint32(dstPort),

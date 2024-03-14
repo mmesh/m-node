@@ -16,7 +16,7 @@ var RequestQueue = make(chan *metricsdb.HostMetricsRequest, 128)
 
 type Interface interface {
 	Query(r *metricsdb.HostMetricsRequest) (*metricsdb.HostMetricsResponse, error)
-	QueryAll(r *metricsdb.HostMetricsRequest) (*metricsdb.HostMetricsResponse, error)
+	// QueryAll(r *metricsdb.HostMetricsRequest) (*metricsdb.HostMetricsResponse, error)
 	WriteBatch(dps []*metricsdb.HostMetricDataPoint) error
 	Scan(keyPrefix []byte) ([]*metricsdb.HostMetricDataPoint, error)
 	Last(keyPrefix []byte) (*metricsdb.HostMetricDataPoint, error)

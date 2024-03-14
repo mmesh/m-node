@@ -6,6 +6,7 @@ import (
 	"mmesh.dev/m-api-go/grpc/network/routing"
 	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-node/internal/app/node/hstat"
+	"mmesh.dev/m-node/internal/app/node/kvstore"
 	"mmesh.dev/m-node/internal/app/node/mnet/connection"
 	"mmesh.dev/m-node/internal/app/node/mnet/router"
 )
@@ -14,7 +15,8 @@ type LocalNodeInterface interface {
 	Connection() connection.Interface
 	Router() router.Interface
 	Stats() hstat.Interface
-	AddNetworkEndpoint(endpointID, dnsName, reqIPv4 string) (string, error)
+	Metrics(kvs kvstore.Interface) *topology.AgentMetrics
+	AddNetworkEndpoint(endpointID, dnsName string) (string, error)
 	RemoveNetworkEndpoint(endpointID string) error
 	SendAppSvcLSAs(mmID string)
 	GetNodeLSA() *routing.LSA
