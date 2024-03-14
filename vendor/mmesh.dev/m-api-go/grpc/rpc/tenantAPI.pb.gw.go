@@ -32,8 +32,8 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_TenantAPI_GetTenantList_0(ctx context.Context, marshaler runtime.Marshaler, client TenantAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq tenant.TenantListRequest
+func request_TenantAPI_GetTopologyTenantList_0(ctx context.Context, marshaler runtime.Marshaler, client TenantAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq tenant.TopologyTenantListRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -53,13 +53,13 @@ func request_TenantAPI_GetTenantList_0(ctx context.Context, marshaler runtime.Ma
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
 	}
 
-	msg, err := client.GetTenantList(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetTopologyTenantList(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_TenantAPI_GetTenantList_0(ctx context.Context, marshaler runtime.Marshaler, server TenantAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq tenant.TenantListRequest
+func local_request_TenantAPI_GetTopologyTenantList_0(ctx context.Context, marshaler runtime.Marshaler, server TenantAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq tenant.TopologyTenantListRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -79,7 +79,7 @@ func local_request_TenantAPI_GetTenantList_0(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
 	}
 
-	msg, err := server.GetTenantList(ctx, &protoReq)
+	msg, err := server.GetTopologyTenantList(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -434,7 +434,7 @@ func local_request_TenantAPI_DeleteTenant_0(ctx context.Context, marshaler runti
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterTenantAPIHandlerFromEndpoint instead.
 func RegisterTenantAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server TenantAPIServer) error {
 
-	mux.Handle("GET", pattern_TenantAPI_GetTenantList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_TenantAPI_GetTopologyTenantList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -442,12 +442,12 @@ func RegisterTenantAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TenantAPI/GetTenantList", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:tenants"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.TenantAPI/GetTopologyTenantList", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants:topology"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_TenantAPI_GetTenantList_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_TenantAPI_GetTopologyTenantList_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -455,7 +455,7 @@ func RegisterTenantAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_TenantAPI_GetTenantList_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_TenantAPI_GetTopologyTenantList_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -625,25 +625,25 @@ func RegisterTenantAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn *
 // "TenantAPIClient" to call the correct interceptors.
 func RegisterTenantAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client TenantAPIClient) error {
 
-	mux.Handle("GET", pattern_TenantAPI_GetTenantList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_TenantAPI_GetTopologyTenantList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TenantAPI/GetTenantList", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}:tenants"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.TenantAPI/GetTopologyTenantList", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants:topology"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_TenantAPI_GetTenantList_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_TenantAPI_GetTopologyTenantList_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_TenantAPI_GetTenantList_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_TenantAPI_GetTopologyTenantList_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -761,7 +761,7 @@ func RegisterTenantAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, 
 }
 
 var (
-	pattern_TenantAPI_GetTenantList_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"api", "v1", "accounts", "accountID"}, "tenants"))
+	pattern_TenantAPI_GetTopologyTenantList_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "accounts", "accountID", "tenants"}, "topology"))
 
 	pattern_TenantAPI_CreateTenant_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"api", "v1", "accounts", "accountID", "tenants"}, "new"))
 
@@ -775,7 +775,7 @@ var (
 )
 
 var (
-	forward_TenantAPI_GetTenantList_0 = runtime.ForwardResponseMessage
+	forward_TenantAPI_GetTopologyTenantList_0 = runtime.ForwardResponseMessage
 
 	forward_TenantAPI_CreateTenant_0 = runtime.ForwardResponseMessage
 

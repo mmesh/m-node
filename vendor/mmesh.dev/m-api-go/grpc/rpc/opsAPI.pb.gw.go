@@ -32,78 +32,6 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_OpsAPI_GetOps_0(ctx context.Context, marshaler runtime.Marshaler, client OpsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ops.OpsRequest
-	var metadata runtime.ServerMetadata
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["accountID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
-	}
-
-	protoReq.AccountID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
-	}
-
-	val, ok = pathParams["tenantID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenantID")
-	}
-
-	protoReq.TenantID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenantID", err)
-	}
-
-	msg, err := client.GetOps(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_OpsAPI_GetOps_0(ctx context.Context, marshaler runtime.Marshaler, server OpsAPIServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ops.OpsRequest
-	var metadata runtime.ServerMetadata
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["accountID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "accountID")
-	}
-
-	protoReq.AccountID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "accountID", err)
-	}
-
-	val, ok = pathParams["tenantID"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "tenantID")
-	}
-
-	protoReq.TenantID, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "tenantID", err)
-	}
-
-	msg, err := server.GetOps(ctx, &protoReq)
-	return msg, metadata, err
-
-}
-
 func request_OpsAPI_CreateProject_0(ctx context.Context, marshaler runtime.Marshaler, client OpsAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ops.NewProjectRequest
 	var metadata runtime.ServerMetadata
@@ -1482,31 +1410,6 @@ func local_request_OpsAPI_DeleteTaskLog_0(ctx context.Context, marshaler runtime
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterOpsAPIHandlerFromEndpoint instead.
 func RegisterOpsAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server OpsAPIServer) error {
 
-	mux.Handle("GET", pattern_OpsAPI_GetOps_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/api.OpsAPI/GetOps", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}:ops"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_OpsAPI_GetOps_0(annotatedContext, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_OpsAPI_GetOps_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
 	mux.Handle("POST", pattern_OpsAPI_CreateProject_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1873,28 +1776,6 @@ func RegisterOpsAPIHandler(ctx context.Context, mux *runtime.ServeMux, conn *grp
 // "OpsAPIClient" to call the correct interceptors.
 func RegisterOpsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client OpsAPIClient) error {
 
-	mux.Handle("GET", pattern_OpsAPI_GetOps_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		var err error
-		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/api.OpsAPI/GetOps", runtime.WithHTTPPathPattern("/api/v1/accounts/{accountID}/tenants/{tenantID}:ops"))
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_OpsAPI_GetOps_0(annotatedContext, inboundMarshaler, client, req, pathParams)
-		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
-		if err != nil {
-			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_OpsAPI_GetOps_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
 	mux.Handle("POST", pattern_OpsAPI_CreateProject_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -2185,8 +2066,6 @@ func RegisterOpsAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, cli
 }
 
 var (
-	pattern_OpsAPI_GetOps_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"api", "v1", "accounts", "accountID", "tenants", "tenantID"}, "ops"))
-
 	pattern_OpsAPI_CreateProject_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"api", "v1", "accounts", "accountID", "tenants", "tenantID", "projects"}, "new"))
 
 	pattern_OpsAPI_ListProjects_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5, 2, 6}, []string{"api", "v1", "accounts", "tenant.accountID", "tenants", "tenant.tenantID", "projects"}, ""))
@@ -2215,8 +2094,6 @@ var (
 )
 
 var (
-	forward_OpsAPI_GetOps_0 = runtime.ForwardResponseMessage
-
 	forward_OpsAPI_CreateProject_0 = runtime.ForwardResponseMessage
 
 	forward_OpsAPI_ListProjects_0 = runtime.ForwardResponseMessage

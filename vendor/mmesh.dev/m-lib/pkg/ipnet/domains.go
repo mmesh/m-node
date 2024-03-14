@@ -30,16 +30,21 @@ func VSCNAMEIsValid(fqdn, locationID string) error {
 		return fmt.Errorf("missing locationID")
 	}
 
+	vHost := fmt.Sprintf("vs.%s.%s", locationID, IAPDomain())
+
+	if fqdn == vHost {
+		return fmt.Errorf("invalid cname")
+	}
+
 	cname, err := net.LookupCNAME(fqdn)
 	if err != nil {
 		return fmt.Errorf("invalid cname: %v", err)
 	}
 
 	cname = strings.TrimSuffix(cname, ".")
-	targetHost := fmt.Sprintf("auth.%s.%s", locationID, IAPDomain())
 
-	if cname != targetHost {
-		return fmt.Errorf("CNAME does not match target: (%s != %s)", cname, targetHost)
+	if cname != vHost {
+		return fmt.Errorf("CNAME does not match target: (%s != %s)", cname, vHost)
 	}
 
 	return nil
