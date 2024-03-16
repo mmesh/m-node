@@ -46,7 +46,7 @@ func Scanner(w *runtime.Wrkr) {
 			case r := <-RequestQueue:
 				hsr, err := readReportFile()
 				if err != nil {
-					xlog.Errorf("[host-security] Unable to get host security report: %v", err)
+					xlog.Warnf("[host-security] Unable to get host security report: %v", errors.Cause(err))
 				}
 
 				hsrr := query(r, hsr) // hsr can be nil
@@ -61,12 +61,8 @@ func Scanner(w *runtime.Wrkr) {
 					},
 				}
 
-				// if err := transferDataTx(r, mmID); err != nil {
-				// 	xlog.Errorf("[host-security] Unable to send host security report: %v", err)
-				// }
-
 			case <-endCh:
-				// xlog.Warn("[hostsecurity] Closing security scanner")
+				// xlog.Warn("[host-security] Closing security scanner")
 				return
 			}
 		}

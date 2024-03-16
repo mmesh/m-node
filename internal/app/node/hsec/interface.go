@@ -4,6 +4,7 @@ import (
 	"mmesh.dev/m-api-go/grpc/resources/nstore"
 	"mmesh.dev/m-api-go/grpc/resources/nstore/hsecdb"
 	"mmesh.dev/m-lib/pkg/errors"
+	"mmesh.dev/m-lib/pkg/xlog"
 )
 
 type SummaryReport struct {
@@ -18,13 +19,13 @@ func GetSummary(r *nstore.DataRequest) (*SummaryReport, error) {
 
 	hsr, err := readReportFile()
 	if err != nil {
-		return nil, errors.Wrapf(err, "[%v] function os.ReadFile()", errors.Trace())
+		xlog.Warnf("[host-security] Unable to get host security report: %v", errors.Cause(err))
 	}
 
 	hsrr := query(&hsecdb.HostSecurityReportRequest{
 		Request: r,
 		Type:    hsecdb.ReportQueryType_REPORT_OS_PKGS,
-	}, hsr)
+	}, hsr) // hsr can be nil
 
 	if hsrr != nil {
 		if hsrr.OsPkgsReport != nil {
@@ -34,13 +35,13 @@ func GetSummary(r *nstore.DataRequest) (*SummaryReport, error) {
 
 	hsr, err = readReportFile()
 	if err != nil {
-		return nil, errors.Wrapf(err, "[%v] function os.ReadFile()", errors.Trace())
+		xlog.Warnf("[host-security] Unable to get host security report: %v", errors.Cause(err))
 	}
 
 	hsrr = query(&hsecdb.HostSecurityReportRequest{
 		Request: r,
 		Type:    hsecdb.ReportQueryType_REPORT_VULNERABILITIES,
-	}, hsr)
+	}, hsr) // hsr can be nil
 
 	if hsrr != nil {
 		for _, vr := range hsrr.VulnReport {
