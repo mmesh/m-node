@@ -16,6 +16,11 @@ func (r *router) packetFilter(conn *conntrack.Connection, pktlen int) bool {
 		return true // drop the pkt
 	}
 
+	// check iap traffic
+	if conn.AF == ipnet.AddressFamilyIPv6 && ipnet.IsIAPIPv6Addr(conn.SrcIP.String()) {
+		return false // accept the pkt
+	}
+
 	// check configured network filters
 	if r.policyFilter(conn) {
 		// packet dropped by policy
