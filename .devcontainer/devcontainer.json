@@ -3,7 +3,7 @@
 {
     "name": "Go",
     // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-    "image": "mcr.microsoft.com/devcontainers/base:bullseye",
+    "image": "mcr.microsoft.com/devcontainers/base:bookworm",
     "features": {
         "ghcr.io/devcontainers/features/go:1": { },
         "ghcr.io/devcontainers/features/docker-in-docker:2": { },
@@ -16,6 +16,9 @@
         "ghcr.io/devcontainers-contrib/features/svu-asdf:2": { },
         "ghcr.io/devcontainers-contrib/features/cosign:1": { },
         "ghcr.io/devcontainers-contrib/features/syft:1": { },
+        "ghcr.io/azutake/devcontainer-features/go-packages-install:0": {
+            "PACKAGES": "github.com/psampaz/go-mod-outdated@latest"
+        },
         "ghcr.io/devcontainers-contrib/features/rclone:1": { },
         "ghcr.io/devcontainers-contrib/features/apt-get-packages:1": {
             "packages": "pinentry-tty,clang-format,most"

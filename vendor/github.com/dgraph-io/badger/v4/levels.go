@@ -1073,14 +1073,13 @@ func (s *levelsController) addSplits(cd *compactDef) {
 			return
 		}
 		if i%width == width-1 {
-			// Right should always have ts=maxUint64 otherwise we'll lose keys
-			// in subcompaction. Consider the following.
+			// Right is assigned ts=0. The encoding ts bytes take MaxUint64-ts,
+			// so, those with smaller TS will be considered larger for the same key.
+			// Consider the following.
 			// Top table is [A1...C3(deleted)]
 			// bot table is [B1....C2]
-			// This will generate splits like [A1 ... C2] . Notice that we
-			// dropped the C3 which is the last key of the top table.
-			// See TestCompaction/with_split test.
-			right := y.KeyWithTs(y.ParseKey(t.Biggest()), math.MaxUint64)
+			// It will generate a split [A1 ... C0], including any records of Key C.
+			right := y.KeyWithTs(y.ParseKey(t.Biggest()), 0)
 			addRange(right)
 		}
 	}
@@ -1440,6 +1439,22 @@ func (s *levelsController) runCompactDef(id, l int, cd compactDef) (err error) {
 		return err
 	}
 
+	getSizes := func(tables []*table.Table) int64 {
+		size := int64(0)
+		for _, i := range tables {
+			size += i.Size()
+		}
+		return size
+	}
+
+	sizeNewTables := int64(0)
+	sizeOldTables := int64(0)
+	if s.kv.opt.MetricsEnabled {
+		sizeNewTables = getSizes(newTables)
+		sizeOldTables = getSizes(cd.bot) + getSizes(cd.top)
+		y.NumBytesCompactionWrittenAdd(s.kv.opt.MetricsEnabled, nextLevel.strLevel, sizeNewTables)
+	}
+
 	// See comment earlier in this function about the ordering of these ops, and the order in which
 	// we access levels when reading.
 	if err := nextLevel.replaceTables(cd.bot, newTables); err != nil {
@@ -1460,16 +1475,16 @@ func (s *levelsController) runCompactDef(id, l int, cd compactDef) (err error) {
 			expensive = " [E]"
 		}
 		s.kv.opt.Infof("[%d]%s LOG Compact %d->%d (%d, %d -> %d tables with %d splits)."+
-			" [%s] -> [%s], took %v\n",
+			" [%s] -> [%s], took %v\n, deleted %d bytes",
 			id, expensive, thisLevel.level, nextLevel.level, len(cd.top), len(cd.bot),
 			len(newTables), len(cd.splits), strings.Join(from, " "), strings.Join(to, " "),
-			dur.Round(time.Millisecond))
+			dur.Round(time.Millisecond), sizeOldTables-sizeNewTables)
 	}
 
 	if cd.thisLevel.level != 0 && len(newTables) > 2*s.kv.opt.LevelSizeMultiplier {
-		s.kv.opt.Debugf("This Range (numTables: %d)\nLeft:\n%s\nRight:\n%s\n",
+		s.kv.opt.Infof("This Range (numTables: %d)\nLeft:\n%s\nRight:\n%s\n",
 			len(cd.top), hex.Dump(cd.thisRange.left), hex.Dump(cd.thisRange.right))
-		s.kv.opt.Debugf("Next Range (numTables: %d)\nLeft:\n%s\nRight:\n%s\n",
+		s.kv.opt.Infof("Next Range (numTables: %d)\nLeft:\n%s\nRight:\n%s\n",
 			len(cd.bot), hex.Dump(cd.nextRange.left), hex.Dump(cd.nextRange.right))
 	}
 	return nil
@@ -1574,8 +1589,8 @@ func (s *levelsController) close() error {
 }
 
 // get searches for a given key in all the levels of the LSM tree. It returns
-// key version <= the expected version (maxVs). If not found, it returns an empty
-// y.ValueStruct.
+// key version <= the expected version (version in key). If not found,
+// it returns an empty y.ValueStruct.
 func (s *levelsController) get(key []byte, maxVs y.ValueStruct, startLevel int) (
 	y.ValueStruct, error) {
 	if s.kv.IsClosed() {
@@ -1599,12 +1614,16 @@ func (s *levelsController) get(key []byte, maxVs y.ValueStruct, startLevel int) 
 		if vs.Value == nil && vs.Meta == 0 {
 			continue
 		}
+		y.NumBytesReadsLSMAdd(s.kv.opt.MetricsEnabled, int64(len(vs.Value)))
 		if vs.Version == version {
 			return vs, nil
 		}
 		if maxVs.Version < vs.Version {
 			maxVs = vs
 		}
+	}
+	if len(maxVs.Value) > 0 {
+		y.NumGetsWithResultsAdd(s.kv.opt.MetricsEnabled, 1)
 	}
 	return maxVs, nil
 }

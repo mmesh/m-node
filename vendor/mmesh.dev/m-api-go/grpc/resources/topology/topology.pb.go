@@ -491,6 +491,77 @@ func (x *TopologyNodeList) GetNodes() []*TopologyNode {
 	return nil
 }
 
+type TopologyNode struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Node      *Node         `protobuf:"bytes,1,opt,name=node,proto3" json:"node,omitempty"`
+	Endpoints []*Endpoint   `protobuf:"bytes,11,rep,name=endpoints,proto3" json:"endpoints,omitempty"`
+	Online    bool          `protobuf:"varint,101,opt,name=online,proto3" json:"online,omitempty"`
+	Alerts    *AlertMetrics `protobuf:"bytes,111,opt,name=alerts,proto3" json:"alerts,omitempty"`
+}
+
+func (x *TopologyNode) Reset() {
+	*x = TopologyNode{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_mmesh_protobuf_resources_v1_topology_topology_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TopologyNode) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TopologyNode) ProtoMessage() {}
+
+func (x *TopologyNode) ProtoReflect() protoreflect.Message {
+	mi := &file_mmesh_protobuf_resources_v1_topology_topology_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TopologyNode.ProtoReflect.Descriptor instead.
+func (*TopologyNode) Descriptor() ([]byte, []int) {
+	return file_mmesh_protobuf_resources_v1_topology_topology_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *TopologyNode) GetNode() *Node {
+	if x != nil {
+		return x.Node
+	}
+	return nil
+}
+
+func (x *TopologyNode) GetEndpoints() []*Endpoint {
+	if x != nil {
+		return x.Endpoints
+	}
+	return nil
+}
+
+func (x *TopologyNode) GetOnline() bool {
+	if x != nil {
+		return x.Online
+	}
+	return false
+}
+
+func (x *TopologyNode) GetAlerts() *AlertMetrics {
+	if x != nil {
+		return x.Alerts
+	}
+	return nil
+}
+
 type TopologyVSListRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -504,7 +575,7 @@ type TopologyVSListRequest struct {
 func (x *TopologyVSListRequest) Reset() {
 	*x = TopologyVSListRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_mmesh_protobuf_resources_v1_topology_topology_proto_msgTypes[9]
+		mi := &file_mmesh_protobuf_resources_v1_topology_topology_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -517,7 +588,7 @@ func (x *TopologyVSListRequest) String() string {
 func (*TopologyVSListRequest) ProtoMessage() {}
 
 func (x *TopologyVSListRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_mmesh_protobuf_resources_v1_topology_topology_proto_msgTypes[9]
+	mi := &file_mmesh_protobuf_resources_v1_topology_topology_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -530,7 +601,7 @@ func (x *TopologyVSListRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TopologyVSListRequest.ProtoReflect.Descriptor instead.
 func (*TopologyVSListRequest) Descriptor() ([]byte, []int) {
-	return file_mmesh_protobuf_resources_v1_topology_topology_proto_rawDescGZIP(), []int{9}
+	return file_mmesh_protobuf_resources_v1_topology_topology_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *TopologyVSListRequest) GetAccountID() string {
@@ -565,7 +636,7 @@ type TopologyVSList struct {
 func (x *TopologyVSList) Reset() {
 	*x = TopologyVSList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_mmesh_protobuf_resources_v1_topology_topology_proto_msgTypes[10]
+		mi := &file_mmesh_protobuf_resources_v1_topology_topology_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -578,7 +649,7 @@ func (x *TopologyVSList) String() string {
 func (*TopologyVSList) ProtoMessage() {}
 
 func (x *TopologyVSList) ProtoReflect() protoreflect.Message {
-	mi := &file_mmesh_protobuf_resources_v1_topology_topology_proto_msgTypes[10]
+	mi := &file_mmesh_protobuf_resources_v1_topology_topology_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -591,83 +662,12 @@ func (x *TopologyVSList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TopologyVSList.ProtoReflect.Descriptor instead.
 func (*TopologyVSList) Descriptor() ([]byte, []int) {
-	return file_mmesh_protobuf_resources_v1_topology_topology_proto_rawDescGZIP(), []int{10}
+	return file_mmesh_protobuf_resources_v1_topology_topology_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *TopologyVSList) GetVSs() []*VS {
 	if x != nil {
 		return x.VSs
-	}
-	return nil
-}
-
-type TopologyNode struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Node      *Node         `protobuf:"bytes,1,opt,name=node,proto3" json:"node,omitempty"`
-	Endpoints []*Endpoint   `protobuf:"bytes,11,rep,name=endpoints,proto3" json:"endpoints,omitempty"`
-	Online    bool          `protobuf:"varint,101,opt,name=online,proto3" json:"online,omitempty"`
-	Alerts    *AlertMetrics `protobuf:"bytes,111,opt,name=alerts,proto3" json:"alerts,omitempty"`
-}
-
-func (x *TopologyNode) Reset() {
-	*x = TopologyNode{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_mmesh_protobuf_resources_v1_topology_topology_proto_msgTypes[11]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *TopologyNode) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TopologyNode) ProtoMessage() {}
-
-func (x *TopologyNode) ProtoReflect() protoreflect.Message {
-	mi := &file_mmesh_protobuf_resources_v1_topology_topology_proto_msgTypes[11]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TopologyNode.ProtoReflect.Descriptor instead.
-func (*TopologyNode) Descriptor() ([]byte, []int) {
-	return file_mmesh_protobuf_resources_v1_topology_topology_proto_rawDescGZIP(), []int{11}
-}
-
-func (x *TopologyNode) GetNode() *Node {
-	if x != nil {
-		return x.Node
-	}
-	return nil
-}
-
-func (x *TopologyNode) GetEndpoints() []*Endpoint {
-	if x != nil {
-		return x.Endpoints
-	}
-	return nil
-}
-
-func (x *TopologyNode) GetOnline() bool {
-	if x != nil {
-		return x.Online
-	}
-	return false
-}
-
-func (x *TopologyNode) GetAlerts() *AlertMetrics {
-	if x != nil {
-		return x.Alerts
 	}
 	return nil
 }
@@ -1604,27 +1604,27 @@ var file_mmesh_protobuf_resources_v1_topology_topology_proto_rawDesc = []byte{
 	0x65, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x2c, 0x0a, 0x05, 0x6e, 0x6f, 0x64, 0x65, 0x73, 0x18, 0x01,
 	0x20, 0x03, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x74, 0x6f, 0x70, 0x6f, 0x6c, 0x6f, 0x67, 0x79, 0x2e,
 	0x54, 0x6f, 0x70, 0x6f, 0x6c, 0x6f, 0x67, 0x79, 0x4e, 0x6f, 0x64, 0x65, 0x52, 0x05, 0x6e, 0x6f,
-	0x64, 0x65, 0x73, 0x22, 0x67, 0x0a, 0x15, 0x54, 0x6f, 0x70, 0x6f, 0x6c, 0x6f, 0x67, 0x79, 0x56,
-	0x53, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09,
-	0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x12, 0x1a, 0x0a, 0x08, 0x74, 0x65,
-	0x6e, 0x61, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x74, 0x65,
-	0x6e, 0x61, 0x6e, 0x74, 0x49, 0x44, 0x12, 0x14, 0x0a, 0x05, 0x6e, 0x65, 0x74, 0x49, 0x44, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6e, 0x65, 0x74, 0x49, 0x44, 0x22, 0x30, 0x0a, 0x0e,
-	0x54, 0x6f, 0x70, 0x6f, 0x6c, 0x6f, 0x67, 0x79, 0x56, 0x53, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x1e,
-	0x0a, 0x03, 0x56, 0x53, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x74, 0x6f,
-	0x70, 0x6f, 0x6c, 0x6f, 0x67, 0x79, 0x2e, 0x56, 0x53, 0x52, 0x03, 0x56, 0x53, 0x73, 0x22, 0xac,
-	0x01, 0x0a, 0x0c, 0x54, 0x6f, 0x70, 0x6f, 0x6c, 0x6f, 0x67, 0x79, 0x4e, 0x6f, 0x64, 0x65, 0x12,
-	0x22, 0x0a, 0x04, 0x6e, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e,
-	0x74, 0x6f, 0x70, 0x6f, 0x6c, 0x6f, 0x67, 0x79, 0x2e, 0x4e, 0x6f, 0x64, 0x65, 0x52, 0x04, 0x6e,
-	0x6f, 0x64, 0x65, 0x12, 0x30, 0x0a, 0x09, 0x65, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x73,
-	0x18, 0x0b, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x74, 0x6f, 0x70, 0x6f, 0x6c, 0x6f, 0x67,
-	0x79, 0x2e, 0x45, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x52, 0x09, 0x65, 0x6e, 0x64, 0x70,
-	0x6f, 0x69, 0x6e, 0x74, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x6e, 0x6c, 0x69, 0x6e, 0x65, 0x18,
-	0x65, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x6f, 0x6e, 0x6c, 0x69, 0x6e, 0x65, 0x12, 0x2e, 0x0a,
-	0x06, 0x61, 0x6c, 0x65, 0x72, 0x74, 0x73, 0x18, 0x6f, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e,
-	0x74, 0x6f, 0x70, 0x6f, 0x6c, 0x6f, 0x67, 0x79, 0x2e, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x4d, 0x65,
-	0x74, 0x72, 0x69, 0x63, 0x73, 0x52, 0x06, 0x61, 0x6c, 0x65, 0x72, 0x74, 0x73, 0x22, 0xe2, 0x01,
+	0x64, 0x65, 0x73, 0x22, 0xac, 0x01, 0x0a, 0x0c, 0x54, 0x6f, 0x70, 0x6f, 0x6c, 0x6f, 0x67, 0x79,
+	0x4e, 0x6f, 0x64, 0x65, 0x12, 0x22, 0x0a, 0x04, 0x6e, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x74, 0x6f, 0x70, 0x6f, 0x6c, 0x6f, 0x67, 0x79, 0x2e, 0x4e, 0x6f,
+	0x64, 0x65, 0x52, 0x04, 0x6e, 0x6f, 0x64, 0x65, 0x12, 0x30, 0x0a, 0x09, 0x65, 0x6e, 0x64, 0x70,
+	0x6f, 0x69, 0x6e, 0x74, 0x73, 0x18, 0x0b, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x74, 0x6f,
+	0x70, 0x6f, 0x6c, 0x6f, 0x67, 0x79, 0x2e, 0x45, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x52,
+	0x09, 0x65, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x6e,
+	0x6c, 0x69, 0x6e, 0x65, 0x18, 0x65, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x6f, 0x6e, 0x6c, 0x69,
+	0x6e, 0x65, 0x12, 0x2e, 0x0a, 0x06, 0x61, 0x6c, 0x65, 0x72, 0x74, 0x73, 0x18, 0x6f, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x16, 0x2e, 0x74, 0x6f, 0x70, 0x6f, 0x6c, 0x6f, 0x67, 0x79, 0x2e, 0x41, 0x6c,
+	0x65, 0x72, 0x74, 0x4d, 0x65, 0x74, 0x72, 0x69, 0x63, 0x73, 0x52, 0x06, 0x61, 0x6c, 0x65, 0x72,
+	0x74, 0x73, 0x22, 0x67, 0x0a, 0x15, 0x54, 0x6f, 0x70, 0x6f, 0x6c, 0x6f, 0x67, 0x79, 0x56, 0x53,
+	0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x61,
+	0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
+	0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x49, 0x44, 0x12, 0x1a, 0x0a, 0x08, 0x74, 0x65, 0x6e,
+	0x61, 0x6e, 0x74, 0x49, 0x44, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x74, 0x65, 0x6e,
+	0x61, 0x6e, 0x74, 0x49, 0x44, 0x12, 0x14, 0x0a, 0x05, 0x6e, 0x65, 0x74, 0x49, 0x44, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6e, 0x65, 0x74, 0x49, 0x44, 0x22, 0x30, 0x0a, 0x0e, 0x54,
+	0x6f, 0x70, 0x6f, 0x6c, 0x6f, 0x67, 0x79, 0x56, 0x53, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x1e, 0x0a,
+	0x03, 0x56, 0x53, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x74, 0x6f, 0x70,
+	0x6f, 0x6c, 0x6f, 0x67, 0x79, 0x2e, 0x56, 0x53, 0x52, 0x03, 0x56, 0x53, 0x73, 0x22, 0xe2, 0x01,
 	0x0a, 0x05, 0x53, 0x74, 0x61, 0x74, 0x73, 0x12, 0x24, 0x0a, 0x0d, 0x74, 0x6f, 0x74, 0x61, 0x6c,
 	0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x05, 0x52, 0x0d,
 	0x74, 0x6f, 0x74, 0x61, 0x6c, 0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x12, 0x22, 0x0a,
@@ -1798,9 +1798,9 @@ var file_mmesh_protobuf_resources_v1_topology_topology_proto_goTypes = []interfa
 	(*TopologySubnetList)(nil),         // 6: topology.TopologySubnetList
 	(*TopologyNodeListRequest)(nil),    // 7: topology.TopologyNodeListRequest
 	(*TopologyNodeList)(nil),           // 8: topology.TopologyNodeList
-	(*TopologyVSListRequest)(nil),      // 9: topology.TopologyVSListRequest
-	(*TopologyVSList)(nil),             // 10: topology.TopologyVSList
-	(*TopologyNode)(nil),               // 11: topology.TopologyNode
+	(*TopologyNode)(nil),               // 9: topology.TopologyNode
+	(*TopologyVSListRequest)(nil),      // 10: topology.TopologyVSListRequest
+	(*TopologyVSList)(nil),             // 11: topology.TopologyVSList
 	(*Stats)(nil),                      // 12: topology.Stats
 	(*Metrics)(nil),                    // 13: topology.Metrics
 	(*ByStatus)(nil),                   // 14: topology.ByStatus
@@ -1816,20 +1816,20 @@ var file_mmesh_protobuf_resources_v1_topology_topology_proto_goTypes = []interfa
 	(*Network)(nil),                    // 24: topology.Network
 	(*Subnet)(nil),                     // 25: topology.Subnet
 	(*NodeFilter)(nil),                 // 26: topology.NodeFilter
-	(*VS)(nil),                         // 27: topology.VS
-	(*Node)(nil),                       // 28: topology.Node
-	(*Endpoint)(nil),                   // 29: topology.Endpoint
+	(*Node)(nil),                       // 27: topology.Node
+	(*Endpoint)(nil),                   // 28: topology.Endpoint
+	(*VS)(nil),                         // 29: topology.VS
 }
 var file_mmesh_protobuf_resources_v1_topology_topology_proto_depIdxs = []int32{
 	12, // 0: topology.TopologyStats.stats:type_name -> topology.Stats
 	24, // 1: topology.TopologyNetworkList.networks:type_name -> topology.Network
 	25, // 2: topology.TopologySubnetList.subnets:type_name -> topology.Subnet
 	26, // 3: topology.TopologyNodeListRequest.filter:type_name -> topology.NodeFilter
-	11, // 4: topology.TopologyNodeList.nodes:type_name -> topology.TopologyNode
-	27, // 5: topology.TopologyVSList.VSs:type_name -> topology.VS
-	28, // 6: topology.TopologyNode.node:type_name -> topology.Node
-	29, // 7: topology.TopologyNode.endpoints:type_name -> topology.Endpoint
-	18, // 8: topology.TopologyNode.alerts:type_name -> topology.AlertMetrics
+	9,  // 4: topology.TopologyNodeList.nodes:type_name -> topology.TopologyNode
+	27, // 5: topology.TopologyNode.node:type_name -> topology.Node
+	28, // 6: topology.TopologyNode.endpoints:type_name -> topology.Endpoint
+	18, // 7: topology.TopologyNode.alerts:type_name -> topology.AlertMetrics
+	29, // 8: topology.TopologyVSList.VSs:type_name -> topology.VS
 	13, // 9: topology.Stats.metrics:type_name -> topology.Metrics
 	14, // 10: topology.Metrics.nodesByStatus:type_name -> topology.ByStatus
 	15, // 11: topology.Metrics.nodesByNodeClass:type_name -> topology.ByNodeClass
@@ -1966,7 +1966,7 @@ func file_mmesh_protobuf_resources_v1_topology_topology_proto_init() {
 			}
 		}
 		file_mmesh_protobuf_resources_v1_topology_topology_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TopologyVSListRequest); i {
+			switch v := v.(*TopologyNode); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1978,7 +1978,7 @@ func file_mmesh_protobuf_resources_v1_topology_topology_proto_init() {
 			}
 		}
 		file_mmesh_protobuf_resources_v1_topology_topology_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TopologyVSList); i {
+			switch v := v.(*TopologyVSListRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1990,7 +1990,7 @@ func file_mmesh_protobuf_resources_v1_topology_topology_proto_init() {
 			}
 		}
 		file_mmesh_protobuf_resources_v1_topology_topology_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TopologyNode); i {
+			switch v := v.(*TopologyVSList); i {
 			case 0:
 				return &v.state
 			case 1:
