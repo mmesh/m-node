@@ -15,7 +15,7 @@ func mmpNetConntrackStateRequest(pdu *mmsp.NodeMgmtPDU) error {
 	}
 	req := pdu.NetCtStateRequest
 
-	xlog.Infof("[mmp] Received new conntrack state request..")
+	xlog.Debugf("[mmp] Received new conntrack state request..")
 
 	conntrack.RequestQueue <- req
 
@@ -28,7 +28,7 @@ func mmpNetConntrackLogRequest(pdu *mmsp.NodeMgmtPDU) error {
 	}
 	req := pdu.NetCtLogRequest
 
-	xlog.Infof("[mmp] Received new conntrack log request..")
+	xlog.Debugf("[mmp] Received new conntrack log request..")
 
 	ctlogdb.RequestQueue <- req
 

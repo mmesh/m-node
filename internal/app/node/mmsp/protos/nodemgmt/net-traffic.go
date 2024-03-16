@@ -14,7 +14,7 @@ func mmpNetTrafficMetricsRequest(pdu *mmsp.NodeMgmtPDU) error {
 	}
 	req := pdu.NetTrafficMetricsRequest
 
-	xlog.Infof("[mmp] Received new traffic metrics request..")
+	xlog.Debugf("[mmp] Received new traffic metrics request..")
 
 	netflowdb.RequestQueue <- req
 

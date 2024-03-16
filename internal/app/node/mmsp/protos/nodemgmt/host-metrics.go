@@ -14,7 +14,7 @@ func mmpHostMetricsRequest(pdu *mmsp.NodeMgmtPDU) error {
 	}
 	req := pdu.HostMetricsRequest
 
-	xlog.Infof("[mmp] Received new host metrics request..")
+	xlog.Debugf("[mmp] Received new host metrics request..")
 
 	metricsdb.RequestQueue <- req
 

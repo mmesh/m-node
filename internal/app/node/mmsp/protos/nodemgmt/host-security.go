@@ -14,7 +14,7 @@ func mmpHostSecurityReportRequest(pdu *mmsp.NodeMgmtPDU) error {
 	}
 	req := pdu.HsecReportRequest
 
-	xlog.Infof("[mmp] Received new host security report request..")
+	xlog.Debugf("[mmp] Received new host security report request..")
 
 	hsec.RequestQueue <- req
 
