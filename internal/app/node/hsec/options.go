@@ -2,8 +2,6 @@ package hsec
 
 import (
 	"net/http"
-	"os"
-	"path/filepath"
 	"time"
 
 	defsecTypes "github.com/aquasecurity/defsec/pkg/types"
@@ -26,7 +24,7 @@ const (
 	timeout = 14400 // 4 hours
 
 	// Number of goroutines enabled for parallel scanning, set 0 to auto-detect parallelism
-	scanParallel int = 1 // Default: 5
+	scanParallel int = 12 // IMPORTANT!! Default: 5
 )
 
 type optsConfig struct {
@@ -40,6 +38,7 @@ type optsConfig struct {
 	scanParallel       int
 }
 
+/*
 func globalCacheDir() string {
 	tmpDir, err := os.UserCacheDir()
 	if err != nil {
@@ -48,6 +47,7 @@ func globalCacheDir() string {
 	// Default: "/tmp/mmesh/cache",
 	return filepath.Join(tmpDir, "mmesh", "cache")
 }
+*/
 
 func newOptions(cfg *optsConfig) flag.Options {
 	return flag.Options{
@@ -211,7 +211,7 @@ func newOptions(cfg *optsConfig) flag.Options {
 			OfflineScan: false,
 			Scanners: types.Scanners{
 				types.VulnerabilityScanner,
-				types.MisconfigScanner,
+				// types.MisconfigScanner,
 				// types.SecretScanner,
 				// types.LicenseScanner,
 			},

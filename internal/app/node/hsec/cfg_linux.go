@@ -21,6 +21,10 @@ func skipDirs() []string {
 	}
 }
 
+func globalCacheDir() string {
+	return "/var/cache/mmesh"
+}
+
 /*
 func globalCacheDir() string {
 	tmpDir, err := os.UserCacheDir()

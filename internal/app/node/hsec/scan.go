@@ -64,9 +64,12 @@ func scan() error {
 		return errors.Wrapf(err, "[%v] function writeReportFile()", errors.Trace())
 	}
 
-	// if err := scanReport(ctx, r, opts, report); err != nil {
-	// 	return errors.Wrapf(err, "[%v] function scanRport()", errors.Trace())
-	// }
+	/*
+		// if err := scanReport(ctx, r, options, report); err != nil {
+		if err := scanReport(ctx, r, opts, report); err != nil {
+			return errors.Wrapf(err, "[%v] function scanRport()", errors.Trace())
+		}
+	*/
 
 	for idx, result := range report.Results {
 		logSecurityReport(result, idx)

@@ -16,13 +16,8 @@ func getHostSecurityReport(r *types.Report) *hsec.Report {
 		ArtifactName:  r.ArtifactName,
 		ArtifactType:  string(r.ArtifactType),
 		Metadata: &hsec.Metadata{
-			Size: r.Metadata.Size,
-			OS: &hsec.OS{
-				Family:   string(r.Metadata.OS.Family),
-				Name:     r.Metadata.OS.Name,
-				EOSL:     r.Metadata.OS.Eosl,
-				Extended: r.Metadata.OS.Extended,
-			},
+			Size:        r.Metadata.Size,
+			OS:          getReportMetadataOS(r.Metadata),
 			ImageID:     r.Metadata.ImageID,
 			DiffIDs:     r.Metadata.DiffIDs,
 			RepoTags:    r.Metadata.RepoTags,
@@ -69,6 +64,19 @@ func getHostSecurityReport(r *types.Report) *hsec.Report {
 		}, // Metadata
 		Results:   getReportResults(r),
 		CycloneDX: getReportCycloneDX(r.CycloneDX),
+	}
+}
+
+func getReportMetadataOS(metadata types.Metadata) *hsec.OS {
+	if metadata.OS == nil {
+		return nil
+	}
+
+	return &hsec.OS{
+		Family:   string(metadata.OS.Family),
+		Name:     metadata.OS.Name,
+		EOSL:     metadata.OS.Eosl,
+		Extended: metadata.OS.Extended,
 	}
 }
 

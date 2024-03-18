@@ -23,7 +23,7 @@ func Scanner(w *runtime.Wrkr) {
 	go func() {
 		securityScannerCtl := make(chan struct{}, 1)
 		go func() {
-			time.Sleep(300 * time.Second) // 5 minutes
+			time.Sleep(30 * time.Second)
 			securityScannerCtl <- struct{}{}
 		}()
 

@@ -26,7 +26,6 @@ func skipDirs() []string {
 	return []string{}
 }
 
-/*
 func globalCacheDir() string {
 	programFiles := os.Getenv("ProgramFiles")
 
@@ -36,4 +35,3 @@ func globalCacheDir() string {
 
 	return fmt.Sprintf(`%s\mmesh\cache`, programFiles)
 }
-*/

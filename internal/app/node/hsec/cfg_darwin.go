@@ -4,7 +4,7 @@
 package hsec
 
 func reportFile() string {
-	return "/var/local/mmesh/report.hsr"
+	return "/opt/mmesh/var/lib/report.hsr"
 }
 
 func rootTargetDir() string {
@@ -13,6 +13,10 @@ func rootTargetDir() string {
 
 func skipDirs() []string {
 	return []string{}
+}
+
+func globalCacheDir() string {
+	return "/opt/mmesh/var/cache"
 }
 
 /*
