@@ -1,5 +1,5 @@
-//go:build !windows
-// +build !windows
+//go:build linux
+// +build linux
 
 package hstat
 
@@ -14,6 +14,7 @@ import (
 	"github.com/shirou/gopsutil/v3/mem"
 	"github.com/spf13/viper"
 	"mmesh.dev/m-api-go/grpc/resources/topology"
+	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/hstat/alert"
 )
 
@@ -22,6 +23,7 @@ func (hs *hstats) updateSys(nr *topology.NodeReq) {
 
 	hostInfo, err := host.Info()
 	if err != nil {
+		xlog.Warnf("[hstats] Unable to get host info: %v", err)
 		return
 	}
 	// cpuCount, err := cpu.Counts(true)
@@ -30,18 +32,22 @@ func (hs *hstats) updateSys(nr *topology.NodeReq) {
 	// }
 	cpuPercent, err := cpu.Percent(0, false)
 	if err != nil {
+		xlog.Warnf("[hstats] Unable to get cpu info: %v", err)
 		return
 	}
 	loadAvg, err := load.Avg()
 	if err != nil {
+		xlog.Warnf("[hstats] Unable to get load info: %v", err)
 		return
 	}
 	memInfo, err := mem.VirtualMemory()
 	if err != nil {
+		xlog.Warnf("[hstats] Unable to get mem info: %v", err)
 		return
 	}
 	diskInfo, err := disk.Usage("/")
 	if err != nil {
+		xlog.Warnf("[hstats] Unable to get disk info: %v", err)
 		return
 	}
 

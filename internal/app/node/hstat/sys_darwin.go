@@ -1,5 +1,5 @@
-//go:build windows
-// +build windows
+//go:build darwin
+// +build darwin
 
 package hstat
 
@@ -26,18 +26,19 @@ func (hs *hstats) updateSys(nr *topology.NodeReq) {
 		xlog.Warnf("[hstats] Unable to get host info: %v", err)
 		return
 	}
-	// cpuCount, err := cpu.Counts(true)
-	// if err != nil {
-	// 	return
-	// }
-	cpuPercent, err := cpu.Percent(0, false)
+	cpuCount, err := cpu.Counts(true)
 	if err != nil {
-		xlog.Warnf("[hstats] Unable to get cpu info: %v", err)
+		xlog.Warnf("[hstats] Unable to get cpu counts: %v", err)
 		return
 	}
+	// cpuPercent, err := cpu.Percent(0, false)
+	// if err != nil {
+	// 	xlog.Warnf("[hstats] Unable to get cpu info: %v", err)
+	// 	return
+	// }
 	loadAvg, err := load.Avg()
 	if err != nil {
-		xlog.Warnf("[hstats] Unable to get load avg: %v", err)
+		xlog.Warnf("[hstats] Unable to get load info: %v", err)
 		return
 	}
 	memInfo, err := mem.VirtualMemory()
@@ -45,7 +46,7 @@ func (hs *hstats) updateSys(nr *topology.NodeReq) {
 		xlog.Warnf("[hstats] Unable to get mem info: %v", err)
 		return
 	}
-	diskInfo, err := disk.Usage(`c:\`)
+	diskInfo, err := disk.Usage("/")
 	if err != nil {
 		xlog.Warnf("[hstats] Unable to get disk info: %v", err)
 		return
@@ -64,23 +65,22 @@ func (hs *hstats) updateSys(nr *topology.NodeReq) {
 	}
 
 	hs.host.LoadAvg = loadAvg.Load5
-
-	// if (loadAvg.Load5 / float64(cpuCount)) > 2.00 {
-	// 	hs.host.CpuPressure = true
-	// 	go alert.HostCPUHighAlert(nr, nodeName, fmt.Sprintf("%f", loadAvg.Load5/float64(cpuCount)))
-	// } else {
-	// 	hs.host.CpuPressure = false
-	// 	go alert.HostCPULowAlert(nr, nodeName, fmt.Sprintf("%f", loadAvg.Load5/float64(cpuCount)))
-	// }
-
-	hs.host.CpuUsage = uint64(cpuPercent[0])
-	if hs.host.CpuUsage > 90 {
+	if (loadAvg.Load5 / float64(cpuCount)) > 2.00 {
 		hs.host.CpuPressure = true
-		go alert.HostCPUHighAlert(nr, nodeName, fmt.Sprintf("%d%%", hs.host.CpuUsage))
+		go alert.HostCPUHighAlert(nr, nodeName, fmt.Sprintf("%f", loadAvg.Load5/float64(cpuCount)))
 	} else {
 		hs.host.CpuPressure = false
-		go alert.HostCPULowAlert(nr, nodeName, fmt.Sprintf("%d%%", hs.host.CpuUsage))
+		go alert.HostCPULowAlert(nr, nodeName, fmt.Sprintf("%f", loadAvg.Load5/float64(cpuCount)))
 	}
+
+	// hs.host.CpuUsage = uint64(cpuPercent[0])
+	// if hs.host.CpuUsage > 90 {
+	// 	hs.host.CpuPressure = true
+	// 	go alert.HostCPUHighAlert(nr, nodeName, fmt.Sprintf("%d%%", hs.host.CpuUsage))
+	// } else {
+	// 	hs.host.CpuPressure = false
+	// 	go alert.HostCPULowAlert(nr, nodeName, fmt.Sprintf("%d%%", hs.host.CpuUsage))
+	// }
 
 	hs.host.MemoryUsage = uint64(memInfo.UsedPercent)
 	if hs.host.MemoryUsage > 90 {
