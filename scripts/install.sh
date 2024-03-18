@@ -259,6 +259,7 @@ WantedBy=multi-user.target
 EOF
 
   mkdir -p /var/lib/mmesh
+  mkdir -p /var/cache/mmesh
 }
 
 linux_service_stop() {
@@ -280,11 +281,11 @@ linux_binary_uninstall() {
 }
 
 darwin_binary_install() {
-  mkdir -p /usr/local/libexec
-  rm -f /usr/local/libexec/mmesh-node
+  mkdir -p /opt/mmesh/libexec
+  rm -f /opt/mmesh/libexec/mmesh-node
 
   if command -v curl >/dev/null; then
-    if ! curl -s -o /usr/local/libexec/mmesh-node "${NODE_BINARY}"; then
+    if ! curl -s -o /opt/mmesh/libexec/mmesh-node "${NODE_BINARY}"; then
       echo "Unable to download binary"
       exit 1
     fi
@@ -294,10 +295,11 @@ darwin_binary_install() {
     exit 1
   fi
 
-  chmod 0750 /usr/local/libexec/mmesh-node
-  chown root: /usr/local/libexec/mmesh-node
+  chmod 0750 /opt/mmesh/libexec/mmesh-node
+  chown root: /opt/mmesh/libexec/mmesh-node
 
-  mkdir -p /var/local/mmesh
+  mkdir -p /opt/mmesh/var/lib
+  mkdir -p /opt/mmesh/var/cache
 }
 
 get_system_info() {
@@ -453,22 +455,22 @@ linux_pkg_install() {
       ;;
   esac
 
-  set_config
+  linux_set_config
   linux_setup
 }
 
 darwin_pkg_install() {
   darwin_binary_install
-  set_config
+  darwin_set_config
   darwin_setup
 }
 
 # freebsd_pkg_install() {
-#   set_config
+#   freebsd_set_config
 #   # freebsd_setup
 # }
 
-set_config() {
+linux_set_config() {
   echo "Setting mmesh-node configuration..."
 
   mkdir -p /etc/mmesh
@@ -488,17 +490,36 @@ token: "${TOKEN}"
 # loglevel: INFO
 port: ${PORT}
 # dnsPort: ${DNS_PORT}
-
-# mmesh remote management permissions
-management:
-  # use 'openssl rand -base64 48' to generate both psk and securityToken
-  auth:
-    psk:
-    securityToken:
 EOF
 
   chmod 0700 /etc/mmesh
   chmod 0600 /etc/mmesh/mmesh-node.yml
+}
+
+darwin_set_config() {
+  echo "Setting mmesh-node configuration..."
+
+  mkdir -p /opt/mmesh/etc
+
+  if [ -s /opt/mmesh/etc/mmesh-node.yml ]; then
+    echo "Saving existing mmesh-node configuration..."
+    cp /opt/mmesh/etc/mmesh-node.yml /opt/mmesh/etc/mmesh-node.yml_old
+  fi
+
+  echo "Creating mmesh-node configuration..."
+
+  cat << EOF > /opt/mmesh/etc/mmesh-node.yml
+# mmesh-node configuration
+
+token: "${TOKEN}"
+
+# loglevel: INFO
+port: ${PORT}
+# dnsPort: ${DNS_PORT}
+EOF
+
+  chmod 0700 /opt/mmesh/etc
+  chmod 0600 /opt/mmesh/etc/mmesh-node.yml
 }
 
 check_tun_kernel_module() {
@@ -534,7 +555,7 @@ linux_setup() {
 darwin_setup() {
   echo "Starting mmesh-node setup on Darwin..."
 
-  /usr/local/libexec/mmesh-node service-install
+  /opt/mmesh/libexec/mmesh-node service-install
   launchctl print system/io.mmesh.mmesh-node
 }
 
@@ -548,7 +569,7 @@ docker_install() {
   apt_node_uninstall
   yum_node_uninstall
 
-  set_config
+  linux_set_config
   docker_setup
 }
 
@@ -564,6 +585,7 @@ docker_setup() {
   echo "Starting mmesh-node as Docker container..."
 
   mkdir -p /var/lib/mmesh
+  # mkdir -p /var/cache/mmesh
 
   check_tun_kernel_module
 

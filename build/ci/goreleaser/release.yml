@@ -140,16 +140,18 @@ archives:
       - ./LICENSE
 
 brews:
-  - tap:
+  - name: mmesh-node
+    repository:
       owner: mmesh
       name: homebrew-tap
       branch: master
     folder: Formula
-    goarm: "7"
+    goarm: "6"
     goamd64: v1
     commit_author:
       name: mmeshbot
       email: mmeshbot@mmesh.io
+    # commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
     homepage: https://mmesh.io
     description: mmesh-node agent
     license: "Apache License 2.0"
@@ -163,10 +165,10 @@ brews:
     #           <string>com.mmesh.mmesh-node</string>
     #           <key>ProgramArguments</key>
     #           <array>
-    #               <string>/usr/local/libexec/mmesh-node</string>
+    #               <string>/opt/mmesh/libexec/mmesh-node</string>
     #               <string>start</string>
     #               <string>--config</string>
-    #               <string>/etc/mmesh/mmesh-node.yml</string>
+    #               <string>/opt/mmesh/etc/mmesh-node.yml</string>
     #           </array>
     #           <key>RunAtLoad</key>
     #           <true/>
@@ -176,8 +178,10 @@ brews:
     #           <false/>
     #       </dict>
     #   </plist>
+    test: |-
+      system "#{libexec}/mmesh-node version"
     install: |-
-      bin.install "mmesh-node"
+      libexec.install "mmesh-node"
     # post_install: |-
     #   etc.install "mmesh-node.yml"
 
@@ -225,6 +229,8 @@ nfpms:
         type: config
       # empty dir
       - dst: /var/lib/mmesh
+        type: dir
+      - dst: /var/cache/mmesh
         type: dir
     deb:
       lintian_overrides:
@@ -288,7 +294,7 @@ release:
     - Follow us on [Twitter](https://twitter.com/mmesh_io)
 
 changelog:
-  skip: false
+  disable: false
   use: github
   sort: asc
   groups:
