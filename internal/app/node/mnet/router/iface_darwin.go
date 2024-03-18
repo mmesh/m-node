@@ -18,7 +18,7 @@ func (r *router) ifUp() error {
 	ifcName := viper.GetString("iface")
 
 	if !strings.HasPrefix(ifcName, "utun") {
-		ifcName = "utun5"
+		ifcName = "utun7"
 	}
 
 	ni, err := createTUN(ifcName)

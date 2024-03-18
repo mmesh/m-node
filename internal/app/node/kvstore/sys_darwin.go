@@ -4,5 +4,5 @@
 package kvstore
 
 func dbDir() string {
-	return "/var/local/mmesh/db"
+	return "/opt/mmesh/var/lib/db"
 }

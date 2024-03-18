@@ -4,5 +4,5 @@
 package config
 
 func defaultInterfaceName() string {
-	return "utun5"
+	return "utun7"
 }
