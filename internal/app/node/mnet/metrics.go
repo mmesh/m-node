@@ -46,7 +46,7 @@ func (ln *localNode) Metrics(kvs kvstore.Interface) *topology.AgentMetrics {
 
 	hmr, err := kvs.HostMetrics().Query(&metricsdb.HostMetricsRequest{
 		Request:   req,
-		Type:      metricsdb.HostMetricsQueryType_QUERY_CPU_USAGE,
+		Type:      metricsdb.HostMetricsQueryType_QUERY_LOAD_AVG,
 		TimeRange: nstore.TimeRange_TTL_1H,
 	})
 	if err != nil {
