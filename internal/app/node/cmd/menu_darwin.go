@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
+	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/start"
 )
 
@@ -16,6 +17,8 @@ var serviceStartCmd = &cobra.Command{
 	Short: "Start service",
 	Long:  `Start service.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		xlog.Logger().SetANSIColor(false)
+
 		start.ServiceStart()
 	},
 }
