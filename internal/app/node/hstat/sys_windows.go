@@ -51,8 +51,9 @@ func (hs *hstats) updateSys(nr *topology.NodeReq) {
 		return
 	}
 
-	hs.host.OS = hostInfo.OS
 	// hs.host.OS = runtime.GOOS
+	// hs.host.OS = hostInfo.OS
+	hs.host.OS = fmt.Sprintf("Windows %s", hostInfo.PlatformVersion)
 	hs.host.OSType = getOSType()
 	hs.host.Arch = runtime.GOARCH
 

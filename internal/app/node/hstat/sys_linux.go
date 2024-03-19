@@ -13,6 +13,8 @@ import (
 	"github.com/shirou/gopsutil/v3/load"
 	"github.com/shirou/gopsutil/v3/mem"
 	"github.com/spf13/viper"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"mmesh.dev/m-api-go/grpc/resources/topology"
 	"mmesh.dev/m-lib/pkg/xlog"
 	"mmesh.dev/m-node/internal/app/node/hstat/alert"
@@ -51,8 +53,10 @@ func (hs *hstats) updateSys(nr *topology.NodeReq) {
 		return
 	}
 
-	hs.host.OS = hostInfo.OS
 	// hs.host.OS = runtime.GOOS
+	// hs.host.OS = hostInfo.OS
+	hs.host.OS = fmt.Sprintf("%s %s",
+		cases.Title(language.AmericanEnglish).String(hostInfo.Platform), hostInfo.PlatformVersion)
 	hs.host.OSType = getOSType()
 	hs.host.Arch = runtime.GOARCH
 
