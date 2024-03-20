@@ -31,6 +31,7 @@ const (
 	ManagerAPI_Login_FullMethodName                     = "/api.ManagerAPI/Login"
 	ManagerAPI_Signin_FullMethodName                    = "/api.ManagerAPI/Signin"
 	ManagerAPI_OTPAuthenticate_FullMethodName           = "/api.ManagerAPI/OTPAuthenticate"
+	ManagerAPI_IAPAuthenticate_FullMethodName           = "/api.ManagerAPI/IAPAuthenticate"
 	ManagerAPI_SessionAuthenticate_FullMethodName       = "/api.ManagerAPI/SessionAuthenticate"
 	ManagerAPI_Signout_FullMethodName                   = "/api.ManagerAPI/Signout"
 	ManagerAPI_SetUserEmail_FullMethodName              = "/api.ManagerAPI/SetUserEmail"
@@ -75,6 +76,8 @@ type ManagerAPIClient interface {
 	Signin(ctx context.Context, in *auth.OTPSigninRequest, opts ...grpc.CallOption) (*auth.OTPSigninResponse, error)
 	// otpAuthenticate
 	OTPAuthenticate(ctx context.Context, in *auth.OTPAuthenticationRequest, opts ...grpc.CallOption) (*auth.AuthenticationResponse, error)
+	// iapAuthenticate
+	IAPAuthenticate(ctx context.Context, in *auth.OTPAuthenticationRequest, opts ...grpc.CallOption) (*auth.AuthenticationResponse, error)
 	// sessionAuthenticate
 	SessionAuthenticate(ctx context.Context, in *empty.Request, opts ...grpc.CallOption) (*auth.AuthenticationResponse, error)
 	// signout
@@ -147,6 +150,15 @@ func (c *managerAPIClient) Signin(ctx context.Context, in *auth.OTPSigninRequest
 func (c *managerAPIClient) OTPAuthenticate(ctx context.Context, in *auth.OTPAuthenticationRequest, opts ...grpc.CallOption) (*auth.AuthenticationResponse, error) {
 	out := new(auth.AuthenticationResponse)
 	err := c.cc.Invoke(ctx, ManagerAPI_OTPAuthenticate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *managerAPIClient) IAPAuthenticate(ctx context.Context, in *auth.OTPAuthenticationRequest, opts ...grpc.CallOption) (*auth.AuthenticationResponse, error) {
+	out := new(auth.AuthenticationResponse)
+	err := c.cc.Invoke(ctx, ManagerAPI_IAPAuthenticate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -473,6 +485,8 @@ type ManagerAPIServer interface {
 	Signin(context.Context, *auth.OTPSigninRequest) (*auth.OTPSigninResponse, error)
 	// otpAuthenticate
 	OTPAuthenticate(context.Context, *auth.OTPAuthenticationRequest) (*auth.AuthenticationResponse, error)
+	// iapAuthenticate
+	IAPAuthenticate(context.Context, *auth.OTPAuthenticationRequest) (*auth.AuthenticationResponse, error)
 	// sessionAuthenticate
 	SessionAuthenticate(context.Context, *empty.Request) (*auth.AuthenticationResponse, error)
 	// signout
@@ -529,6 +543,9 @@ func (UnimplementedManagerAPIServer) Signin(context.Context, *auth.OTPSigninRequ
 }
 func (UnimplementedManagerAPIServer) OTPAuthenticate(context.Context, *auth.OTPAuthenticationRequest) (*auth.AuthenticationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OTPAuthenticate not implemented")
+}
+func (UnimplementedManagerAPIServer) IAPAuthenticate(context.Context, *auth.OTPAuthenticationRequest) (*auth.AuthenticationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IAPAuthenticate not implemented")
 }
 func (UnimplementedManagerAPIServer) SessionAuthenticate(context.Context, *empty.Request) (*auth.AuthenticationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SessionAuthenticate not implemented")
@@ -689,6 +706,24 @@ func _ManagerAPI_OTPAuthenticate_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ManagerAPIServer).OTPAuthenticate(ctx, req.(*auth.OTPAuthenticationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ManagerAPI_IAPAuthenticate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(auth.OTPAuthenticationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ManagerAPIServer).IAPAuthenticate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ManagerAPI_IAPAuthenticate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ManagerAPIServer).IAPAuthenticate(ctx, req.(*auth.OTPAuthenticationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1295,6 +1330,10 @@ var ManagerAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OTPAuthenticate",
 			Handler:    _ManagerAPI_OTPAuthenticate_Handler,
+		},
+		{
+			MethodName: "IAPAuthenticate",
+			Handler:    _ManagerAPI_IAPAuthenticate_Handler,
 		},
 		{
 			MethodName: "SessionAuthenticate",

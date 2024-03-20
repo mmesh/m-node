@@ -17,7 +17,7 @@ require (
 	github.com/google/gopacket v1.1.19
 	github.com/google/uuid v1.6.0
 	github.com/kardianos/service v1.2.2
-	github.com/libp2p/go-libp2p v0.33.0
+	github.com/libp2p/go-libp2p v0.33.1
 	github.com/lorenzosaino/go-sysctl v0.3.1
 	github.com/miekg/dns v1.1.58
 	github.com/multiformats/go-multiaddr v0.12.2
@@ -343,7 +343,7 @@ require (
 	github.com/prometheus/common v0.47.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
-	github.com/quic-go/quic-go v0.41.0 // indirect
+	github.com/quic-go/quic-go v0.42.0 // indirect
 	github.com/quic-go/webtransport-go v0.6.0 // indirect
 	github.com/raulk/go-watchdog v1.3.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect

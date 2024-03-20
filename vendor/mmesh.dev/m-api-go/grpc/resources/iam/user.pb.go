@@ -26,7 +26,7 @@ type UserType int32
 
 const (
 	UserType_USER_TYPE_ADM UserType = 0
-	UserType_USER_TYPE_IAP UserType = 11
+	UserType_USER_TYPE_IAP UserType = 11 // USER_TYPE_BOTH = 21;
 )
 
 // Enum value maps for UserType.

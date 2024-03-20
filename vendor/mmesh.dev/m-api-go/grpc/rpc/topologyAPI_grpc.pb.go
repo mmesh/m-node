@@ -21,9 +21,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
+	TopologyAPI_GetStatsTopology_FullMethodName        = "/api.TopologyAPI/GetStatsTopology"
+	TopologyAPI_GetStatsAlerts_FullMethodName          = "/api.TopologyAPI/GetStatsAlerts"
+	TopologyAPI_GetStatsWorkflows_FullMethodName       = "/api.TopologyAPI/GetStatsWorkflows"
 	TopologyAPI_GetNodeSummaryMap_FullMethodName       = "/api.TopologyAPI/GetNodeSummaryMap"
 	TopologyAPI_GetTopologyTags_FullMethodName         = "/api.TopologyAPI/GetTopologyTags"
-	TopologyAPI_GetTopologyStats_FullMethodName        = "/api.TopologyAPI/GetTopologyStats"
 	TopologyAPI_GetTopologyNetworkList_FullMethodName  = "/api.TopologyAPI/GetTopologyNetworkList"
 	TopologyAPI_GetTopologySubnetList_FullMethodName   = "/api.TopologyAPI/GetTopologySubnetList"
 	TopologyAPI_GetTopologyNodeList_FullMethodName     = "/api.TopologyAPI/GetTopologyNodeList"
@@ -71,18 +73,16 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TopologyAPIClient interface {
-	// Get topology data (deprecated).
-	//
-	//	rpc GetTopology(topology.TopologyRequest) returns (topology.Topology) {
-	//	  option (google.api.http) = {
-	//	    get: "/api/v1/accounts/{accountID}/tenants/{tenantID}:topology"
-	//	  };
-	//	}
+	// Gets stats - topology.
+	GetStatsTopology(ctx context.Context, in *topology.TopologyRequest, opts ...grpc.CallOption) (*topology.StatsTopology, error)
+	// Gets stats - alerts.
+	GetStatsAlerts(ctx context.Context, in *topology.TopologyRequest, opts ...grpc.CallOption) (*topology.StatsAlerts, error)
+	// Gets stats - workflows.
+	GetStatsWorkflows(ctx context.Context, in *topology.TopologyRequest, opts ...grpc.CallOption) (*topology.StatsWorkflows, error)
+	// Gets node summary map.
 	GetNodeSummaryMap(ctx context.Context, in *topology.TopologyRequest, opts ...grpc.CallOption) (*topology.NodeSummaryMap, error)
 	// Gets topology tag list.
 	GetTopologyTags(ctx context.Context, in *topology.TopologyRequest, opts ...grpc.CallOption) (*topology.TopologyTags, error)
-	// Gets topology stats.
-	GetTopologyStats(ctx context.Context, in *topology.TopologyRequest, opts ...grpc.CallOption) (*topology.TopologyStats, error)
 	// Gets toplogy network list.
 	GetTopologyNetworkList(ctx context.Context, in *topology.TopologyNetworkListRequest, opts ...grpc.CallOption) (*topology.TopologyNetworkList, error)
 	// Gets toplogy subnet list.
@@ -169,6 +169,33 @@ func NewTopologyAPIClient(cc grpc.ClientConnInterface) TopologyAPIClient {
 	return &topologyAPIClient{cc}
 }
 
+func (c *topologyAPIClient) GetStatsTopology(ctx context.Context, in *topology.TopologyRequest, opts ...grpc.CallOption) (*topology.StatsTopology, error) {
+	out := new(topology.StatsTopology)
+	err := c.cc.Invoke(ctx, TopologyAPI_GetStatsTopology_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *topologyAPIClient) GetStatsAlerts(ctx context.Context, in *topology.TopologyRequest, opts ...grpc.CallOption) (*topology.StatsAlerts, error) {
+	out := new(topology.StatsAlerts)
+	err := c.cc.Invoke(ctx, TopologyAPI_GetStatsAlerts_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *topologyAPIClient) GetStatsWorkflows(ctx context.Context, in *topology.TopologyRequest, opts ...grpc.CallOption) (*topology.StatsWorkflows, error) {
+	out := new(topology.StatsWorkflows)
+	err := c.cc.Invoke(ctx, TopologyAPI_GetStatsWorkflows_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *topologyAPIClient) GetNodeSummaryMap(ctx context.Context, in *topology.TopologyRequest, opts ...grpc.CallOption) (*topology.NodeSummaryMap, error) {
 	out := new(topology.NodeSummaryMap)
 	err := c.cc.Invoke(ctx, TopologyAPI_GetNodeSummaryMap_FullMethodName, in, out, opts...)
@@ -181,15 +208,6 @@ func (c *topologyAPIClient) GetNodeSummaryMap(ctx context.Context, in *topology.
 func (c *topologyAPIClient) GetTopologyTags(ctx context.Context, in *topology.TopologyRequest, opts ...grpc.CallOption) (*topology.TopologyTags, error) {
 	out := new(topology.TopologyTags)
 	err := c.cc.Invoke(ctx, TopologyAPI_GetTopologyTags_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *topologyAPIClient) GetTopologyStats(ctx context.Context, in *topology.TopologyRequest, opts ...grpc.CallOption) (*topology.TopologyStats, error) {
-	out := new(topology.TopologyStats)
-	err := c.cc.Invoke(ctx, TopologyAPI_GetTopologyStats_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -569,18 +587,16 @@ func (c *topologyAPIClient) DeleteVS(ctx context.Context, in *topology.VSReq, op
 // All implementations must embed UnimplementedTopologyAPIServer
 // for forward compatibility
 type TopologyAPIServer interface {
-	// Get topology data (deprecated).
-	//
-	//	rpc GetTopology(topology.TopologyRequest) returns (topology.Topology) {
-	//	  option (google.api.http) = {
-	//	    get: "/api/v1/accounts/{accountID}/tenants/{tenantID}:topology"
-	//	  };
-	//	}
+	// Gets stats - topology.
+	GetStatsTopology(context.Context, *topology.TopologyRequest) (*topology.StatsTopology, error)
+	// Gets stats - alerts.
+	GetStatsAlerts(context.Context, *topology.TopologyRequest) (*topology.StatsAlerts, error)
+	// Gets stats - workflows.
+	GetStatsWorkflows(context.Context, *topology.TopologyRequest) (*topology.StatsWorkflows, error)
+	// Gets node summary map.
 	GetNodeSummaryMap(context.Context, *topology.TopologyRequest) (*topology.NodeSummaryMap, error)
 	// Gets topology tag list.
 	GetTopologyTags(context.Context, *topology.TopologyRequest) (*topology.TopologyTags, error)
-	// Gets topology stats.
-	GetTopologyStats(context.Context, *topology.TopologyRequest) (*topology.TopologyStats, error)
 	// Gets toplogy network list.
 	GetTopologyNetworkList(context.Context, *topology.TopologyNetworkListRequest) (*topology.TopologyNetworkList, error)
 	// Gets toplogy subnet list.
@@ -664,14 +680,20 @@ type TopologyAPIServer interface {
 type UnimplementedTopologyAPIServer struct {
 }
 
+func (UnimplementedTopologyAPIServer) GetStatsTopology(context.Context, *topology.TopologyRequest) (*topology.StatsTopology, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStatsTopology not implemented")
+}
+func (UnimplementedTopologyAPIServer) GetStatsAlerts(context.Context, *topology.TopologyRequest) (*topology.StatsAlerts, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStatsAlerts not implemented")
+}
+func (UnimplementedTopologyAPIServer) GetStatsWorkflows(context.Context, *topology.TopologyRequest) (*topology.StatsWorkflows, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStatsWorkflows not implemented")
+}
 func (UnimplementedTopologyAPIServer) GetNodeSummaryMap(context.Context, *topology.TopologyRequest) (*topology.NodeSummaryMap, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNodeSummaryMap not implemented")
 }
 func (UnimplementedTopologyAPIServer) GetTopologyTags(context.Context, *topology.TopologyRequest) (*topology.TopologyTags, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTopologyTags not implemented")
-}
-func (UnimplementedTopologyAPIServer) GetTopologyStats(context.Context, *topology.TopologyRequest) (*topology.TopologyStats, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetTopologyStats not implemented")
 }
 func (UnimplementedTopologyAPIServer) GetTopologyNetworkList(context.Context, *topology.TopologyNetworkListRequest) (*topology.TopologyNetworkList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTopologyNetworkList not implemented")
@@ -809,6 +831,60 @@ func RegisterTopologyAPIServer(s grpc.ServiceRegistrar, srv TopologyAPIServer) {
 	s.RegisterService(&TopologyAPI_ServiceDesc, srv)
 }
 
+func _TopologyAPI_GetStatsTopology_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(topology.TopologyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TopologyAPIServer).GetStatsTopology(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TopologyAPI_GetStatsTopology_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TopologyAPIServer).GetStatsTopology(ctx, req.(*topology.TopologyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TopologyAPI_GetStatsAlerts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(topology.TopologyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TopologyAPIServer).GetStatsAlerts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TopologyAPI_GetStatsAlerts_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TopologyAPIServer).GetStatsAlerts(ctx, req.(*topology.TopologyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TopologyAPI_GetStatsWorkflows_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(topology.TopologyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TopologyAPIServer).GetStatsWorkflows(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TopologyAPI_GetStatsWorkflows_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TopologyAPIServer).GetStatsWorkflows(ctx, req.(*topology.TopologyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _TopologyAPI_GetNodeSummaryMap_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(topology.TopologyRequest)
 	if err := dec(in); err != nil {
@@ -841,24 +917,6 @@ func _TopologyAPI_GetTopologyTags_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TopologyAPIServer).GetTopologyTags(ctx, req.(*topology.TopologyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _TopologyAPI_GetTopologyStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(topology.TopologyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(TopologyAPIServer).GetTopologyStats(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: TopologyAPI_GetTopologyStats_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TopologyAPIServer).GetTopologyStats(ctx, req.(*topology.TopologyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1609,16 +1667,24 @@ var TopologyAPI_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*TopologyAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "GetStatsTopology",
+			Handler:    _TopologyAPI_GetStatsTopology_Handler,
+		},
+		{
+			MethodName: "GetStatsAlerts",
+			Handler:    _TopologyAPI_GetStatsAlerts_Handler,
+		},
+		{
+			MethodName: "GetStatsWorkflows",
+			Handler:    _TopologyAPI_GetStatsWorkflows_Handler,
+		},
+		{
 			MethodName: "GetNodeSummaryMap",
 			Handler:    _TopologyAPI_GetNodeSummaryMap_Handler,
 		},
 		{
 			MethodName: "GetTopologyTags",
 			Handler:    _TopologyAPI_GetTopologyTags_Handler,
-		},
-		{
-			MethodName: "GetTopologyStats",
-			Handler:    _TopologyAPI_GetTopologyStats_Handler,
 		},
 		{
 			MethodName: "GetTopologyNetworkList",
