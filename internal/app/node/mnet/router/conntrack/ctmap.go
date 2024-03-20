@@ -8,7 +8,7 @@ import (
 	"mmesh.dev/m-lib/pkg/xlog"
 )
 
-const ctTimeout = 1200
+const ctTimeout = 3600 // 1 hour (idle connection timeout)
 
 type ctMap struct {
 	table   map[Connection]*netdb.ConnectionState
